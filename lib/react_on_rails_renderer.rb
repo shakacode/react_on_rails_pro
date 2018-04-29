@@ -2,4 +2,4 @@ require "rails"
 
 require "react_on_rails_renderer/version"
 require "react_on_rails_renderer/configuration"
-require "react_on_rails_renderer/rendering_pool"
+require "react_on_rails_renderer/vm_rendering_pool"

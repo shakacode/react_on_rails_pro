@@ -87,6 +87,8 @@ It's critical to configure your IDE/editor to ignore certain directories. Otherw
 
 # Configuring your test app to use your local fork
 You can test the `react-on-rails-renderer` gem using your own external test app or the gem's internal `spec/dummy` app. The `spec/dummy` app is an example of the various setup techniques you can use with the gem.
+As of 2018-04-28, this directory mirrors the test app spec/dummy on https://github.com/shakacode/react_on_rails plus a few additional tests.
+
 ```
 ├── test
 |    └── client
@@ -102,8 +104,12 @@ If you want to test the ruby parts of the gem with an application before you rel
 gem "react_on_rails_renderer", path: "../path-to-react-on-rails-renderer"
 gem "react_on_rails"
 ```
+================================================================================
+TODO: UPDATE
 
 Currently you also need to monkeypatch `ReactOnRails::ServerRenderingPool` module at the end of `initializers/react_on_rails`:
+
+See 
 
 ```ruby
 module ReactOnRails
@@ -113,7 +119,7 @@ module ReactOnRails
         if ReactOnRails.configuration.server_render_method == "NodeJS"
           ServerRenderingPool::Node
         elsif ReactOnRails.configuration.server_render_method == "NodeJSHttp"
-          ReactOnRailsRenderer::RenderingPool
+          ReactOnRailsRenderer::VMRenderingPool
         else
           ServerRenderingPool::Exec
         end
@@ -128,7 +134,8 @@ module ReactOnRails
 end
 ```
 
-Then set `config.server_render_method = "NodeJSHttp"` in your  `ReactOnRails.configure` block.
+
+Then set `config.server_render_method = "NodeJSHttp"` in your  `ReactOnRailsRender.configure` block.
 
 Note that you will need to bundle install after making this change, but also that **you will need to restart your Rails application if you make any changes to the gem**.
 
@@ -138,7 +145,7 @@ In addition to testing the Ruby parts out, you can also test the node package pa
 cd test/client
 rm -rf node_modules/react-on-rails && npm i 'file:../path-to-react-on-rails-top-package.json'
 ```
-_Note: You must use npm here till yarn stops preferring cached packages over local. see [issue #2649](https://github.com/yarnpkg/yarn/issues/2649)_
+_Note: You must use npm here till yarn stops preferring cached packages over local. see [issue #2649](https://github.com/yarnpkg/yarn/issues/2649).
 
 When you use a relative path, be sure to run the above `yarn` command whenever you change the node package for react-on-rails.
 
@@ -206,6 +213,8 @@ yarn test
 ```
 
 ### Run spec/dummy tests
+
+TODO: Figure out how to run the tests on CI.
 
 ```sh
 cd react-on-rails-renderer/spec/dummy
