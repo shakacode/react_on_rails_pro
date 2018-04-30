@@ -18,12 +18,12 @@ GIT
 PATH
   remote: ../..
   specs:
-    react_on_rails_renderer (0.6.0)
+    react_on_rails_pro (0.6.0)
       addressable
       connection_pool
       execjs (~> 2.5)
       rails (>= 3.2)
-      rainbow (~> 2.1)
+      rainbow (~> 2.2)
       rest-client
 
 GEM
@@ -366,7 +366,7 @@ DEPENDENCIES
   rails
   rails-controller-testing
   react_on_rails!
-  react_on_rails_renderer!
+  react_on_rails_pro!
   rspec-rails
   rspec-retry
   rspec_junit_formatter

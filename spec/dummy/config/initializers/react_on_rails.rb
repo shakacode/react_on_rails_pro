@@ -30,8 +30,8 @@ module ReactOnRails
   module ServerRenderingPool
     class << self
       def pool
-        @pool ||= if ReactOnRailsRenderer.configuration.server_render_method == "NodeJSHttp"
-                    ReactOnRailsRenderer::VmRenderingPool
+        @pool ||= if ReactOnRailsPro.configuration.server_render_method == "VmRenderer"
+                    ReactOnRailsPro::VmRenderingPool
                   else
                     ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript
                   end

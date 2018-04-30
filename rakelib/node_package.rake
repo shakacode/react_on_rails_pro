@@ -1,5 +1,5 @@
 require_relative "task_helpers"
-include ReactOnRails::TaskHelpers
+include ReactOnRailsPro::TaskHelpers
 
 namespace :node_package do
   task :build do
