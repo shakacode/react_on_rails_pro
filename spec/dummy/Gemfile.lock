@@ -4,8 +4,9 @@ GIT
   specs:
     equivalent-xml (1.0.0)
 
-PATH
-  remote: ../../../react_on_rails
+GIT
+  remote: git://github.com/shakacode/react_on_rails.git
+  revision: 0ab2848093572b6b7c79b5a6d32bdfb494b8ba98
   specs:
     react_on_rails (11.0.3)
       addressable
