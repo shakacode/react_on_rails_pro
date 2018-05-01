@@ -5,8 +5,6 @@ require "coveralls/rake/task" if ENV["USE_COVERALLS"] == "TRUE"
 require "pathname"
 require "active_support/core_ext/string"
 require_relative "task_helpers"
-
-# rubocop:disable Metrics/BlockLength
 namespace :run_rspec do
   include ReactOnRailsPro::TaskHelpers
 
@@ -17,7 +15,7 @@ namespace :run_rspec do
     run_tests_in("", rspec_args: File.join("spec", "react_on_rails_pro"))
   end
 
-  desc "Runs dummy rspec with turbolinks"
+  desc "Runs dummy rspec"
   task dummy: ["dummy_apps:dummy_app"] do
     clean_gen_assets(spec_dummy_dir)
     bundle_install_in(dummy_app_dir)
@@ -36,7 +34,6 @@ namespace :run_rspec do
     puts "Completed all RSpec tests"
   end
 end
-# rubocop:enable Metrics/BlockLength
 
 desc "js tests (same as 'yarn run test')"
 task :js_tests do

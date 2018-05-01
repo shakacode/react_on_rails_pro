@@ -1,5 +1,8 @@
 require_relative "task_helpers"
+
+# rubocop:disable Style/MixinUsage
 include ReactOnRailsPro::TaskHelpers
+# rubocop:enable Style/MixinUsage
 
 namespace :lint do
   desc "Run Rubocop as shell"

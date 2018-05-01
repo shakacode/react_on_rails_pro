@@ -16,7 +16,7 @@ module ReactOnRailsPro
         end
         describe ".bundle_file_name" do
           before do
-            allow(Webpacker).to receive_message_chain("manifest.lookup")
+            allow(Webpacker).to receive_message_chain("manifest.lookup!")
               .with("client-bundle.js")
               .and_return("/webpack/production/client-bundle-0123456789abcdef.js")
           end
@@ -29,7 +29,7 @@ module ReactOnRailsPro
         describe ".bundle_hash" do
           context "server bundle with hash in webpack output filename" do
             it "returns path for server bundle file name " do
-              allow(Webpacker).to receive_message_chain("manifest.lookup")
+              allow(Webpacker).to receive_message_chain("manifest.lookup!")
                 .and_return("/webpack/production/webpack-bundle-0123456789abcdef.js")
               allow(ReactOnRails.configuration)
                 .to receive(:server_bundle_js_file).and_return("webpack-bundle.js")
@@ -43,12 +43,12 @@ module ReactOnRailsPro
           context "server bundle without hash in webpack output filename" do
             it "returns MD5 for server bundle file name" do
               server_bundle_js_file = "webpack/production/webpack-bundle.js"
-              allow(Webpacker).to receive_message_chain("manifest.lookup")
+              allow(Webpacker).to receive_message_chain("manifest.lookup!")
                 .and_return(server_bundle_js_file)
               allow(ReactOnRails.configuration)
                 .to receive(:server_bundle_js_file).and_return("webpack-bundle.js")
               allow(Digest::MD5).to receive(:file)
-                .with("public/#{server_bundle_js_file}")
+                .with(File.expand_path("./public/#{server_bundle_js_file}"))
                 .and_return("foobarfoobar")
 
               result = Utils.bundle_hash

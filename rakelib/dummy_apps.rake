@@ -1,9 +1,14 @@
 require_relative "task_helpers"
+
+# rubocop:disable Style/MixinUsage
 include ReactOnRailsPro::TaskHelpers
+# rubocop:enable Style/MixinUsage
 
 namespace :dummy_apps do
   task :yarn_install do
-    yarn_install_cmd = "yarn install --mutex network && yarn run install-pro-package"
+    # TODO: figure out how and if pro-package should be installed
+    # yarn_install_cmd = "yarn run install-pro-package && yarn install --mutex network"
+    yarn_install_cmd = "yarn install --mutex network"
     sh_in_dir(dummy_app_dir, yarn_install_cmd)
   end
 

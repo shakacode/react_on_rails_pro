@@ -1,4 +1,4 @@
-
+# rubocop:disable Metrics/BlockLength
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require "react_on_rails_pro/version"
@@ -14,7 +14,10 @@ Gem::Specification.new do |s|
   s.homepage      = "https://github.com/shakacode/react_on_rails_pro"
   s.license       = "MIT"
 
-  s.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features|gen-examples|tmp|node_modules|node_package|coverage)/}) }
+  s.files         = `git ls-files -z`.split("\x0")
+                                     .reject { |f|
+                                       f.match(%r{^(test|spec|features|tmp|node_modules|node_package|coverage)/})
+                                     }
   s.bindir        = "exe"
   s.executables   = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
   s.require_paths = ["lib"]
@@ -35,6 +38,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "coveralls"
   s.add_development_dependency "gem-release"
   s.add_development_dependency "generator_spec"
+  s.add_development_dependency "listen"
   s.add_development_dependency "pry"
   s.add_development_dependency "pry-byebug"
   s.add_development_dependency "pry-doc"
@@ -46,3 +50,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency "rspec"
   s.add_development_dependency "rspec_junit_formatter"
 end
+# rubocop:enable Metrics/BlockLength

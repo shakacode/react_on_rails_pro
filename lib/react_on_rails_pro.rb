@@ -10,4 +10,3 @@ require "react_on_rails_pro/error"
 require "react_on_rails_pro/utils"
 require "react_on_rails_pro/configuration"
 require "react_on_rails_pro/vm_rendering_pool"
-

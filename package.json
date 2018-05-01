@@ -2,7 +2,7 @@
   "name": "react-on-rails-pro",
   "version": "0.6.0",
   "protocolVersion": "1.0.0",
-  "description": "react-on-rails-pro-vm-rendere JavaScript for react_on_rails_pro Ruby gem",
+  "description": "react-on-rails-pro JavaScript for react_on_rails_pro Ruby gem",
   "main": "node_package/src/ReactOnRailsProVmRenderer.js",
   "engines": {
     "node": "^8.9.4",

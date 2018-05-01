@@ -19,6 +19,8 @@ module ReactOnRailsPro
           ]
           keys.push(ReactOnRailsPro::Utils.bundle_hash) if options[:prerender]
 
+          # TODO: [CACHE] Add option for hash of serializers
+
           ActiveSupport::Cache.expand_cache_key(keys)
         end
       end

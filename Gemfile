@@ -45,6 +45,7 @@ gem "rspec-retry"
 # Trouble installing on Sierra
 # gem "capybara-webkit"
 gem "chromedriver-helper"
+gem "equivalent-xml", github: "mbklein/equivalent-xml"
 gem "launchy"
 gem "poltergeist"
 gem "selenium-webdriver"
