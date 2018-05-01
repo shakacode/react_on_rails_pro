@@ -68,4 +68,5 @@ group :test do
   gem "rspec-retry"
   gem "selenium-webdriver"
   gem "rails-controller-testing"
+  gem "rspec_junit_formatter"
 end
