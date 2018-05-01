@@ -1,4 +1,7 @@
+# frozen_string_literal: true
+
 require "rails_helper"
+require "support/script_tag_utils"
 
 describe ReactOnRailsHelper, type: :helper do
   before do
@@ -81,16 +84,16 @@ describe ReactOnRailsHelper, type: :helper do
     let(:id) { "App-react-component-0" }
 
     let(:react_definition_script) do
-      <<-SCRIPT
-<script type="application/json" class="js-react-on-rails-component" data-component-name="App" \
-data-trace="false" data-dom-id="App-react-component-0">{"name":"My Test Name"}</script>
+      <<-SCRIPT.strip_heredoc
+        <script type="application/json" class="js-react-on-rails-component" \
+        data-component-name="App" data-dom-id="App-react-component-0">{"name":"My Test Name"}</script>
       SCRIPT
     end
 
     let(:react_definition_script_no_params) do
-      <<-SCRIPT
-<script type="application/json" class="js-react-on-rails-component" data-component-name="App" \
-data-trace="false" data-dom-id="App-react-component-0">{}</script>
+      <<-SCRIPT.strip_heredoc
+        <script type="application/json" class="js-react-on-rails-component" \
+        data-component-name="App" data-dom-id="App-react-component-0">{}</script>
       SCRIPT
     end
 
@@ -112,7 +115,9 @@ data-trace="false" data-dom-id="App-react-component-0">{}</script>
       subject { react_component("App") }
       it { is_expected.to be_an_instance_of ActiveSupport::SafeBuffer }
       it { is_expected.to include react_component_div }
-      it { is_expected.to include react_definition_script_no_params }
+      it {
+        expect(is_expected.target).to script_tag_be_included(react_definition_script_no_params)
+      }
     end
 
     it { expect(self).to respond_to :react_component }
@@ -121,7 +126,9 @@ data-trace="false" data-dom-id="App-react-component-0">{}</script>
     it { is_expected.to start_with "<script" }
     it { is_expected.to match %r{</script>\s*$} }
     it { is_expected.to include react_component_div }
-    it { is_expected.to include react_definition_script }
+    it {
+      expect(is_expected.target).to script_tag_be_included(react_definition_script)
+    }
 
     context "with 'id' option" do
       subject { react_component("App", props: props, id: id) }
@@ -129,15 +136,32 @@ data-trace="false" data-dom-id="App-react-component-0">{}</script>
       let(:id) { "shaka_div" }
 
       let(:react_definition_script) do
-        <<-SCRIPT
-<script type="application/json" class="js-react-on-rails-component" data-component-name="App" \
-data-trace="false" data-dom-id="shaka_div">{"name":"My Test Name"}</script>
+        <<-SCRIPT.strip_heredoc
+          <script type="application/json" class="js-react-on-rails-component" data-component-name="App" data-dom-id="shaka_div">{"name":"My Test Name"}</script>
         SCRIPT
       end
 
       it { is_expected.to include id }
       it { is_expected.not_to include react_component_div }
-      it { is_expected.to include react_definition_script }
+      it {
+        expect(is_expected.target).to script_tag_be_included(react_definition_script)
+      }
+    end
+
+    context "with 'trace' == true" do
+      it "adds the data-trace tag to the component_specification_tag" do
+        result = react_component("App", trace: true)
+
+        expect(result).to match(/data-trace="true"/)
+      end
+    end
+
+    context "with 'trace' == false" do
+      it "does not add the data-trace tag" do
+        result = react_component("App", trace: false)
+
+        expect(result).not_to match(/data-trace=/)
+      end
     end
   end
 
@@ -159,10 +183,12 @@ data-trace="false" data-dom-id="shaka_div">{"name":"My Test Name"}</script>
     it { is_expected.to be_an_instance_of ActiveSupport::SafeBuffer }
     it { is_expected.to start_with "<script" }
     it { is_expected.to end_with "</script>" }
-    it { is_expected.to include react_store_script }
+    it {
+      expect(is_expected.target).to script_tag_be_included(react_store_script)
+    }
   end
 
-  describe "#server_render_js" do
+  describe "#server_render_js", :js do
     subject { server_render_js("ReactOnRails.getComponent('HelloString').component.world()") }
 
     let(:hello_world) do

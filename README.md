@@ -36,7 +36,7 @@ reactOnRailsRenderer(config);
 ```
 
 5. Now you can launch your renderer server with `node renderer.js`.
-6. If you do not plan to deploy renderer to **Heroku** or other hosting platforms, **do not forger to revoke your GitHub OAuth token!**
+6. If you do not plan to deploy renderer to **Heroku** or other hosting platforms, **do not forget to revoke your GitHub OAuth token!**
 
 ## Setup react_on_rails application
 
@@ -59,7 +59,7 @@ gem "react_on_rails_renderer", git: "https://[your-github-token]:x-oauth-basic@g
           if ReactOnRails.configuration.server_render_method == "NodeJS"
             ServerRenderingPool::Node
           elsif ReactOnRails.configuration.server_render_method == "NodeJSHttp"
-            ReactOnRailsRenderer::RenderingPool
+            ReactOnRailsRenderer::VMRenderingPool
           else
             ServerRenderingPool::Exec
           end

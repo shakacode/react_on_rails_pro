@@ -3,52 +3,34 @@ require "uri"
 require "rest_client"
 
 module ReactOnRailsRenderer
-  class RenderingPool
+  class VmRenderingPool
     RENDERED_HTML_KEY = "renderedHtml".freeze
 
-    # This implementation of the rendering pool uses NodeJS to execute javasript code
-    def self.reset_pool
-      # No need for this method
-    end
-
-    def self.reset_pool_if_server_bundle_was_modified
-      bundle_update_time = File.mtime(ReactOnRails::Utils.server_bundle_js_file_path)
-      @bundle_update_utc_timestamp = (bundle_update_time.utc.to_f * 1000).to_i
-    end
-
-    # js_code: JavaScript expression that returns a string.
-    # Returns a Hash:
-    #   html: string of HTML for direct insertion on the page by evaluating js_code
-    #   consoleReplayScript: script for replaying console
-    #   hasErrors: true if server rendering errors
-    # Note, js_code does not have to be based on React.
-    # js_code MUST RETURN json stringify Object
-    # Calling code will probably call 'html_safe' on return value before rendering to the view.
-    def self.server_render_js_with_console_logging(js_code)
-      if trace_react_on_rails?
-        @file_index ||= 1
-        trace_messsage(js_code, "tmp/server-generated-#{@file_index % 10}.js")
-        @file_index += 1
-      end
-      json_string = eval_js(js_code)
-      JSON.parse(json_string)
-    end
-
     class << self
-      private
-
-      def trace_messsage(js_code, file_name = "tmp/server-generated.js", force = false)
-        return unless trace_react_on_rails? || force
-        # Set to anything to print generated code.
-        puts "Z" * 80
-        puts "react_renderer.rb: 92"
-        puts "wrote file #{file_name}"
-        File.write(file_name, js_code)
-        puts "Z" * 80
+      # This implementation of the rendering pool uses NodeJS to execute javasript code
+      def reset_pool
+        # No need for this method
       end
 
-      def trace_react_on_rails?
-        ENV["TRACE_REACT_ON_RAILS"].present?
+      def reset_pool_if_server_bundle_was_modified
+        if @bundle_update_utc_timestamp.present? && !ReactOnRails.configuration.development_mode
+          return @bundle_update_utc_timestamp
+        end
+
+        bundle_update_time = File.mtime(ReactOnRails::Utils.server_bundle_js_file_path)
+        @bundle_update_utc_timestamp = (bundle_update_time.utc.to_f * 1000).to_i
+      end
+
+      # js_code: JavaScript expression that returns a string.
+      # Returns a Hash:
+      #   html: string of HTML for direct insertion on the page by evaluating js_code
+      #   consoleReplayScript: script for replaying console
+      #   hasErrors: true if server rendering errors
+      # Note, js_code does not have to be based on React.
+      # js_code MUST RETURN json stringify Object
+      # Calling code will probably call 'html_safe' on return value before rendering to the view.
+      def exec_server_render_js(js_code, render_options, js_evaluator = nil)
+        ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript.exec_server_render_js(js_code, render_options, self)
       end
 
       def renderer_url(rendering_request_digest)
@@ -65,8 +47,9 @@ module ReactOnRailsRenderer
       end
 
       def eval_js(js_code)
+        # TODO: JUSTIN figure out what this is.
         # TODO: Remove gsub when fix random UIDs in domNodeId:
-        rendering_request_digest = Digest::MD5.hexdigest(js_code.gsub(/domNodeId: '[\w-]*',/, ''))
+        rendering_request_digest = Digest::MD5.hexdigest(js_code.gsub(/domNodeId: '[\w-]*',/, ""))
 
         response = RestClient.post(
           renderer_url(rendering_request_digest),
@@ -87,7 +70,7 @@ module ReactOnRailsRenderer
           update_bundle_and_eval_js(js_code)
         when 412
           raise "Rendering server doesn't accept gem's protocol version"
-        #when 307
+        # when 307
         #  eval_js(js_code)
         else
           raise "Unknown response code #{status_exception.response.code}."
@@ -98,7 +81,7 @@ module ReactOnRailsRenderer
 
       def update_bundle_and_eval_js(js_code)
         # TODO: Remove gsub when fix random UIDs in domNodeId:
-        rendering_request_digest = Digest::MD5.hexdigest(js_code.gsub(/domNodeId: '[\w-]*',/, ''))
+        rendering_request_digest = Digest::MD5.hexdigest(js_code.gsub(/domNodeId: '[\w-]*',/, ""))
 
         response = RestClient.post(
           renderer_url(rendering_request_digest),
@@ -111,14 +94,13 @@ module ReactOnRailsRenderer
 
         parsed_response = JSON.parse(response.body)
         parsed_response[RENDERED_HTML_KEY]
-
       rescue RestClient::ExceptionWithResponse => status_exception
-        Rails.logger.debug { exception_debug_message(status_exception) }
+        Rails.logger.warn { exception_debug_message(status_exception) }
 
         case status_exception.response.code
         when 412
           raise "Renderer version does not match gem version"
-        #when 307
+        # when 307
         #  eval_js(js_code)
         else
           raise "Unknown response code #{status_exception.response.code}."
@@ -129,18 +111,15 @@ module ReactOnRailsRenderer
 
       def fallback_exec_js(js_code)
         Rails.logger.warn { "Can't connect to NodeJSHttp renderer, fallback to ExecJS" }
-        fallback_renderer = ReactOnRails::ServerRenderingPool::Exec
+        fallback_renderer = ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript
 
         # Pool is actually discarded btw requests:
         # 1) not to keep ExecJS in memory once NodeJSHttp is available back
         # 2) to avoid issues with server bundle changes
-        pool_options = {
-          size: 1,
-          timeout: ReactOnRails.configuration.server_renderer_timeout
-        }
-        fallback_pool = ConnectionPool.new(pool_options) { fallback_renderer.send(:create_js_context) }
-        fallback_renderer.instance_variable_set(:@js_context_pool, fallback_pool)
-        fallback_renderer.send(:eval_js, js_code)
+        fallback_renderer.reset_pool
+        result = fallback_renderer.eval_js(js_code)
+        fallback_renderer.instance_variable_set(:@js_context_pool, nil)
+        result
       end
 
       def exception_debug_message(exception)

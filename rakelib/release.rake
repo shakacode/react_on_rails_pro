@@ -23,7 +23,7 @@ Example: `rake release[2.1.0,false]`")
 task :release, [:gem_version, :dry_run, :tools_install] do |_t, args|
   class MessageHandler
     def add_error(error)
-      fail error
+      raise error
     end
   end
 
