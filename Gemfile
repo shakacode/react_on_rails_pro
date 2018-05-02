@@ -3,6 +3,12 @@ source "https://rubygems.org"
 # Specify your gem"s dependencies in react_on_rails.gemspec
 gemspec
 
+# Comment out before final commit
+gem "react_on_rails", path: "../react_on_rails"
+gem "webpacker", "3.4.3"
+
+# gem "react_on_rails", ">= 11.0.4"
+
 # The following gems are dependencies of the gem's dummy/example apps, not the gem itself.
 # They must be defined here because of the way Travis CI works, in that it will only
 # bundle install from a single Gemfile. Therefore, all gems that we will need for any dummy/example
@@ -13,6 +19,7 @@ gem "jbuilder"
 gem "jquery-rails"
 gem "puma"
 gem "rails", ">= 5.2"
+
 gem "rails_12factor"
 gem "rubocop", require: false
 gem "ruby-lint", require: false
@@ -36,6 +43,7 @@ gem "capybara-screenshot"
 gem "rspec-rails"
 gem "rspec-retry"
 gem "chromedriver-helper"
+gem "equivalent-xml", github: "mbklein/equivalent-xml"
 gem "launchy"
 gem "poltergeist"
 gem "selenium-webdriver"

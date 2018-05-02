@@ -9,4 +9,4 @@ hot-assets: yarn run hot-assets
 rails-server-assets: yarn run build:dev:server
 
 # Start Node server for server rendering.
-node-renderer: yarn run node-renderer
+vm-renderer: yarn run vm-renderer
