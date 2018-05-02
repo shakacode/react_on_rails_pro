@@ -4823,7 +4823,7 @@ react-hot-loader@^3.0.0-beta.6:
     redbox-react "^1.3.6"
     source-map "^0.4.4"
 
-"react-on-rails-pro@file:../../..":
+"react-on-rails-pro-vm-renderer@file:../../..":
   version "0.6.0"
   dependencies:
     console.history "^1.5.0"

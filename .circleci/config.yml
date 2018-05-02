@@ -132,7 +132,7 @@ jobs:
       - restore_cache: *restore-dummy-app-node-modules-cache
       # FIXME: Quick-fix caching issue - always need to reinstall fresh package despite same package version
       # - run: *install-dummy-app-mode-modules
-      - run: cd spec/dummy/client && rm -rf node_modules/react-on-rails-renderer && yarn install --check-files --no-progress --no-emoji
+      - run: cd spec/dummy/client && rm -rf node_modules/react-on-rails-vm-renderer && yarn install --check-files --no-progress --no-emoji
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
           key: v1-dummy-app-webpack-bundle-{{ .Revision }}

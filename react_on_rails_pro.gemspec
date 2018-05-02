@@ -16,7 +16,7 @@ Gem::Specification.new do |s|
 
   s.files         = `git ls-files -z`.split("\x0")
                                      .reject { |f|
-                                       f.match(%r{^(test|spec|features|tmp|node_modules|node_package|coverage)/})
+                                       f.match(%r{^(test|spec|features|tmp|node_modules|packages|coverage)/})
                                      }
   s.bindir        = "exe"
   s.executables   = s.files.grep(%r{^exe/}) { |f| File.basename(f) }
