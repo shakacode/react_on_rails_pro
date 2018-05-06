@@ -17,12 +17,21 @@ aliases:
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-node-modules
     name: Install Node modules with Yarn for renderer package
-    command: yarn install --no-progress --no-emoji && yarn run build && yarn link
+    command: yarn install --no-progress --no-emoji
 
   # Install/update Node modules for dummy app unless existing set of modules is satisfying Yarn.
   - &install-dummy-app-node-modules
     name: Install Node modules with Yarn for dummy app
     command: cd spec/dummy && yarn install --no-progress --no-emoji
+
+  # Setup yarn links for react-on-rails-pro-vm-renderer
+  - &install-yarn-link-source
+    name: Install yarn link for react-on-rails-pro-vm-renderer
+    command:  yarn link
+
+  - &install-yarn-link-destination
+    name: Install yarn link for react-on-rails-pro-vm-renderer
+    command:  yarn link
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-dummy-app-ruby-gems
@@ -70,7 +79,7 @@ jobs:
       - checkout
       - run: *print-system-info
       - restore_cache: *restore-dummy-app-node-modules-cache
-      - run: *install-package-node-modules
+      - run: *install-yarn-link-source
       - run: *install-dummy-app-node-modules
       - save_cache:
           name: Save spec/dummy/client/node_modules to cache
@@ -99,8 +108,8 @@ jobs:
     steps:
       - checkout
       - run: *print-system-info
+      - run: *install-yarn-link-source
       - restore_cache: *restore-dummy-app-node-modules-cache
-      - run: *install-package-node-modules
       - run: *install-dummy-app-node-modules
       - run:
           name: Build test bundles for dummy app
@@ -119,7 +128,6 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - run: *install-package-node-modules
-      - run: *install-dummy-app-node-modules
       - run:
           name: Run JS unit tests for Renderer package
           command: yarn test
@@ -131,9 +139,10 @@ jobs:
       - checkout
       - run: *print-system-info
       - restore_cache: *restore-dummy-app-gem-cache
+      - run: *install-dummy-app-ruby-gems
+      - run: *install-yarn-link-source
       - restore_cache: *restore-dummy-app-node-modules-cache
-      - run: *install-package-node-modules
-      - run: *install-dummy-app-node-modules
+      - run: *install-yarn-link-destination
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
           key: v1-dummy-app-webpack-bundle-{{ .Revision }}
