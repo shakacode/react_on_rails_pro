@@ -142,10 +142,10 @@ jobs:
       - run: *install-dummy-app-ruby-gems
       - restore_cache: *restore-dummy-app-node-modules-cache
       - run: *install-dummy-app-node-modules
-      - run: *install-yarn-link-source
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
           key: v1-dummy-app-webpack-bundle-{{ .Revision }}
+      - run: *install-yarn-link-source
       - run: *install-yarn-link-destination
       - run:
           name: Run Node renderer in a background
