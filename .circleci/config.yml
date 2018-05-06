@@ -17,7 +17,7 @@ aliases:
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-mode-modules
     name: Install Node modules with Yarn for renderer package
-    command: yarn install --no-progress --no-emoji
+    command: yarn install --no-progress --no-emoji && yarn run build && yarn link
 
   # Install/update Node modules for dummy app unless existing set of modules is satisfying Yarn.
   - &install-dummy-app-mode-modules
