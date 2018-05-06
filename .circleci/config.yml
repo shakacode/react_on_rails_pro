@@ -141,6 +141,7 @@ jobs:
       - restore_cache: *restore-dummy-app-gem-cache
       - run: *install-dummy-app-ruby-gems
       - restore_cache: *restore-dummy-app-node-modules-cache
+      - run: *install-package-node-modules
       - run: *install-dummy-app-node-modules
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
