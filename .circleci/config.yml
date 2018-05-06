@@ -31,7 +31,7 @@ aliases:
 
   - &install-yarn-link-destination
     name: Install yarn link for react-on-rails-pro-vm-renderer
-    command:  yarn link react-on-rails-pro-vm-renderer
+    command:  cd spec/dummy/client && yarn link react-on-rails-pro-vm-renderer
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-dummy-app-ruby-gems
