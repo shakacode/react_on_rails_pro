@@ -164,6 +164,8 @@ jobs:
           path: tmp/capybara
       - store_artifacts:
           path: log/test.log
+      - store_artifacts:
+          path: spec/dummy/client/yarn-error.log
 
 workflows:
   version: 2
