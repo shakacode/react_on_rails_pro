@@ -117,6 +117,8 @@ jobs:
           paths:
             - spec/dummy/vendor/bundle
   # Build client and server bundles for dummy app with Webpack and save them to cache.
+  # NOTE: keeping around this cache in case we have multiple rspec suites in the future to tests
+  # different node renderers.
   build-dummy-app-webpack-test-bundles:
     docker:
       - image: circleci/ruby:2.4.4-stretch-node
@@ -147,6 +149,10 @@ jobs:
           name: Run JS unit tests for Renderer package
           command: yarn test
   # Start Renderer and run RSpec test suite for dummy app.
+  # NOTES:
+  # Seems that we cannot use symlinks (yarn link) with caches for the main renderer package
+  # react-on-rails-pro-vm-renderer. Consequently, we just reinstall the top level, renderer, node packages
+  # as well as the
   rspec-dummy-app:
     docker:
       - image: circleci/ruby:2.4.4-stretch-node
@@ -168,7 +174,10 @@ jobs:
           command: cd spec/dummy && yarn run vm-renderer
           background: true
       - run:
-          name: Run tests
+          name: Touch webpack bundles
+          command:  touch spec/dummy/public/webpack/*
+      - run:
+          name: Run rspec tests
           command: |
             cd spec/dummy && bundle exec rspec --format RspecJunitFormatter \
                                                --out ~/rspec/rspec.xml \
