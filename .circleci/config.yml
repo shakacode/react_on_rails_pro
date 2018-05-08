@@ -1,10 +1,6 @@
 version: 2
 
 aliases:
-  - &install-bundler
-    name: Install Bundler
-    command: sudo gem install bundler --version 1.16.1
-
   - &install-phantomjs
     name: Install phantomjs
     command: |
@@ -12,11 +8,6 @@ aliases:
         sudo curl --output /usr/local/bin/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
       fi
       sudo chmod ugo+x /usr/local/bin/phantomjs
-
-  - &restore-phantom-js-cache
-    name: Restore Phantomjs Cache
-    keys:
-      - v1-phantomjs-2.1.1
 
   # Print critical data and executables versions.
   - &print-system-info
@@ -45,11 +36,11 @@ aliases:
   # Setup yarn links for react-on-rails-pro-vm-renderer
   - &install-yarn-link-source
     name: Install yarn link for react-on-rails-pro-vm-renderer
-    command:  yarn link
+    command: yarn link
 
   - &install-yarn-link-destination
     name: Install yarn link for react-on-rails-pro-vm-renderer
-    command:  cd spec/dummy/client && yarn link react-on-rails-pro-vm-renderer
+    command: cd spec/dummy/client && yarn link react-on-rails-pro-vm-renderer
 
   #  - &install-react-on-rails-pro-vm-renderer
   #    name: Install react-on-rails-pro-vm-renderer
@@ -59,7 +50,7 @@ aliases:
   - &install-dummy-app-ruby-gems
     name: Install Ruby Gems for dummy app
     command: |
-      sudo gem install bundler --version 1.16.1
+      gem install bundler --version 1.16.1
       cd spec/dummy && bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
   # Restore node_modules dir from cache using yarn.lock checksum as a key.
@@ -81,20 +72,6 @@ aliases:
       - v3-dummy-app-gem-cache-{{ checksum "spec/dummy/Gemfile.lock" }}
 
 jobs:
-  install-phantomjs:
-    docker:
-      - image: circleci/ruby:2.4.4-stretch-node
-    steps:
-      - checkout
-      - restore_cache: *restore-phantomjs-cache
-      - run: *print-system-info
-      - run: *install-phantomjs
-      - save_cache:
-        name: Save phantomjs to cache
-        key: v1-phantomjs-2.1.1
-        paths:
-          - /usr/local/bin/phantomjs
-
   # Install Node modules for Renderer package with Yarn and save them to chache.
   install-package-node-packages:
     docker:
@@ -177,8 +154,7 @@ jobs:
       - checkout
       - run: *print-system-info
       - restore_cache: *restore-dummy-app-gem-cache
-      - restore_cache:
-        key: v1-phantomjs-2.1.1
+      - run: *install-phantomjs
       - run: *install-dummy-app-ruby-gems
       - run: *install-package-node-modules
       - run: *install-dummy-app-node-modules
@@ -215,7 +191,6 @@ workflows:
       - install-package-node-packages
       - install-dummy-app-node-packages
       - install-dummy-app-ruby-gems
-      - install-phantomjs
       - build-dummy-app-webpack-test-bundles:
           requires:
             - install-dummy-app-node-packages
@@ -224,6 +199,5 @@ workflows:
             - install-package-node-packages
       - rspec-dummy-app:
           requires:
-            - install-phantomjs
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
