@@ -1,16 +1,18 @@
 version: 2
 
 aliases:
+  - &install-bundler
+    name: Install Bundler
+    command: sudo gem install bundler --version 1.16.1
+
   # Print critical data and executables versions.
   - &print-system-info
     name: Print system information
     command: |
-             sudo gem install bundler --version 1.16.1
              echo "Linux release: "; cat /etc/issue
              echo "Current user: "; whoami
              echo "Current directory: "; pwd
              echo "Ruby version: "; ruby -v
-             echo "Bundler version: "; bundler -v
              echo "Node version: "; node -v
              echo "Yarn version: "; yarn --version
              echo "Phantomjs version: "; phantomjs -v
@@ -41,7 +43,9 @@ aliases:
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-dummy-app-ruby-gems
     name: Install Ruby Gems for dummy app
-    command: cd spec/dummy && bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
+    command: |
+      sudo gem install bundler --version 1.16.1
+      cd spec/dummy && bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
   # Restore node_modules dir from cache using yarn.lock checksum as a key.
   - &restore-package-node-modules-cache
