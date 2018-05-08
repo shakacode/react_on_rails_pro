@@ -129,7 +129,7 @@ jobs:
           name: Save test webpack bundles to cache (for build number checksum used by rspec job)
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
           paths:
-            - spec/dummy/app/assets/webpack
+            - spec/dummy/public/webpack
   # Run JS unit tests for Renderer package.
   package-js-tests:
     docker:
@@ -160,14 +160,14 @@ jobs:
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
       - run: *install-dummy-app-ruby-gems
       - restore_cache: *restore-package-node-modules-cache
-      - run:
-          name: Touch webpack bundles
-          command: cd spec/dummy/app/assets/webpack && touch *
       - restore_cache: *restore-dummy-app-node-modules-cache
       - run:
           name: Run Node renderer in a background
           command: yarn run dummy-vm-renderer
           background: true
+      - run:
+          name: Touch webpack bundles
+          command:  touch spec/dummy/public/webpack/*
       - run:
           name: Run tests
           command: |
