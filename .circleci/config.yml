@@ -13,6 +13,11 @@ aliases:
       fi
       sudo chmod ugo+x /usr/local/bin/phantomjs
 
+  - &restore-phantom-js-cache
+    name: Restore Phantomjs Cache
+    keys:
+      - v1-phantomjs-2.1.1
+
   # Print critical data and executables versions.
   - &print-system-info
     name: Print system information
@@ -81,8 +86,7 @@ jobs:
       - image: circleci/ruby:2.4.4-stretch-node
     steps:
       - checkout
-      - restore_cache:
-        key: v1-phantomjs-2.1.1
+      - restore_cache: *restore-phantomjs-cache
       - run: *print-system-info
       - run: *install-phantomjs
       - save_cache:
