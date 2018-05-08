@@ -63,7 +63,8 @@
     "lint": "yarn run eslint && yarn run flow",
     "check": "yarn run lint && yarn run flow && yarn run test",
     "local": "echo 'Be sure to run yarn run dummy:install' && yarn run build && cd spec/dummy && foreman start",
-    "link": "yarn link"
+    "link": "yarn link",
+    "dummy-vm-renderer": "node spec/dummy/client/vm-renderer.js"
   },
   "repository": {
     "type": "git",
