@@ -152,19 +152,17 @@ jobs:
       - image: circleci/ruby:2.4.4-stretch-node
     steps:
       - checkout
+      - run: *install-phantomjs
+      - run: *print-system-info
       - restore_cache: *restore-dummy-app-gem-cache
-      - restore_cache: *restore-package-node-modules-cache
-      - restore_cache: *restore-dummy-app-node-modules-cache
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
-      - run: *install-phantomjs
       - run: *install-dummy-app-ruby-gems
       - run: *install-package-node-modules
       - run: *install-dummy-app-node-modules
-#      - run: *install-yarn-link-source
-#      - run: *install-yarn-link-destination
-      - run: *print-system-info
+      - run: *install-yarn-link-source
+      - run: *install-yarn-link-destination
       - run:
           name: Run Node renderer in a background
           command: cd spec/dummy && yarn run vm-renderer
