@@ -5,6 +5,7 @@ aliases:
   - &print-system-info
     name: Print system information
     command: |
+             sudo gem install bundler --version 1.16.1
              echo "Linux release: "; cat /etc/issue
              echo "Current user: "; whoami
              echo "Current directory: "; pwd
