@@ -5,6 +5,14 @@ aliases:
     name: Install Bundler
     command: sudo gem install bundler --version 1.16.1
 
+  - &install-phantomjs
+    name: Install phantomjs
+    command: |
+      if ! [ $(which phantomjs) ]; then
+        sudo curl --output /usr/local/bin/phantomjs https://s3.amazonaws.com/circle-downloads/phantomjs-2.1.1
+      fi
+      sudo chmod ugo+x /usr/local/bin/phantomjs
+
   # Print critical data and executables versions.
   - &print-system-info
     name: Print system information
@@ -15,7 +23,9 @@ aliases:
              echo "Ruby version: "; ruby -v
              echo "Node version: "; node -v
              echo "Yarn version: "; yarn --version
-             echo "Phantomjs version: "; phantomjs -v
+             if [ $(which phantomjs) ]; then
+               echo "Phantomjs version: "; phantomjs -v
+             fi
 
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-node-modules
@@ -66,6 +76,21 @@ aliases:
       - v3-dummy-app-gem-cache-{{ checksum "spec/dummy/Gemfile.lock" }}
 
 jobs:
+  install-phantomjs:
+    docker:
+      - image: circleci/ruby:2.4.4-stretch-node
+    steps:
+      - checkout
+      - restore_cache:
+        key: v1-phantomjs-2.1.1
+      - run: *print-system-info
+      - run: *install-phantomjs
+      - save_cache:
+        name: Save phantomjs to cache
+        key: v1-phantomjs-2.1.1
+        paths:
+          - /usr/local/bin/phantomjs
+
   # Install Node modules for Renderer package with Yarn and save them to chache.
   install-package-node-packages:
     docker:
@@ -148,6 +173,8 @@ jobs:
       - checkout
       - run: *print-system-info
       - restore_cache: *restore-dummy-app-gem-cache
+      - restore_cache:
+        key: v1-phantomjs-2.1.1
       - run: *install-dummy-app-ruby-gems
       - run: *install-package-node-modules
       - run: *install-dummy-app-node-modules
@@ -184,6 +211,7 @@ workflows:
       - install-package-node-packages
       - install-dummy-app-node-packages
       - install-dummy-app-ruby-gems
+      - install-phantomjs
       - build-dummy-app-webpack-test-bundles:
           requires:
             - install-dummy-app-node-packages
@@ -192,5 +220,6 @@ workflows:
             - install-package-node-packages
       - rspec-dummy-app:
           requires:
+            - install-phantomjs
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
