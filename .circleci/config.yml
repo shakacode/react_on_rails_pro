@@ -42,10 +42,6 @@ aliases:
     name: Install yarn link for react-on-rails-pro-vm-renderer
     command: cd spec/dummy/client && yarn link react-on-rails-pro-vm-renderer
 
-  #  - &install-react-on-rails-pro-vm-renderer
-  #    name: Install react-on-rails-pro-vm-renderer
-  #    command: cd spec/dummy/client && rm -rf node_modules/react-on-rails-pro-vm-renderer && yarn upgrade react-on-rails-vm-renderer
-
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-dummy-app-ruby-gems
     name: Install Ruby Gems for dummy app
@@ -147,6 +143,10 @@ jobs:
           name: Run JS unit tests for Renderer package
           command: yarn test
   # Start Renderer and run RSpec test suite for dummy app.
+  # NOTES:
+  # Seems that we cannot use symlinks (yarn link) with caches for the main renderer package
+  # react-on-rails-pro-vm-renderer. Consequently, we just reinstall the top level, renderer, node packages
+  # as well as the
   rspec-dummy-app:
     docker:
       - image: circleci/ruby:2.4.4-stretch-node
@@ -159,13 +159,10 @@ jobs:
           name: Restore cached webpack bundles for dummy app
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
       - run: *install-dummy-app-ruby-gems
-      - run: *install-package-node-modules
-      - run: *install-dummy-app-node-modules
-      - run: *install-yarn-link-source
-      - run: *install-yarn-link-destination
+      - restore_cache: *restore-package-node-modules-cache
       - run:
           name: Run Node renderer in a background
-          command: cd spec/dummy && yarn run vm-renderer
+          command: yarn run dummy-vm-renderer
           background: true
       - run:
           name: Run tests
