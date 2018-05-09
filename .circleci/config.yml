@@ -165,8 +165,8 @@ jobs:
           name: Restore cached webpack bundles for dummy app
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
       - run: *install-dummy-app-ruby-gems
-      - run: *install-package-node-modules
-      - run: *install-dummy-app-node-modules
+      - restore_cache: *restore-package-node-modules-cache
+      - restore_cache: *restore-dummy-app-node-modules-cache
       - run: *install-yarn-link-source
       - run: *install-yarn-link-destination
       - run:
