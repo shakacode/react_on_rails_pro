@@ -1,15 +1,21 @@
-
-
+`config/initializers/react_on_rails_pro.rb`
 
 ```ruby
 ReactOnRailsPro.configure do |config|
+  # If true, then cache the evaluation of JS for prerendering using the standard Rails cache
+  config.prerender_caching = true
 
   # Default is http://localhost:3800. https is supported.
   config.renderer_url = "http://localhost:3800"
   
   # VmRenderer is for a renderer that is stateless. It does not need restarting when the JS bundles 
-  # are updated. 
+  # are updated. It is the only custom renderer currently supported. Leave blank to use the standard
+  # mini_racer rendering.
   config.server_render_method = "VmRenderer"
+  
+  # Password that will be sent to renderer for simple authentication. **Note:** Don't forget to set 
+  # up **SSL** connection otherwise password will useless since it will be easy to intercept it.
+  # config.renderer_password = "somethingSecret"
   
   # If false, then crash if no backup rendering when the remote renderer is not available
   config.use_fallback_renderer_exec_js = false
