@@ -9,15 +9,22 @@ module ReactOnRailsPro
           Rails.cache.fetch(cache_key) { yield }
         end
 
-        private
+        def base_cache_key(type, prerender: nil)
+          keys = [
+            type,
+            ReactOnRails::VERSION,
+            ReactOnRailsPro::VERSION
+          ]
+          keys.push(ReactOnRailsPro::Utils.bundle_hash) if prerender
+          keys
+        end
 
         def cache_key(component_name, options)
           keys = [
-            "react_on_rails",
+            *base_cache_key("ror_component", prerender: options[:prerender]),
             component_name,
             options[:cache_key]
           ]
-          keys.push(ReactOnRailsPro::Utils.bundle_hash) if options[:prerender]
 
           # TODO: [CACHE] Add option for hash of serializers
 

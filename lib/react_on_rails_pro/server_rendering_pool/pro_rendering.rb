@@ -1,17 +1,49 @@
 module ReactOnRailsPro
   module ServerRenderingPool
     class ProRendering
+      RENDERED_HTML_KEY = "renderedHtml".freeze
+
       class << self
         def pool
           @pool ||= if ReactOnRailsPro.configuration.server_render_method == "VmRenderer"
-                      ReactOnRailsPro::VmRenderingPool
+                      ReactOnRailsPro::ServerRenderingPool::VmRenderingPool
                     else
                       ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript
                     end
         end
 
-        delegate :reset_pool_if_server_bundle_was_modified, :reset_pool,
-                 :exec_server_render_js, to: :pool
+        delegate :reset_pool_if_server_bundle_was_modified, :reset_pool, to: :pool
+
+        def exec_server_render_js(js_code, render_options)
+          render_options.request_digest = request_digest(js_code)
+          if ReactOnRailsPro.configuration.prerender_caching
+            Rails.cache.fetch(cache_key(js_code, render_options)) do
+              render_on_pool(js_code, render_options)
+            end
+          else
+            render_on_pool(js_code, render_options)
+          end
+        end
+
+        def request_digest(js_code)
+          # We remove the domNodeId from caching because the ids generated are random, so that would
+          # prevent any caching
+          Digest::MD5.hexdigest(js_code.gsub(/domNodeId: '[\w-]*',/, ""))
+        end
+
+        private
+
+        def cache_key(js_code, render_options)
+          [
+            *ReactOnRailsPro::ReactComponent::Cache.base_cache_key("ror_pro_rendered_html",
+                                                                   prerender: render_options.prerender),
+            request_digest(js_code)
+          ]
+        end
+
+        def render_on_pool(js_code, render_options)
+          pool.exec_server_render_js(js_code, render_options)
+        end
       end
     end
   end

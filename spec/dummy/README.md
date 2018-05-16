@@ -1,3 +1,12 @@
+
+
+
+# Caching
+
+To toggle caching in development, as explained in [this article](https://blog.bigbinary.com/2016/01/25/caching-in-development-environment-in-rails5.html)
+`rails dev:cache`
+
+
 Using NPM for react_on_rails
 
 * Use 'yarn link' to hook up the spec/dummy/client/node_modules to the top level
