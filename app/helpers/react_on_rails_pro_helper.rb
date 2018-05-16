@@ -21,7 +21,7 @@ module ReactOnRailsProHelper
   def cached_react_component(component_name, raw_options = {}, &block)
     check_caching_options!(raw_options, block)
 
-    ReactOnRailsPro::ReactComponent::Cache.call(component_name, raw_options) do
+    ReactOnRailsPro::Cache.fetch_react_component(component_name, raw_options) do
       sanitized_options = raw_options
       sanitized_options[:props] = yield
       react_component(component_name, sanitized_options)
@@ -41,7 +41,7 @@ module ReactOnRailsProHelper
   def cached_react_component_hash(component_name, raw_options = {}, &block)
     check_caching_options!(raw_options, block)
 
-    ReactOnRailsPro::ReactComponent::Cache.call(component_name, raw_options) do
+    ReactOnRailsPro::Cache.fetch_react_component(component_name, raw_options) do
       sanitized_options = raw_options
       sanitized_options[:props] = yield
       react_component_hash(component_name, sanitized_options)

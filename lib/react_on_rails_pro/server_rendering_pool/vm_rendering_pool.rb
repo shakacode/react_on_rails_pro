@@ -13,7 +13,9 @@ module ReactOnRailsPro
         def reset_pool
           Rails.logger.info { "Setting up connection for ReactOnRailsPro VM Renderer at #{renderer_url_base}" }
 
-          # https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http.rb
+          # NOTE: there are multiple similar gems
+          # We use https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http.rb
+          # Not: https://github.com/drbrain/net-http-persistent
           @connection = PersistentHTTP.new(
             name: "ReactOnRailsProVmRendererClient",
             logger: Rails.logger,
@@ -26,6 +28,9 @@ module ReactOnRailsPro
         end
 
         def reset_pool_if_server_bundle_was_modified
+          # Resetting the pool for server bundle modifications is accomplished by changing the mtime
+          # of the server bundle in the request to the remote rendering server.
+          # In non-development mode, we don't need to re-read this value.
           if @bundle_update_utc_timestamp.present? && !ReactOnRails.configuration.development_mode
             return @bundle_update_utc_timestamp
           end

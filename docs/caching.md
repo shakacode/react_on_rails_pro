@@ -7,7 +7,7 @@ React on Rails Pro has caching at 2 levels:
 2. Caching of requests for server rendering. 
 
 ### Testing During Development
-**To toggle caching in development**, as explained in [this article](https://blog.bigbinary.com/2016/01/25/caching-in-development-environment-in-rails5.html)
+**To toggle caching in development**, as explained in [this article](http://guides.rubyonrails.org/caching_with_rails.html#caching-in-development)
 `rails dev:cache`
 
 ## Prerender Caching

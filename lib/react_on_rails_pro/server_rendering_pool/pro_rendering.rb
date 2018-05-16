@@ -26,17 +26,21 @@ module ReactOnRailsPro
         end
 
         def request_digest(js_code)
-          # We remove the domNodeId from caching because the ids generated are random, so that would
-          # prevent any caching
-          Digest::MD5.hexdigest(js_code.gsub(/domNodeId: '[\w-]*',/, ""))
+          Digest::MD5.hexdigest(without_random_values(js_code))
         end
 
         private
 
+        def without_random_values(js_code)
+          # domNodeId are random to enable multiple instance of the same react component on a page.
+          # See https://github.com/shakacode/react_on_rails_pro/issues/44
+          js_code.gsub(/domNodeId: '[\w-]*',/, "")
+        end
+
         def cache_key(js_code, render_options)
           [
-            *ReactOnRailsPro::ReactComponent::Cache.base_cache_key("ror_pro_rendered_html",
-                                                                   prerender: render_options.prerender),
+            *ReactOnRailsPro::Cache.base_cache_key("ror_pro_rendered_html",
+                                                   prerender: render_options.prerender),
             request_digest(js_code)
           ]
         end

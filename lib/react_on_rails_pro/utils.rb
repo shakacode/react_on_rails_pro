@@ -21,7 +21,7 @@ module ReactOnRailsPro
 
       server_bundle_js_file_path = ReactOnRails::Utils.server_bundle_js_file_path
 
-      return @bundle_hash if @bundle_hash && bundle_mtime_same(server_bundle_js_file_path)
+      return @bundle_hash if @bundle_hash && bundle_mtime_same?(server_bundle_js_file_path)
 
       @bundle_hash = calc_bundle_hash(server_bundle_js_file_path)
     end
@@ -54,17 +54,20 @@ module ReactOnRailsPro
 
       server_bundle_basename = Pathname.new(server_bundle_js_file_path).basename.to_s
 
-      if ReactOnRails.configuration.server_bundle_js_file == server_bundle_basename
-        # There is no hash in the name
-        Digest::MD5.file(server_bundle_js_file_path)
-      else
-        # There is a hash already in the name
+      if contains_hash?(server_bundle_basename)
         server_bundle_basename
+      else
+        Digest::MD5.file(server_bundle_js_file_path)
       end
     end
 
-    def self.bundle_mtime_same(server_bundle_js_file_path)
+    def self.bundle_mtime_same?(server_bundle_js_file_path)
       @test_dev_server_bundle_mtime == File.mtime(server_bundle_js_file_path)
+    end
+
+    def self.contains_hash?(server_bundle_basename)
+      # TODO: Need to consider if the configuration value has the ".js" on the end.
+      ReactOnRails.configuration.server_bundle_js_file != server_bundle_basename
     end
   end
 end
