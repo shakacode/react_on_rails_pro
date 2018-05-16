@@ -35,7 +35,8 @@ describe ReactOnRailsProHelper, type: :helper do
 
   describe "#cached_react_component" do
     before { allow(SecureRandom).to receive(:uuid).and_return(0, 1, 2, 3) }
-    let(:base_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
+    let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
+    let(:base_js_eval_cache_key) { "ror_pro_rendered_html/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
 
     describe "caching" do
       describe "ReactOnRailsProHeler.cached_react_component", :caching do
@@ -47,7 +48,7 @@ describe ReactOnRailsProHelper, type: :helper do
           end
 
           expect(cache_data.keys)
-            .to include(%r{#{base_cache_key}/App/cache-key})
+            .to include(%r{#{base_component_cache_key}/App/cache-key})
           expect(cache_data.first[1].value).to match(/div id="App-react-component-0"/)
         end
 
@@ -82,7 +83,7 @@ describe ReactOnRailsProHelper, type: :helper do
               props
             end
 
-            expect(cache_data.keys).to include(%r{#{base_cache_key}/App/a/b})
+            expect(cache_data.keys).to include(%r{#{base_component_cache_key}/App/a/b})
             expect(cache_data.first[1].value).to match(/div id="App-react-component-0"/)
           end
         end
@@ -112,23 +113,43 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       describe "ReactOnRailsProHelper.cached_react_component_hash", :caching do
-        it "caches the content" do
-          props = { a: 1, b: 2 }
+        context "with prerender" do
+          it "caches the content" do
+            props = { helloWorldData: { name: "Mr. Server Side Rendering" } }
 
-          cached_react_component_hash("ReactHelmetApp", cache_key: "cache-key", prerender: true) do
-            props
+            cached_react_component_hash("ReactHelmetApp", cache_key: "cache-key", prerender: true) do
+              props
+            end
+
+            expect(cache_data.keys[0]).to match(%r{#{base_js_eval_cache_key}/})
+            expect(cache_data.keys[1]).to match(%r{#{base_component_cache_key}/\w+/ReactHelmetApp/cache-key})
+
+            expect(cache_data.values[0].value.keys).to match_array(%w[html consoleReplayScript hasErrors])
+            expect(cache_data.values[1].value["componentHtml"]).to match(/div id="ReactHelmetApp-react-component-0"/)
+          end
+        end
+
+        context "without prerender" do
+          before { ReactOnRailsPro.configuration.prerender_caching = false }
+          after { ReactOnRailsPro.configuration.prerender_caching = true }
+
+          it "caches the content" do
+            props = { helloWorldData: { name: "Mr. Server Side Rendering" } }
+
+            cached_react_component_hash("ReactHelmetApp", cache_key: "cache-key", prerender: false) do
+              props
+            end
+
+            expect(cache_data.keys[0]).to match(%r{#{base_component_cache_key}/ReactHelmetApp/cache-key})
+            expect(cache_data.values[0].value["componentHtml"]).to match(/div id="ReactHelmetApp-react-component-0"/)
           end
 
-          expect(cache_data.keys).to include(%r{#{base_cache_key}/\w+/ReactHelmetApp/cache-key})
-          expect(cache_data.first[1].value["componentHtml"]).to match(/div id="ReactHelmetApp-react-component-0"/)
-        end
-      end
-
-      context "without 'cache'", :caching do
-        it "doesn't caches the content" do
-          react_component("App", prerender: true)
-
-          expect(cache_data.keys).to be_empty
+          context "without 'cache'", :caching do
+            it "doesn't caches the content" do
+              react_component("App", prerender: true)
+              expect(cache_data.keys).to be_empty
+            end
+          end
         end
       end
     end

@@ -9,7 +9,7 @@ require "react_on_rails/react_on_rails_helper"
 
 module ReactOnRailsProHelper
   # Provide caching support for react_component in a manner akin to Rails fragment caching.
-  # All the same options as react_component apply with the following diffrence:
+  # All the same options as react_component apply with the following difference:
   #
   # 1. You must pass the props as a block. This is so that the evaluation of the props is not done
   #    if the cache can be used.
@@ -29,7 +29,7 @@ module ReactOnRailsProHelper
   end
 
   # Provide caching support for react_component_hash in a manner akin to Rails fragment caching.
-  # All the same options as react_component apply with the following diffrence:
+  # All the same options as react_component apply with the following difference:
   #
   # 1. You must pass the props as a block. This is so that the evaluation of the props is not done
   #    if the cache can be used.
