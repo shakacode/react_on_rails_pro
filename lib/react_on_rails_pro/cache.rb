@@ -26,16 +26,15 @@ module ReactOnRailsPro
       end
 
       def react_component_cache_key(component_name, options)
-        keys = [
+        # TODO: [CACHE] Add option for hash of serializers
+        # https://github.com/shakacode/react_on_rails_pro/issues/32
+
+        # NOTE: Rails seems to do this automatically: ActiveSupport::Cache.expand_cache_key(keys)
+        [
           *base_cache_key("ror_component", prerender: options[:prerender]),
           component_name,
           options[:cache_key]
         ]
-
-        # TODO: [CACHE] Add option for hash of serializers
-        # https://github.com/shakacode/react_on_rails_pro/issues/32
-
-        ActiveSupport::Cache.expand_cache_key(keys)
       end
     end
   end
