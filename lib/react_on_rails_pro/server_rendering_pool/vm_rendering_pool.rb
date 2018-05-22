@@ -65,11 +65,14 @@ module ReactOnRailsPro
           request_digest = render_options.request_digest
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{request_digest}"
 
+          uri = URI(ReactOnRailsPro.configuration.renderer_url)
+          password = ReactOnRailsPro.configuration.password.presence || uri.password
+
           form_data = {
             "renderingRequest" => js_code,
             "gemVersion" => ReactOnRailsPro::VERSION,
             "protocolVersion" => "1.0.0".freeze,
-            "password" => ReactOnRailsPro.configuration.password
+            "password" => password
           }
 
           if send_bundle
@@ -89,9 +92,9 @@ module ReactOnRailsPro
           when "410"
             return eval_js(js_code, render_options, send_bundle: true)
           when "412"
-            raise RenderingError, "Renderer version does not match gem version"
+            raise ReactOnRailsPro::Error, "Renderer version does not match gem version"
           else
-            raise RenderingError, "Unknown response code from renderer: #{response.code}: #{response.body}"
+            raise ReactOnRailsPro::Error, "Unknown response code from renderer: #{response.code}: #{response.body}"
           end
         rescue Errno::ECONNREFUSED
           fallback_exec_js(js_code, render_options)
