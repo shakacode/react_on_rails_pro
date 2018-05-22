@@ -66,7 +66,7 @@ module ReactOnRailsPro
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{request_digest}"
 
           uri = URI(ReactOnRailsPro.configuration.renderer_url)
-          password = ReactOnRailsPro.configuration.password || uri.password
+          password = ReactOnRailsPro.configuration.password.presence || uri.password
 
           form_data = {
             "renderingRequest" => js_code,
