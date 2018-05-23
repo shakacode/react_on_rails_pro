@@ -11,11 +11,13 @@ aliases:
              echo "Ruby version: "; ruby -v
              echo "Node version: "; node -v
              echo "Yarn version: "; yarn --version
-  - &lint-js-and-ruby
-    name: Linting of JS and Ruby
-    command: |
-      yarn lint
-      rubocop
+  - &lint-js
+    name: Linting of JS
+    command: yarn lint
+
+  - &lint-ruby
+    name: Linting of Ruby
+    command: bundle exec rubocop
 
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-node-modules
@@ -95,7 +97,8 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - restore_cache: *restore-package-gem-cache
-      - run: *lint-js-and-ruby
+      - run: *lint-ruby
+      - run: *lint-js
 
   # Install Node modules for Renderer package with Yarn and save them to chache.
   install-package-node-packages:
