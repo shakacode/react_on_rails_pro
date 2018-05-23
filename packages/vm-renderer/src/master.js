@@ -2,12 +2,11 @@
  * Entry point for master process that forks workers.
  * @module master
  */
+import cluster from 'cluster';
+import log from 'winston';
+
 import { buildConfig, getConfig, logSanitizedConfig } from './shared/configBuilder';
-
-const cluster = require('cluster');
-const log = require('winston');
-
-const restartWorkers = require('./master/restartWorkers');
+import restartWorkers from './master/restartWorkers';
 
 const MILLISECONDS_IN_MINUTE = 60000;
 

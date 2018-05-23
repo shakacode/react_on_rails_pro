@@ -291,7 +291,7 @@ workflows:
       - install-package-ruby-gems
       - install-dummy-app-node-packages
       - install-dummy-app-ruby-gems
-      - lint
+      - lint:
           requires:
             - install-package-node-packages
             - install-package-ruby-gems
