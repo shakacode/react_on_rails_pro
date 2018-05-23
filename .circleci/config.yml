@@ -238,6 +238,7 @@ jobs:
       - store_artifacts:
           path: spec/dummy/client/yarn-error.log
 
+  # Test React on Rails Pro without the VM Renderer
   rspec-dummy-app:
     docker:
       - image: circleci/ruby:2.4.4-stretch-node
