@@ -80,9 +80,20 @@ aliases:
       sudo apt-get install google-chrome-stable
       echo -e "\nInstalled $(google-chrome --version)"
 
-  -
-
 jobs:
+  # Lint all
+  lint:
+    docker:
+      - image: circleci/ruby:2.4.4-stretch-node
+    steps:
+      - checkout
+      - run: *print-system-info
+      - restore_cache: *restore-package-node-modules-cache
+      - restore_cache: *restore-package-gem-cache
+      - run:
+        name: Lint
+        command: yarn lint && rubocop
+
   # Install Node modules for Renderer package with Yarn and save them to chache.
   install-package-node-packages:
     docker:
@@ -280,6 +291,10 @@ workflows:
       - install-package-ruby-gems
       - install-dummy-app-node-packages
       - install-dummy-app-ruby-gems
+      - lint
+          requires:
+            - install-package-node-packages
+            - install-package-ruby-gems
       - build-dummy-app-webpack-test-bundles:
           requires:
             - install-dummy-app-node-packages
@@ -294,9 +309,8 @@ workflows:
       - rspec-dummy-app:
           requires:
             - install-package-ruby-gems
-            - install-package-ruby-gems
-            - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
+            - build-dummy-app-webpack-test-bundles
       - rspec-dummy-app-vm-renderer:
           requires:
             - install-package-ruby-gems

@@ -3,7 +3,6 @@
  * @module master/restartWorkers
  */
 
-'use strict';
 
 const cluster = require('cluster');
 const log = require('winston');

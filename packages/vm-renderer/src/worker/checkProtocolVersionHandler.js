@@ -3,7 +3,6 @@
  * @module worker/checkProtocVersionHandler
  */
 
-'use strict';
 
 import packageJson from '../shared/packageJson';
 

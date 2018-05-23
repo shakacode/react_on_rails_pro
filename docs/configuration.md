@@ -3,7 +3,6 @@
 1. Values beginning with `renderer` pertain only to using an external rendering server. You will need to ensure these values are consistent with your configuration for the external rendering server, as given in [docs/vm-renderer/js-configuration.md](./vm-renderer/js-configuration.md)
 2. `config.prerender_caching` works for standard mini_racer server rendering and using an external rendering server.
 
-
 # Example of Configuration
 
 Also see [spec/dummy/config/initializers/react_on_rails_pro.rb](../../spec/dummy/config/initializers/react_on_rails_pro.rb) for how the testing app is setup.
@@ -44,8 +43,8 @@ ReactOnRailsPro.configure do |config|
   # Seconds to wait for an available connection before a Timeout::Error is raised, defaults to 5
   config.renderer_http_pool_timeout = 5
   
-  # warn_timeout  - Displays an error message if a checkout takes longer that the given time
+  # warn_timeout  - Displays an error message if a checkout takes longer that the given time in seconds
   # (used to give hints to increase the pool size). Default is 0.25
-  config.renderer_http_pool_warn_timeout = 0.25
+  config.renderer_http_pool_warn_timeout = 0.25 # seconds
 end
 ```

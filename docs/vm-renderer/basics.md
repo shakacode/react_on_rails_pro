@@ -1,8 +1,6 @@
 # Requirements
 * You must React on Rails v11.0.7 or higher.
 
-
-
 # Setup Node VM Renderer Server
 
 **Node.js** server for **react-on-rails-vm-renderer** is a standalone application to serve requests from **Rails** client. You don't need any **Ruby** code to setup and launch it.
