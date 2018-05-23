@@ -19,9 +19,9 @@ module ReactOnRailsPro
           @connection = PersistentHTTP.new(
             name: "ReactOnRailsProVmRendererClient",
             logger: Rails.logger,
-            pool_size: ReactOnRailsPro.configuration.http_pool_size,
-            pool_timeout: ReactOnRailsPro.configuration.http_pool_timeout,
-            warn_timeout: ReactOnRailsPro.configuration.http_pool_warn_timeout,
+            pool_size: ReactOnRailsPro.configuration.renderer_http_pool_size,
+            pool_timeout: ReactOnRailsPro.configuration.renderer_http_pool_timeout,
+            warn_timeout: ReactOnRailsPro.configuration.renderer_http_pool_warn_timeout,
             force_retry: true,
             url: ReactOnRailsPro.configuration.renderer_url
           )
@@ -65,14 +65,11 @@ module ReactOnRailsPro
           request_digest = render_options.request_digest
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{request_digest}"
 
-          uri = URI(ReactOnRailsPro.configuration.renderer_url)
-          password = ReactOnRailsPro.configuration.password.presence || uri.password
-
           form_data = {
             "renderingRequest" => js_code,
             "gemVersion" => ReactOnRailsPro::VERSION,
             "protocolVersion" => "1.0.0".freeze,
-            "password" => password
+            "password" => ReactOnRailsPro.configuration.renderer_password
           }
 
           if send_bundle
@@ -101,7 +98,7 @@ module ReactOnRailsPro
         end
 
         def fallback_exec_js(js_code, render_options)
-          unless ReactOnRailsPro.configuration.use_fallback_renderer_exec_js
+          unless ReactOnRailsPro.configuration.renderer_use_fallback_exec_js
             raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer at #{renderer_url_base}"
           end
 

@@ -164,7 +164,7 @@ jobs:
   # Seems that we cannot use symlinks (yarn link) with caches for the main renderer package
   # react-on-rails-pro-vm-renderer. Consequently, we just reinstall the top level, renderer, node packages
   # as well as the
-  rspec-dummy-app:
+  rspec-dummy-app-vm-renderer:
     docker:
       - image: circleci/ruby:2.4.4-stretch-node
     steps:
@@ -202,6 +202,40 @@ jobs:
           path: log/test.log
       - store_artifacts:
           path: spec/dummy/client/yarn-error.log
+  rspec-dummy-app:
+    docker:
+      - image: circleci/ruby:2.4.4-stretch-node
+    steps:
+      - checkout
+      - run: *install-phantomjs
+      - run: *print-system-info
+      - restore_cache: *restore-dummy-app-gem-cache
+      - restore_cache:
+          name: Restore cached webpack bundles for dummy app
+          key: v3-dummy-app-webpack-bundle-{{ .Revision }}
+      - run: *install-dummy-app-ruby-gems
+      - run: *install-package-node-modules
+      - run: *install-dummy-app-node-modules
+      - run: *install-latest-chrome
+      - run: *install-yarn-link-source
+      - run: *install-yarn-link-destination
+      - run:
+          name: Touch webpack bundles
+          command:  touch spec/dummy/public/webpack/test/*
+      - run:
+          name: Run rspec tests
+          command: |
+            cd spec/dummy && SERVER_RENDERER=ExecJS bundle exec rspec --format RspecJunitFormatter \
+                                               --out ~/rspec/rspec.xml \
+                                               --format documentation
+      - store_test_results:
+          path: ~/rspec
+      - store_artifacts:
+          path: tmp/capybara
+      - store_artifacts:
+          path: log/test.log
+      - store_artifacts:
+          path: spec/dummy/client/yarn-error.log
 
 workflows:
   version: 2
@@ -217,6 +251,10 @@ workflows:
           requires:
             - install-package-node-packages
       - rspec-dummy-app:
+          requires:
+            - build-dummy-app-webpack-test-bundles
+            - install-dummy-app-ruby-gems
+      - rspec-dummy-app-vm-renderer:
           requires:
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
