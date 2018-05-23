@@ -5,16 +5,6 @@ GIT
     equivalent-xml (1.0.0)
 
 PATH
-  remote: ../../../react_on_rails
-  specs:
-    react_on_rails (11.0.7)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 3.2)
-      rainbow (~> 3.0)
-
-PATH
   remote: ../..
   specs:
     react_on_rails_pro (0.9.1)
@@ -231,6 +221,12 @@ GEM
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
     rdoc (6.0.3)
+    react_on_rails (11.0.7)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 3.2)
+      rainbow (~> 3.0)
     rspec-core (3.7.1)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -350,7 +346,7 @@ DEPENDENCIES
   puma
   rails
   rails-controller-testing
-  react_on_rails!
+  react_on_rails (= 11.0.7)
   react_on_rails_pro!
   rspec-rails
   rspec_junit_formatter
