@@ -115,7 +115,7 @@ jobs:
             - spec/dummy/node_modules
             - spec/dummy/client/node_modules
 
-  # Install Ruby gems for dummy app with Bundler and save them to cache.
+  # Install Ruby gems for package with Bundler and save them to cache.
   install-package-ruby-gems:
     docker:
       - image: circleci/ruby:2.4.4-stretch-node
@@ -206,6 +206,7 @@ jobs:
     steps:
       - checkout
       - run: *print-system-info
+      - restore_cache: *restore-package-gem-cache
       - restore_cache: *restore-dummy-app-gem-cache
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
@@ -285,17 +286,19 @@ workflows:
       - package-js-tests:
           requires:
             - install-package-node-packages
-            - install-package-ruby-gems
       - rspec-package-specs:
           requires:
+            - install-package-ruby-gems
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
       - rspec-dummy-app:
           requires:
+            - install-package-ruby-gems
             - install-package-app-ruby-gems
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
       - rspec-dummy-app-vm-renderer:
           requires:
+            - install-package-ruby-gems
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
