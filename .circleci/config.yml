@@ -97,6 +97,7 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - restore_cache: *restore-package-gem-cache
+      - run: *install-dummy-app-ruby-gems
       - run: *lint-ruby
       - run: *lint-js
 
