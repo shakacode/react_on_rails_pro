@@ -245,6 +245,7 @@ jobs:
     steps:
       - checkout
       - run: *print-system-info
+      - restore_cache: *restore-package-gem-cache
       - restore_cache: *restore-dummy-app-gem-cache
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
