@@ -251,6 +251,7 @@ jobs:
           name: Restore cached webpack bundles for dummy app
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
       - restore_cache: *restore-dummy-app-node-modules-cache
+      - run: *install-dummy-app-ruby-gems
       - run: *install-latest-chrome
       - run:
           name: Touch webpack bundles
@@ -291,6 +292,7 @@ workflows:
             - install-dummy-app-ruby-gems
       - rspec-dummy-app:
           requires:
+            - install-package-app-ruby-gems
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
       - rspec-dummy-app-vm-renderer:
