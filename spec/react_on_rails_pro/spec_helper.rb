@@ -19,7 +19,6 @@ require "pry-doc"
 
 require "binding_of_caller"
 require "awesome_print"
-require "rspec/retry"
 
 require "action_controller"
 
