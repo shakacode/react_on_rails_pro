@@ -294,7 +294,7 @@ workflows:
       - rspec-dummy-app:
           requires:
             - install-package-ruby-gems
-            - install-package-app-ruby-gems
+            - install-package-ruby-gems
             - build-dummy-app-webpack-test-bundles
             - install-dummy-app-ruby-gems
       - rspec-dummy-app-vm-renderer:
