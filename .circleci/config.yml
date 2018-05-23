@@ -191,9 +191,7 @@ jobs:
       - run:
           name: Run rspec tests
           command: |
-            bundle exec rspec spec/react_on_rails_pro --format RspecJunitFormatter \
-                                               --out ~/rspec/rspec.xml \
-                                               --format documentation
+            bundle exec rspec spec/react_on_rails_pro
       - store_test_results:
           path: ~/rspec
       - store_artifacts:
