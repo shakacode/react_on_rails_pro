@@ -18,13 +18,14 @@ ReactOnRailsPro.configure do |config|
   # If true, then cache the evaluation of JS for prerendering using the standard Rails cache
   config.prerender_caching = true
 
-  # Default is http://localhost:3800. https is supported.
   # You may provide a password and/or a port that will be sent to renderer for simple authentication. 
   # `https://:<password>@url:<port>`. For example: https://:myPassword1@renderer:3800. Don't forget
   # the leading `:` before the password. Your password must also not contain certain characters that
   # would break calling URI(config.renderer_url). This includes: `@`, `#`, '/'.
   # **Note:** Don't forget to set up **SSL** connection otherwise password will useless
   # since it will be easy to intercept it.
+  # Default is http://localhost:3800. https is supported. 
+  # If you provide an ENV value (for production) and there is no value, then you get the default.
   config.renderer_url = ENV["RENDERER_URL"] 
  
   # If you don't want to worry about special characters in your password within the url, use this config value

@@ -31,10 +31,6 @@ aliases:
     name: Install yarn link for react-on-rails-pro-vm-renderer
     command: cd spec/dummy/client && yarn link react-on-rails-pro-vm-renderer
 
-  #  - &install-react-on-rails-pro-vm-renderer
-  #    name: Install react-on-rails-pro-vm-renderer
-  #    command: cd spec/dummy/client && rm -rf node_modules/react-on-rails-pro-vm-renderer && yarn upgrade react-on-rails-vm-renderer
-
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-dummy-app-ruby-gems
     name: Install Ruby Gems for dummy app
@@ -83,6 +79,8 @@ aliases:
       sudo apt-get update
       sudo apt-get install google-chrome-stable
       echo -e "\nInstalled $(google-chrome --version)"
+
+  -
 
 jobs:
   # Install Node modules for Renderer package with Yarn and save them to chache.
@@ -250,12 +248,8 @@ jobs:
       - restore_cache:
           name: Restore cached webpack bundles for dummy app
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
-      - run: *install-dummy-app-ruby-gems
-      - run: *install-package-node-modules
-      - run: *install-dummy-app-node-modules
+      - restore_cache: *restore-dummy-app-node-modules-cache
       - run: *install-latest-chrome
-      - run: *install-yarn-link-source
-      - run: *install-yarn-link-destination
       - run:
           name: Touch webpack bundles
           command:  touch spec/dummy/public/webpack/test/*

@@ -44,7 +44,7 @@ require_relative "../../react_on_rails_pro/support/caching.rb"
 RSpec.configure do |config|
   # Ensure that if we are running js tests, we are using latest webpack assets
   ReactOnRails::TestHelper.configure_rspec_to_compile_assets(config, :requires_webpack_assets)
-  config.define_derived_metadata(file_path: %r{spec/(features|requests)}) do |metadata|
+  config.define_derived_metadata(file_path: %r{spec/(system|requests)}) do |metadata|
     metadata[:requires_webpack_assets] = true
   end
 

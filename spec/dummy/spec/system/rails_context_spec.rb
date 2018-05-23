@@ -3,7 +3,6 @@
 require "rails_helper"
 
 shared_examples "railsContext" do |pathname, id_base|
-
   let(:http_accept_language) { "en-US,en;q=0.8" }
 
   subject { page }

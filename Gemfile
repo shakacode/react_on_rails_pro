@@ -36,7 +36,6 @@ gem "capybara"
 gem "capybara-screenshot"
 gem "rspec-rails"
 gem "rspec_junit_formatter"
-gem "rspec-retry"
 # Trouble installing on Sierra
 # gem "capybara-webkit"
 gem "chromedriver-helper"
