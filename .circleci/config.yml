@@ -126,7 +126,7 @@ jobs:
       - run: *install-package-ruby-gems
       - save_cache:
           name: Save dummy app ruby gems to cache
-          key: v3-dummy-app-gem-cache-{{ checksum "react_on_rails_pro.gemspec" }}
+          key: v3-package-app-gem-cache-{{ checksum "react_on_rails_pro.gemspec" }}
           paths:
             - vendor/bundle
 
