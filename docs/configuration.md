@@ -15,7 +15,8 @@ ReactOnRailsPro.configure do |config|
   # mini_racer rendering.
   config.server_renderer = "VmRenderer"
   
-  # If true, then cache the evaluation of JS for prerendering using the standard Rails cache
+  # If true, then cache the evaluation of JS for prerendering using the standard Rails cache.
+  # Default is true.
   config.prerender_caching = true
 
   # You may provide a password and/or a port that will be sent to renderer for simple authentication. 

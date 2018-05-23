@@ -11,4 +11,4 @@ All notable changes to this project will be documented in this file. Items under
 - advanced error handling
 
 [Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/v1.0.0...HEAD
-[1.1.1]: https://github.com/shakacode/react_on_rails_pro/releases/tag/1.0.0
+[1.0.0]: https://github.com/shakacode/react_on_rails_pro/releases/tag/1.0.0
