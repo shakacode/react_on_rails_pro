@@ -159,6 +159,24 @@ jobs:
       - run:
           name: Run JS unit tests for Renderer package
           command: yarn test
+
+  rspec-package-specs:
+    docker:
+      - image: circleci/ruby:2.4.4-stretch-node
+    steps:
+      - checkout
+      - run: *print-system-info
+      - run:
+          name: Run rspec tests
+          command: |
+            bundle exec rspec spec/react_on_rails_pro --format RspecJunitFormatter \
+                                               --out ~/rspec/rspec.xml \
+                                               --format documentation
+      - store_test_results:
+          path: ~/rspec
+      - store_artifacts:
+          path: log/test.log
+
   # Start Renderer and run RSpec test suite for dummy app.
   # NOTES:
   # Seems that we cannot use symlinks (yarn link) with caches for the main renderer package
@@ -250,6 +268,10 @@ workflows:
       - package-js-tests:
           requires:
             - install-package-node-packages
+      - rspec-package-specs:
+          requires:
+            - build-dummy-app-webpack-test-bundles
+            - install-dummy-app-ruby-gems
       - rspec-dummy-app:
           requires:
             - build-dummy-app-webpack-test-bundles

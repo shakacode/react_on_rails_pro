@@ -75,7 +75,7 @@ module ReactOnRailsPro
           config.renderer_url = "https://localhost:3800"
         end
 
-        expect(ReactOnRailsPro.configuration.renderer_password).to eq("")
+        expect(ReactOnRailsPro.configuration.renderer_password).to eq(nil)
       end
     end
   end
