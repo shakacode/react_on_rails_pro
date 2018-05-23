@@ -11,6 +11,11 @@ aliases:
              echo "Ruby version: "; ruby -v
              echo "Node version: "; node -v
              echo "Yarn version: "; yarn --version
+  - &lint-js-and-ruby
+    name: Linting of JS and Ruby
+    command: |
+      yarn lint
+      rubocop
 
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-node-modules
@@ -82,7 +87,7 @@ aliases:
 
 jobs:
   # Lint all
-  lint:
+  lint-js-and-ruby:
     docker:
       - image: circleci/ruby:2.4.4-stretch-node
     steps:
@@ -90,9 +95,7 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - restore_cache: *restore-package-gem-cache
-      - run:
-        name: Lint
-        command: yarn lint && rubocop
+      - run: *lint-js-and-ruby
 
   # Install Node modules for Renderer package with Yarn and save them to chache.
   install-package-node-packages:
@@ -291,7 +294,7 @@ workflows:
       - install-package-ruby-gems
       - install-dummy-app-node-packages
       - install-dummy-app-ruby-gems
-      - lint:
+      - lint-js-and-ruby:
           requires:
             - install-package-node-packages
             - install-package-ruby-gems
