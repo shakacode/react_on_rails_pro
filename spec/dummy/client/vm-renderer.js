@@ -8,8 +8,8 @@ const { reactOnRailsProVmRenderer } = require('react-on-rails-pro-vm-renderer');
 const config = {
   bundlePath: path.resolve(__dirname, '../tmp/bundles'),  // Save bundle to "tmp/" dir of our dummy app
   // This is the default
-  port: env.PORT || 3800,                         // Listen at PORT env value or default port 3800
-  logLevel: env.LOG_LEVEL || 'info',              // Show all logs at debug level
+  port: env.RENDERER_PORT || 3800,         // Listen at RENDERER_PORT env value or default port 3800
+  logLevel: env.RENDERER_LOG_LEVEL || 'info',
 
   // See value in /config/initializers/react_on_rails_pro.rb. Should use env value in real app.
   password: 'myPassword1',
