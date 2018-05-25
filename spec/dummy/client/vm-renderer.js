@@ -20,10 +20,10 @@ const config = {
   // be set if you wish to have automatic worker restarting, say to clear memory leaks.
 
   // time in minutes between restarting all workers
-  allWorkersRestartInterval: 2,
+  allWorkersRestartInterval: (env.CI && 2) || 10,
 
   // time in minutes between each worker restarting when restarting all workers
-  delayBetweenIndividualWorkerRestarts: 0.01,
+  delayBetweenIndividualWorkerRestarts: (env.CI && 0.01) || 1,
 };
 
 // Renderer detects a total number of CPUs on virtual hostings like Heroky or CircleCI instead
