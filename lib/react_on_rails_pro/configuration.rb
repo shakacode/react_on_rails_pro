@@ -9,7 +9,7 @@ module ReactOnRailsPro
       prerender_caching: Configuration::DEFAULT_PRERENDER_CACHING,
       server_renderer: Configuration::DEFAULT_RENDERER_METHOD,
       renderer_url: Configuration::DEFAULT_RENDERER_URL,
-      renderer_use_fallback_exec_js: DEFAULT_RENDERER_FALLBACK_EXEC_JS,
+      renderer_use_fallback_exec_js: Configuration::DEFAULT_RENDERER_FALLBACK_EXEC_JS,
       renderer_http_pool_size: Configuration::DEFAULT_RENDERER_HTTP_POOL_SIZE,
       renderer_http_pool_timeout: Configuration::DEFAULT_RENDERER_HTTP_POOL_TIMEOUT,
       renderer_http_pool_warn_timeout: Configuration::DEFAULT_RENDERER_HTTP_POOL_TIMEOUT,
