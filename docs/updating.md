@@ -3,7 +3,7 @@
 # Get the oauth token from justin@shakacode.com
 
 * Justin:
-  * Creates a github user, like <customer>-rorp with email <customer-rorp>@friendsandguests.com created via a Google apps group.
+  * Creates a github user, like customer-rorp with email customer-rorp@friendsandguests.com created via a Google apps group.
   * Confirm email for account
   * Add user to have read-only access for shakacode/react_on_rails_pro
   * Create a auth token for this user.
