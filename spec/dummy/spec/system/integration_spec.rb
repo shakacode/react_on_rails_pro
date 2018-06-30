@@ -62,6 +62,14 @@ feature "Pages/Index", :js, type: :system do
 
     include_examples "React Component", "div#my-hello-world-id"
   end
+
+  context "Server Rendering Cached" do
+    background do
+      visit server_side_redux_app_cached_path
+    end
+
+    include_examples "React Component", "div#ReduxApp-react-component-0"
+  end
 end
 
 feature "Turbolinks across pages", :js, type: :system do
