@@ -35,7 +35,7 @@ describe ReactOnRailsProHelper, type: :helper do
 
   describe "#cached_react_component" do
     before { allow(SecureRandom).to receive(:uuid).and_return(0, 1, 2, 3) }
-    let(:serializers_cache_key) { "0c163f7feda0854b58921834ff4dfdda" }
+    let(:serializers_cache_key) { ReactOnRailsPro::Cache.serializers_cache_key }
     let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
     let(:base_cache_key_with_prerender) do
       "#{base_component_cache_key}/#{ReactOnRailsPro::Utils.bundle_hash}/#{serializers_cache_key}"
