@@ -35,7 +35,12 @@ describe ReactOnRailsProHelper, type: :helper do
 
   describe "#cached_react_component" do
     before { allow(SecureRandom).to receive(:uuid).and_return(0, 1, 2, 3) }
+    let(:serializers_cache_key) { "0c163f7feda0854b58921834ff4dfdda" }
     let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
+    let(:base_cache_key_with_prerender) do
+      "#{base_component_cache_key}/#{ReactOnRailsPro::Utils.bundle_hash}/#{serializers_cache_key}"
+    end
+    let(:base_cache_key_without_prerender) { "#{base_component_cache_key}/#{serializers_cache_key}" }
     let(:base_js_eval_cache_key) { "ror_pro_rendered_html/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
 
     describe "caching" do
@@ -48,7 +53,7 @@ describe ReactOnRailsProHelper, type: :helper do
           end
 
           expect(cache_data.keys)
-            .to include(%r{#{base_component_cache_key}/App/cache-key})
+            .to include(%r{/App/cache-key})
           expect(cache_data.first[1].value).to match(/div id="App-react-component-0"/)
         end
 
@@ -83,7 +88,7 @@ describe ReactOnRailsProHelper, type: :helper do
               props
             end
 
-            expect(cache_data.keys).to include(%r{#{base_component_cache_key}/App/a/b})
+            expect(cache_data.keys).to include(%r{/App/a/b})
             expect(cache_data.first[1].value).to match(/div id="App-react-component-0"/)
           end
         end
@@ -122,8 +127,7 @@ describe ReactOnRailsProHelper, type: :helper do
             end
 
             expect(cache_data.keys[0]).to match(%r{#{base_js_eval_cache_key}/})
-            expect(cache_data.keys[1]).to match(%r{#{base_component_cache_key}/\w+/ReactHelmetApp/cache-key})
-
+            expect(cache_data.keys[1]).to match(%r{#{base_cache_key_with_prerender}/ReactHelmetApp/cache-key})
             expect(cache_data.values[0].value.keys).to match_array(%w[html consoleReplayScript hasErrors])
             expect(cache_data.values[1].value["componentHtml"]).to match(/div id="ReactHelmetApp-react-component-0"/)
           end
@@ -140,7 +144,7 @@ describe ReactOnRailsProHelper, type: :helper do
               props
             end
 
-            expect(cache_data.keys[0]).to match(%r{#{base_component_cache_key}/ReactHelmetApp/cache-key})
+            expect(cache_data.keys[0]).to match(%r{#{base_cache_key_without_prerender}/ReactHelmetApp/cache-key})
             expect(cache_data.values[0].value["componentHtml"]).to match(/div id="ReactHelmetApp-react-component-0"/)
           end
 
