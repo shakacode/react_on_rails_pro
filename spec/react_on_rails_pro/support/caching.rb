@@ -14,6 +14,7 @@ RSpec.configure do |config|
     cache_store = ActiveSupport::Cache::MemoryStore.new
     allow(controller).to receive(:cache_store).and_return(cache_store) if defined?(controller) && controller
     allow(::Rails).to receive(:cache).and_return(cache_store)
+    ReactOnRailsPro::Cache.instance_variable_set(:@serializer_checksum, nil)
     Rails.cache.clear
   end
 
