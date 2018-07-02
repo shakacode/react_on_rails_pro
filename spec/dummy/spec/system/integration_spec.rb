@@ -63,12 +63,22 @@ feature "Pages/Index", :js, type: :system do
     include_examples "React Component", "div#my-hello-world-id"
   end
 
-  context "Server Rendering Cached" do
+  context "Server Rendering Cached", :caching do
+    let(:serializers_cache_key) { ReactOnRailsPro::Cache.serializers_cache_key }
+    let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
+    let(:base_cache_key_with_prerender) do
+      "#{base_component_cache_key}/#{ReactOnRailsPro::Utils.bundle_hash}/#{serializers_cache_key}"
+    end
+
     background do
       visit server_side_redux_app_cached_path
     end
 
     include_examples "React Component", "div#ReduxApp-react-component-0"
+
+    it "adds a value to the cache" do
+      expect(cache_data.keys[1]).to match(%r{#{base_cache_key_with_prerender}/ReduxApp})
+    end
   end
 end
 

@@ -33,7 +33,7 @@ describe ReactOnRailsProHelper, type: :helper do
     "{\"hello\":\"world\",\"free\":\"of charge\",\"x\":\"</script><script>alert('foo')</script>\"}"
   end
 
-  describe "#cached_react_component" do
+  describe "#cached_react_component", :caching do
     before { allow(SecureRandom).to receive(:uuid).and_return(0, 1, 2, 3) }
     let(:serializers_cache_key) { ReactOnRailsPro::Cache.serializers_cache_key }
     let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
@@ -44,7 +44,7 @@ describe ReactOnRailsProHelper, type: :helper do
     let(:base_js_eval_cache_key) { "ror_pro_rendered_html/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
 
     describe "caching" do
-      describe "ReactOnRailsProHeler.cached_react_component", :caching do
+      describe "ReactOnRailsProHeler.cached_react_component" do
         it "caches the content" do
           props = { a: 1, b: 2 }
 
@@ -117,7 +117,7 @@ describe ReactOnRailsProHelper, type: :helper do
         end
       end
 
-      describe "ReactOnRailsProHelper.cached_react_component_hash", :caching do
+      describe "ReactOnRailsProHelper.cached_react_component_hash" do
         context "with prerender" do
           it "caches the content" do
             props = { helloWorldData: { name: "Mr. Server Side Rendering" } }
