@@ -75,13 +75,11 @@ describe ReactOnRailsPro::Cache, :caching do
       it "returns an MD5 based on the files" do
         serializer_glob = File.join(FixturesHelper.fixtures_dir, "app", "views", "**", "*.jbuilder")
         allow(ReactOnRailsPro.configuration).to receive(:serializer_globs).and_return(serializer_glob)
+        allow_any_instance_of(Digest::MD5).to receive(:hexdigest).and_return("eb3dc8ec96886ec81203c9e13f0277a7")
 
         result = ReactOnRailsPro::Cache.serializers_cache_key
 
-        # CircleCi always has a value of f28490341f20e2a105b5e9ad28c35157
-        # Local Mac has a value of eb3dc8ec96886ec81203c9e13f0277a7
-        values = %w[eb3dc8ec96886ec81203c9e13f0277a7 f28490341f20e2a105b5e9ad28c35157]
-        expect(result).to be_in(values)
+        expect(result).to eq("eb3dc8ec96886ec81203c9e13f0277a7")
       end
     end
 
