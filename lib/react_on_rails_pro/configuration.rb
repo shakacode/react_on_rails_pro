@@ -15,7 +15,7 @@ module ReactOnRailsPro
       renderer_http_pool_warn_timeout: Configuration::DEFAULT_RENDERER_HTTP_POOL_TIMEOUT,
       renderer_password: nil,
       tracing: Configuration::DEFAULT_TRACING,
-      serializer_globs: Configuration::DEFAULT_SERIALIZER_FILE
+      serializer_globs: Configuration::DEFAULT_SERIALIZER_GLOBS
     )
   end
 
@@ -28,7 +28,7 @@ module ReactOnRailsPro
     DEFAULT_RENDERER_HTTP_POOL_WARN_TIMEOUT = 0.25
     DEFAULT_PRERENDER_CACHING = false
     DEFAULT_TRACING = false
-    DEFAULT_SERIALIZER_FILE = nil
+    DEFAULT_SERIALIZER_GLOBS = nil
 
     attr_accessor :renderer_url, :renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,

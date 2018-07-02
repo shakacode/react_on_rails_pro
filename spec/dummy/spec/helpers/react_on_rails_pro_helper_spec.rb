@@ -33,7 +33,7 @@ describe ReactOnRailsProHelper, type: :helper do
     "{\"hello\":\"world\",\"free\":\"of charge\",\"x\":\"</script><script>alert('foo')</script>\"}"
   end
 
-  describe "#cached_react_component", :caching do
+  describe "#cached_react_component", :caching, :requires_webpack_assets do
     before { allow(SecureRandom).to receive(:uuid).and_return(0, 1, 2, 3) }
     let(:serializers_cache_key) { ReactOnRailsPro::Cache.serializers_cache_key }
     let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
