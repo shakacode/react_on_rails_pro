@@ -48,7 +48,7 @@ In the future, React on Rails will allow stateful server rendering. Thus, your s
 GraphQL. In that case, you will set this caching to false.
 
 ### When?
-The largest percentage gains will come from saving the time of server rendering. However, ejven when not doing server rendering, caching can be effective as the caching will prevent the calculation of the props and the conversion to a string of the prop values.
+The largest percentage gains will come from saving the time of server rendering. However, even when not doing server rendering, caching can be effective as the caching will prevent the calculation of the props and the conversion to a string of the prop values.
 
 ### How?
 
