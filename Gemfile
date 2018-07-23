@@ -5,9 +5,10 @@ gemspec
 
 # Comment out before final commit
 
-gem "react_on_rails", github: "shakacode/react_on_rails"
+# gem "react_on_rails", github: "shakacode/react_on_rails"
 # gem "react_on_rails", path: "../react_on_rails"
-# gem "react_on_rails", "11.1.0"
+gem "react_on_rails", "~>11.0.10"
+
 
 gem "webpacker", "3.4.3"
 
