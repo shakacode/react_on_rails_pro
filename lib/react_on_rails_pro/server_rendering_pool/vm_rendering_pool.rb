@@ -10,6 +10,8 @@ module ReactOnRailsPro
       RENDERED_HTML_KEY = "renderedHtml".freeze
 
       class << self
+        attr_accessor :bundle_update_utc_timestamp
+
         def reset_pool
           Rails.logger.info { "[ReactOnRailsPro] Setting up connection VM Renderer at #{renderer_url_base}" }
 
@@ -35,8 +37,16 @@ module ReactOnRailsPro
             return @bundle_update_utc_timestamp
           end
 
+          @bundle_update_utc_timestamp = bundle_utc_timestamp
+        end
+
+        def renderer_bundle_file_name
+          "#{bundle_utc_timestamp}.js"
+        end
+
+        def bundle_utc_timestamp
           bundle_update_time = File.mtime(ReactOnRails::Utils.server_bundle_js_file_path)
-          @bundle_update_utc_timestamp = (bundle_update_time.utc.to_f * 1000).to_i
+          (bundle_update_time.utc.to_f * 1000).to_i
         end
 
         def renderer_url_base

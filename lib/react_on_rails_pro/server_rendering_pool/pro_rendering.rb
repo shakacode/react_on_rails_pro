@@ -30,7 +30,7 @@ module ReactOnRailsPro
         def set_request_digest_on_render_options(js_code, render_options)
           return unless render_options.request_digest.blank?
 
-          digest = if render_options.has_random_dom_id?
+          digest = if render_options.random_dom_id?
                      Rails.logger.info { "[ReactOnRailsPro] Rendering #{render_options.react_component_name}. "\
               "Suggest setting `id` on react_component or setting react_on_rails.rb initializer "\
               "config.random_dom_id to false for BETTER performance." }
