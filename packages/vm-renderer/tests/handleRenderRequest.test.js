@@ -16,8 +16,8 @@ import {
 import { getVmBundleFilePath } from '../src/worker/vm';
 import handleRenderRequest from '../src/worker/handleRenderRequest';
 
-test('If gem has posted updated bundle and no prior bundle', async (assert) => {
-  assert.plan(2);
+test('If gem has posted updated bundle and no prior bundle', async (t) => {
+  t.plan(2);
   resetForTest();
   createUploadedBundle();
 
@@ -27,7 +27,7 @@ test('If gem has posted updated bundle and no prior bundle', async (assert) => {
     providedNewBundle: { file: uploadedBundlePath() },
   });
 
-  assert.deepEqual(
+  t.deepEqual(
     result,
     {
       status: 200,
@@ -36,15 +36,15 @@ test('If gem has posted updated bundle and no prior bundle', async (assert) => {
     },
     'handleRenderRequest returns status 200 and correct rendered renderedHtmls',
   );
-  assert.equal(
+  t.equal(
     getVmBundleFilePath(),
     path.resolve(__dirname, './tmp/1495063024898.js'),
     'getVmBundleFilePath() should return file path of the bundle loaded to VM',
   );
 });
 
-test('If bundle was not uploaded yet and not provided ', async (assert) => {
-  assert.plan(1);
+test('If bundle was not uploaded yet and not provided ', async (t) => {
+  t.plan(1);
   resetForTest();
   createUploadedBundle();
 
@@ -53,7 +53,7 @@ test('If bundle was not uploaded yet and not provided ', async (assert) => {
     bundleTimestamp: BUNDLE_TIMESTAMP,
   });
 
-  assert.deepEqual(
+  t.deepEqual(
     result,
     {
       status: 410,
@@ -64,8 +64,8 @@ test('If bundle was not uploaded yet and not provided ', async (assert) => {
   );
 });
 
-test('If bundle was already uploaded by another thread', async (assert) => {
-  assert.plan(1);
+test('If bundle was already uploaded by another thread', async (t) => {
+  t.plan(1);
   resetForTest();
   await createVmBundle();
 
@@ -74,7 +74,7 @@ test('If bundle was already uploaded by another thread', async (assert) => {
     bundleTimestamp: BUNDLE_TIMESTAMP,
   });
 
-  assert.deepEqual(
+  t.deepEqual(
     result,
     {
       status: 200,
@@ -85,13 +85,13 @@ test('If bundle was already uploaded by another thread', async (assert) => {
   );
 });
 
-test('If lockfile exists, and is stale', async (assert) => {
+test('If lockfile exists, and is stale', async (t) => {
   // We're using a lockfile with an artificially old date,
   // so make it use that instead of ctime.
   // Probably you should never do this in production!
   lockfile.filetime = 'mtime';
 
-  assert.plan(2);
+  t.plan(2);
   resetForTest();
   touch.sync(lockfilePath(), { time: '1979-07-01T19:10:00.000Z' });
   createUploadedBundle();
@@ -102,7 +102,7 @@ test('If lockfile exists, and is stale', async (assert) => {
     providedNewBundle: { file: uploadedBundlePath() },
   });
 
-  assert.deepEqual(
+  t.deepEqual(
     result,
     {
       status: 200,
@@ -111,7 +111,7 @@ test('If lockfile exists, and is stale', async (assert) => {
     },
     'handleRenderRequest returns status 200 and correct rendered renderedHtmls',
   );
-  assert.equal(
+  t.equal(
     getVmBundleFilePath(),
     path.resolve(__dirname, './tmp/1495063024898.js'),
     'getVmBundleFilePath() should return file path of the bundle loaded to VM',
@@ -121,8 +121,8 @@ test('If lockfile exists, and is stale', async (assert) => {
 test(
   'If lockfile exists from another thread and bundle provided.',
   { timeout: 1000 },
-  async (assert) => {
-    assert.plan(2);
+  async (t) => {
+    t.plan(2);
     resetForTest();
     createUploadedBundle();
 
@@ -145,7 +145,7 @@ test(
       providedNewBundle: { file: uploadedBundlePath() },
     });
 
-    assert.deepEqual(
+    t.deepEqual(
       result,
       {
         status: 200,
@@ -154,7 +154,7 @@ test(
       },
       'handleRenderRequest returns status 200 and correct rendered renderedHtmls',
     );
-    assert.equal(
+    t.equal(
       getVmBundleFilePath(),
       path.resolve(__dirname, './tmp/1495063024898.js'),
       'getVmBundleFilePath() should return file path of the bundle loaded to VM',
