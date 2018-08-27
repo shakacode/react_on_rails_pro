@@ -7,15 +7,14 @@
 
 
 import sleep from 'sleep-promise';
-
-
 import cluster from 'cluster';
 import path from 'path';
 import fs from 'fs';
 import fsExtra from 'fs-extra';
 import lockfile from 'lockfile';
-import util, { promisify } from 'util';
+import { promisify } from 'util';
 
+import debug from '../shared/debug';
 import log from '../shared/log';
 import { formatExceptionMessage, workerIdLabel } from '../shared/utils';
 import { getConfig } from '../shared/configBuilder';
@@ -23,8 +22,6 @@ import { buildVM, getVmBundleFilePath, runInVM } from './vm';
 
 const lockfileLockAsync = promisify(lockfile.lock);
 const lockfileUnlockAsync = promisify(lockfile.unlock);
-
-const debug = util.debuglog('ROR');
 
 const TEST_LOCKFILE_THREADING = false;
 

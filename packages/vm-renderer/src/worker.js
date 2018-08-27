@@ -28,9 +28,7 @@ const setResponse = (result, res) => {
   res.status(status);
   res.send(data);
 };
-/**
- *
- */
+
 export default function run(config) {
   // Store config in app state. From now it can be loaded by any module using
   // getConfig():

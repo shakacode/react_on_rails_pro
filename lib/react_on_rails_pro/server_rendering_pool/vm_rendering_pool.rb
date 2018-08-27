@@ -72,7 +72,8 @@ module ReactOnRailsPro
         end
 
         def eval_js(js_code, render_options, send_bundle: false)
-          ReactOnRailsPro::ServerRenderingPool::ProRendering.set_request_digest_on_render_options(js_code, render_options)
+          ReactOnRailsPro::ServerRenderingPool::ProRendering
+            .set_request_digest_on_render_options(js_code, render_options)
 
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{render_options.request_digest}"
 
@@ -98,7 +99,8 @@ module ReactOnRailsPro
           when "200"
             return response.body
           when "400"
-            raise ReactOnRailsPro::Error, "Renderer unhandled error at the VM level: #{response.code}:\n#{response.body}"
+            raise ReactOnRailsPro::Error,
+                  "Renderer unhandled error at the VM level: #{response.code}:\n#{response.body}"
           when "410"
             return eval_js(js_code, render_options, send_bundle: true)
           when "412"
@@ -115,7 +117,10 @@ module ReactOnRailsPro
             raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer at #{renderer_url_base}"
           end
 
-          Rails.logger.warn { "[ReactOnRailsPro] Can't connect to VmRenderer renderer at #{renderer_url_base}. Falling back to ExecJS" }
+          Rails.logger.warn do
+            "[ReactOnRailsPro] Can't connect to VmRenderer renderer at #{renderer_url_base}."\
+            " Falling back to ExecJS"
+          end
           fallback_renderer = ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript
 
           # Pool is actually discarded btw requests:

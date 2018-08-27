@@ -122,4 +122,3 @@ export function buildConfig(providedUserConfig) {
   configureLogger(log, config.logLevel);
   return config;
 }
-
