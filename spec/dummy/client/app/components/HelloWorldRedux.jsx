@@ -10,21 +10,14 @@ export default class HelloWorldRedux extends React.Component {
     railsContext: PropTypes.object.isRequired,
   };
 
-  // Not necessary if we only call super, but we'll need to initialize state, etc.
-  constructor(props) {
-    super(props);
-    this.setNameDomRef = this.setNameDomRef.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-  }
-
-  setNameDomRef(nameDomNode) {
+  setNameDomRef = (nameDomNode) => {
     this.nameDomRef = nameDomNode;
-  }
+  };
 
-  handleChange() {
+  handleChange = () => {
     const name = this.nameDomRef.value;
     this.props.actions.updateName(name);
-  }
+  };
 
   render() {
     const { data, railsContext } = this.props;

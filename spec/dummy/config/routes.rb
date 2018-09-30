@@ -40,4 +40,6 @@ Rails.application.routes.draw do
   get "component_with_lodash" => "pages#component_with_lodash"
 
   get "shared_redux_store" => "pages#shared_redux_store"
+
+  get "graphql" => "pages#graphql"
 end

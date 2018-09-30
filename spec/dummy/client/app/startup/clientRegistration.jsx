@@ -3,6 +3,7 @@ import 'es5-shim';
 
 import ReactOnRails from 'react-on-rails';
 
+import GraphQL from './GraphQL';
 import HelloWorld from '../components/HelloWorld';
 import HelloWorldWithLogAndThrow from '../components/HelloWorldWithLogAndThrow';
 import HelloWorldES5 from '../components/HelloWorldES5';
@@ -56,6 +57,7 @@ ReactOnRails.register({
   ImageExample,
   SetTimeoutLoggingApp,
   ComponentWithLodashApp,
+  GraphQL,
 });
 
 ReactOnRails.registerStore({

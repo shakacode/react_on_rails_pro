@@ -18,18 +18,18 @@ class HelloWorld extends React.Component {
   constructor(props) {
     super(props);
     this.state = props.helloWorldData;
-    this.setNameDomRef = this.setNameDomRef.bind(this);
-    this.handleChange = this.handleChange.bind(this);
+    // this.setNameDomRef = this.setNameDomRef.bind(this);
+    // this.handleChange = this.handleChange.bind(this);
   }
 
-  setNameDomRef(nameDomNode) {
+  setNameDomRef = (nameDomNode) => {
     this.nameDomRef = nameDomNode;
-  }
+  };
 
-  handleChange() {
+  handleChange = () => {
     const name = this.nameDomRef.value;
     this.setState({ name });
-  }
+  };
 
   render() {
     // eslint-disable-next-line no-console

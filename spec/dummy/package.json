@@ -26,7 +26,6 @@
   },
   "keywords": ["react", "rails", "server", "rendering"],
   "author": "justin808",
-  "license": "MIT",
   "bugs": {
     "url": "https://github.com/shakacode/react_on_rails/issues"
   },
