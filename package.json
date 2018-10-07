@@ -26,7 +26,9 @@
     "babel-register": "^6.26.0",
     "babel-runtime": "^6.26.0",
     "babelify": "^7.3.0",
+    "concurrently": "^4.0.1",
     "console.history": "^1.5.0",
+    "eslint-config-prettier": "^3.1.0",
     "express": "^4.15.2",
     "express-busboy": "^6.0.1",
     "fs-extra": "^3.0.1",
@@ -48,10 +50,14 @@
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jest": "^21.22.0",
     "eslint-plugin-jsx-a11y": "^6.0.2",
+    "eslint-plugin-prettier": "^3.0.0",
     "eslint-plugin-react": "^7.4.0",
     "flow-bin": "^0.43.1",
     "jest": "^23.5.0",
     "jsdom": "^9.12.0",
+    "nps": "^5.9.3",
+    "prettier": "^1.14.3",
+    "prettier-eslint-cli": "^4.7.1",
     "release-it": "^2.7.1",
     "supertest": "^3.0.0",
     "tap-diff": "^0.1.1",
@@ -60,9 +66,7 @@
     "tape-async": "^2.3.0",
     "touch": "^3.1.0"
   },
-  "files": [
-    "packages/vm-renderer/lib"
-  ],
+  "files": ["packages/vm-renderer/lib"],
   "scripts": {
     "test": "jest packages/vm-renderer/tests/**/*.test.js",
     "clean": "rm -rf packages/vm-renderer/lib",
@@ -72,7 +76,7 @@
     "postinstall": "yarn run build",
     "prepublish": "yarn run build",
     "prerelease": "yarn run check && yarn run clean && yarn run build",
-    "start": "echo 'Starting React on Rails Pro VM Renderer using the default configuration.' && node --experimental-modules packages/vm-renderer/lib/default-vm-renderer.js",
+    "start": "nps",
     "developing": "rm -rf /tmp/react-on-rails-pro-vm-renderer-bundles && RENDERER_LOG_LEVEL=info NODE_DEBUG=ROR node  -r source-map-support/register --experimental-modules packages/vm-renderer/lib/default-vm-renderer.js",
     "eslint": "eslint .",
     "flow": "flow check packages/vm-renderer",
@@ -85,14 +89,7 @@
     "type": "git",
     "url": "git+https://github.com/shakacode/react_on_rails_pro.git"
   },
-  "keywords": [
-    "react",
-    "webpack",
-    "JavaScript",
-    "Ruby",
-    "on",
-    "Rails"
-  ],
+  "keywords": ["react", "webpack", "JavaScript", "Ruby", "on", "Rails"],
   "author": "justin@shakacode.com",
   "license": "MIT",
   "bugs": {
@@ -101,18 +98,11 @@
   "homepage": "https://github.com/shakacode/react_on_rails_pro#readme",
   "jest": {
     "clearMocks": true,
-    "collectCoverageFrom": [
-      "packages/vm-renderer/tests/**/*.{js,jsx}"
-    ],
-    "coverageReporters": [
-      "lcov"
-    ],
+    "collectCoverageFrom": ["packages/vm-renderer/tests/**/*.{js,jsx}"],
+    "coverageReporters": ["lcov"],
     "resetModules": true,
     "resetMocks": true,
-
-    "setupFiles": [
-      "./packages/vm-renderer/tests/helper.js"
-    ],
+    "setupFiles": ["./packages/vm-renderer/tests/helper.js"],
     "testEnvironment": "node",
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
