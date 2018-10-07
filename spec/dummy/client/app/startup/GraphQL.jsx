@@ -14,7 +14,7 @@ export default class GraphQL extends React.PureComponent {
         {
           method: 'get',
           params: {
-            query: this.query(),
+            query: this.query,
           },
         },
       )
@@ -22,8 +22,7 @@ export default class GraphQL extends React.PureComponent {
       .catch(error => this.setState({ error: error }));
   }
 
-  query() {
-    return `
+  query = `
     {
       hn {
         topStories {
@@ -35,7 +34,6 @@ export default class GraphQL extends React.PureComponent {
       }
     }
     `;
-  }
 
   render() {
     const { data } = this.state.data;
