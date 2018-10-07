@@ -2,7 +2,13 @@ import request from 'supertest';
 import path from 'path';
 
 import worker from '../src/worker';
-import { BUNDLE_TIMESTAMP, createVmBundle, resetForTest, uploadedBundlePath, createUploadedBundle } from './helper';
+import {
+  BUNDLE_TIMESTAMP,
+  createVmBundle,
+  resetForTest,
+  uploadedBundlePath,
+  createUploadedBundle,
+} from './helper';
 
 // eslint-disable-next-line import/no-dynamic-require
 const packageJson = require(path.join(__dirname, '/../../../package.json'));
@@ -11,8 +17,7 @@ const gemVersion = packageJson.version;
 const { protocolVersion } = packageJson;
 
 test(
-  'POST /bundles/:bundleTimestamp/render/:renderRequestDigest ' +
-  'when bundle is provided',
+  'POST /bundles/:bundleTimestamp/render/:renderRequestDigest ' + 'when bundle is provided',
   async done => {
     expect.assertions(3);
 
