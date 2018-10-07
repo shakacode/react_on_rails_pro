@@ -5,7 +5,6 @@
  * @module worker/handleRenderRequest
  */
 
-
 import sleep from 'sleep-promise';
 import cluster from 'cluster';
 import path from 'path';
@@ -88,10 +87,7 @@ async function prepareResult(renderingRequest) {
 
 function getRequestBundleFilePath(bundleTimestamp) {
   const { bundlePath } = getConfig();
-  return path.join(
-    bundlePath,
-    `${bundleTimestamp}.js`,
-  );
+  return path.join(bundlePath, `${bundleTimestamp}.js`);
 }
 
 function errorResult(msg) {
@@ -122,10 +118,7 @@ async function unlock(lockfileName) {
  * @param renderingRequest
  * @returns {Promise<void>}
  */
-async function handleNewBundleProvided(
-  bundleFilePathPerTimestamp,
-  providedNewBundle, renderingRequest,
-) {
+async function handleNewBundleProvided(bundleFilePathPerTimestamp, providedNewBundle, renderingRequest) {
   log.info('Worker received new bundle: %s', bundleFilePathPerTimestamp);
 
   const lockfileName = `${bundleFilePathPerTimestamp}.lock`;
@@ -147,7 +140,8 @@ async function handleNewBundleProvided(
       debug('After acquired lock in pid', lockfileName);
     } catch (error) {
       const msg = formatExceptionMessage(
-        renderingRequest, error,
+        renderingRequest,
+        error,
         `Failed to acquire lock ${lockfileName}. Worker: ${workerId}.`,
       );
       return Promise.resolve(errorResult(msg));
@@ -161,7 +155,8 @@ async function handleNewBundleProvided(
     } catch (error) {
       if (!fs.existsSync(bundleFilePathPerTimestamp)) {
         const msg = formatExceptionMessage(
-          renderingRequest, error,
+          renderingRequest,
+          error,
           `Unexpected error when moving the bundle from ${providedNewBundle.file} \
 to ${bundleFilePathPerTimestamp})`,
         );
@@ -182,7 +177,8 @@ to ${bundleFilePathPerTimestamp})`,
       return prepareResult(renderingRequest);
     } catch (error) {
       const msg = formatExceptionMessage(
-        renderingRequest, error,
+        renderingRequest,
+        error,
         `Unexpected error when building the VM ${bundleFilePathPerTimestamp}`,
       );
       return Promise.resolve(errorResult(msg));
@@ -194,7 +190,8 @@ to ${bundleFilePathPerTimestamp})`,
         await unlock(lockfileName);
       } catch (error) {
         const msg = formatExceptionMessage(
-          renderingRequest, error,
+          renderingRequest,
+          error,
           `Error unlocking ${lockfileName} from worker ${workerId}.`,
         );
         log.warn(msg);
@@ -208,11 +205,7 @@ to ${bundleFilePathPerTimestamp})`,
  * @returns Promise where the result contains { status, data, headers } for to
  * send back to the browser.
  */
-export default async function handleRenderRequest({
-  renderingRequest,
-  bundleTimestamp,
-  providedNewBundle,
-}) {
+export default (async function handleRenderRequest({ renderingRequest, bundleTimestamp, providedNewBundle }) {
   try {
     const bundleFilePathPerTimestamp = getRequestBundleFilePath(bundleTimestamp);
 
@@ -223,10 +216,7 @@ export default async function handleRenderRequest({
 
     // If gem has posted updated bundle:
     if (providedNewBundle && providedNewBundle.file) {
-      return handleNewBundleProvided(
-        bundleFilePathPerTimestamp,
-        providedNewBundle, renderingRequest,
-      );
+      return handleNewBundleProvided(bundleFilePathPerTimestamp, providedNewBundle, renderingRequest);
     }
 
     // If no vm yet or bundle name does not match
@@ -235,10 +225,7 @@ export default async function handleRenderRequest({
     if (getVmBundleFilePath()) {
       log.info('Bundle per timestamp %s needed. Worker: %s', bundleFilePathPerTimestamp, workerId);
     } else {
-      log.info(
-        'Bundle %s needed, but none saved yet. Worker: %s', bundleFilePathPerTimestamp,
-        workerId,
-      );
+      log.info('Bundle %s needed, but none saved yet. Worker: %s', bundleFilePathPerTimestamp, workerId);
     }
 
     // Check if bundle was uploaded:
@@ -258,11 +245,12 @@ export default async function handleRenderRequest({
     return prepareResult(renderingRequest);
   } catch (error) {
     const msg = formatExceptionMessage(
-      renderingRequest, error,
+      renderingRequest,
+      error,
       'Caught top level error in handleRenderRequest',
     );
     log.error(msg);
     errorReporter.notify(msg);
     return Promise.reject(error);
   }
-}
+});

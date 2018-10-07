@@ -28,8 +28,7 @@ export function smartTrim(value, maxLength = getConfig().maxDebugSnippetLength) 
   const toRemove = string.length - maxLength;
   const lstrip = Math.ceil(toRemove / 2);
   const rstrip = toRemove - lstrip;
-  return string.substring(0, midpoint - lstrip) + TRUNCATION_FILLER
-    + string.substring(midpoint + rstrip);
+  return string.substring(0, midpoint - lstrip) + TRUNCATION_FILLER + string.substring(midpoint + rstrip);
 }
 
 export function errorResponseResult(msg) {
