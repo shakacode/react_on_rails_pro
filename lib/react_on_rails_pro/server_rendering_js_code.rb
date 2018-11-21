@@ -1,0 +1,35 @@
+# frozen_string_literal: true
+
+module ReactOnRailsPro
+  module ServerRenderingJsCode
+    class << self
+      def ssr_pre_hook_js
+        if ReactOnRailsPro.configuration.ssr_pre_hook_js
+          ReactOnRailsPro.configuration.ssr_pre_hook_js
+        else
+          ''
+        end
+      end
+  
+      def render(props, props_string, rails_context, redux_stores, react_component_name, render_options)
+        # rubocop:disable Layout/IndentHeredoc
+        <<-JS
+        (function() {
+          var railsContext = #{rails_context};
+        #{redux_stores}
+        #{ssr_pre_hook_js}
+          var props = #{props_string};
+          return ReactOnRails.serverRenderReactComponent({
+            name: '#{react_component_name}',
+            domNodeId: '#{render_options.dom_id}',
+            props: props,
+            trace: #{render_options.trace},
+            railsContext: railsContext
+          });
+        })()
+              JS
+        # rubocop:enable Layout/IndentHeredoc
+      end
+    end
+  end
+end
