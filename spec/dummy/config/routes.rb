@@ -41,5 +41,6 @@ Rails.application.routes.draw do
 
   get "shared_redux_store" => "pages#shared_redux_store"
 
-  get "graphql" => "pages#graphql"
+  get "simple_graphql" => "pages#simple_graphql"
+  get "urql_graphql" => "pages#urql_graphql"
 end

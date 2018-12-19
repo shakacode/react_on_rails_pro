@@ -46,3 +46,12 @@ gem "equivalent-xml", github: "mbklein/equivalent-xml"
 gem "launchy"
 gem "selenium-webdriver"
 gem "yard"
+
+
+
+gem "pry"
+gem "pry-byebug"
+gem "pry-doc"
+gem "pry-rails"
+gem "pry-rescue"
+gem "pry-stack_explorer"

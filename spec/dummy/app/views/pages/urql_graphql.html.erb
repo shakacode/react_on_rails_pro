@@ -1,0 +1,29 @@
+<%= react_component("UrqlApp", props: {}, prerender: false, trace: true, id: "urql-react-component-0") %>
+<hr/>
+
+<h1>React Rails GraphQL Example</h1>
+<p>
+  This example demonstrates graphql.<br/><br/>
+</p>
+
+Here's the query:
+<pre>
+{
+  hn {
+    topStories {
+      title
+      id
+      score
+      descendants
+    }
+  }
+}
+</pre>
+
+The endpoint is: https://www.graphqlhub.com/graphql
+<br/>
+You can try this here:
+<a href="https://www.graphqlhub.com/playground?query=%20%7B%0A%20%20%20%20%20%20%20%20hn%20%7B%0A%20%20%20%20%20%20%20%20%20%20topStories%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20title%0A%20%20%20%20%20%20%20%20%20%20%20%20id%0A%20%20%20%20%20%20%20%20%20%20%20%20score%0A%20%20%20%20%20%20%20%20%20%20%20%20descendants%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%7D">www.graphqlhub.com</a>
+<hr/>
+
+<a href="https://github.com/stubailo/microhn/blob/gh-pages/index.html">Inspiration</a>

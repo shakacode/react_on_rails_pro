@@ -1,7 +1,45 @@
-import React from 'react';
-import request from 'axios';
+// Based on example from https://codesandbox.io/s/p5n69p23x0
 
-export default class GraphQL extends React.PureComponent {
+import React from 'react';
+import ReactDOM from 'react-dom';
+
+import { Provider, Client } from 'urql';
+import { Connect, query } from 'urql';
+
+import { query } from 'urql';
+
+const client = new Client({
+  url: 'https://www.graphqlhub.com/graphql',
+});
+
+export const UrqlApp = () => (
+  <Provider client={client}>
+    <Home />
+  </Provider>
+);
+
+ReactDOM.render(<App />, document.getElementById('root'));
+
+const topStoriesQuery = `
+    {
+      hn {
+        topStories {
+          title
+          id
+          score
+          descendants
+        }
+      }
+    }
+    `;
+
+const Home = () => (
+  <Connect query={query(topStoriesQuery)}>
+    {({ loaded, fetching, refetch, data, error, addTodo }) => {}}
+  </Connect>
+);
+
+export default class UrqlApp extends React.PureComponent {
   constructor(props) {
     super(props);
     this.state = { data: {}, error: undefined };
@@ -18,19 +56,6 @@ export default class GraphQL extends React.PureComponent {
       .then(res => this.setState({ data: res.data }))
       .catch(error => this.setState({ error: error }));
   }
-
-  query = `
-    {
-      hn {
-        topStories {
-          title
-          id
-          score
-          descendants
-        }
-      }
-  }
-    `;
 
   render() {
     const { data } = this.state.data;
