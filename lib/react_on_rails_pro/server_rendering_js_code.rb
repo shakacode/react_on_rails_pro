@@ -10,14 +10,14 @@ module ReactOnRailsPro
           ''
         end
       end
-  
+
       def render(props, props_string, rails_context, redux_stores, react_component_name, render_options)
         # rubocop:disable Layout/IndentHeredoc
         <<-JS
         (function() {
           var railsContext = #{rails_context};
-        #{redux_stores}
         #{ssr_pre_hook_js}
+        #{redux_stores}
           var props = #{props_string};
           return ReactOnRails.serverRenderReactComponent({
             name: '#{react_component_name}',
