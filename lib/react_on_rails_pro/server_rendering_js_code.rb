@@ -23,7 +23,6 @@ module ReactOnRailsPro
           });
         })()
         JS
-        # rubocop:enable Layout/IndentHeredoc
       end
     end
   end
