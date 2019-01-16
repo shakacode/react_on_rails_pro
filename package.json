@@ -103,9 +103,7 @@
     "coverageReporters": ["lcov"],
     "resetModules": true,
     "resetMocks": true,
-    "setupFiles": [
-      "./packages/vm-renderer/tests/helper.js"
-    ],
+    "setupFiles": ["./packages/vm-renderer/tests/helper.js"],
     "testEnvironment": "node",
     "transform": {
       "^.+\\.jsx?$": "babel-jest"

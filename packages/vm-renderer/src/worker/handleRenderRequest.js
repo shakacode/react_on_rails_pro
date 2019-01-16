@@ -27,9 +27,9 @@ const TEST_LOCKFILE_THREADING = false;
 
 // See definitions here: https://github.com/npm/lockfile/blob/master/README.md#options
 /*
-* A number of milliseconds to wait for locks to expire before giving up. Only used by
-* lockFile.lock. Poll for opts.wait ms. If the lock is not cleared by the time the wait expires,
-* then it returns with the original error.
+ * A number of milliseconds to wait for locks to expire before giving up. Only used by
+ * lockFile.lock. Poll for opts.wait ms. If the lock is not cleared by the time the wait expires,
+ * then it returns with the original error.
  */
 const LOCKFILE_WAIT = 1000;
 
@@ -40,18 +40,18 @@ const LOCKFILE_WAIT = 1000;
 const LOCKFILE_POLL_PERIOD = 500; // defaults to 100
 
 /*
-* A number of milliseconds before locks are considered to have expired.
+ * A number of milliseconds before locks are considered to have expired.
  */
 const LOCKFILE_STALE = 20000;
 
 /*
-* Used by lock and lockSync. Retry n number of times before giving up.
+ * Used by lock and lockSync. Retry n number of times before giving up.
  */
 const LOCKFILE_RETRIES = 15;
 
 /*
-* Used by lock. Wait n milliseconds before retrying.
-*/
+ * Used by lock. Wait n milliseconds before retrying.
+ */
 const LOCKFILE_RETRY_WAIT = 500;
 
 const lockfileOptions = {
