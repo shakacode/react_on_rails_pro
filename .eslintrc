@@ -2,7 +2,7 @@
 extends:
   - eslint-config-shakacode
   - prettier
-  - prettier-react
+  - prettier/react
 
 globals:
   __DEBUG_SERVER_ERRORS__: true
