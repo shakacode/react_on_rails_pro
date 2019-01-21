@@ -78,7 +78,7 @@
   },
   "scripts": {
     "lint": "eslint --ext .js,.jsx .",
-    "test": "yarn run build:test && rspec",
+    "test": "yarn run build:test && cd .. && rspec",
     "preinstall": "cd ../../.. && yalc publish",
     "postinstall": "yalc link react-on-rails-pro-vm-renderer",
     "build:test": "yarn run build:test:client && yarn run build:test:server",
