@@ -1,6 +1,6 @@
 import cluster from 'cluster';
 
-import { getConfig } from '../shared/configBuilder';
+import { getConfig } from './configBuilder';
 
 export const TRUNCATION_FILLER = '\n... TRUNCATED ...\n';
 
