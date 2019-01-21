@@ -62,8 +62,7 @@
     "fbjs": "^0.8.12",
     "jsdom": "^11.1.0",
     "tape": "^4.7.0",
-    "webpack-dev-server": "^2.6.1",
-    "yalc": "^1.0.0-pre.27"
+    "webpack-dev-server": "^2.6.1"
   },
   "browser": {
     "fs": false
