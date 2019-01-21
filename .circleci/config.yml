@@ -110,9 +110,7 @@ jobs:
       - restore_cache: *restore-package-node-modules-cache
       - run:
           name: prettier
-          command: |
-            cd client
-            yarn start format.listDifferent
+          command: yarn start format.listDifferent
 
 
   # Install Node modules for Renderer package with Yarn and save them to chache.
