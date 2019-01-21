@@ -11,6 +11,7 @@ globals:
 plugins:
   - jest
   - prettier
+
 env:
   browser: true
   node: true
