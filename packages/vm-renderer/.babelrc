@@ -1,13 +1,8 @@
 {
   "presets": [
-    ["env", {
-      "targets": {
-        "node": "current"
-      }
-    }]
+    ["@babel/preset-env", {"useBuiltIns": "entry"}]
   ],
   "plugins": [
-    "transform-flow-strip-types",
-    "transform-runtime"
+    ["@babel/plugin-transform-runtime", {"corejs": 2}]
   ]
 }

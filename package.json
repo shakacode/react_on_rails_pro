@@ -11,20 +11,19 @@
     "doc": "docs"
   },
   "dependencies": {
-    "babel-cli": "6.26.0",
-    "babel-core": "6.26.3",
+    "@babel/cli": "^7.0.0",
+    "@babel/core": "^7.0.0",
+    "@babel/plugin-proposal-class-properties": "^7.0.0",
+    "@babel/plugin-proposal-object-rest-spread": "^7.0.0",
+    "@babel/plugin-transform-runtime": "^7.0.0",
+    "@babel/polyfill": "^7.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "@babel/preset-react": "^7.0.0",
+    "@babel/register": "^7.0.0",
+    "@babel/runtime": "^7.0.0",
     "babel-loader": "8.0.5",
     "babel-plugin-module-resolver": "3.1.2",
-    "babel-plugin-transform-class-properties": "^6.24.1",
-    "babel-plugin-transform-flow-strip-types": "^6.22.0",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "babel-plugin-transform-react-remove-prop-types": "0.4.23",
-    "babel-plugin-transform-runtime": "^6.23.0",
-    "babel-polyfill": "^6.26.0",
-    "babel-preset-env": "1.7.0",
-    "babel-preset-react": "^6.24.1",
-    "babel-register": "^6.26.0",
-    "babel-runtime": "^6.26.0",
     "babelify": "^10.0.0",
     "concurrently": "^4.0.1",
     "console.history": "^1.5.0",
@@ -41,8 +40,9 @@
   },
   "devDependencies": {
     "@babel/core": "^7.2.2",
+    "babel-core": "^7.0.0-bridge.0",
     "babel-eslint": "^10.0.1",
-    "babel-jest": "^23.6.0",
+    "babel-jest": "^23.4.2",
     "babel-plugin-flow-react-proptypes": "24.1.2",
     "babel-plugin-react-transform": "^3.0.0",
     "babel-plugin-typecheck": "^3.9.0",
@@ -67,9 +67,12 @@
     "tape": "^4.6.3",
     "tape-async": "^2.3.0",
     "touch": "^3.1.0",
-    "yalc": "^1.0.0-pre.27"
+    "yalc": "^1.0.0-pre.27",
+    "@babel/preset-flow": "^7.0.0"
   },
-  "files": ["packages/vm-renderer/lib"],
+  "files": [
+    "packages/vm-renderer/lib"
+  ],
   "scripts": {
     "test": "jest packages/vm-renderer/tests/**/*.test.js",
     "clean": "rm -rf packages/vm-renderer/lib",
@@ -91,7 +94,14 @@
     "type": "git",
     "url": "git+https://github.com/shakacode/react_on_rails_pro.git"
   },
-  "keywords": ["react", "webpack", "JavaScript", "Ruby", "on", "Rails"],
+  "keywords": [
+    "react",
+    "webpack",
+    "JavaScript",
+    "Ruby",
+    "on",
+    "Rails"
+  ],
   "author": "justin@shakacode.com",
   "license": "MIT",
   "bugs": {
@@ -100,11 +110,17 @@
   "homepage": "https://github.com/shakacode/react_on_rails_pro#readme",
   "jest": {
     "clearMocks": true,
-    "collectCoverageFrom": ["packages/vm-renderer/tests/**/*.{js,jsx}"],
-    "coverageReporters": ["lcov"],
+    "collectCoverageFrom": [
+      "packages/vm-renderer/tests/**/*.{js,jsx}"
+    ],
+    "coverageReporters": [
+      "lcov"
+    ],
     "resetModules": true,
     "resetMocks": true,
-    "setupFiles": ["./packages/vm-renderer/tests/helper.js"],
+    "setupFiles": [
+      "./packages/vm-renderer/tests/helper.js"
+    ],
     "testEnvironment": "node",
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
