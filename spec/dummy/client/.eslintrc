@@ -1,6 +1,36 @@
 ---
+extends:
+  - eslint-config-shakacode
+  - prettier
+  - prettier/react
 
-extends: eslint-config-shakacode
+globals:
+  __DEBUG_SERVER_ERRORS__: true
+  __SERVER_ERRORS__: true
+
+plugins:
+  - jest
+  - prettier
+
+env:
+  browser: true
+  node: true
+  jest/globals: true
 
 rules:
+  no-console: 0
+
+  # https://github.com/benmosher/eslint-plugin-import/issues/340
+  import/no-extraneous-dependencies: 0
+
+  jest/no-disabled-tests: "warn"
+  jest/no-focused-tests: "error"
+  jest/no-identical-title: "error"
+  jest/prefer-to-have-length: "warn"
+  jest/valid-expect: "error"
+
+  # incompatible with prettier
+  no-mixed-operators: 0
+
   react/forbid-prop-types: 0
+  react/destructuring-assignment: 0

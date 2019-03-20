@@ -1,10 +1,13 @@
 // Common webpack configuration for server bundle
 const { resolve, join } = require('path');
 const webpack = require('webpack');
-const webpackCommon = require('./webpack.common.config');
+
 const { assetLoaderRules } = webpackCommon;
 
 const webpackConfigLoader = require('react-on-rails/webpackConfigLoader');
+
+const webpackCommon = require('./webpack.common.config');
+
 const configPath = resolve('..', 'config');
 const { output } = webpackConfigLoader(configPath);
 

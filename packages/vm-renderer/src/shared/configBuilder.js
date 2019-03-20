@@ -59,10 +59,11 @@ const defaultConfig = {
   // time in minutes between restarting all workers
   allWorkersRestartInterval: env.RENDERER_ALL_WORKERS_RESTART_INTERVAL,
 
-  // time in minutes between each worker restarting when restarting all workers
+  // Time in minutes between each worker restarting when restarting all workers
   delayBetweenIndividualWorkerRestarts: env.RENDERER_DELAY_BETWEEN_INDIVIDUAL_WORKER_RESTARTS,
 
-  maxDebugSnippetLength: MAX_DEBUG_SNIPPET_LENGTH,
+  // Debug snippet length for error reporting
+  maxDebugSnippetLength: env.RENDERER_MAX_DEBUG_SNIPPET_LENGTH || MAX_DEBUG_SNIPPET_LENGTH,
 
   honeybadgerApiKey: env.HONEYBADGER_API_KEY || null,
 

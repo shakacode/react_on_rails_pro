@@ -177,7 +177,9 @@ ${smartTrim(result)}`);
   } catch (e) {
     const exceptionMessage = formatExceptionMessage(renderingRequest, e);
     log.error(`Caught execution error:\n${exceptionMessage}`);
-    errorReporter.notify(exceptionMessage);
+
+    errorReporter.notify(exceptionMessage, { renderingRequest});
+
     return Promise.resolve({ exceptionMessage });
   }
 }
