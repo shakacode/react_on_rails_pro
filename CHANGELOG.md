@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file. Items under
 *Add changes in master not yet tagged.*
 
 ### Fixed
-- Added check to skip pre-render cache for components rendered by `cache_react_component` and `cache_react_component_hash`.
+- Added check to skip pre-render cache for components rendered by `cache_react_component` and `cache_react_component_hash` because this saves on cache storage, thus improving overall performance.
 
 ## [1.4.2] - 2019-05-26
 ### Changed

@@ -27,7 +27,7 @@ module ReactOnRailsProHelper
       ReactOnRailsPro::Cache.fetch_react_component(component_name, raw_options) do
         sanitized_options = raw_options
         sanitized_options[:props] = yield
-        sanitized_options[:dont_cache_prerender] = true
+        sanitized_options[:skip_prerender_cache] = true
         react_component(component_name, sanitized_options)
       end
     end
@@ -54,7 +54,7 @@ module ReactOnRailsProHelper
       ReactOnRailsPro::Cache.fetch_react_component(component_name, raw_options) do
         sanitized_options = raw_options
         sanitized_options[:props] = yield
-        sanitized_options[:dont_cache_prerender] = true
+        sanitized_options[:skip_prerender_cache] = true
         react_component_hash(component_name, sanitized_options)
       end
     end
