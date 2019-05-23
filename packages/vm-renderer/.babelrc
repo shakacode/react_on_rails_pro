@@ -7,7 +7,7 @@
     }]
   ],
   "plugins": [
-    "@babel/transform-flow-strip-types",
-    "@babel/transform-runtime"
+    "@babel/plugin-transform-flow-strip-types",
+    "@babel/plugin-transform-runtime"
   ]
 }
