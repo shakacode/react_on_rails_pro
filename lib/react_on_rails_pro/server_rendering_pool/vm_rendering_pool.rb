@@ -107,6 +107,10 @@ module ReactOnRailsPro
             return eval_js(js_code, render_options, send_bundle: true)
           when "412"
             raise ReactOnRailsPro::Error, "Renderer version does not match gem version"
+          when "503"
+            # TODO: This is the temporary change until the problem will be investigated
+            # https://github.com/shakacode/react_on_rails_pro/issues/98
+            fallback_exec_js(js_code, render_options)
           else
             raise ReactOnRailsPro::Error, "Unknown response code from renderer: #{response.code}:\n#{response.body}"
           end
