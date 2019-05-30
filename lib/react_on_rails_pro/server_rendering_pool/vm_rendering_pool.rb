@@ -73,6 +73,7 @@ module ReactOnRailsPro
             .exec_server_render_js(js_code, render_options, self)
         end
 
+        # rubocop:disable Metrics/CyclomaticComplexity
         def eval_js(js_code, render_options, send_bundle: false)
           ReactOnRailsPro::ServerRenderingPool::ProRendering
             .set_request_digest_on_render_options(js_code, render_options)
@@ -117,6 +118,7 @@ module ReactOnRailsPro
         rescue Errno::ECONNREFUSED
           fallback_exec_js(js_code, render_options)
         end
+        # rubocop:enable Metrics/CyclomaticComplexity
 
         def fallback_exec_js(js_code, render_options)
           unless ReactOnRailsPro.configuration.renderer_use_fallback_exec_js
