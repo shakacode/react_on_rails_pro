@@ -137,6 +137,7 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-dummy-app-node-modules-cache
       - run: *install-yarn-link-source
+      - run: *install-yarn-link-destination
       - run: *install-dummy-app-node-modules
       - save_cache:
           name: Save spec/dummy/client/node_modules to cache
@@ -186,6 +187,7 @@ jobs:
       - run: *print-system-info
       - run: *install-yarn-link-source
       - restore_cache: *restore-dummy-app-node-modules-cache
+      - run: *install-yarn-link-destination
       - run: *install-dummy-app-node-modules
       - run:
           name: Build test bundles for dummy app
@@ -243,10 +245,10 @@ jobs:
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
       - run: *install-dummy-app-ruby-gems
       - run: *install-package-node-modules
-      - run: *install-dummy-app-node-modules
       - run: *install-latest-chrome
       - run: *install-yarn-link-source
       - run: *install-yarn-link-destination
+      - run: *install-dummy-app-node-modules
       - run:
           name: Run Node renderer in a background
           command: cd spec/dummy && yarn run vm-renderer
