@@ -356,7 +356,6 @@ DEPENDENCIES
   sass-rails
   scss_lint
   sdoc
-  selenium-webdriver
   spring
   sqlite3
   turbolinks
