@@ -91,7 +91,7 @@ jobs:
   # Lint all
   lint-js-and-ruby:
     docker:
-      - image: &docker_image circleci/ruby:2.4.4-stretch-node
+      - image: &docker_image circleci/ruby:2.5-node-browsers
     steps:
       - checkout
       - run: *print-system-info
