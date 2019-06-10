@@ -42,7 +42,7 @@ gem "rspec-rails"
 gem "rspec_junit_formatter"
 # Trouble installing on Sierra
 # gem "capybara-webkit"
-gem "chromedriver-helper"
+gem "webdrivers"
 gem "commonmarker"
 gem "equivalent-xml", github: "mbklein/equivalent-xml"
 gem "launchy"

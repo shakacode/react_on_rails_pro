@@ -61,7 +61,7 @@ end
 group :test do
   gem "capybara"
   gem "capybara-screenshot"
-  gem "chromedriver-helper"
+  gem "webdrivers"
   gem "coveralls", require: false
   gem "equivalent-xml", github: "mbklein/equivalent-xml"
   gem "generator_spec"
