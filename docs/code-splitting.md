@@ -111,6 +111,17 @@ Component = DynamicComponent;
 export default Component;
 ```
 
+Now, if we want to use this component we should import it like this:
+```jsx
+import Map from './components/Map'
+```
+in this case, webpack will load `index.jsx` instead of `Map.jsx` if not some other special order specified.
+
+Also, `IS_SSR=true` must added when creating server side bundle, like this:
+```
+NODE_ENV=production IS_SSR=true webpack --config webpack.config.ssr.prod.js
+```
+
 The new chunk `Map.chunk.js` will be automatically extracted due dynamic code-splitting feature.
 
 With this configuration, server rendering will work with static components, and client with dynamic components.
