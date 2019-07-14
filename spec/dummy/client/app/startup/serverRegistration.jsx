@@ -44,7 +44,8 @@ import ImageExample from '../components/ImageExample';
 
 import SetTimeoutLoggingApp from './SetTimeoutLoggingApp';
 
-import UrqlApp from './UrqlApp';
+//import UrqlApp from './UrqlApp';
+import GraphQL from '../graphql/server';
 
 ReactOnRails.register({
   BrokenApp,
@@ -63,7 +64,8 @@ ReactOnRails.register({
   ReactHelmetApp,
   ImageExample,
   SetTimeoutLoggingApp,
-  UrqlApp,
+  GraphQL,
+  //UrqlApp,
 });
 
 ReactOnRails.registerStore({

@@ -3,8 +3,8 @@ import 'es5-shim';
 
 import ReactOnRails from 'react-on-rails';
 
-import GraphQL from './GraphQL';
-import UrqlApp from './UrqlApp';
+import GraphQL from '../graphql/client';
+//import UrqlApp from './UrqlApp';
 import HelloWorld from '../components/HelloWorld';
 import HelloWorldWithLogAndThrow from '../components/HelloWorldWithLogAndThrow';
 import HelloWorldES5 from '../components/HelloWorldES5';
@@ -59,7 +59,7 @@ ReactOnRails.register({
   SetTimeoutLoggingApp,
   ComponentWithLodashApp,
   GraphQL,
-  UrqlApp,
+  //UrqlApp,
 });
 
 ReactOnRails.registerStore({

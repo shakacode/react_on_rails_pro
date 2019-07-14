@@ -50,7 +50,7 @@ gem "yard"
 
 
 gem "pry"
-gem "pry-byebug"
+#gem "pry-byebug"
 gem "pry-doc"
 gem "pry-rails"
 gem "pry-rescue"

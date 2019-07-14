@@ -43,7 +43,7 @@ group :development, :test do
   gem "awesome_print"
   gem "listen"
   gem "pry"
-  gem "pry-byebug"
+  #gem "pry-byebug"
   gem "pry-doc"
   gem "pry-rails"
   gem "pry-rescue"
