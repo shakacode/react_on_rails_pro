@@ -10,9 +10,13 @@ const { output } = webpackConfigLoader(configPath);
 
 const devBuild = process.env.NODE_ENV !== 'production';
 const nodeEnv = devBuild ? 'development' : 'production';
+const isForNodeRenderer = true; // process.env.RENDERER_LIBRARY_TARGET === 'commonjs2';
 
 module.exports = {
-
+  // Warning!
+  // `target: 'node'` and `libraryTarget: 'commonjs2'` can't be used if fallback to ExecJS enabled.
+  // ExecJS can't evaluate node-specific code.
+  target: isForNodeRenderer ? 'node' : 'web',
   // the project dir
   context: __dirname,
   entry: [
@@ -28,6 +32,7 @@ module.exports = {
     // Leading and trailing slashes ARE necessary.
     publicPath: output.publicPath,
     path: output.path,
+    libraryTarget: isForNodeRenderer ? 'commonjs2' : 'var',
   },
   resolve: {
     extensions: ['.js', '.jsx'],

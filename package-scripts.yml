@@ -1,4 +1,24 @@
 scripts:
+  test:
+    default:
+      description: Run all JS tests
+      script: jest packages/vm-renderer/**/*.test.js
+    debug:
+      description: Debug all JS tests
+      script: ndb jest --runInBand packages/vm-renderer/**/*.test.js
+  check:
+    description: Run all checks
+    script: nps lint && nps format.listDifferent && nps test
+  fix:
+    description: Run all code fixes before committing
+    script: nps eslint.fix && nps format
+  vm-renderer:
+    default:
+      description:
+      script: jest packages/vm-renderer/**/*.test.js
+    debug:
+      description: Debug VM Renderer
+      script: rm -rf /tmp/react-on-rails-pro-vm-renderer-bundles && RENDERER_LOG_LEVEL=info NODE_DEBUG=ROR node -r source-map-support/register packages/vm-renderer/src/default-vm-renderer.js
   lint:
     description: Run all linters (eslint)
     script: concurrently --prefix "[{name}]" --names "ESLINT" -c "blue,yellow,magenta,orange" "nps eslint"
