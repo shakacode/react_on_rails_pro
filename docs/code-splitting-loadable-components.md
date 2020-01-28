@@ -17,18 +17,19 @@ yarn add  @loadable/babel-plugin @loadable/component @loadable/server @loadable/
 ```
 
 Short description:
-`@loadable/babel-plugin` - The plugin transforms your code to be ready for Server Side Rendering. 
+- `@loadable/babel-plugin` - The plugin transforms your code to be ready for Server Side Rendering. 
 https://loadable-components.com/docs/babel-plugin/#transformation
 
-`@loadable/component` - Main library for creating loadable components.
-`@loadable/server` - Has functions for collecting chunks and provide style, script, link tags for the server.
-`@loadable/webpack-plugin` - The plugin to create a stats file with all chunks, assets information.
+- `@loadable/component` - Main library for creating loadable components.
+- `@loadable/server` - Has functions for collecting chunks and provide style, script, link tags for the server.
+- `@loadable/webpack-plugin` - The plugin to create a stats file with all chunks, assets information.
 
 
 ## Configuration
 
 The configuration is much less than for the previous way with `react-loadable`.
 These instructions mainly repeat the steps from the official doc, but with some additions specifically to react_on_rails_pro.
+
 https://loadable-components.com/docs/getting-started/
 
 ### Webpack
@@ -48,10 +49,10 @@ There are only two things that you need to add in the server config:
 
 Here is the explanation:
 
-`target: 'node'` is required to be able to run the server bundle with the dynamic import logic on nodejs.
+- `target: 'node'` is required to be able to run the server bundle with the dynamic import logic on nodejs.
 If that is not done, webpack will add browser-specific functions to fetch the chunks into the bundle, which throws an error on server-rendering.
 
-`new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })`
+- `new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 })`
 The react_on_rails_pro vm-renderer expects only one single server-bundle. In other words, we can't and don't need to split the server bundle.
 
 #### Client config
