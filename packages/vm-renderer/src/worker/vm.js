@@ -71,6 +71,7 @@ exports.buildVM = async function buildVM(filePath) {
     vmBundleFilePath = undefined;
     // for `node` targeted bundles it needs to `require`
     // being available in the context
+    // https://github.com/nodejs/help/issues/761#issuecomment-318910249
     context = vm.createContext({ require });
     // Create explicit reference to global context, just in case (some libs can use it):
     vm.runInContext('global = this', context);
