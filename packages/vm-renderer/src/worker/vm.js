@@ -6,6 +6,7 @@
 const fs = require('fs');
 const path = require('path');
 const vm = require('vm');
+const m = require('module');
 const cluster = require('cluster');
 const { promisify } = require('util');
 
@@ -69,10 +70,7 @@ exports.buildVM = async function buildVM(filePath) {
 
   try {
     vmBundleFilePath = undefined;
-    // for `node` targeted bundles it needs to `require`
-    // being available in the context
-    // https://github.com/nodejs/help/issues/761#issuecomment-318910249
-    context = vm.createContext({ require });
+    context = vm.createContext();
     // Create explicit reference to global context, just in case (some libs can use it):
     vm.runInContext('global = this', context);
 
@@ -116,7 +114,7 @@ exports.buildVM = async function buildVM(filePath) {
 
     // Run bundle code in created context:
     const bundleContents = await readFileAsync(filePath, 'utf8');
-    vm.runInContext(bundleContents, context);
+    vm.runInContext(m.wrap(bundleContents), context)(exports, require, module, __filename, __dirname);
 
     // !isMaster check is required for JS unit testing:
     if (!cluster.isMaster) {
