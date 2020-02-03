@@ -4,12 +4,14 @@
  */
 
 const path = require('path');
+const fs = require('fs');
 const cluster = require('cluster');
 const express = require('express');
 const busBoy = require('express-busboy');
 const log = require('./shared/log');
 const packageJson = require('./shared/packageJson');
 const { buildConfig, getConfig } = require('./shared/configBuilder');
+const uploadAsset = require('./worker/uploadAsset');
 const checkProtocolVersion = require('./worker/checkProtocolVersionHandler');
 const authenticate = require('./worker/authHandler');
 const handleRenderRequest = require('./worker/handleRenderRequest');
@@ -35,7 +37,7 @@ module.exports = function run(config) {
   // getConfig():
   buildConfig(config);
 
-  const { bundlePath, port } = getConfig();
+  const { bundlePath, uploadAssetPath, port } = getConfig();
 
   const app = express();
 
@@ -92,6 +94,32 @@ module.exports = function run(config) {
       log.error(`UNHANDLED TOP LEVEL error ${exceptionMessage}`);
       errorReporter.notify(exceptionMessage);
       setResponse(errorResponseResult(exceptionMessage), res);
+    }
+  });
+
+  // There can be additional files that might be required
+  // in the runtime. Since remote renderer doesn't contain
+  // any assets, they must be uploaded manually.
+  app.route('/upload-asset').post((req, res) => {
+    const { asset } = req.files;
+    log.info(`Uploading asset ${asset.filename} to ${uploadAssetPath}`);
+    try {
+      fs.copyFileSync(asset.file, path.join(uploadAssetPath, asset.filename));
+      log.info('OK');
+      setResponse(
+        {
+          status: 200,
+          data: {
+            status: 'Uploaded',
+          },
+          headers: {},
+        },
+        res,
+      );
+    } catch (err) {
+      const message = `ERROR when trying to copy asset. ${err}`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);
     }
   });
 

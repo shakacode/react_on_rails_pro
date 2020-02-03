@@ -4,6 +4,7 @@
  */
 const fs = require('fs');
 const os = require('os');
+const path = require('path');
 
 const log = require('./log');
 const { configureLogger } = require('./log');
@@ -11,6 +12,9 @@ const errorReporter = require('./errorReporter');
 const packageJson = require('./packageJson');
 
 const DEFAULT_TMP_DIR = '/tmp/react-on-rails-pro-vm-renderer-bundles';
+// usually remote renderers are on staging or production,
+// so, use production folder always
+const DEFAULT_UPLOAD_ASSET_DIR = path.resolve('.', 'public', 'webpack', 'production');
 const DEFAULT_PORT = 3800;
 const DEFAULT_LOG_LEVEL = 'info';
 const { env } = process;
@@ -36,6 +40,13 @@ function getTmpDir() {
   return DEFAULT_TMP_DIR;
 }
 
+function getUploadAssetPath() {
+  if (!fs.existsSync(DEFAULT_UPLOAD_ASSET_DIR)) {
+    fs.mkdirSync(DEFAULT_UPLOAD_ASSET_DIR, { recursive: true })
+  }
+  return DEFAULT_UPLOAD_ASSET_DIR
+}
+
 function defaultWorkersCount() {
   return os.cpus().length - 1 || 1;
 }
@@ -50,6 +61,8 @@ const defaultConfig = {
 
   // Use directory DEFAULT_TMP_DIR if none provided
   bundlePath: env.RENDERER_BUNDLE_PATH || getTmpDir(),
+
+  uploadAssetPath: env.RENDERER_UPLOAD_ASSET_PATH || getUploadAssetPath(),
 
   // Workers count defaults to number of CPUs minus 1
   workersCount: env.RENDERER_WORKERS_COUNT || defaultWorkersCount(),
