@@ -37,7 +37,7 @@ module ReactOnRailsPro
     attr_accessor :renderer_url, :renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
-                  :serializer_globs, :ssr_pre_hook_js
+                  :serializer_globs, :ssr_pre_hook_js, :copy_assets
 
     def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil,
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
