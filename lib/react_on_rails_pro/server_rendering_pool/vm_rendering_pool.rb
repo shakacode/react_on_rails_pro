@@ -64,30 +64,14 @@ module ReactOnRailsPro
             .exec_server_render_js(js_code, render_options, self)
         end
 
-        def request_form_data(js_code, send_bundle)
-          form_data = {
-            "renderingRequest" => js_code,
-            "gemVersion" => ReactOnRailsPro::VERSION,
-            "protocolVersion" => "1.0.0",
-            "password" => ReactOnRailsPro.configuration.renderer_password
-          }
-
-          if send_bundle
-            form_data["bundle"] = UploadIO.new(
-              File.new(ReactOnRails::Utils.server_bundle_js_file_path),
-              ReactOnRails::Utils.server_bundle_js_file_path
-            )
-          end
-          form_data
-        end
-
         def eval_js(js_code, render_options, send_bundle: false)
           ReactOnRailsPro::ServerRenderingPool::ProRendering
             .set_request_digest_on_render_options(js_code, render_options)
 
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{render_options.request_digest}"
 
-          request = Net::HTTP::Post::Multipart.new(path, request_form_data(js_code, send_bundle))
+          form_data = ReactOnRailsPro::Internal::FormData.render_code(js_code, send_bundle)
+          request = Net::HTTP::Post::Multipart.new(path, form_data)
 
           begin
             response = connection.request(request)
