@@ -17,9 +17,12 @@ module ReactOnRailsPro
         form
       end
 
-      def self.upload_asset(path)
+      # content_type is the temp param
+      # will be removed later
+      def self.upload_asset(path, content_type)
         form = form_data
-        form["asset"] = UploadIO.new(path)
+        form["asset"] = UploadIO.new(path, content_type)
+        form
       end
 
       private
