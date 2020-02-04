@@ -14,21 +14,12 @@ module ReactOnRailsPro
       class << self
         attr_accessor :bundle_update_utc_timestamp
 
-        def reset_pool
-          Rails.logger.info { "[ReactOnRailsPro] Setting up connection VM Renderer at #{renderer_url_base}" }
+        def connection
+          ReactOnRailsPro::Internal::Connection.instance(renderer_url_base)
+        end
 
-          # NOTE: there are multiple similar gems
-          # We use https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http.rb
-          # Not: https://github.com/drbrain/net-http-persistent
-          @connection = PersistentHTTP.new(
-            name: "ReactOnRailsProVmRendererClient",
-            logger: Rails.logger,
-            pool_size: ReactOnRailsPro.configuration.renderer_http_pool_size,
-            pool_timeout: ReactOnRailsPro.configuration.renderer_http_pool_timeout,
-            warn_timeout: ReactOnRailsPro.configuration.renderer_http_pool_warn_timeout,
-            force_retry: true,
-            url: ReactOnRailsPro.configuration.renderer_url
-          )
+        def reset_pool
+          ReactOnRailsPro::Internal::Connection.reset_connection(renderer_url_base)
         end
 
         def reset_pool_if_server_bundle_was_modified
@@ -99,7 +90,7 @@ module ReactOnRailsPro
           request = Net::HTTP::Post::Multipart.new(path, request_form_data(js_code, send_bundle))
 
           begin
-            response = @connection.request(request)
+            response = connection.request(request)
           rescue StandardError => e
             raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer at #{renderer_url_base}.\n"\
                   "Original error:\n#{e}"
