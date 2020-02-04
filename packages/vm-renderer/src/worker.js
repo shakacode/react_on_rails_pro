@@ -11,7 +11,6 @@ const busBoy = require('express-busboy');
 const log = require('./shared/log');
 const packageJson = require('./shared/packageJson');
 const { buildConfig, getConfig } = require('./shared/configBuilder');
-const uploadAsset = require('./worker/uploadAsset');
 const checkProtocolVersion = require('./worker/checkProtocolVersionHandler');
 const authenticate = require('./worker/authHandler');
 const handleRenderRequest = require('./worker/handleRenderRequest');
