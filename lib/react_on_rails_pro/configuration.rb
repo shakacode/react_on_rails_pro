@@ -18,7 +18,8 @@ module ReactOnRailsPro
       renderer_password: nil,
       tracing: Configuration::DEFAULT_TRACING,
       serializer_globs: Configuration::DEFAULT_SERIALIZER_GLOBS,
-      ssr_pre_hook_js: nil
+      ssr_pre_hook_js: nil,
+      copy_assets: nil
     )
   end
 
@@ -42,7 +43,7 @@ module ReactOnRailsPro
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
                    renderer_http_pool_warn_timeout: nil, tracing: nil,
-                   serializer_globs: nil, ssr_pre_hook_js: nil)
+                   serializer_globs: nil, ssr_pre_hook_js: nil, copy_assets: nil)
       self.renderer_url = renderer_url
       self.renderer_password = renderer_password
       self.server_renderer = server_renderer
@@ -54,6 +55,7 @@ module ReactOnRailsPro
       self.tracing = tracing
       self.serializer_globs = serializer_globs
       self.ssr_pre_hook_js = ssr_pre_hook_js
+      self.copy_assets = copy_assets
     end
 
     def setup_config_values
