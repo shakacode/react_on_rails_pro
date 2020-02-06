@@ -12,12 +12,12 @@ module ReactOnRailsPro
 
         private :new
 
-        def reset_connection(renderer_url_base)
-          @instance = connection(renderer_url_base)
+        def reset_connection
+          @instance = connection
         end
 
-        def connection(renderer_url_base)
-          Rails.logger.info { "[ReactOnRailsPro] Setting up connection VM Renderer at #{renderer_url_base}" }
+        def connection
+          Rails.logger.info { "[ReactOnRailsPro] Setting up connection VM Renderer at TODO" }
 
           # NOTE: there are multiple similar gems
           # We use https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http.rb

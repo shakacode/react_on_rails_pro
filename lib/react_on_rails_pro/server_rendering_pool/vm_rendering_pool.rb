@@ -15,11 +15,11 @@ module ReactOnRailsPro
         attr_accessor :bundle_update_utc_timestamp
 
         def connection
-          ReactOnRailsPro::Internal::Connection.instance(renderer_url_base)
+          ReactOnRailsPro::Internal::Connection.instance
         end
 
         def reset_pool
-          ReactOnRailsPro::Internal::Connection.reset_connection(renderer_url_base)
+          ReactOnRailsPro::Internal::Connection.reset_connection
         end
 
         def reset_pool_if_server_bundle_was_modified
