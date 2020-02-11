@@ -42,9 +42,9 @@ function getTmpDir() {
 
 function getUploadAssetPath() {
   if (!fs.existsSync(DEFAULT_UPLOAD_ASSET_DIR)) {
-    fs.mkdirSync(DEFAULT_UPLOAD_ASSET_DIR, { recursive: true })
+    fs.mkdirSync(DEFAULT_UPLOAD_ASSET_DIR, { recursive: true });
   }
-  return DEFAULT_UPLOAD_ASSET_DIR
+  return DEFAULT_UPLOAD_ASSET_DIR;
 }
 
 function defaultWorkersCount() {
