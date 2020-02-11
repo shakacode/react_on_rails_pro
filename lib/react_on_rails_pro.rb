@@ -2,8 +2,7 @@
 
 require "rails"
 
-require "react_on_rails_pro/internal/connection"
-require "react_on_rails_pro/internal/form_data"
+require "react_on_rails_pro/request_helper"
 require "react_on_rails_pro/version"
 require "react_on_rails_pro/engine"
 require "react_on_rails_pro/error"

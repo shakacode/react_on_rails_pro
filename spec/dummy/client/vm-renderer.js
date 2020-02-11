@@ -27,6 +27,8 @@ const config = {
 
   // Uncomment and change value for testing the honeybadger API integration
   honeybadgerApiKey: 'a602365c',
+
+  uploadAssetPath: path.resolve(__dirname, '..', 'public', 'webpack', 'production'),
 };
 
 // Renderer detects a total number of CPUs on virtual hostings like Heroky or CircleCI instead

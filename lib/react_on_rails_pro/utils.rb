@@ -14,17 +14,7 @@ module ReactOnRailsPro
 
     def self.copy_assets
       ReactOnRailsPro.configuration.copy_assets.each do |asset|
-        connection = ReactOnRailsPro::Internal::Connection.instance
-        form = ReactOnRailsPro::Internal::FormData.upload_asset(asset[:filepath].to_s, asset[:content_type])
-
-        request = Net::HTTP::Post::Multipart.new('/upload-asset', form)
-
-        begin
-          response = connection.request(request)
-        rescue StandardError => e
-          raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer.\n"\
-                "Original error:\n#{e}"
-        end
+        ReactOnRailsPro::RequestHelper.upload_asset(asset[:filepath].to_s, asset[:content_type])
       end
     end
 

@@ -1,10 +1,5 @@
 # frozen_string_literal: true
 
-require "net/http"
-require "net/http/post/multipart"
-require "uri"
-require "persistent_http"
-
 module ReactOnRailsPro
   module ServerRenderingPool
     # This implementation of the rendering pool uses NodeJS to execute javasript code
@@ -14,12 +9,8 @@ module ReactOnRailsPro
       class << self
         attr_accessor :bundle_update_utc_timestamp
 
-        def connection
-          ReactOnRailsPro::Internal::Connection.instance
-        end
-
         def reset_pool
-          ReactOnRailsPro::Internal::Connection.reset_connection
+          ReactOnRailsPro::RequestHelper.reset_connection
         end
 
         def reset_pool_if_server_bundle_was_modified
@@ -70,15 +61,7 @@ module ReactOnRailsPro
 
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{render_options.request_digest}"
 
-          form_data = ReactOnRailsPro::Internal::FormData.render_code(js_code, send_bundle)
-          request = Net::HTTP::Post::Multipart.new(path, form_data)
-
-          begin
-            response = connection.request(request)
-          rescue StandardError => e
-            raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer at #{renderer_url_base}.\n"\
-                  "Original error:\n#{e}"
-          end
+          response = ReactOnRailsPro::RequestHelper.render_code(path, js_code, send_bundle)
 
           case response.code
           when "200"
@@ -89,10 +72,6 @@ module ReactOnRailsPro
           when "400"
             raise ReactOnRailsPro::Error,
                   "Renderer unhandled error at the VM level: #{response.code}:\n#{response.body}"
-          when "412"
-            # 412 is a protocol error, meaning the server and renderer are running incompatible versions
-            # of React on Rails.
-            raise ReactOnRailsPro::Error, response.body
           else
             raise ReactOnRailsPro::Error, "Unknown response code from renderer: #{response.code}:\n#{response.body}"
           end
