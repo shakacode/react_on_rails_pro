@@ -6,17 +6,17 @@ describe "Upload asset" do
 
   let(:fixture_path) { File.expand_path('./spec/fixtures/sample.json') }
   let(:non_exist_fixture_path) { File.expand_path('./spec/fixtures/sample99.json') }
-  let(:asset_path) { File.expand_path('./public/webpack/production/sample.json') }
-  let!(:orig_renderer_url) { ReactOnRailsPro.configuration.renderer_url }
+  let(:asset_path) { '/sample.json' }
+  let(:asset_path_expanded) { File.expand_path("./public/webpack/production#{asset_path}") }
 
   before(:each) do
-    File.delete(asset_path) if File.exist?(asset_path)
+    File.delete(asset_path_expanded) if File.exist?(asset_path_expanded)
   end
 
   it "copying asset to public folder" do
-    expect(File).not_to exist(asset_path)
+    expect(asset_exist?).to eq(false)
     ReactOnRailsPro::RequestHelper.upload_asset(fixture_path, "application/json")
-    expect(File).to exist(asset_path)
+    expect(asset_exist?).to eq(true)
   end
 
   it "throwrs error if asset not found" do
@@ -33,5 +33,9 @@ describe "Upload asset" do
       ReactOnRailsPro::RequestHelper.upload_asset(fixture_path, "application/json")
     end.to raise_exception(ReactOnRailsPro::Error)
     WebMock.allow_net_connect!
+  end
+
+  def asset_exist?
+    ReactOnRailsPro::RequestHelper.asset_exists_on_vm_renderer?(asset_path)
   end
 end

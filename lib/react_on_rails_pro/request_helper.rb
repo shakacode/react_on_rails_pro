@@ -25,6 +25,12 @@ module ReactOnRailsPro
       perform_request('/upload-asset', form_with_asset(asset_path, content_type))
     end
 
+    def self.asset_exists_on_vm_renderer?(file_path)
+      Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on vm-renderer: #{file_path}" }
+      response = perform_request("/asset-exists?filePath=#{file_path}", form_data)
+      JSON.parse(response.body)["exists"]
+    end
+
     private 
 
     def self.connection

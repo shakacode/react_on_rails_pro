@@ -51,21 +51,37 @@ module.exports = function run(config) {
     },
   });
 
-  //
-  app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post((req, res) => {
+  const isProtocolVersionMatch = (req, res) => {
     // Check protocol version
     const protocolVersionCheckingResult = checkProtocolVersion(req);
 
     if (typeof protocolVersionCheckingResult === 'object') {
       setResponse(protocolVersionCheckingResult, res);
-      return;
+      return false;
     }
 
+    return true; 
+  }
+
+  const isAuthenticated = (req, res) => {
     // Authenticate Ruby client
     const authResult = authenticate(req);
 
     if (typeof authResult === 'object') {
       setResponse(authResult, res);
+      return false;
+    }
+
+    return true;
+  }
+
+  //
+  app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post((req, res) => {
+    if(!isProtocolVersionMatch(req, res)) {
+      return;
+    }
+
+    if(!isAuthenticated(req, res)) {
       return;
     }
 
@@ -100,6 +116,14 @@ module.exports = function run(config) {
   // in the runtime. Since remote renderer doesn't contain
   // any assets, they must be uploaded manually.
   app.route('/upload-asset').post((req, res) => {
+    if(!isProtocolVersionMatch(req, res)) {
+      return;
+    }
+
+    if(!isAuthenticated(req, res)) {
+      return;
+    }
+
     const { asset } = req.files;
     log.info(`Uploading asset ${asset.filename} to ${uploadAssetPath}`);
     try {
@@ -119,6 +143,33 @@ module.exports = function run(config) {
       const message = `ERROR when trying to copy asset. ${err}`;
       log.info(message);
       setResponse(errorResponseResult(message), res);
+    }
+  });
+
+  // Checks if file exist
+  app.route('/asset-exists').post((req, res) => {
+    if(!isAuthenticated(req, res)) {
+      return;
+    }
+
+    const { filePath } = req.query
+
+    if(!filePath) {
+      const message = `ERROR: filePath param not provided`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);
+      return;
+    }
+
+    const assetPath = path.join(uploadAssetPath, filePath);
+
+    log.info(`Checking that ${assetPath} exists`)
+    if(fs.existsSync(assetPath)) {
+      log.info(`File: ${assetPath} exists`)
+      setResponse({ status: 200, data: { exists: true }, headers: {} }, res);
+    } else {
+      log.info(`File: ${assetPath} not exists`)
+      setResponse({ status: 200, data: { exists: false }, headers: {} }, res);
     }
   });
 
