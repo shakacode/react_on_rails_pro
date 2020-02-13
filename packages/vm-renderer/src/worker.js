@@ -60,8 +60,8 @@ module.exports = function run(config) {
       return false;
     }
 
-    return true; 
-  }
+    return true;
+  };
 
   const isAuthenticated = (req, res) => {
     // Authenticate Ruby client
@@ -73,15 +73,15 @@ module.exports = function run(config) {
     }
 
     return true;
-  }
+  };
 
   //
   app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post((req, res) => {
-    if(!isProtocolVersionMatch(req, res)) {
+    if (!isProtocolVersionMatch(req, res)) {
       return;
     }
 
-    if(!isAuthenticated(req, res)) {
+    if (!isAuthenticated(req, res)) {
       return;
     }
 
@@ -116,11 +116,11 @@ module.exports = function run(config) {
   // in the runtime. Since remote renderer doesn't contain
   // any assets, they must be uploaded manually.
   app.route('/upload-asset').post((req, res) => {
-    if(!isProtocolVersionMatch(req, res)) {
+    if (!isProtocolVersionMatch(req, res)) {
       return;
     }
 
-    if(!isAuthenticated(req, res)) {
+    if (!isAuthenticated(req, res)) {
       return;
     }
 
@@ -148,13 +148,13 @@ module.exports = function run(config) {
 
   // Checks if file exist
   app.route('/asset-exists').post((req, res) => {
-    if(!isAuthenticated(req, res)) {
+    if (!isAuthenticated(req, res)) {
       return;
     }
 
-    const { filePath } = req.query
+    const { filePath } = req.query;
 
-    if(!filePath) {
+    if (!filePath) {
       const message = `ERROR: filePath param not provided`;
       log.info(message);
       setResponse(errorResponseResult(message), res);
@@ -163,12 +163,12 @@ module.exports = function run(config) {
 
     const assetPath = path.join(uploadAssetPath, filePath);
 
-    log.info(`Checking that ${assetPath} exists`)
-    if(fs.existsSync(assetPath)) {
-      log.info(`File: ${assetPath} exists`)
+    log.info(`Checking that ${assetPath} exists`);
+    if (fs.existsSync(assetPath)) {
+      log.info(`File: ${assetPath} exists`);
       setResponse({ status: 200, data: { exists: true }, headers: {} }, res);
     } else {
-      log.info(`File: ${assetPath} not exists`)
+      log.info(`File: ${assetPath} not exists`);
       setResponse({ status: 200, data: { exists: false }, headers: {} }, res);
     }
   });
