@@ -78,5 +78,14 @@ ReactOnRailsPro.configure do |config|
   # exposed in the server rendering webpack bundle. This code is visible in the tracing of the calls
   # to do server rendering. Default is nil.
   config.ssr_pre_hook_js = "SomeLibrary.clearCache();" 
+
+  # In case if there is remote vm renderer exist, it might require some 
+  # extra assets that not included in the bundle, but present on the main web-server.
+  # If this option specified and remote vm renderer is used (not localhost) 
+  # the assets will be copied over to vm-renderer instance right after assets:precompile task. 
+  config.copy_assets = [
+    { filepath: Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+      content_type: "application/json" }
+  ]
 end
 ```
