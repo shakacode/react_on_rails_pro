@@ -14,6 +14,7 @@ module ReactOnRailsPro
 
     def self.copy_assets
       return if ReactOnRailsPro.configuration.copy_assets.nil?
+
       ReactOnRailsPro.configuration.copy_assets.each do |asset|
         ReactOnRailsPro::RequestHelper.upload_asset(asset[:filepath].to_s, asset[:content_type])
       end

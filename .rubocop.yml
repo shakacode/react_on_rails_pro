@@ -37,7 +37,7 @@ Naming/FileName:
     - 'spec/dummy/Gemfile'
     - 'spec/dummy_no_webpacker/Gemfile'
 
-Metrics/LineLength:
+Layout/LineLength:
   Max: 120
 
 Style/StringLiterals:
@@ -50,7 +50,7 @@ Lint/AssignmentInCondition:
   Exclude:
     - 'spec/dummy/bin/spring'
 
-Lint/HandleExceptions:
+Lint/SuppressedException:
   Exclude:
     - 'spec/dummy/bin/rails'
     - 'spec/dummy/bin/rake'
