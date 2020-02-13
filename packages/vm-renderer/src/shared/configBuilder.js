@@ -14,7 +14,7 @@ const packageJson = require('./packageJson');
 const DEFAULT_TMP_DIR = '/tmp/react-on-rails-pro-vm-renderer-bundles';
 // usually remote renderers are on staging or production,
 // so, use production folder always
-const DEFAULT_UPLOAD_ASSET_DIR = path.resolve('.', 'public', 'webpack', 'production');
+const DEFAULT_UPLOAD_ASSET_DIR = path.resolve('..', 'public', 'webpack', 'production');
 const DEFAULT_PORT = 3800;
 const DEFAULT_LOG_LEVEL = 'info';
 const { env } = process;
