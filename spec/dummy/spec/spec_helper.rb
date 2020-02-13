@@ -22,7 +22,7 @@ require "pry"
 require "pry-byebug"
 require "pry-stack_explorer"
 require "pry-doc"
-require 'webmock/rspec'
+require "webmock/rspec"
 WebMock.allow_net_connect!
 
 RSpec.configure do |config|

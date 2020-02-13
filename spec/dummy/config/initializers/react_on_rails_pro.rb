@@ -25,8 +25,8 @@ ReactOnRailsPro.configure do |config|
   # include any files used to generate the JSON props.
   config.serializer_globs = [File.join(Rails.root, "app", "views", "**", "*.jbuilder")]
 
-  
   config.copy_assets = [
-    { filepath: Rails.root.join('public','webpack','production','loadable-stats.json'), content_type: "application/json" }
+    { filepath: Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+      content_type: "application/json" }
   ]
 end

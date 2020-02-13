@@ -7,7 +7,7 @@ describe "Server Error Logging" do
     get server_side_log_throw_path
     html_nodes = Nokogiri::HTML(response.body)
 
-    # rubocop:disable Layout/IndentHeredoc
+    # rubocop:disable Layout/HeredocIndentation
     expected = <<-JS
 console.log.apply(console, ["[SERVER] RENDERED HelloWorldWithLogAndThrow to dom node with id: \
 HelloWorldWithLogAndThrow-react-component-0"]);
@@ -18,7 +18,7 @@ console.error.apply(console, ["[SERVER] Exception in rendering!"]);
 console.error.apply(console, ["[SERVER] message: throw in HelloWorldWithLogAndThrow"]);
 console.error.apply(console, ["[SERVER] stack: Error: throw in HelloWorldWithLogAndThrow\n    at HelloWorldWithLogAndThrow
     JS
-    # rubocop:enable Layout/IndentHeredoc
+    # rubocop:enable Layout/HeredocIndentation
 
     expected_lines = expected.split("\n")
 
