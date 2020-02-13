@@ -42,6 +42,7 @@ function getTmpDir() {
 
 function getUploadAssetPath() {
   if (!fs.existsSync(DEFAULT_UPLOAD_ASSET_DIR)) {
+    log.info(`Creating uploadAssetFolder: ${DEFAULT_UPLOAD_ASSET_DIR}`)
     fs.mkdirSync(DEFAULT_UPLOAD_ASSET_DIR, { recursive: true });
   }
   return DEFAULT_UPLOAD_ASSET_DIR;
