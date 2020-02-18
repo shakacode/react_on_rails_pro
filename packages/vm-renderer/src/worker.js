@@ -142,7 +142,7 @@ module.exports = function run(config) {
         },
         res,
       );
-    } catch (err)       
+    } catch (err) {
       const message = `ERROR when trying to copy asset. ${err}`;
       log.info(message);
       setResponse(errorResponseResult(message), res);{
