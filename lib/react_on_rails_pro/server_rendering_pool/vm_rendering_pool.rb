@@ -10,7 +10,7 @@ module ReactOnRailsPro
         attr_accessor :bundle_update_utc_timestamp
 
         def reset_pool
-          ReactOnRailsPro::RequestHelper.reset_connection
+          ReactOnRailsPro::Request.reset_connection
         end
 
         def reset_pool_if_server_bundle_was_modified
@@ -61,7 +61,7 @@ module ReactOnRailsPro
 
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{render_options.request_digest}"
 
-          response = ReactOnRailsPro::RequestHelper.render_code(path, js_code, send_bundle)
+          response = ReactOnRailsPro::Request.render_code(path, js_code, send_bundle)
 
           case response.code
           when "200"

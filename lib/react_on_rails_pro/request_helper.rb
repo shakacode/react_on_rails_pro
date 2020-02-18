@@ -6,7 +6,7 @@ require "uri"
 require "persistent_http"
 
 module ReactOnRailsPro
-  class RequestHelper
+  class Request
     class << self
       def reset_connection
         @connection = create_connection
@@ -26,8 +26,8 @@ module ReactOnRailsPro
 
       def asset_exists_on_vm_renderer?(file_path)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on vm-renderer: #{file_path}" }
-        response = perform_request("/asset-exists?filePath=#{file_path}", form_data)
-        JSON.parse(response.body)["exists"]
+        response = perform_request("/asset-exists?filePath=#{file_path}", common_form_data)
+        JSON.parse(response.body)["exists"] == true
       end
 
       private
@@ -57,7 +57,7 @@ module ReactOnRailsPro
       end
 
       def form_with_code(js_code, send_bundle)
-        form = form_data
+        form = common_form_data
         form["renderingRequest"] = js_code
         if send_bundle
           form["bundle"] = UploadIO.new(
@@ -68,15 +68,13 @@ module ReactOnRailsPro
         form
       end
 
-      # content_type is the temp param
-      # will be removed later
       def form_with_asset(path, content_type)
-        form = form_data
+        form = common_form_data
         form["asset"] = UploadIO.new(path, content_type)
         form
       end
 
-      def form_data
+      def common_form_data
         {
           "gemVersion" => ReactOnRailsPro::VERSION,
           "protocolVersion" => "1.0.0",
@@ -85,7 +83,7 @@ module ReactOnRailsPro
       end
 
       def create_connection
-        Rails.logger.info { "[ReactOnRailsPro] Setting up connection VM Renderer" }
+        Rails.logger.info { "[ReactOnRailsPro] Setting up VM Renderer connection to #{ReactOnRailsPro.configuration.renderer_url}" }
 
         # NOTE: there are multiple similar gems
         # We use https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http.rb

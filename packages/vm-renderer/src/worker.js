@@ -75,13 +75,21 @@ module.exports = function run(config) {
     return true;
   };
 
-  //
-  app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post((req, res) => {
+  const requestPrechecks = (req, res) => {
     if (!isProtocolVersionMatch(req, res)) {
-      return;
+      return false;
     }
 
     if (!isAuthenticated(req, res)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  //
+  app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post((req, res) => {
+    if(!requestPrechecks(req, res)) {
       return;
     }
 
@@ -116,19 +124,25 @@ module.exports = function run(config) {
   // in the runtime. Since remote renderer doesn't contain
   // any assets, they must be uploaded manually.
   app.route('/upload-asset').post((req, res) => {
-    if (!isProtocolVersionMatch(req, res)) {
+    if(!requestPrechecks(req, res)) {
       return;
     }
 
-    if (!isAuthenticated(req, res)) {
-      return;
-    }
+    const { assets } = req.files;
+    try
+    {
 
-    const { asset } = req.files;
+    } catch (err) {
+      const message = `ERROR when trying to copy asset. ${err}`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);
+    }
+    assets.forEach(asset => {
+
+    })
     log.info(`Uploading asset ${asset.filename} to ${uploadAssetPath}`);
     try {
       fs.copyFileSync(asset.file, path.join(uploadAssetPath, asset.filename));
-      log.info('OK');
       setResponse(
         {
           status: 200,
@@ -140,15 +154,12 @@ module.exports = function run(config) {
         res,
       );
     } catch (err) {
-      const message = `ERROR when trying to copy asset. ${err}`;
-      log.info(message);
-      setResponse(errorResponseResult(message), res);
     }
   });
 
   // Checks if file exist
   app.route('/asset-exists').post((req, res) => {
-    if (!isAuthenticated(req, res)) {
+    if(!requestPrechecks(req, res)) {
       return;
     }
 
