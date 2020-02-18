@@ -85,11 +85,11 @@ module.exports = function run(config) {
     }
 
     return true;
-  }
+  };
 
   //
   app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post((req, res) => {
-    if(!requestPrechecks(req, res)) {
+    if (!requestPrechecks(req, res)) {
       return;
     }
 
@@ -124,7 +124,7 @@ module.exports = function run(config) {
   // in the runtime. Since remote renderer doesn't contain
   // any assets, they must be uploaded manually.
   app.route('/upload-asset').post((req, res) => {
-    if(!requestPrechecks(req, res)) {
+    if (!requestPrechecks(req, res)) {
       return;
     }
 
@@ -151,14 +151,14 @@ module.exports = function run(config) {
 
   // Checks if file exist
   app.route('/asset-exists').post((req, res) => {
-    if(!requestPrechecks(req, res)) {
+    if (!requestPrechecks(req, res)) {
       return;
     }
 
     const { filePath } = req.query;
 
     if (!filePath) {
-      const message = `ERROR: filePath param not provided to /asset-exists`;;
+      const message = `ERROR: filePath param not provided to /asset-exists`;
       log.info(message);
       setResponse(errorResponseResult(message), res);
       return;
