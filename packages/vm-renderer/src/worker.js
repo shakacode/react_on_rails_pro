@@ -128,18 +128,7 @@ module.exports = function run(config) {
       return;
     }
 
-    const { assets } = req.files;
-    try
-    {
-
-    } catch (err) {
-      const message = `ERROR when trying to copy asset. ${err}`;
-      log.info(message);
-      setResponse(errorResponseResult(message), res);
-    }
-    assets.forEach(asset => {
-
-    })
+    const { asset } = req.files;
     log.info(`Uploading asset ${asset.filename} to ${uploadAssetPath}`);
     try {
       fs.copyFileSync(asset.file, path.join(uploadAssetPath, asset.filename));
@@ -153,7 +142,10 @@ module.exports = function run(config) {
         },
         res,
       );
-    } catch (err) {
+    } catch (err)       
+      const message = `ERROR when trying to copy asset. ${err}`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);{
     }
   });
 
@@ -166,7 +158,7 @@ module.exports = function run(config) {
     const { filePath } = req.query;
 
     if (!filePath) {
-      const message = `ERROR: filePath param not provided`;
+      const message = `ERROR: filePath param not provided to /asset-exists`;;
       log.info(message);
       setResponse(errorResponseResult(message), res);
       return;
@@ -176,10 +168,10 @@ module.exports = function run(config) {
 
     log.info(`Checking that ${assetPath} exists`);
     if (fs.existsSync(assetPath)) {
-      log.info(`File: ${assetPath} exists`);
+      log.info(`asset-exists: ${assetPath} exists`);
       setResponse({ status: 200, data: { exists: true }, headers: {} }, res);
     } else {
-      log.info(`File: ${assetPath} not exists`);
+      log.info(`asset-exists: ${assetPath} not exists`);
       setResponse({ status: 200, data: { exists: false }, headers: {} }, res);
     }
   });
