@@ -83,7 +83,9 @@ module ReactOnRailsPro
       end
 
       def create_connection
-        Rails.logger.info { "[ReactOnRailsPro] Setting up VM Renderer connection to #{ReactOnRailsPro.configuration.renderer_url}" }
+        Rails.logger.info do
+          "[ReactOnRailsPro] Setting up VM Renderer connection to #{ReactOnRailsPro.configuration.renderer_url}"
+        end
 
         # NOTE: there are multiple similar gems
         # We use https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http.rb
