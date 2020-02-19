@@ -16,8 +16,16 @@ module ReactOnRailsPro
       return if ReactOnRailsPro.configuration.assets_to_copy.blank?
 
       ReactOnRailsPro.configuration.assets_to_copy.each do |asset|
-        ReactOnRailsPro::RequestHelper.upload_asset(asset[:filepath].to_s, asset[:content_type])
+        response = ReactOnRailsPro::Request.upload_asset(
+          asset[:filepath].to_s, asset[:content_type]
+        )
+
+        if response.code != 200
+          raise ReactOnRailsPro::Error, "Error occured when uploading asset.\n"\
+          "Error:\n#{response.body}"
+        end
       end
+      true
     end
 
     # Returns a string which should be used as a component in any cache key for
