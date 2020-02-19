@@ -12,7 +12,7 @@ const devBuild = process.env.NODE_ENV !== 'production';
 const nodeEnv = devBuild ? 'development' : 'production';
 
 module.exports = {
-
+  target: 'node',
   // the project dir
   context: __dirname,
   entry: [
@@ -28,6 +28,7 @@ module.exports = {
     // Leading and trailing slashes ARE necessary.
     publicPath: output.publicPath,
     path: output.path,
+    libraryTarget: 'commonjs2',
   },
   resolve: {
     extensions: ['.js', '.jsx'],
