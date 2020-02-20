@@ -16,6 +16,8 @@ All notable changes to this project will be documented in this file. Items under
 - Updated to bundler V2. [PR 114](https://github.com/shakacode/react_on_rails_pro/pull/114) by [justin808](https://github.com/justin808).
 - Updated spec dummy. [PR 115](https://github.com/shakacode/react_on_rails_pro/pull/115) by [justin808](https://github.com/justin808).
 
+- Better handling for an invalid renderer_url configuration
+
 ## [1.4.4] - 2019-06-10
 
 ### Fixed
