@@ -125,12 +125,14 @@ module ReactOnRailsPro
         expect(ReactOnRailsPro::Request).not_to receive(:upload_asset)
         expect(ReactOnRailsPro::Utils.copy_assets).to eq(nil)
       end
-  
+
       it "throws error if response code not equals 200" do
-        allow(ReactOnRailsPro.configuration).to receive(:assets_to_copy).and_return([{
-          :filepath => '/foo/bar.json', :content_type => 'application/json'
-        }])
-  
+        allow(ReactOnRailsPro.configuration).to(
+          receive(:assets_to_copy).and_return([{
+                                                filepath: "/foo/bar.json", content_type: "application/json"
+                                              }])
+        )
+
         allow(ReactOnRailsPro::Request).to receive(:upload_asset).and_return(mock_response(500))
 
         expect do
