@@ -22,4 +22,14 @@
 
 /spec/examples.txt
 
-/public/webpack
+/public/webpack/*
+# Keep production folder to store uploaded assets
+!/public/webpack/production
+/public/webpack/production/*
+!/public/webpack/production/.keep
+
+/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity
