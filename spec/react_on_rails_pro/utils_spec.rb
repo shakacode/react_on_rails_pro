@@ -114,7 +114,7 @@ module ReactOnRailsPro
         allow(ReactOnRailsPro.configuration).to receive(:assets_to_copy)
           .and_return([{ filepath: "/foo/bar.json", content_type: "application/json" }])
 
-        resp = mock_response(200)
+        resp = mock_response("200")
         allow(ReactOnRailsPro::Request).to receive(:upload_asset).and_return(resp)
 
         expect(ReactOnRailsPro::Utils.copy_assets).to eq(true)
@@ -133,7 +133,7 @@ module ReactOnRailsPro
                                               }])
         )
 
-        allow(ReactOnRailsPro::Request).to receive(:upload_asset).and_return(mock_response(500))
+        allow(ReactOnRailsPro::Request).to receive(:upload_asset).and_return(mock_response("500"))
 
         expect do
           ReactOnRailsPro::Utils.copy_assets
@@ -142,9 +142,12 @@ module ReactOnRailsPro
     end
 
     def mock_response(status)
+      # http.rb uses a string for status
+      raise "Use a string for status #{status}" unless status.is_a?(String)
+
       resp = double("response")
       allow(resp).to receive(:code).and_return(status)
-      allow(resp).to receive(:body).and_return(status == 200 ? "Ok" : "Server error")
+      allow(resp).to receive(:body).and_return(status == "200" ? "Ok" : "Server error")
       resp
     end
   end

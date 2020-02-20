@@ -20,7 +20,7 @@ module ReactOnRailsPro
           asset[:filepath].to_s, asset[:content_type]
         )
 
-        next unless response.code != "200"
+        next if response.code == "200"
 
         raise ReactOnRailsPro::Error, "Error occured when uploading asset.\n"\
         "response.code = #{response.code}"\
