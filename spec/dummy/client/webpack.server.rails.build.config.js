@@ -12,6 +12,9 @@ const devBuild = process.env.NODE_ENV !== 'production';
 const nodeEnv = devBuild ? 'development' : 'production';
 
 module.exports = {
+  // Warning!
+  // `target: 'node'` and `libraryTarget: 'commonjs2'` can't be used if fallback to ExecJS enabled.
+  // ExecJS can't evaluate node-specific code.
   target: 'node',
   // the project dir
   context: __dirname,
