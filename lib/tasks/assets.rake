@@ -8,8 +8,9 @@ end
 
 namespace :react_on_rails_pro do
   namespace :assets do
+    desc "Copy assets to remote vm-renderer"
     task copy_assets_to_vm_renderer: :environment do
-      if ReactOnRailsPro.configuration.renderer_url.include?("localhost")
+      unless ReactOnRailsPro.configuration.renderer_url.include?("localhost")
         Rails.logger.info { "[ReactOnRailsPro] Copying assets to remote vm-renderer..." }
         ReactOnRailsPro::Utils.copy_assets
       else
