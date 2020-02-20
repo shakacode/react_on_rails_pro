@@ -22,6 +22,7 @@ module ReactOnRailsPro
 
         if response.code != 200
           raise ReactOnRailsPro::Error, "Error occured when uploading asset.\n"\
+          "filepath: #{asset[:filepath]}, content_type: #{asset[:content_type]}"\
           "Error:\n#{response.body}"
         end
       end
