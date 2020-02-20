@@ -3,7 +3,7 @@
 require "active_support"
 
 Rake::Task["assets:precompile"].enhance do
-  Rake::Task["react_on_rails_pro:assets:assets_to_copy_to_vm_renderer"].invoke
+  Rake::Task["react_on_rails_pro:assets:copy_assets_to_vm_renderer"].invoke
 end
 
 namespace :react_on_rails_pro do
