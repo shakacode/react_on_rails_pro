@@ -79,15 +79,19 @@ ReactOnRailsPro.configure do |config|
   # to do server rendering. Default is nil.
   config.ssr_pre_hook_js = "SomeLibrary.clearCache();" 
 
-  # In case if there is a remote vm renderer, you may require some
-  # extra assets in addition to the bundle. These would be present on the main 
-  # Rails server, but not the renderer server.
-  # This option allows a remote vm renderer (not localhost)
-  # to have assets copied to the  vm-renderer instance right after assets:precompile task.
-  # Value should be an Array of Hashes, with each Hash containing 2 keys: file_path and content_type, like "application/json"
+  # When using a remote, non-localhost vm renderer, you may require some extra assets
+  # in addition to the bundle. Such assets would be present on the main Rails server, 
+  # but not the renderer server.
+  # The assets_to_copy option allows a remote, non-localhost, vm renderer to have assets 
+  # copied at the end of assets:precompile task or directly by the 
+  # react_on_rails_pro:copy_assets_to_vm_renderer tasks.
+  # The value should be an Array of Hashes, with each Hash containing 2 keys: file_path and content_type,
+  # like "application/json" 
   config.assets_to_copy = [
-    { filepath: Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
-      content_type: "application/json" }
+    { 
+       filepath: Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+       content_type: "application/json" 
+    }
   ]
 end
 ```

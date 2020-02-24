@@ -61,7 +61,7 @@ function replayVmConsole() {
 /**
  *
  * @param filePath
- * @returns {Promise<void>}
+ * @returns {Promise<boolean>}
  */
 exports.buildVM = async function buildVM(filePath) {
   if (filePath === vmBundleFilePath && context) {
@@ -117,12 +117,11 @@ exports.buildVM = async function buildVM(filePath) {
 
     const { libraryTarget } = getConfig();
 
-    // If node-specific code is provided then it must be wrapped
-    // into a module wrapper.
-    // The bundle with such libraryTarget may need `require`
-    // function to use, which is not available when running in vm
+    // If node-specific code is provided then it must be wrapped into a module wrapper. The bundle
+    // may need the `require` function, which is not available when running in vm unless passed in.
     if (libraryTarget === 'commonjs2') {
-      vm.runInContext(m.wrap(bundleContents), context)(exports, require, module, __filename, __dirname);
+      vm.runInContext(m.wrap(bundleContents), context)(
+        exports, require, module, filePath, path.dirname(filePath));
     } else {
       vm.runInContext(bundleContents, context);
     }

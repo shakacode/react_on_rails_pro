@@ -28,10 +28,6 @@ const config = {
   // Uncomment and change value for testing the honeybadger API integration
   honeybadgerApiKey: 'a602365c',
 
-  // where to put uploaded assets
-  // in case if `assets_to_copy` is specified
-  uploadAssetPath: path.resolve(__dirname, '..', 'public', 'webpack', 'production'),
-
   // This option is required if loadable/components lib is used.
   // The server-rendering of this lib is working only libraryTarget: 'commonjs2'
   // possible values: null | 'commonjs2'

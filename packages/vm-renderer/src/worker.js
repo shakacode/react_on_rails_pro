@@ -176,6 +176,118 @@ module.exports = function run(config) {
     }
   });
 
+  // There can be additional files that might be required
+  // in the runtime. Since remote renderer doesn't contain
+  // any assets, they must be uploaded manually.
+  app.route('/upload-asset').post((req, res) => {
+    if (!requestPrechecks(req, res)) {
+      return;
+    }
+
+    const { asset } = req.files;
+    log.info(`Uploading asset ${asset.filename} to ${bundlePath}`);
+    try {
+      fs.copyFileSync(asset.file, path.join(bundlePath, asset.filename));
+      setResponse(
+        {
+          status: 200,
+          data: {
+            status: 'Uploaded',
+          },
+          headers: {},
+        },
+        res,
+      );
+    } catch (err) {
+      const message = `ERROR when trying to copy asset. ${err}`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);
+    }
+  });
+
+  // Checks if file exist
+  app.route('/asset-exists').post((req, res) => {
+    if (!requestPrechecks(req, res)) {
+      return;
+    }
+
+    const { filePath } = req.query;
+
+    if (!filePath) {
+      const message = `ERROR: filePath param not provided to /asset-exists`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);
+      return;
+    }
+
+    const assetPath = path.join(bundlePath, filePath);
+
+    log.info(`Checking that ${assetPath} exists`);
+    if (fs.existsSync(assetPath)) {
+      log.info(`asset-exists: ${assetPath} exists`);
+      setResponse({ status: 200, data: { exists: true }, headers: {} }, res);
+    } else {
+      log.info(`asset-exists: ${assetPath} does not exist`);
+      setResponse({ status: 200, data: { exists: false }, headers: {} }, res);
+    }
+  });
+
+  // There can be additional files that might be required
+  // in the runtime. Since remote renderer doesn't contain
+  // any assets, they must be uploaded manually.
+  app.route('/upload-asset').post((req, res) => {
+    if (!requestPrechecks(req, res)) {
+      return;
+    }
+
+    const { asset } = req.files;
+    log.info(`Uploading asset ${asset.filename} to ${bundlePath}`);
+    try {
+      fs.copyFileSync(asset.file, path.join(bundlePath, asset.filename));
+      setResponse(
+        {
+          status: 200,
+          data: {
+            status: 'Uploaded',
+          },
+          headers: {},
+        },
+        res,
+      );
+    } catch (err) {
+      const message = `ERROR when trying to copy asset. ${err}`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);
+    }
+  });
+
+  // Checks if file exist
+  app.route('/asset-exists').post((req, res) => {
+    if (!requestPrechecks(req, res)) {
+      return;
+    }
+
+    const { filePath } = req.query;
+
+    if (!filePath) {
+      const message = `ERROR: filePath param not provided to /asset-exists`;
+      log.info(message);
+      setResponse(errorResponseResult(message), res);
+      return;
+    }
+
+    const assetPath = path.join(bundlePath, filePath);
+
+    log.info(`Checking that ${assetPath} exists`);
+    if (fs.existsSync(assetPath)) {
+      log.info(`asset-exists: ${assetPath} exists`);
+      setResponse({ status: 200, data: { exists: true }, headers: {} }, res);
+    } else {
+      log.info(`asset-exists: ${assetPath} does not exist`);
+      setResponse({ status: 200, data: { exists: false }, headers: {} }, res);
+    }
+  });
+
   app.get('/info', (_req, res) => {
     res.send({
       node_version: process.version,
