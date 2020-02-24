@@ -137,7 +137,7 @@ module ReactOnRailsPro
 
         expect do
           ReactOnRailsPro::Utils.copy_assets
-        end.to raise_error(ReactOnRailsPro::Error, /Error occured when uploading asset./)
+        end.to raise_error(ReactOnRailsPro::Error, /Error occurred when uploading asset./)
       end
     end
 

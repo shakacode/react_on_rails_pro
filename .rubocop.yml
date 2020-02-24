@@ -46,6 +46,15 @@ Style/StringLiterals:
 Style/Documentation:
   Enabled: false
 
+Style/HashEachMethods:
+  Enabled: true
+
+Style/HashTransformKeys:
+  Enabled: true
+
+Style/HashTransformValues:
+  Enabled: true
+
 Lint/AssignmentInCondition:
   Exclude:
     - 'spec/dummy/bin/spring'

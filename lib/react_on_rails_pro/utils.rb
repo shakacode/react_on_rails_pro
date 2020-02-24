@@ -22,42 +22,6 @@ module ReactOnRailsPro
 
         next if response.code == "200"
 
-        raise ReactOnRailsPro::Error, "Error occured when uploading asset.\n"\
-        "response.code = #{response.code}"\
-        "filepath: #{asset[:filepath]}, content_type: #{asset[:content_type]}"\
-        "Error:\n#{response.body}"
-      end
-      true
-    end
-
-    def self.copy_assets
-      return if ReactOnRailsPro.configuration.assets_to_copy.blank?
-
-      ReactOnRailsPro.configuration.assets_to_copy.each do |asset|
-        response = ReactOnRailsPro::Request.upload_asset(
-          asset[:filepath].to_s, asset[:content_type]
-        )
-
-        next if response.code == "200"
-
-        raise ReactOnRailsPro::Error, "Error occurred when uploading asset.\n"\
-        "response.code = #{response.code}"\
-        "filepath: #{asset[:filepath]}, content_type: #{asset[:content_type]}"\
-        "Error:\n#{response.body}"
-      end
-      true
-    end
-
-    def self.copy_assets
-      return if ReactOnRailsPro.configuration.assets_to_copy.blank?
-
-      ReactOnRailsPro.configuration.assets_to_copy.each do |asset|
-        response = ReactOnRailsPro::Request.upload_asset(
-          asset[:filepath].to_s, asset[:content_type]
-        )
-
-        next if response.code == "200"
-
         raise ReactOnRailsPro::Error, "Error occurred when uploading asset.\n"\
         "response.code = #{response.code}"\
         "filepath: #{asset[:filepath]}, content_type: #{asset[:content_type]}"\
