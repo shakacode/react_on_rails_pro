@@ -115,16 +115,10 @@ exports.buildVM = async function buildVM(filePath) {
     // Run bundle code in created context:
     const bundleContents = await readFileAsync(filePath, 'utf8');
 
-    const { libraryTarget } = getConfig();
-
     // If node-specific code is provided then it must be wrapped into a module wrapper. The bundle
     // may need the `require` function, which is not available when running in vm unless passed in.
-    if (libraryTarget === 'commonjs2') {
-      vm.runInContext(m.wrap(bundleContents), context)(
-        exports, require, module, filePath, path.dirname(filePath));
-    } else {
-      vm.runInContext(bundleContents, context);
-    }
+    vm.runInContext(m.wrap(bundleContents), context)(
+      exports, require, module, filePath, path.dirname(filePath));
 
     // !isMaster check is required for JS unit testing:
     if (!cluster.isMaster) {

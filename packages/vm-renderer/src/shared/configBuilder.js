@@ -77,9 +77,6 @@ const defaultConfig = {
   honeybadgerApiKey: env.HONEYBADGER_API_KEY || null,
 
   sentryDsn: env.SENTRY_DSN || null,
-
-  // https://webpack.js.org/configuration/output/#outputlibrarytarget
-  libraryTarget: null,
 };
 
 function envValuesUsed() {
@@ -138,12 +135,6 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
       config.port = val;
     }
   });
-
-  if (config.libraryTarget !== null && config.libraryTarget !== 'commonjs2') {
-    throw new Error(
-      `'libraryTarget' can be either null or 'commonjs2'. ${config.libraryTarget} provided instead`,
-    );
-  }
 
   if (config.honeybadgerApiKey) {
     errorReporter.addHoneybadgerApiKey(config.honeybadgerApiKey);
