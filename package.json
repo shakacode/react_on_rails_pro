@@ -46,9 +46,7 @@
     "touch": "^3.1.0",
     "yalc": "^1.0.0-pre.27"
   },
-  "files": [
-    "packages/vm-renderer/src"
-  ],
+  "files": ["packages/vm-renderer/src"],
   "scripts": {
     "test": "jest packages/vm-renderer/tests/**/*.test.js",
     "prerelease": "yarn run check",
@@ -64,14 +62,7 @@
     "type": "git",
     "url": "git+https://github.com/shakacode/react_on_rails_pro.git"
   },
-  "keywords": [
-    "react",
-    "webpack",
-    "JavaScript",
-    "Ruby",
-    "on",
-    "Rails"
-  ],
+  "keywords": ["react", "webpack", "JavaScript", "Ruby", "on", "Rails"],
   "author": "justin@shakacode.com",
   "license": "MIT",
   "bugs": {
@@ -80,17 +71,11 @@
   "homepage": "https://github.com/shakacode/react_on_rails_pro#readme",
   "jest": {
     "clearMocks": true,
-    "collectCoverageFrom": [
-      "packages/vm-renderer/tests/**/*.{js,jsx}"
-    ],
-    "coverageReporters": [
-      "lcov"
-    ],
+    "collectCoverageFrom": ["packages/vm-renderer/tests/**/*.{js,jsx}"],
+    "coverageReporters": ["lcov"],
     "resetModules": true,
     "resetMocks": true,
-    "setupFiles": [
-      "./packages/vm-renderer/tests/helper.js"
-    ],
+    "setupFiles": ["./packages/vm-renderer/tests/helper.js"],
     "testEnvironment": "node",
     "transform": {
       "^.+\\.jsx?$": "babel-jest"
