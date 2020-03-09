@@ -5,17 +5,17 @@ require "rails_helper"
 describe "Upload asset", if: ENV["SERVER_RENDERER"] != "ExecJS" do
   let(:fixture_path) { File.expand_path("./spec/fixtures/loadable-stats.json") }
   let(:non_exist_fixture_path) { File.expand_path("./spec/fixtures/sample99.json") }
-  let(:asset_path) { "loadable-stats.json" }
-  let(:asset_path_expanded) { File.expand_path("./tmp/#{asset_path}") }
-
+  let(:asset_filename) { "loadable-stats.json" }
+  let(:asset_path_expanded) { File.expand_path(asset_filename, "#{__dir__}/../../tmp/bundles") }
   before(:each) do
     File.delete(asset_path_expanded) if File.exist?(asset_path_expanded)
   end
 
   it "copying asset to public folder" do
-    expect(asset_exist?).to eq(false)
-    ReactOnRailsPro::Request.upload_asset(fixture_path, "application/json")
-    expect(asset_exist?).to eq(true)
+    expect(asset_exist_on_renderer?).to eq(false)
+    response = ReactOnRailsPro::Request.upload_asset(fixture_path, "application/json")
+    expect(response.code).to eq("200")
+    expect(asset_exist_on_renderer?).to eq(true)
   end
 
   it "throws error if asset not found" do
@@ -33,7 +33,7 @@ describe "Upload asset", if: ENV["SERVER_RENDERER"] != "ExecJS" do
     WebMock.allow_net_connect!
   end
 
-  def asset_exist?
-    ReactOnRailsPro::Request.asset_exists_on_vm_renderer?(asset_path)
+  def asset_exist_on_renderer?
+    ReactOnRailsPro::Request.asset_exists_on_vm_renderer?(asset_filename)
   end
 end
