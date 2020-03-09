@@ -11,6 +11,7 @@ aliases:
              echo "Ruby version: "; ruby -v
              echo "Node version: "; node -v
              echo "Yarn version: "; yarn --version
+             echo "Bundler version: "; bundle --version
   - &lint-js
     name: Linting of JS
     command: yarn lint
@@ -42,14 +43,16 @@ aliases:
   - &install-dummy-app-ruby-gems
     name: Install Ruby Gems for dummy app
     command: |
-      gem install bundler --version 1.16.1
+      echo | sudo gem uninstall bundler
+      sudo gem install bundler --version 1.16.6
       cd spec/dummy && bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-package-ruby-gems
     name: Install Ruby Gems for package
     command: |
-      gem install bundler --version 1.16.1
+      echo | sudo gem uninstall bundler
+      sudo gem install bundler --version 1.16.6
       bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
   # Restore node_modules dir from cache using yarn.lock checksum as a key.
