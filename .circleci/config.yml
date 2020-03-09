@@ -58,11 +58,11 @@ aliases:
     keys:
       - v3-package-node-modules-cache-{{ checksum "yarn.lock" }}
 
-  # Restore spec/dummy/client/node_modules dir from cache using yarn.lock checksum as a key.
+  # Restore spec/dummy/node_modules dir from cache using yarn.lock checksum as a key.
   - &restore-dummy-app-node-modules-cache
-    name: Restore cached spec/dummy/client/node_modules directory
+    name: Restore cached spec/dummy/node_modules directory
     keys:
-      - v3-dummy-app-node-modules-cache-{{ checksum "spec/dummy/client/yarn.lock" }}
+      - v3-dummy-app-node-modules-cache-{{ checksum "spec/dummy/yarn.lock" }}
 
   # Restore vendor/bundle dir from cache using Gemfile.lock checksum as a key.
   - &restore-dummy-app-gem-cache
@@ -145,11 +145,11 @@ jobs:
       - run: *install-yarn-link-destination
       - run: *install-dummy-app-node-modules
       - save_cache:
-          name: Save spec/dummy/client/node_modules to cache
-          key: v3-dummy-app-node-modules-cache-{{ checksum "spec/dummy/client/yarn.lock" }}
+          name: Save spec/dummy/node_modules to cache
+          key: v3-dummy-app-node-modules-cache-{{ checksum "spec/dummy/yarn.lock" }}
           paths:
             - spec/dummy/node_modules
-            - spec/dummy/client/node_modules
+            - spec/dummy/node_modules
 
   # Install Ruby gems for package with Bundler and save them to cache.
   install-package-ruby-gems:
@@ -196,7 +196,7 @@ jobs:
       - run: *install-dummy-app-node-modules
       - run:
           name: Build test bundles for dummy app
-          command: cd spec/dummy/client && yarn run build:test
+          command: cd spec/dummy && yarn run build:test
       - save_cache:
           name: Save test webpack bundles to cache (for build number checksum used by rspec job)
           key: v3-dummy-app-webpack-bundle-{{ .Revision }}
@@ -274,7 +274,7 @@ jobs:
       - store_artifacts:
           path: log/test.log
       - store_artifacts:
-          path: spec/dummy/client/yarn-error.log
+          path: spec/dummy/yarn-error.log
 
   # Test React on Rails Pro without the VM Renderer
   rspec-dummy-app:
@@ -307,7 +307,7 @@ jobs:
       - store_artifacts:
           path: log/test.log
       - store_artifacts:
-          path: spec/dummy/client/yarn-error.log
+          path: spec/dummy/yarn-error.log
 
 workflows:
   version: 2
