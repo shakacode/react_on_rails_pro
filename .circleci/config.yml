@@ -11,6 +11,7 @@ aliases:
              echo "Ruby version: "; ruby -v
              echo "Node version: "; node -v
              echo "Yarn version: "; yarn --version
+             echo "Bundler version: "; bundle --version
   - &lint-js
     name: Linting of JS
     command: yarn lint
@@ -96,7 +97,7 @@ jobs:
   # Lint all
   lint-js-and-ruby:
     docker:
-      - image: &docker_image circleci/ruby:2.5-node-browsers
+      - image: &docker_image circleci/ruby:2.6-node-browsers
     steps:
       - checkout
       - run: *print-system-info
