@@ -86,5 +86,5 @@
     "vm-renderer": "RENDERER_PORT=3800 RENDERER_SUPPORT_MODULES=TRUE node vm-renderer.js"
   },
   "author": "",
-  "license": "ISC"
+  "license": "UNLICENSED"
 }
