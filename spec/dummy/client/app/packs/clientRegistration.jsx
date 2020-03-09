@@ -58,7 +58,7 @@ ReactOnRails.register({
   ReactHelmetApp,
   ImageExample,
   SetTimeoutLoggingApp,
-  ComponentWithLodashApp
+  ComponentWithLodashApp,
 });
 
 ReactOnRails.registerStore({
