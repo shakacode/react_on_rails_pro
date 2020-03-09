@@ -7,6 +7,7 @@ import HelloWorld from '../components/HelloWorld';
 
 import HelloWorldWithLogAndThrow from '../components/HelloWorldWithLogAndThrow';
 import HelloWorldES5 from '../components/HelloWorldES5';
+import HelloWorldRehydratable from '../components/HelloWorldRehydratable';
 import HelloWorldApp from '../startup/HelloWorldApp';
 import BrokenApp from '../startup/BrokenApp';
 
@@ -43,6 +44,7 @@ ReactOnRails.register({
   HelloWorld,
   HelloWorldWithLogAndThrow,
   HelloWorldES5,
+  HelloWorldRehydratable,
   ReduxApp,
   ReduxSharedStoreApp,
   HelloWorldApp,

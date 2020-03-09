@@ -5,7 +5,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import ReactOnRails from 'react-on-rails';
 import { AppContainer } from 'react-hot-loader';
-import { render } from 'react-dom';
+import ReactDOM from 'react-dom';
 
 import HelloWorldContainer from '../components/HelloWorldContainer';
 
@@ -14,7 +14,11 @@ import HelloWorldContainer from '../components/HelloWorldContainer';
  *  This is used for the client rendering hook after the page html is rendered.
  *  React will see that the state is the same and not do anything.
  */
-export default (props, railsContext, domNodeId) => {
+export default (props, _railsContext, domNodeId) => {
+  const render = props.prerender ? ReactDOM.hydrate : ReactDOM.render;
+  // eslint-disable-next-line no-param-reassign
+  delete props.prerender;
+
   // This is where we get the existing store.
   const store = ReactOnRails.getStore('SharedReduxStore');
 
@@ -23,7 +27,7 @@ export default (props, railsContext, domNodeId) => {
 
   // Provider uses this.props.children, so we're not typical React syntax.
   // This allows redux to add additional props to the HelloWorldContainer.
-  const renderApp = Komponent => {
+  const renderApp = (Komponent) => {
     const element = (
       <AppContainer>
         <Provider store={store}>

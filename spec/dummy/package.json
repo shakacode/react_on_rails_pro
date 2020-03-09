@@ -56,7 +56,6 @@
     "url-loader": "^2.0.1",
     "webpack-manifest-plugin": "^2.0.4",
     "webpack-merge": "^4.1.5"
-
   },
   "devDependencies": {
     "body-parser": "^1.19.0",
@@ -80,11 +79,10 @@
     "fs": false
   },
   "scripts": {
-    "gulp": "cd ./client && yarn run gulp",
     "test": "yarn run build:test && yarn run lint && rspec",
     "lint": "eslint --ext .js,.jsx .",
     "install-pro-package": "cd client && yarn run install-pro-package",
-    "build:test": "(cd client && yarn run build:test)",
+    "build:test": "rm -rf public/webpack/test && RAILS_ENV=test NODE_ENV=test bin/webpack",
     "build:dev": "rm -rf public/webpack/develoment && RAILS_ENV=development NODE_ENV=development bin/webpack",
     "build:dev:watch": "RAILS_ENV=development NODE_ENV=development bin/webpack --watch",
     "build:production": "RAILS_ENV=production NODE_ENV=production bin/webpack -p",
@@ -92,7 +90,7 @@
     "vm-renderer-debug": "RENDERER_PORT=3800 RENDERER_SUPPORT_MODULES=TRUE ndb client/vm-renderer.js",
     "vm-renderer": "RENDERER_PORT=3800 RENDERER_SUPPORT_MODULES=TRUE node client/vm-renderer.js"
   },
-  "license": "See LICENSE in ../../LICENSE",
+  "license": "UNLICENSED",
   "repository": {
     "type": "git",
     "url": "https://github.com/shakacode/react_on_rails.git"
