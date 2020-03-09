@@ -44,6 +44,7 @@ aliases:
     name: Install Ruby Gems for dummy app
     command: |
       gem install bundler
+      echo "Bundler version: "; bundle --version
       cd spec/dummy && bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
@@ -51,6 +52,7 @@ aliases:
     name: Install Ruby Gems for package
     command: |
       gem install bundler
+      echo "Bundler version: "; bundle --version
       bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
   # Restore node_modules dir from cache using yarn.lock checksum as a key.
@@ -195,6 +197,7 @@ jobs:
       - restore_cache: *restore-dummy-app-node-modules-cache
       - run: *install-yarn-link-destination
       - run: *install-dummy-app-node-modules
+      - run: *install-dummy-app-ruby-gems
       - run:
           name: Build test bundles for dummy app
           command: cd spec/dummy && yarn run build:test
