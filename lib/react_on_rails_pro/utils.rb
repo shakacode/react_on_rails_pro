@@ -12,8 +12,18 @@ module ReactOnRailsPro
     # PUBLIC API
     ###########################################################
 
+    def self.populate_form_with_assets_to_copy(form)
+      ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset, idx|
+        path = asset[:filepath]
+        content_type = asset[:content_type]
+        form["assetsToCopy#{idx}"] = UploadIO.new(path, content_type)
+      end
+    end
+
     def self.copy_assets
       return if ReactOnRailsPro.configuration.assets_to_copy.blank?
+
+      populate_form_with_assets_to_copy(form)
 
       ReactOnRailsPro.configuration.assets_to_copy.each do |asset|
         response = ReactOnRailsPro::Request.upload_asset(

@@ -24,6 +24,11 @@ module ReactOnRailsPro
         perform_request("/upload-asset", form_with_asset(asset_path, content_type))
       end
 
+      def upload_assets
+        Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
+        perform_request("/upload-assets", form_with_assets)
+      end
+
       def asset_exists_on_vm_renderer?(filename)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on vm-renderer: #{filename}" }
         response = perform_request("/asset-exists?filename=#{filename}", common_form_data)
@@ -64,6 +69,15 @@ module ReactOnRailsPro
             File.new(ReactOnRails::Utils.server_bundle_js_file_path),
             ReactOnRails::Utils.server_bundle_js_file_path
           )
+
+          if ReactOnRailsPro.configuration.assets_to_copy.present?
+            # raise "Multiple assets to copy not supported" if assets_to_copy.size > 1
+            ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset, idx|
+              path = asset[:filepath]
+              content_type = asset[:content_type]
+              form["assetsToCopy#{idx}"] = UploadIO.new(path, content_type)
+            end
+          end
         end
         form
       end
@@ -72,6 +86,16 @@ module ReactOnRailsPro
         form = common_form_data
         form["asset"] = UploadIO.new(path, content_type)
         form
+      end
+
+      def form_with_assets
+        form = common_form_data
+        ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset, idx|
+          path = asset[:filepath]
+          content_type = asset[:content_type]
+          raise ReactOnRails::Error, "Asset not found: #{asset_path}" unless File.exist?(path)
+          form["assetsToCopy#{idx}"] = UploadIO.new(path, content_type)
+        end
       end
 
       def common_form_data
