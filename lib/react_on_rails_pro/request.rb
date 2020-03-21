@@ -70,7 +70,6 @@ module ReactOnRailsPro
 
       def populate_form_with_assets_to_copy(form)
         if ReactOnRailsPro.configuration.assets_to_copy.present?
-          # raise "Multiple assets to copy not supported" if assets_to_copy.size > 1
           ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset_path, idx|
             Rails.logger.info { "[ReactOnRailsPro] Uploading asset #{asset_path}" }
             raise ReactOnRails::Error, "Asset not found #{asset_path}" unless File.exist?(asset_path)

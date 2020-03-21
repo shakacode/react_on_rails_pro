@@ -17,7 +17,7 @@ team no longer recommends that library. The new way is far preferable.
 yarn add  @loadable/babel-plugin @loadable/component @loadable/server @loadable/webpack-plugin
 ```
 
-Short taskDescription:
+### Summary
 - [`@loadable/babel-plugin`](https://loadable-components.com/docs/getting-started/) - The plugin transforms your code to be ready for Server Side Rendering. 
 - `@loadable/component` - Main library for creating loadable components.
 - `@loadable/server` - Has functions for collecting chunks and provide style, script, link tags for the server.
