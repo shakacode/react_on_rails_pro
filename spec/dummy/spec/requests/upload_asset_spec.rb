@@ -18,6 +18,8 @@ describe "Upload asset", if: ENV["SERVER_RENDERER"] != "ExecJS" do
           Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
         ]
       )
+    allow(ReactOnRailsPro).to receive_message_chain("configuration.renderer_password")
+      .and_return("myPassword1")
     FileUtils.mkdir_p(Rails.root.join("public", "webpack", "production"))
     File.delete(asset_path_expanded) if File.exist?(asset_path_expanded)
     File.delete(asset_path_expanded2) if File.exist?(asset_path_expanded2)
