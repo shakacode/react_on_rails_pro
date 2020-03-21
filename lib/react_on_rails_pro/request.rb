@@ -58,6 +58,7 @@ module ReactOnRailsPro
         form = common_form_data
         form["renderingRequest"] = js_code
         if send_bundle
+          renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::VmRenderingPool.renderer_bundle_file_name
           form["bundle"] = UploadIO.new(
             File.new(ReactOnRails::Utils.server_bundle_js_file_path),
             "application/javascript",
