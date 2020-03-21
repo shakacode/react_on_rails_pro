@@ -33,8 +33,9 @@ ReactOnRailsPro.configure do |config|
   # to have assets copied to the  vm-renderer instance right after assets:precompile task.
   # Value should be an Array of Hashes, with each Hash containing 2 keys:
   # file_path and content_type, like "application/json"
-  config.assets_to_copy = [
-    Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
-    Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
-  ]
+  #
+  # config.assets_to_copy = [
+  #   Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+  #   Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
+  # ]
 end

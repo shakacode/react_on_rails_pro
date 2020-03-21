@@ -11,6 +11,13 @@ describe "Upload asset", if: ENV["SERVER_RENDERER"] != "ExecJS" do
   let(:asset_path_expanded) { File.expand_path(asset_filename, "#{__dir__}/../../tmp/bundles") }
   let(:asset_path_expanded2) { File.expand_path(asset_filename2, "#{__dir__}/../../tmp/bundles") }
   before(:each) do
+    allow(ReactOnRailsPro).to receive_message_chain("configuration.assets_to_copy")
+      .and_return(
+        [
+          Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+          Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
+        ]
+      )
     FileUtils.mkdir_p(Rails.root.join("public", "webpack", "production"))
     File.delete(asset_path_expanded) if File.exist?(asset_path_expanded)
     File.delete(asset_path_expanded2) if File.exist?(asset_path_expanded2)
