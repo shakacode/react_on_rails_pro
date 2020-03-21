@@ -39,7 +39,7 @@ module ReactOnRailsPro
           response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
         rescue StandardError => e
           raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\
-                "Original error:\n#{e}\n#{e.backtrace.ai}"
+                "Original error:\n#{e}\n#{e.backtrace}"
         end
 
         Rails.logger.info { "[ReactOnRailsPro] VM renderer responded" }
