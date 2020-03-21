@@ -9,14 +9,7 @@ end
 namespace :react_on_rails_pro do
   desc "Copy assets to remote vm-renderer"
   task copy_assets_to_vm_renderer: :environment do
-    unless ReactOnRailsPro.configuration.renderer_url.include?("localhost")
-      Rails.logger.info { "[ReactOnRailsPro] Copying assets to remote vm-renderer..." }
-      ReactOnRailsPro::Utils.copy_assets
-    else
-      puts "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
-      puts "assets.rake: #{__LINE__},  method: #{__method__}"
-      puts "[ReactOnRailsPro] Skip copying assets to vm-renderer. It's on localhost"
-      puts "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
-    end
+    Rails.logger.info { "[ReactOnRailsPro] Copying assets to vm-renderer..." }
+    ReactOnRailsPro::Request.upload_assets
   end
 end

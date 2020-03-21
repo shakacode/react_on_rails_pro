@@ -31,7 +31,7 @@ const config = {
   // This option is required if loadable/components lib is used.
   // The server-rendering of this lib is working only libraryTarget: 'commonjs2'
   // possible values: null | 'commonjs2'
-  libraryTarget: env.RENDERER_LIBRARY_TARGET || null,
+  supportsModules: true,
 };
 
 // Renderer detects a total number of CPUs on virtual hostings like Heroky or CircleCI instead

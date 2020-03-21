@@ -109,38 +109,6 @@ module ReactOnRailsPro
       end
     end
 
-    describe "copy assets" do
-      it "copying asset" do
-        allow(ReactOnRailsPro.configuration).to receive(:assets_to_copy)
-          .and_return([{ filepath: "/foo/bar.json", content_type: "application/json" }])
-
-        resp = mock_response("200")
-        allow(ReactOnRailsPro::Request).to receive(:upload_asset).and_return(resp)
-
-        expect(ReactOnRailsPro::Utils.copy_assets).to eq(true)
-      end
-
-      it "returns nil if `assets_to_copy` not set" do
-        allow(ReactOnRailsPro.configuration).to receive(:assets_to_copy).and_return(nil)
-        expect(ReactOnRailsPro::Request).not_to receive(:upload_asset)
-        expect(ReactOnRailsPro::Utils.copy_assets).to eq(nil)
-      end
-
-      it "throws error if response code not equals 200" do
-        allow(ReactOnRailsPro.configuration).to(
-          receive(:assets_to_copy).and_return([{
-                                                filepath: "/foo/bar.json", content_type: "application/json"
-                                              }])
-        )
-
-        allow(ReactOnRailsPro::Request).to receive(:upload_asset).and_return(mock_response("500"))
-
-        expect do
-          ReactOnRailsPro::Utils.copy_assets
-        end.to raise_error(ReactOnRailsPro::Error, /Error occurred when uploading asset./)
-      end
-    end
-
     describe ".mine_type_from_file_name" do
       context "extension is known" do
         describe "json" do
