@@ -17,13 +17,6 @@ module ReactOnRailsPro
         perform_request(path, form_with_code(js_code, send_bundle))
       end
 
-      def upload_asset(asset_path, content_type)
-        Rails.logger.info { "[ReactOnRailsPro] Uploading asset #{asset_path}" }
-        raise ReactOnRails::Error, "Asset not found #{asset_path}" unless File.exist?(asset_path)
-
-        perform_request("/upload-asset", form_with_asset(asset_path, content_type))
-      end
-
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
         perform_request("/upload-assets", form_with_assets)
@@ -46,7 +39,7 @@ module ReactOnRailsPro
           response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
         rescue StandardError => e
           raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer.\n"\
-                "Original error:\n#{e}"
+                "Original error:\n#{e}\n#{e.backtrace.ai}"
         end
 
         Rails.logger.info { "[ReactOnRailsPro] VM renderer responded" }
@@ -70,32 +63,31 @@ module ReactOnRailsPro
             ReactOnRails::Utils.server_bundle_js_file_path
           )
 
-          if ReactOnRailsPro.configuration.assets_to_copy.present?
-            # raise "Multiple assets to copy not supported" if assets_to_copy.size > 1
-            ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset, idx|
-              path = asset[:filepath]
-              content_type = asset[:content_type]
-              form["assetsToCopy#{idx}"] = UploadIO.new(path, content_type)
-            end
+          populate_form_with_assets_to_copy(form)
+        end
+        form
+      end
+
+      def populate_form_with_assets_to_copy(form)
+        if ReactOnRailsPro.configuration.assets_to_copy.present?
+          # raise "Multiple assets to copy not supported" if assets_to_copy.size > 1
+          ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset_path, idx|
+            Rails.logger.info { "[ReactOnRailsPro] Uploading asset #{asset_path}" }
+            raise ReactOnRails::Error, "Asset not found #{asset_path}" unless File.exist?(asset_path)
+
+            content_type = ReactOnRailsPro::Utils.mine_type_from_file_name(asset_path)
+
+            # File.new is very important so that UploadIO does not have confusion over a Pathname
+            # vs. a file path. I.e., Pathname objects don't work.
+            form["assetsToCopy#{idx}"] = UploadIO.new(File.new(asset_path), content_type)
           end
         end
         form
       end
 
-      def form_with_asset(path, content_type)
-        form = common_form_data
-        form["asset"] = UploadIO.new(path, content_type)
-        form
-      end
-
       def form_with_assets
         form = common_form_data
-        ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset, idx|
-          path = asset[:filepath]
-          content_type = asset[:content_type]
-          raise ReactOnRails::Error, "Asset not found: #{asset_path}" unless File.exist?(path)
-          form["assetsToCopy#{idx}"] = UploadIO.new(path, content_type)
-        end
+        populate_form_with_assets_to_copy(form)
       end
 
       def common_form_data

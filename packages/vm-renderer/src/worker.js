@@ -105,9 +105,10 @@ module.exports = function run(config) {
 
       const { renderingRequest } = req.body;
       const { bundleTimestamp } = req.params;
-      const { bundle: providedNewBundle, ...assetsToCopy } = req.files;
+      const { bundle: providedNewBundle, ...assetsToCopyObj } = req.files;
 
       try {
+        const assetsToCopy = Object.values(assetsToCopyObj);
         handleRenderRequest({ renderingRequest, bundleTimestamp, providedNewBundle, assetsToCopy })
           .then(result => {
             setResponse(result, res);

@@ -141,6 +141,37 @@ module ReactOnRailsPro
       end
     end
 
+    describe ".mine_type_from_file_name" do
+      context "extension is known" do
+        describe "json" do
+          subject do
+            ReactOnRailsPro::Utils.mine_type_from_file_name("loadable-stats.json")
+          end
+          it { expect(subject).to eq("application/json") }
+        end
+        describe "JSON" do
+          subject do
+            ReactOnRailsPro::Utils.mine_type_from_file_name("LOADABLE-STATS.JSON")
+          end
+          it { expect(subject).to eq("application/json") }
+        end
+        describe "js" do
+          subject do
+            ReactOnRailsPro::Utils.mine_type_from_file_name("loadable-stats.js")
+          end
+          it { expect(subject).to eq("application/javascript") }
+        end
+      end
+      context "extension is unknown" do
+        describe "foo" do
+          subject do
+            ReactOnRailsPro::Utils.mine_type_from_file_name("loadable-stats.foo")
+          end
+          it { expect(subject).to eq("application/octet-stream") }
+        end
+      end
+    end
+
     def mock_response(status)
       # http.rb uses a string for status
       raise "Use a string for status #{status}" unless status.is_a?(String)

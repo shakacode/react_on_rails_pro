@@ -114,5 +114,10 @@ module ReactOnRailsPro
 
       result
     end
+
+    def self.mine_type_from_file_name(filename)
+      extension = File.extname(filename)
+      Rack::Mime.mime_type(extension)
+    end
   end
 end

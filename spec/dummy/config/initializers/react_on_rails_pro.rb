@@ -8,8 +8,9 @@ ReactOnRailsPro.configure do |config|
   # Used to turn off the VmRenderer during on CI workflow
   config.server_renderer = ENV["SERVER_RENDERER"].presence || "VmRenderer"
 
-  # Setting the password myPasssword1 after the leading `:` and before the `@`
-  config.renderer_url = "http://:myPassword1@localhost:3800"
+  config.renderer_password = "myPassword1"
+
+  config.renderer_url = "http://localhost:3800"
 
   # Set this to false specs fail if remote renderer is not available. We want to ensure
   # that the remote renderer works for CI.
@@ -33,7 +34,7 @@ ReactOnRailsPro.configure do |config|
   # Value should be an Array of Hashes, with each Hash containing 2 keys:
   # file_path and content_type, like "application/json"
   config.assets_to_copy = [
-    { filepath: Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
-      content_type: "application/json" }
+    Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+    Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
   ]
 end
