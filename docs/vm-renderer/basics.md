@@ -68,7 +68,7 @@ ReactOnRailsPro.configure do |config|
  # when this ENV value is not defined, the local server at localhost:3800 is used 
  config.renderer_url = ENV["REACT_RENDERER_URL"] 
 end
-```A
+```
 
 ## Troublshooting
 
