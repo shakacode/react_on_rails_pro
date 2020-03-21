@@ -19,7 +19,7 @@ module ReactOnRailsPro
 
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
-        perform_request("/upload-assets", form_with_assets)
+        perform_request("/upload-assets", form_with_assets_and_bundle)
       end
 
       def asset_exists_on_vm_renderer?(filename)
@@ -38,7 +38,7 @@ module ReactOnRailsPro
         begin
           response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
         rescue StandardError => e
-          raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer.\n"\
+          raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\
                 "Original error:\n#{e}\n#{e.backtrace.ai}"
         end
 
@@ -60,7 +60,8 @@ module ReactOnRailsPro
         if send_bundle
           form["bundle"] = UploadIO.new(
             File.new(ReactOnRails::Utils.server_bundle_js_file_path),
-            ReactOnRails::Utils.server_bundle_js_file_path
+            "application/javascript",
+            renderer_bundle_file_name
           )
 
           populate_form_with_assets_to_copy(form)
@@ -78,15 +79,23 @@ module ReactOnRailsPro
 
             # File.new is very important so that UploadIO does not have confusion over a Pathname
             # vs. a file path. I.e., Pathname objects don't work.
-            form["assetsToCopy#{idx}"] = UploadIO.new(File.new(asset_path), content_type)
+            form["assetsToCopy#{idx}"] = UploadIO.new(File.new(asset_path), content_type, asset_path)
           end
         end
         form
       end
 
-      def form_with_assets
+      def form_with_assets_and_bundle
         form = common_form_data
         populate_form_with_assets_to_copy(form)
+
+        src_bundle_path = ReactOnRails::Utils.server_bundle_js_file_path
+        raise ReactOnRails::Error, "Bundle not found #{src_bundle_path}" unless File.exist?(src_bundle_path)
+
+        renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::VmRenderingPool.renderer_bundle_file_name
+        form["bundle"] = UploadIO.new(File.new(src_bundle_path), "application/javascript",
+                                      renderer_bundle_file_name)
+        form
       end
 
       def common_form_data

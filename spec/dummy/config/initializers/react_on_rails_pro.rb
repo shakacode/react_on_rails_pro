@@ -34,8 +34,8 @@ ReactOnRailsPro.configure do |config|
   # Value should be an Array of Hashes, with each Hash containing 2 keys:
   # file_path and content_type, like "application/json"
   #
-  # config.assets_to_copy = [
-  #   Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
-  #   Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
-  # ]
+  # Note, for spec/dummy, manifest.json is just used for testing
+  config.assets_to_copy = [
+    Rails.root.join("public", "webpack", Rails.env, "manifest.json")
+  ]
 end
