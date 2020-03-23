@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-describe "Upload asset", skip: true, if: ENV["SERVER_RENDERER"] != "ExecJS" do
+describe "Upload asset", if: ENV["SERVER_RENDERER"] != "ExecJS" do
   let(:asset_filename) { "loadable-stats.json" }
   let(:asset_filename2) { "loadable-stats2.json" }
   let(:fixture_path) { File.expand_path("./spec/fixtures/#{asset_filename}") }
@@ -11,15 +11,16 @@ describe "Upload asset", skip: true, if: ENV["SERVER_RENDERER"] != "ExecJS" do
   let(:asset_path_expanded) { File.expand_path(asset_filename, "#{__dir__}/../../tmp/bundles") }
   let(:asset_path_expanded2) { File.expand_path(asset_filename2, "#{__dir__}/../../tmp/bundles") }
   before(:each) do
-    allow(ReactOnRailsPro).to receive_message_chain("configuration.assets_to_copy")
-      .and_return(
-        [
-          Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
-          Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
-        ]
-      )
-    allow(ReactOnRailsPro).to receive_message_chain("configuration.renderer_password")
-      .and_return("myPassword1")
+    dbl_configuration = double("configuration",
+                               server_renderer: "VmRenderer",
+                               renderer_password: "myPassword1",
+                               renderer_url: "http://localhost:3800",
+                               assets_to_copy: [
+                                   Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+                                   Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
+                               ]
+    )
+    allow(ReactOnRailsPro).to receive(:configuration).and_return(dbl_configuration)
     FileUtils.mkdir_p(Rails.root.join("public", "webpack", "production"))
     File.delete(asset_path_expanded) if File.exist?(asset_path_expanded)
     File.delete(asset_path_expanded2) if File.exist?(asset_path_expanded2)
