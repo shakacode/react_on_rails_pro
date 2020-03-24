@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <% if content_for?(:title) %>
+    <%= yield(:title) %>
+  <% else %>
+    <title>Dummy</title>
+  <% end %>
+
+  <%= yield :head %>
+
+  <%= stylesheet_link_tag('client-bundle',
+                          media: 'all',
+                          'data-turbolinks-track': true) %>
+
+  <%= javascript_pack_tag 'client-bundle' %>
+  <%= javascript_pack_tag 'vendor' %>
+
+  <%= csrf_meta_tags %>
+</head>
+<body>
+
+<%= yield %>
+
+<!-- This is a placeholder for ReactOnRails to know where to render the store props for
+     client side hydration -->
+<%= redux_store_hydration_data %>
+
+</body>
+</html>

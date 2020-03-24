@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+# If it's not a storybook then run renderer
+if [ -z "$STORYBOOK_APP" ]; then
+  NODE_ENV=production RAILS_ENV=production PORT=3800 node vm-renderer.js
+fi

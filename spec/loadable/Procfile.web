@@ -1,0 +1,2 @@
+run: bin/run-web
+renderer: bin/run-renderer
