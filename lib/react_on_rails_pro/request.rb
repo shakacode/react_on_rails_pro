@@ -135,7 +135,7 @@ module ReactOnRailsPro
             Original error is
             #{error}
         MSG
-        raise ReactOnRailsPro::Error, messag
+        raise ReactOnRailsPro::Error, message
       end
     end
   end
