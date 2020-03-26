@@ -58,19 +58,10 @@
   },
   "devDependencies": {
     "body-parser": "^1.19.0",
-    "eslint": "^6.8.0",
-    "eslint-config-shakacode": "^17.0.0",
-    "eslint-config-prettier": "^6.10.1",
-    "eslint-plugin-import": "^2.8.0",
-    "eslint-plugin-jsx-a11y": "^6.0.2",
-    "eslint-plugin-prettier": "^3.0.0",
-    "eslint-plugin-react": "^7.19.0",
     "fbjs": "^1.0.0",
     "jsdom": "^12.2.0",
     "mini-css-extract-plugin": "^0.7.0",
     "preload-webpack-plugin": "^3.0.0-alpha.1",
-    "prettier": "^2.0.2",
-    "prettier-eslint-cli": "^5.0.0",
     "tape": "^4.7.0",
     "webpack-dev-server": "^3.2.1",
     "yalc": "^1.0.0-pre.27"
@@ -80,7 +71,7 @@
   },
   "scripts": {
     "test": "yarn run build:test && yarn run lint && rspec",
-    "lint": "eslint --ext .js,.jsx .",
+    "lint": "cd ../.. && nps lint",
     "install-pro-package": "cd client && yarn run install-pro-package",
     "build:test": "rm -rf public/webpack/test && RAILS_ENV=test NODE_ENV=test bin/webpack",
     "build:dev": "rm -rf public/webpack/develoment && RAILS_ENV=development NODE_ENV=development bin/webpack",
