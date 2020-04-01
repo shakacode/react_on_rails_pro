@@ -30,9 +30,7 @@ AllCops:
 
 Naming/FileName:
   Exclude:
-    - 'Gemfile'
-    - 'spec/dummy/Gemfile'
-    - 'spec/dummy_no_webpacker/Gemfile'
+    - '**/Gemfile'
 
 Layout/LineLength:
   Max: 120

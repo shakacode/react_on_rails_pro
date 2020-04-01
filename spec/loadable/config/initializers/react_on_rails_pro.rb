@@ -31,7 +31,5 @@ ReactOnRailsPro.configure do |config|
 
   # If using HMR, then don't copy the loadable-stats.json
   config.assets_to_copy =
-    if ENV['HMR'] != 'true'
-      Rails.root.join('public', 'webpack', Rails.env, 'loadable-stats.json')
-    end
+    (Rails.root.join("public", "webpack", Rails.env, "loadable-stats.json") if ENV["HMR"] != "true")
 end
