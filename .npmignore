@@ -10,7 +10,6 @@ react_on_rails.gemspec
 Dockerfile
 Gemfile.lock
 Rakefile
-bin
 docker-compose.yml
 etc
 lib
