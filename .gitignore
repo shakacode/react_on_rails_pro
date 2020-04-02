@@ -40,3 +40,6 @@ spec/dummy/client/npm-debug.log*
 
 .yalc
 yalc.lock
+
+/bin/*
+!/bin/default-vm-renderer.js

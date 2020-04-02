@@ -4,7 +4,7 @@ module.exports = {
   target: 'node',
   entry: path.resolve(__dirname, 'packages/vm-renderer/src/ReactOnRailsProVmRenderer.js'),
   output: {
-    path: path.resolve(__dirname, 'packages/vm-renderer/lib'),
+    path: path.resolve(__dirname, 'bin'),
     filename: 'ReactOnRailsProVmRenderer.js',
     libraryTarget: 'commonjs2',
   },
