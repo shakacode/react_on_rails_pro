@@ -3,8 +3,8 @@
   "version": "1.4.4",
   "protocolVersion": "1.0.0",
   "description": "react-on-rails-pro JavaScript for react_on_rails_pro Ruby gem",
-  "main": "packages/vm-renderer/src/ReactOnRailsProVmRenderer.js",
-  "bin": "./packages/vm-renderer/src/default-vm-renderer.js",
+  "main": "packages/vm-renderer/lib/ReactOnRailsProVmRenderer.js",
+  "bin": "./packages/vm-renderer/lib/default-vm-renderer.js",
   "directories": {
     "doc": "docs"
   },
@@ -24,8 +24,8 @@
   "devDependencies": {
     "babel-eslint": "^10.0.1",
     "eslint": "^6.8.0",
-    "eslint-config-shakacode": "^17.0.0",
     "eslint-config-prettier": "^6.10.1",
+    "eslint-config-shakacode": "^17.0.0",
     "eslint-plugin-import": "^2.8.0",
     "eslint-plugin-jest": "^23.8.2",
     "eslint-plugin-jsx-a11y": "^6.0.2",
@@ -44,10 +44,12 @@
     "tap-spec": "^5.0.0",
     "tape-async": "^2.3.0",
     "touch": "^3.1.0",
+    "webpack": "^4.42.1",
+    "webpack-cli": "^3.3.11",
     "yalc": "^1.0.0-pre.27"
   },
   "files": [
-    "packages/vm-renderer/src"
+    "packages/vm-renderer/lib"
   ],
   "scripts": {
     "test": "nps test",
@@ -57,7 +59,8 @@
     "eslint": "eslint .",
     "check": "nps lint && nps format && nps test",
     "local": "echo 'Be sure to run yarn run dummy:install' && yarn run build && cd spec/dummy && foreman start",
-    "link": "yarn link"
+    "link": "yarn link",
+    "build": "webpack --config webpack.config.js"
   },
   "repository": {
     "type": "git",
