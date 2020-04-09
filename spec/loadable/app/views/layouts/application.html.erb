@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <% if content_for?(:title) %>
-    <%= yield(:title) %>
+  <% if content_for? :title %>
+    <%= yield :title %>
   <% else %>
-    <title>Dummy</title>
+    <title>Loadable Components Proof of Concept</title>
   <% end %>
 
   <%= yield :head %>
@@ -16,15 +16,13 @@
   <%= javascript_pack_tag 'client-bundle' %>
   <%= javascript_pack_tag 'vendor' %>
 
+  <%= yield :head %>
+
   <%= csrf_meta_tags %>
 </head>
 <body>
 
 <%= yield %>
-
-<!-- This is a placeholder for ReactOnRails to know where to render the store props for
-     client side hydration -->
-<%= redux_store_hydration_data %>
 
 </body>
 </html>

@@ -4,10 +4,10 @@ import { BrowserRouter, StaticRouter } from 'react-router-dom';
 import Header from './Header';
 import Routes from './Routes';
 
-const App = () => {
+const App = (props) => {
   if (typeof window === `undefined`) {
     return (
-      <StaticRouter location={props.requestPath} context={{}}>
+      <StaticRouter location={props.path} context={{}}>
         <Header />
         <Routes />
       </StaticRouter>
