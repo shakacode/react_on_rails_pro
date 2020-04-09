@@ -7,7 +7,6 @@ import { loadableReady } from '@loadable/component';
 import ClientApp from './App';
 
 const App = (props, _railsContext, domNodeId) => {
-
   loadableReady(() => {
     ReactDOM.hydrate(React.createElement(ClientApp, { ...props }), document.getElementById(domNodeId));
   });
