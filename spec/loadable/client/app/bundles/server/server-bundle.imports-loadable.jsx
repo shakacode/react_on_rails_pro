@@ -1,10 +1,10 @@
-// See docs/loadable-components.md for details regarding **.imports-X.** file extension & duplicate file structure.
+// See spec/loadable/README.md for details regarding **.imports-X.** file extension & duplicate file structure.
 import React from 'react';
 import { ChunkExtractor } from '@loadable/server';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 
-import App from '../src/App';
+import App from '../foo/startup/App';
 
 const loadableApp = (props, _railsContext) => {
   const path = require('path');
@@ -12,7 +12,7 @@ const loadableApp = (props, _railsContext) => {
   // Note, React on Rails Pro copies the loadable-stats.json to the same place as the
   // server-bundle.js. Thus, the __dirname of this code is where we can find loadable-stats.json.
   const statsFile = path.resolve(__dirname, 'loadable-stats.json');
-  const extractor = new ChunkExtractor({ entrypoints: ['client-bundle'], statsFile });
+  const extractor = new ChunkExtractor({ entrypoints: ['foo-bundle'], statsFile });
   const componentHtml = renderToString(extractor.collectChunks(<App {...props} />));
   const helmet = Helmet.renderStatic();
 

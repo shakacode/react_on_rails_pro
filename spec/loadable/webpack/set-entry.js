@@ -1,7 +1,7 @@
 const _ = require('lodash/fp');
 
 const entries = {
-  'client-bundle': './app/javascript/packs/client-bundle',
+  'foo-bundle': './client/app/bundles/foo/startup/foo-bundle',
 };
 
 function setEntry(builderConfig, webpackConfig) {
@@ -9,7 +9,7 @@ function setEntry(builderConfig, webpackConfig) {
     return _.set(
       'entry',
       {
-        'server-bundle': './app/javascript/packs/server-bundle',
+        'server-bundle': './client/app/bundles/server/server-bundle',
       },
       webpackConfig,
     );

@@ -1,8 +1,8 @@
 import React from 'react';
 import { BrowserRouter, StaticRouter } from 'react-router-dom';
 
-import Header from './Header';
-import Routes from './Routes';
+import Header from '../components/Header';
+import Routes from '../routes/Routes';
 
 const App = (props) => {
   if (typeof window === `undefined`) {
