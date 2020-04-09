@@ -3,14 +3,14 @@
 # See documentation in docs/configuration.md
 ReactOnRailsPro.configure do |config|
   # Get timing of server render calls
-  config.tracing = true
+  config.tracing = !Rails.env.production?
 
   # Used to turn off the VmRenderer during on CI workflow
   config.server_renderer = ENV["SERVER_RENDERER"].presence || "VmRenderer"
 
   config.renderer_password = "myPassword1"
 
-  config.renderer_url = "http://localhost:3800"
+  config.renderer_url = ENV["RENDERER_URL"]
 
   # Set this to false specs fail if remote renderer is not available. We want to ensure
   # that the remote renderer works for CI.
