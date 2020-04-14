@@ -10,6 +10,14 @@
    1. Is not supported for recent versions of React and Webpack
    2. Required ugly code of `#if` from the webpack-conditional-loader
 
+## Setup
+1. Run these commands. Ignore the warning on the db:setup. 
+```
+yarn
+bundle
+rails db:setup
+```
+
 ## HMR via React Fast Refresh and the NormalModuleReplacementPlugin
 Loadable Components does not work with HMR.
 
@@ -17,7 +25,6 @@ HMR is enabled by using the [NormalModuleReplacementPlugin](https://webpack.js.o
 to swap out the files with suffix `.imports-loadable` with `imports-hmr`.
 
 ## Testing Hot Module Replacement
-1. Install ruby gems & node packages
 1. Run the following command:
 ```
 foreman start -f Procfile.dev-hot
