@@ -31,7 +31,7 @@ class ErrorReporter {
       Honeybadger.notify(msg, context);
     }
     if (this.sentry) {
-      Sentry.captureMessage(msg)
+      Sentry.captureMessage(msg);
     }
   }
 }
