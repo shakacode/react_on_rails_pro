@@ -3,7 +3,7 @@
 require "erb"
 
 module ReactOnRailsPro
-  module Locales
+  class Locales
     def convert_locales
       return if i18n_dir.nil?
 
