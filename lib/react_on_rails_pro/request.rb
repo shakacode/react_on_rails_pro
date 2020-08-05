@@ -35,23 +35,35 @@ module ReactOnRailsPro
       end
 
       def perform_request(path, form)
-        begin
-          response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
-        rescue StandardError => e
-          raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\
+        retry_limit = ReactOnRailsPro.configuration.renderer_request_retry_count
+        retry_request = true
+        while retry_request
+          begin
+            response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
+            retry_request = false
+          rescue Timeout::Error => e
+            raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n"\
+                "Original error:\n#{e}\n#{e.backtrace}" if retry_limit == 0
+            Rails.logger.info { "[ReactOnRailsPro] Time out. Retrying..." }
+            retry_limit = retry_limit - 1
+            next
+          rescue StandardError => e
+            raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\
                 "Original error:\n#{e}\n#{e.backtrace}"
-        end
+          end
 
-        Rails.logger.info { "[ReactOnRailsPro] VM renderer responded" }
+          Rails.logger.info { "[ReactOnRailsPro] VM renderer responded" }
 
-        case response.code
-        when "412"
-          # 412 is a protocol error, meaning the server and renderer are running incompatible versions
-          # of React on Rails.
-          raise ReactOnRailsPro::Error, response.body
-        else
-          response
+          case response.code
+          when "412"
+            # 412 is a protocol error, meaning the server and renderer are running incompatible versions
+            # of React on Rails.
+            raise ReactOnRailsPro::Error, response.body
+          else
+            response
+          end
         end
+        response
       end
 
       def form_with_code(js_code, send_bundle)
