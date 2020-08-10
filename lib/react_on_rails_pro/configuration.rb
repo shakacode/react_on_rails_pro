@@ -20,7 +20,7 @@ module ReactOnRailsPro
       serializer_globs: Configuration::DEFAULT_SERIALIZER_GLOBS,
       ssr_pre_hook_js: nil,
       assets_to_copy: nil,
-      renderer_request_retry_count: Configuration::DEFAULT_RENDERER_REQUEST_RETRY_COUNT,
+      renderer_request_retry_count: Configuration::DEFAULT_RENDERER_REQUEST_RETRY_COUNT
     )
   end
 

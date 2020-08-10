@@ -42,12 +42,14 @@ module ReactOnRailsPro
             response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
             retry_request = false
           rescue Timeout::Error => e
-            # Testing timeout catching: 
+            # Testing timeout catching:
             # https://github.com/shakacode/react_on_rails_pro/pull/136#issue-463421204
-            raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n"\
-                "Original error:\n#{e}\n#{e.backtrace}" if retry_limit == 0
+            if retry_limit == 0
+              raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n"\
+                  "Original error:\n#{e}\n#{e.backtrace}"
+            end
             Rails.logger.info { "[ReactOnRailsPro] Time out. Retrying..." }
-            retry_limit = retry_limit - 1
+            retry_limit -= 1
             next
           rescue StandardError => e
             raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\
