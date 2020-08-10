@@ -42,6 +42,8 @@ module ReactOnRailsPro
             response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
             retry_request = false
           rescue Timeout::Error => e
+            # Testing timeout catching: 
+            # https://github.com/shakacode/react_on_rails_pro/pull/136#issue-463421204
             raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n"\
                 "Original error:\n#{e}\n#{e.backtrace}" if retry_limit == 0
             Rails.logger.info { "[ReactOnRailsPro] Time out. Retrying..." }
@@ -51,19 +53,18 @@ module ReactOnRailsPro
             raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\
                 "Original error:\n#{e}\n#{e.backtrace}"
           end
-
-          Rails.logger.info { "[ReactOnRailsPro] VM renderer responded" }
-
-          case response.code
-          when "412"
-            # 412 is a protocol error, meaning the server and renderer are running incompatible versions
-            # of React on Rails.
-            raise ReactOnRailsPro::Error, response.body
-          else
-            response
-          end
         end
-        response
+
+        Rails.logger.info { "[ReactOnRailsPro] VM renderer responded" }
+
+        case response.code
+        when "412"
+          # 412 is a protocol error, meaning the server and renderer are running incompatible versions
+          # of React on Rails.
+          raise ReactOnRailsPro::Error, response.body
+        else
+          response
+        end
       end
 
       def form_with_code(js_code, send_bundle)
