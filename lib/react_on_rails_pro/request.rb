@@ -44,7 +44,7 @@ module ReactOnRailsPro
           rescue Timeout::Error => e
             # Testing timeout catching:
             # https://github.com/shakacode/react_on_rails_pro/pull/136#issue-463421204
-            if retry_limit == 0
+            if retry_limit.zero?
               raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n"\
                   "Original error:\n#{e}\n#{e.backtrace}"
             end
