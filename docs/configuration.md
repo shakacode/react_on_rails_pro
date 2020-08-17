@@ -33,7 +33,7 @@ ReactOnRailsPro.configure do |config|
   # Retry request in case of time out on the vm-renderer side
   # 5 - default, if not specified
   # 0 - no retry
-  config.renderer_request_retry_count = 5
+  config.renderer_request_retry_limit = 5
   
   # VmRenderer is for a renderer that is stateless. It does not need restarting when the JS bundles 
   # are updated. It is the only custom renderer currently supported. Leave blank to use the standard

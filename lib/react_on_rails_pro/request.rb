@@ -35,7 +35,7 @@ module ReactOnRailsPro
       end
 
       def perform_request(path, form)
-        retry_limit = ReactOnRailsPro.configuration.renderer_request_retry_count
+        available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
           begin
@@ -44,12 +44,12 @@ module ReactOnRailsPro
           rescue Timeout::Error => e
             # Testing timeout catching:
             # https://github.com/shakacode/react_on_rails_pro/pull/136#issue-463421204
-            if retry_limit.zero?
+            if available_retries.zero?
               raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n"\
                   "Original error:\n#{e}\n#{e.backtrace}"
             end
-            Rails.logger.info { "[ReactOnRailsPro] Time out. Retrying..." }
-            retry_limit -= 1
+            available_retries -= 1
+            Rails.logger.info { "[ReactOnRailsPro] Timed out trying to connect to the VM renderer. Retrying #{available_retries} more times..." }
             next
           rescue StandardError => e
             raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\
