@@ -49,7 +49,8 @@ module ReactOnRailsPro
                   "Original error:\n#{e}\n#{e.backtrace}"
             end
             available_retries -= 1
-            Rails.logger.info { "[ReactOnRailsPro] Timed out trying to connect to the VM renderer. Retrying #{available_retries} more times..." }
+            Rails.logger.info { "[ReactOnRailsPro] Timed out trying to connect to the VM renderer.\
+               Retrying #{available_retries} more times..." }
             next
           rescue StandardError => e
             raise ReactOnRailsPro::Error, "Can't connect to VmRenderer renderer: #{path}.\n"\

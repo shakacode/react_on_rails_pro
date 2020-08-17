@@ -20,7 +20,7 @@ module ReactOnRailsPro
       serializer_globs: Configuration::DEFAULT_SERIALIZER_GLOBS,
       ssr_pre_hook_js: nil,
       assets_to_copy: nil,
-      renderer_request_retry_limit: Configuration::DEFAULT_renderer_request_retry_limit
+      renderer_request_retry_limit: Configuration::DEFAULT_RENDERER_REQUEST_RETRY_LIMIT
     )
   end
 
@@ -34,7 +34,7 @@ module ReactOnRailsPro
     DEFAULT_PRERENDER_CACHING = false
     DEFAULT_TRACING = false
     DEFAULT_SERIALIZER_GLOBS = nil
-    DEFAULT_renderer_request_retry_limit = 5
+    DEFAULT_RENDERER_REQUEST_RETRY_LIMIT = 5
 
     attr_accessor :renderer_url, :renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
