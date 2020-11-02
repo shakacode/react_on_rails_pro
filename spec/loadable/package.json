@@ -10,18 +10,18 @@
     "node_modules"
   ],
   "dependencies": {
-    "@babel/core": "^7.9.0",
-    "@babel/plugin-proposal-class-properties": "^7.8.3",
-    "@babel/plugin-proposal-object-rest-spread": "^7.9.0",
+    "@babel/core": "^7.12.3",
+    "@babel/plugin-proposal-class-properties": "^7.12.1",
+    "@babel/plugin-proposal-object-rest-spread": "^7.12.1",
     "@babel/plugin-syntax-dynamic-import": "^7.8.3",
-    "@babel/plugin-transform-arrow-functions": "^7.8.3",
-    "@babel/plugin-transform-async-to-generator": "^7.7.4",
-    "@babel/plugin-transform-destructuring": "^7.8.8",
-    "@babel/plugin-transform-regenerator": "^7.8.7",
-    "@babel/plugin-transform-runtime": "^7.9.0",
-    "@babel/preset-env": "^7.9.0",
-    "@babel/preset-react": "^7.9.0",
-    "@babel/runtime": "^7.9.2",
+    "@babel/plugin-transform-arrow-functions": "^7.12.1",
+    "@babel/plugin-transform-async-to-generator": "^7.12.1",
+    "@babel/plugin-transform-destructuring": "^7.12.1",
+    "@babel/plugin-transform-regenerator": "^7.12.1",
+    "@babel/plugin-transform-runtime": "^7.12.1",
+    "@babel/preset-env": "^7.12.1",
+    "@babel/preset-react": "^7.12.1",
+    "@babel/runtime": "^7.12.1",
     "@loadable/babel-plugin": "^5.12.0",
     "@loadable/component": "^5.12.0",
     "@loadable/server": "^5.12.0",
@@ -30,7 +30,7 @@
     "@rails/webpacker": "^5.0.0",
     "babel-loader": "^8.0.6",
     "babel-plugin-inline-react-svg": "^1.1.1",
-    "babel-runtime": "6.11.6",
+    "babel-runtime": "6.26.0",
     "caniuse-lite": "^1.0.30001032",
     "circular-dependency-plugin": "^5.0.2",
     "compression-webpack-plugin": "^3.1.0",
@@ -58,6 +58,7 @@
     "yalc": "^1.0.0-pre.35"
   },
   "devDependencies": {
+    "concurrently": "^5.3.0",
     "webpack-dev-server": "^3.10.3"
   }
 }
