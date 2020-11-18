@@ -9,6 +9,7 @@
     "registry": "https://npm.pkg.github.com/@shakacode-tools"
   },
   "release-it": {
+    "requireCleanWorkingDir": false,
     "github": {
       "release": true
     },
@@ -50,7 +51,7 @@
     "nps": "^5.9.12",
     "prettier": "^2.0.2",
     "prettier-eslint-cli": "^5.0.0",
-    "release-it": "^10.0.1",
+    "release-it": "^14.2.1",
     "supertest": "^4.0.2",
     "tap-diff": "^0.1.1",
     "tap-spec": "^5.0.0",

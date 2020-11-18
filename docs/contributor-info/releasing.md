@@ -20,3 +20,14 @@ See [Contributing](../../CONTRIBUTING.md)
         "registry": "https://npm.pkg.github.com/@shakacode-tools"
       },
     ```
+    and configures release-it:
+    ```json
+    "release-it": {
+      "github": {
+        "release": true
+      },
+      "npm": {
+        "publish": false
+      }
+    },
+    ```
