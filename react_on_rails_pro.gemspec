@@ -33,5 +33,7 @@ Gem::Specification.new do |s|
   s.add_dependency "rainbow"
   s.add_development_dependency "bundler"
   s.add_development_dependency "gem-release"
+  s.add_development_dependency "commonmarker"
+  s.add_development_dependency "yard"
 end
 # rubocop:enable Metrics/BlockLength

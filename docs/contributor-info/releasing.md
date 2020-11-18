@@ -10,3 +10,13 @@ Manual steps:
 
 ## Testing the Gem before Release from a Rails App
 See [Contributing](../../CONTRIBUTING.md)
+
+
+## Notes for releasing on Github Gems and Packages
+1. Keep `release-it` updated by running `yarn global add release-it` 
+1. `./package.json` specifies the registry as Github:
+    ```json
+      "publishConfig": {
+        "registry": "https://npm.pkg.github.com/@shakacode-tools"
+      },
+    ```
