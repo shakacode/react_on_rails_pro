@@ -8,7 +8,6 @@ require "react_on_rails_pro"
 require "generator_spec"
 require "amazing_print"
 require "pry-byebug"
-require "amazing_print"
 
 require "action_controller"
 require "rails"
