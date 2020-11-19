@@ -3,9 +3,9 @@
 require "rails_helper"
 
 shared_examples "railsContext" do |pathname, id_base|
-  let(:http_accept_language) { "en-US,en;q=0.8" }
-
   subject { page }
+
+  let(:http_accept_language) { "en-US,en;q=0.8" }
 
   background do
     visit "/#{pathname}?ab=cd"
@@ -13,7 +13,7 @@ shared_examples "railsContext" do |pathname, id_base|
 
   context pathname, :js, type: :system do
     scenario "check rails context" do
-      expect(current_path).to eq("/#{pathname}")
+      expect(page).to have_current_path("/#{pathname}", ignore_query: true)
       host = Capybara.current_session.server.host
       port = Capybara.current_session.server.port
       host_port = "#{host}:#{port}"
@@ -46,7 +46,7 @@ shared_examples "railsContext" do |pathname, id_base|
   end
 end
 
-feature "rails_context" do
+describe "rails_context" do
   context "client rendering" do
     context "shared store" do
       include_examples("railsContext",

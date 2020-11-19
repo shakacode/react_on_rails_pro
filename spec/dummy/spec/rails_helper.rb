@@ -114,7 +114,7 @@ RSpec.configure do |config|
   Capybara.save_path = Rails.root.join("tmp", "capybara")
   Capybara::Screenshot.prune_strategy = { keep: 10 }
 
-  config.append_after(:each) do
+  config.append_after do
     Capybara.reset_sessions!
   end
 
