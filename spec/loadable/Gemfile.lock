@@ -1,7 +1,7 @@
 PATH
   remote: ../..
   specs:
-    react_on_rails_pro (1.5.6.beta.6)
+    react_on_rails_pro (1.5.6.beta.8)
       addressable
       connection_pool
       execjs (~> 2.5)
@@ -252,6 +252,9 @@ GEM
     rubocop-performance (1.9.0)
       rubocop (>= 0.90.0, < 2.0)
       rubocop-ast (>= 0.4.0)
+    rubocop-rspec (2.0.0)
+      rubocop (~> 1.0)
+      rubocop-ast (>= 1.1.0)
     ruby-progressbar (1.10.1)
     rubyzip (2.3.0)
     sass (3.7.4)
@@ -358,6 +361,7 @@ DEPENDENCIES
   rspec_junit_formatter
   rubocop
   rubocop-performance
+  rubocop-rspec
   sass-rails
   scss_lint
   sdoc
