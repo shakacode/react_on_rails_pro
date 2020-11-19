@@ -6,7 +6,7 @@
   "main": "packages/vm-renderer/src/ReactOnRailsProVmRenderer.js",
   "bin": "./packages/vm-renderer/src/default-vm-renderer.js",
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com/@shakacode-tools"
+    "registry": "https://npm.pkg.github.com"
   },
   "release-it": {
     "git": {
