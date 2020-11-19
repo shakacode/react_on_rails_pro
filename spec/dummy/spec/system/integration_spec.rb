@@ -209,13 +209,11 @@ end
 feature "returns hash if hash_result == true even with prerendering error", :js, type: :system do
   subject { page }
   background do
-    begin
-      visit "/broken_app"
-    # rubocop:disable Lint/SuppressedException
-    rescue Selenium::WebDriver::Error::JavascriptError
-    end
-    # rubocop:enable Lint/SuppressedException
+    visit "/broken_app"
+  # rubocop:disable Lint/SuppressedException
+  rescue Selenium::WebDriver::Error::JavascriptError
   end
+  # rubocop:enable Lint/SuppressedException
   scenario "react_component should return hash" do
     expect(subject.html).to include("Exception in rendering!")
   end

@@ -3,6 +3,12 @@
 require_relative "./task_helpers"
 require "react_on_rails"
 
+class ThrowingMessageHandler
+  def add_error(error)
+    raise error
+  end
+end
+
 desc("Releases both the gem and node package using the given version.
 
 Periodically, update `release-it`:
@@ -20,20 +26,27 @@ which are installed via `bundle install` and `yarn`
               automatically perform a patch version bump.
 2nd argument: Perform a dry run by passing 'true' as a second argument.
 
-Example: `rake release[2.1.0,false]`")
+Example: `rake release[2.1.0,false]`
 
-# rubocop:disable Metrics/BlockLength
+Before this command can be run:
+
+1. Get a Github personal access token that provides both Repo and write:packages access
+2. In `~/.npmrc`
+```
+//npm.pkg.github.com/:_authToken=<TOKEN>
+always-auth=true
+```
+3. Ensure that you set the ENV value when you will run the script. A `.envrc` is convenient for this.
+```
+export GITHUB_TOKEN=<TOKEN>
+```
+")
+
 task :release, %i[gem_version dry_run tools_install] do |_t, args|
   include ReactOnRailsPro::TaskHelpers
 
-  class MessageHandler
-    def add_error(error)
-      raise error
-    end
-  end
-
   # Check if there are uncommited changes
-  ReactOnRails::GitUtils.uncommitted_changes?(MessageHandler.new)
+  ReactOnRails::GitUtils.uncommitted_changes?(ThrowingMessageHandler.new)
 
   args_hash = args.to_hash
 
@@ -62,7 +75,7 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, "git add .")
 
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
-  release_it_command = "$(yarn bin)/release-it".dup
+  release_it_command = +"$(yarn bin)/release-it"
   release_it_command << " #{npm_version}" unless npm_version.strip.empty?
   release_it_command << " --ci --verbose"
   release_it_command << " --dry-run" if is_dry_run
@@ -72,4 +85,3 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   gem_push_command = "gem release --key github --host https://rubygems.pkg.github.com/shakacode-tools"
   sh_in_dir(gem_root, gem_push_command) unless is_dry_run
 end
-# rubocop:enable Metrics/BlockLength

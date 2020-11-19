@@ -31,7 +31,8 @@ group :development, :test do
   gem "pry-doc"
   gem "pry-rails"
   gem "pry-rescue"
-  gem "rubocop", "1.2.0", require: false
+  gem "rubocop", require: false
+  gem 'rubocop-performance', require: false
   gem "scss_lint", require: false
   gem "spring"
 end
