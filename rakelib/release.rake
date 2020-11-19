@@ -67,13 +67,6 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, "git pull --rebase")
   sh_in_dir(gem_root, "gem bump --no-commit #{gem_version.strip.empty? ? '' : %(--version #{gem_version})}")
 
-  # Update spec/dummy and spec/loadable apps' Gemfile.lock files to match the version
-  bundle_install_in(dummy_app_dir)
-  bundle_install_in(loadable_app_dir)
-
-  # Stage changes so far
-  sh_in_dir(gem_root, "git add .")
-
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
   release_it_command = +"$(yarn bin)/release-it"
   release_it_command << " #{npm_version}" unless npm_version.strip.empty?
@@ -84,4 +77,9 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   # Release the new gem version
   gem_push_command = "gem release --key github --host https://rubygems.pkg.github.com/shakacode-tools"
   sh_in_dir(gem_root, gem_push_command) unless is_dry_run
+
+  # Update spec/dummy and spec/loadable apps' Gemfile.lock files to match the version
+  bundle_install_in(dummy_app_dir)
+  bundle_install_in(loadable_app_dir)
+  sh_in_dir(gem_root, "git commit -a -m 'Update Gemfile.lock for spec apps'")
 end
