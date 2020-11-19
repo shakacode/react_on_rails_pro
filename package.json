@@ -9,7 +9,9 @@
     "registry": "https://npm.pkg.github.com/@shakacode-tools"
   },
   "release-it": {
-    "requireCleanWorkingDir": false,
+    "git": {
+      "requireCleanWorkingDir": false
+    },
     "github": {
       "release": true
     },

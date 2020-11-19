@@ -53,9 +53,10 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, "git pull --rebase")
   sh_in_dir(gem_root, "gem bump --no-commit #{gem_version.strip.empty? ? '' : %(--version #{gem_version})}")
 
+  # TODO: Probably the next lines are not necessary
   # Update dummy app's Gemfile.lock
-  bundle_install_in(dummy_app_dir)
-  bundle_install_in(loadable_app_dir)
+  # bundle_install_in(dummy_app_dir)
+  # bundle_install_in(loadable_app_dir)
 
   # Stage changes so far
   sh_in_dir(gem_root, "git add .")
