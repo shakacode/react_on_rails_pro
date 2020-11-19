@@ -11,6 +11,10 @@ module ReactOnRailsPro
       File.join(gem_root, "spec/dummy")
     end
 
+    def loadable_app_dir
+      File.join(gem_root, "spec/loadable")
+    end
+
     # Executes a string or an array of strings in a shell in the given directory
     def sh_in_dir(dir, shell_commands)
       shell_commands = [shell_commands] if shell_commands.is_a?(String)
