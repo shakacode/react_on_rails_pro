@@ -79,7 +79,9 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, gem_push_command) unless is_dry_run
 
   # Update spec/dummy and spec/loadable apps' Gemfile.lock files to match the version
+  sleep(3) # Sleep after pushing gem or else the installs don't seem to do anything
   bundle_install_in(dummy_app_dir)
   bundle_install_in(loadable_app_dir)
   sh_in_dir(gem_root, "git commit -a -m 'Update Gemfile.lock for spec apps'")
+  sh_in_dir(gem_root, "git push")
 end
