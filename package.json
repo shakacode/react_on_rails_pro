@@ -13,10 +13,11 @@
       "requireCleanWorkingDir": false
     },
     "github": {
-      "release": true
+      "release": false
     },
     "npm": {
-      "publish": true
+      "publish": true,
+      "skipChecks": true
     }
   },
   "directories": {
