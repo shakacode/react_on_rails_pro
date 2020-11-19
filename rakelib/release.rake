@@ -53,10 +53,9 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, "git pull --rebase")
   sh_in_dir(gem_root, "gem bump --no-commit #{gem_version.strip.empty? ? '' : %(--version #{gem_version})}")
 
-  # TODO: Probably the next lines are not necessary
-  # Update dummy app's Gemfile.lock
-  # bundle_install_in(dummy_app_dir)
-  # bundle_install_in(loadable_app_dir)
+  # Update spec/dummy and spec/loadable apps' Gemfile.lock files to match the version
+  bundle_install_in(dummy_app_dir)
+  bundle_install_in(loadable_app_dir)
 
   # Stage changes so far
   sh_in_dir(gem_root, "git add .")
@@ -64,7 +63,7 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
   release_it_command = "$(yarn bin)/release-it".dup
   release_it_command << " #{npm_version}" unless npm_version.strip.empty?
-  release_it_command << " --non-interactive"
+  release_it_command << " --ci"
   release_it_command << " --dry-run --verbose" if is_dry_run
   sh_in_dir(gem_root, release_it_command)
 
