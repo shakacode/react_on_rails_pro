@@ -34,6 +34,7 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
 
   # Check if there are uncommited changes
   ReactOnRails::GitUtils.uncommitted_changes?(MessageHandler.new)
+
   args_hash = args.to_hash
 
   is_dry_run = ReactOnRails::Utils.object_to_boolean(args_hash[:dry_run])
@@ -63,7 +64,7 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
   release_it_command = "$(yarn bin)/release-it".dup
   release_it_command << " #{npm_version}" unless npm_version.strip.empty?
-  release_it_command << " --verbose"
+  release_it_command << " --ci --verbose"
   release_it_command << " --dry-run" if is_dry_run
   sh_in_dir(gem_root, release_it_command)
 
