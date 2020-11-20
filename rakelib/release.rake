@@ -103,8 +103,8 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
 end
 
 task :test do
-  sh_in_dir(dummy_app_dir, "bundle update react_on_rails_pro")
-  sh_in_dir(loadable_app_dir, "bundle update react_on_rails_pro")
+  sh_in_dir(gem_root, "cd #{dummy_app_dir}; bundle update react_on_rails_pro")
+  sh_in_dir(gem_root, "cd #{loadable_app_dir}; bundle update react_on_rails_pro")
   sh_in_dir(gem_root, "git commit -a -m 'Update Gemfile.lock for spec apps'")
   sh_in_dir(gem_root, "git push")
 end
