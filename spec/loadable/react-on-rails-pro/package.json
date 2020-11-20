@@ -1,7 +1,7 @@
 {
   "private": true,
   "comments": {
-    "comment": "Next line is what would go in dependencies for a real install",
+    "comment": "Next line is what would go in dependencies for a real install, change version number",
     "@shakacode-tools/react-on-rails-pro-vm-renderer": "1.5.4"
   },
   "dependencies": {
