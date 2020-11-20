@@ -68,8 +68,9 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, "gem bump --no-commit #{gem_version.strip.empty? ? '' : %(--version #{gem_version})}")
 
   # Update the child spec apps with the new gem
-  bundle_install_in(dummy_app_dir)
-  bundle_install_in(loadable_app_dir)
+  # This doesn't work either here or after publishing the gem. The relative path is "."
+  # bundle_install_in(dummy_app_dir)
+  # bundle_install_in(loadable_app_dir)
 
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
   release_it_command = +"$(yarn bin)/release-it"
