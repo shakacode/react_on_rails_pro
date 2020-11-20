@@ -68,8 +68,8 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, "gem bump --no-commit #{gem_version.strip.empty? ? '' : %(--version #{gem_version})}")
 
   # Update the child spec apps with the new gem
-  sh_in_dir(gem_root, "cd spec/dummy; bundle update react_on_rails_pro")
-  sh_in_dir(gem_root, "cd spec/loadable; bundle update react_on_rails_pro")
+  bundle_install_in(dummy_app_dir)
+  bundle_install_in(loadable_app_dir)
 
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
   release_it_command = +"$(yarn bin)/release-it"
@@ -81,4 +81,36 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   # Release the new gem version
   gem_push_command = "gem release --key github --host https://rubygems.pkg.github.com/shakacode-tools"
   sh_in_dir(gem_root, gem_push_command) unless is_dry_run
+
+  # Update spec/dummy and spec/loadable apps' Gemfile.lock files to match the version
+  # bundle_install_in(dummy_app_dir)
+  # bundle_install_in(loadable_app_dir)
+
+  # Within rake task, this is logged
+  # cd /Users/justin/shakacode/react-on-rails/react_on_rails_pro/spec/loadable && bundle install
+  # Using react_on_rails_pro 1.5.6.beta.9 from source at `.`
+  #
+  # Running from shell
+  # cd /Users/justin/shakacode/react-on-rails/react_on_rails_pro/spec/loadable && bundle install
+  # Using react_on_rails_pro 1.5.6.beta.9 (was 1.5.6.beta.8) from source at `../..`
+  # sh_in_dir(gem_root, "git commit -a -m 'Update Gemfile.lock for spec apps'")
+  # sh_in_dir(gem_root, "git push")
+  msg = <<~MSG
+    Once you have successfully published, run these two commands to update the spec apps:
+
+    cd #{dummy_app_dir}; bundle update react_on_rails_pro
+    cd #{loadable_app_dir}; bundle update react_on_rails_pro
+    cd #{gem_root} 
+    git commit -a -m 'Update Gemfile.lock for spec apps'")
+    git push
+  MSG
+  puts msg
+end
+
+# This task fails for no good reason
+task :test do
+  sh_in_dir(gem_root, "cd #{dummy_app_dir}; bundle update react_on_rails_pro")
+  sh_in_dir(gem_root, "cd #{loadable_app_dir}; bundle update react_on_rails_pro")
+  sh_in_dir(gem_root, "git commit -a -m 'Update Gemfile.lock for spec apps'")
+  sh_in_dir(gem_root, "git push")
 end
