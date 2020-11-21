@@ -101,7 +101,7 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
 
     cd #{dummy_app_dir}; bundle update react_on_rails_pro
     cd #{loadable_app_dir}; bundle update react_on_rails_pro
-    cd #{gem_root} 
+    cd #{gem_root}#{' '}
     git commit -a -m 'Update Gemfile.lock for spec apps'
     git push
   MSG

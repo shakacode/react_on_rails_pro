@@ -336,7 +336,7 @@ PLATFORMS
 
 DEPENDENCIES
   amazing_print
-  bootsnap (>= 1.1.0)
+  bootsnap
   capybara
   capybara-screenshot
   coveralls
