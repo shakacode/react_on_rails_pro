@@ -1,13 +1,13 @@
-const path = require('path')
+const path = require('path');
 
 // if using the proper install, use this:
 // const {
 //   reactOnRailsProVmRenderer,
 // } = require('@shakacode-tools/react-on-rails-pro-vm-renderer')
 
-const { reactOnRailsProVmRenderer } = require('react-on-rails-pro-vm-renderer');
+const { reactOnRailsProVmRenderer } = require('@shakacode-tools/react-on-rails-pro-vm-renderer');
 
-const env = process.env
+const env = process.env;
 
 const config = {
   bundlePath: path.resolve(__dirname, '../tmp/bundles'),
@@ -40,13 +40,13 @@ const config = {
   // allWorkersRestartInterval: 15,
   // time in minutes between each worker restarting when restarting all workers
   // delayBetweenIndividualWorkerRestarts: 2,
-}
+};
 
 // Renderer detects a total number of CPUs on virtual hostings like Heroku
 // or CircleCI instead of CPUs number allocated for current container. This
 // results in spawning many workers while only 1-2 of them really needed.
 if (env.CI) {
-  config.workersCount = 2
+  config.workersCount = 2;
 }
 
-reactOnRailsProVmRenderer(config)
+reactOnRailsProVmRenderer(config);

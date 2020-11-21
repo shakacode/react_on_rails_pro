@@ -5,11 +5,11 @@
     "@shakacode-tools/react-on-rails-pro-vm-renderer": "1.5.4"
   },
   "dependencies": {
-    "react-on-rails-pro-vm-renderer": "link:.yalc/react-on-rails-pro-vm-renderer"
+    "@shakacode-tools/react-on-rails-pro-vm-renderer": "link:.yalc/@shakacode-tools/react-on-rails-pro-vm-renderer"
   },
   "scripts": {
     "node-renderer": "echo 'Starting React on Rails Pro VM Renderer.' && node ./react-on-rails-pro-node-renderer.js",
-    "preinstall": "yarn run link-source && yalc add --link react-on-rails-pro-vm-renderer",
-    "link-source": "cd ../../.. && yalc publish"
+    "preinstall": "yarn run link-source && yalc add --link @shakacode-tools/react-on-rails-pro-vm-renderer",
+    "link-source": "cd ../../../.. && yalc publish"
   }
 }
