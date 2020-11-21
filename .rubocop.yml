@@ -33,6 +33,7 @@ AllCops:
     - 'node_modules/**/*'
     - 'coverage/**/*'
     - 'bin/**/*'
+    - 'vendor/**/*'
 
 Naming/FileName:
   Exclude:
