@@ -70,9 +70,8 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   sh_in_dir(gem_root, "gem bump --no-commit #{gem_version.strip.empty? ? '' : %(--version #{gem_version})}")
 
   # Update the child spec apps with the new gem
-  # This doesn't work either here or after publishing the gem. The relative path is "."
-  # bundle_install_in(dummy_app_dir)
-  # bundle_install_in(loadable_app_dir)
+  bundle_install_in(dummy_app_dir)
+  bundle_install_in(loadable_app_dir)
 
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
   release_it_command = +"$(yarn bin)/release-it"
@@ -111,11 +110,3 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
 end
 
 # rubocop:enable Metrics/BlockLength
-
-# This task fails for no good reason
-task :test do
-  sh_in_dir(gem_root, "cd #{dummy_app_dir}; bundle update react_on_rails_pro")
-  sh_in_dir(gem_root, "cd #{loadable_app_dir}; bundle update react_on_rails_pro")
-  sh_in_dir(gem_root, "git commit -a -m 'Update Gemfile.lock for spec apps'")
-  sh_in_dir(gem_root, "git push")
-end
