@@ -17,8 +17,10 @@ module ReactOnRailsPro
 
     # Executes a string or an array of strings in a shell in the given directory
     def sh_in_dir(dir, *shell_commands)
-      # shell_commands = [shell_commands] if shell_commands.is_a?(String)
-      shell_commands.flatten.each { |shell_command| sh %(cd #{dir} && #{shell_command.strip}) }
+      shell_commands.flatten.each do |shell_command|
+        Dir.chdir(dir)
+        sh(shell_command.strip)
+      end
     end
 
     def bundle_install_in(dir)

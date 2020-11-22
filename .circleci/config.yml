@@ -191,6 +191,7 @@ jobs:
       - checkout
       - run: *print-system-info
       - restore_cache: *restore-dummy-app-node-modules-cache
+      - run: *install-package-node-modules
       - run: *install-dummy-app-node-modules
       - run: *install-dummy-app-ruby-gems
       - run:
