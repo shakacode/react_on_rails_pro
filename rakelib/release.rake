@@ -9,6 +9,8 @@ class ThrowingMessageHandler
   end
 end
 
+# rubocop:disable Metrics/BlockLength
+
 desc("Releases both the gem and node package using the given version.
 
 Periodically, update `release-it`:
@@ -107,6 +109,8 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   MSG
   puts msg
 end
+
+# rubocop:enable Metrics/BlockLength
 
 # This task fails for no good reason
 task :test do
