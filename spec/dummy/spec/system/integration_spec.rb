@@ -274,7 +274,7 @@ end
 shared_examples "React Component Shared Store" do |url|
   subject { page }
 
-  background { visit url }
+  before { visit url }
   context url do
     scenario "Type in one component changes the other component" do
       expect(page).to have_current_path(url, ignore_query: true)
