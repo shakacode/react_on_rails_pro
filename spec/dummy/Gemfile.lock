@@ -371,7 +371,7 @@ DEPENDENCIES
   sqlite3
   turbolinks
   uglifier
-  webdrivers (~> 3.0)
+  webdrivers
   webmock
   webpacker
 

@@ -127,7 +127,9 @@ describe "Pages/server_side_log_throw_raise" do
   before { visit "/server_side_log_throw_raise" }
 
   it "redirects to /client_side_hello_world and flashes an error" do
-    expect(page).to have_current_path("/server_side_log_throw_raise_invoker")
+    # Maybe this change broke the spec?
+    expect(current_path).to eq("/server_side_log_throw_raise_invoker")
+    # expect(page).to have_current_path("/server_side_log_throw_raise_invoker")
     flash_message = page.find(:css, ".flash").text
     expect(flash_message).to eq("Error prerendering in react_on_rails. Redirected back to"\
       " '/server_side_log_throw_raise_invoker'. See server logs for output.")

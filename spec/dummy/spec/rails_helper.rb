@@ -114,8 +114,13 @@ RSpec.configure do |config|
   Capybara.save_path = Rails.root.join("tmp", "capybara")
   Capybara::Screenshot.prune_strategy = { keep: 10 }
 
-  config.append_after do
-    Capybara.reset_sessions!
+  # https://github.com/mattheworiordan/capybara-screenshot/issues/243#issuecomment-620423225
+  # config.append_after do
+  #   Capybara.reset_sessions!
+  # end
+  #
+  config.retry_callback = proc do |ex|
+    Capybara.reset! if ex.metadata[:js]
   end
 
   # RSpec Rails can automatically mix in different behaviours to your tests
