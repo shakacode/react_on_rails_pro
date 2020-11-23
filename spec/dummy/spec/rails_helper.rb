@@ -76,23 +76,11 @@ RSpec.configure do |config|
   # selenium_firefox webdriver only works for Travis-CI builds.
   default_driver = :selenium_chrome_headless
 
-  supported_drivers = %i[webkit selenium_chrome_headless selenium_chrome selenium_firefox selenium]
-  driver = ENV["DRIVER"].try(:to_sym) || default_driver
+  supported_drivers = %i[selenium_chrome_headless selenium_chrome selenium selenium_headless]
+  driver = ENV["DRIVER"].try(:to_sym).presence || default_driver
   Capybara.default_driver = driver
 
   raise "Unsupported driver: #{driver} (supported = #{supported_drivers})" unless supported_drivers.include?(driver)
-
-  case driver
-  when :selenium_chrome
-    DriverRegistration.register_selenium_chrome
-
-  when :selenium_chrome_headless
-    DriverRegistration.register_selenium_chrome_headless
-
-  when :selenium_firefox, :selenium
-    DriverRegistration.register_selenium_firefox
-    driver = :selenium_firefox
-  end
 
   Capybara.javascript_driver = driver
   Capybara.default_driver = driver
