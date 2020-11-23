@@ -11,7 +11,7 @@ shared_examples "railsContext" do |pathname, id_base|
     visit "/#{pathname}?ab=cd"
   end
 
-  context pathname, :js, type: :system do
+  context pathname, :js do
     scenario "check rails context" do
       expect(page).to have_current_path("/#{pathname}", ignore_query: true)
       host = Capybara.current_session.server.host
@@ -62,7 +62,7 @@ describe "rails_context" do
                        "ReduxSharedStoreApp")
     end
 
-    context "generator function for component" do
+    context "Render-Function for component" do
       include_examples("railsContext",
                        "server_side_redux_app",
                        "ReduxApp")

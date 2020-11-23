@@ -34,7 +34,8 @@ require "capybara-screenshot/rspec"
 
 # Checks for pending migrations before tests are run.
 # If you are not using ActiveRecord, you can remove this line.
-ActiveRecord::Migration.maintain_test_schema!
+# No DB for these tests
+# ActiveRecord::Migration.maintain_test_schema!
 
 # Requires supporting files with custom matchers and macros, etc,
 # in ./support/ and its subdirectories.
@@ -72,6 +73,7 @@ RSpec.configure do |config|
   config.infer_spec_type_from_file_location!
 
   # Capybara config
+  config.include Capybara::DSL
   #
   # selenium_firefox webdriver only works for Travis-CI builds.
   default_driver = :selenium_chrome_headless
@@ -103,10 +105,6 @@ RSpec.configure do |config|
   Capybara::Screenshot.prune_strategy = { keep: 10 }
 
   # https://github.com/mattheworiordan/capybara-screenshot/issues/243#issuecomment-620423225
-  # config.append_after do
-  #   Capybara.reset_sessions!
-  # end
-  #
   config.retry_callback = proc do |ex|
     Capybara.reset! if ex.metadata[:js]
   end
@@ -133,15 +131,5 @@ RSpec.configure do |config|
 
   def js_errors_driver
     Capybara.javascript_driver
-  end
-
-  def js_selenium_driver
-    driver = Capybara.javascript_driver == :selenium_firefox ? :selenium_firefox : :selenium_chrome
-    if driver == :selenium_firefox
-      DriverRegistration.register_selenium_firefox
-    else
-      DriverRegistration.register_selenium_chrome
-    end
-    driver
   end
 end

@@ -21,7 +21,7 @@ shared_examples "React Component" do |dom_selector|
   end
 end
 
-describe "Pages/Index", :js, type: :system do
+describe "Pages/Index", :js do
   subject { page }
 
   context "All in one page" do
@@ -81,7 +81,7 @@ describe "Pages/Index", :js, type: :system do
   end
 end
 
-describe "Turbolinks across pages", :js, type: :system do
+describe "Turbolinks across pages", :js do
   subject { page }
 
   it "changes name in message according to input" do
@@ -92,7 +92,7 @@ describe "Turbolinks across pages", :js, type: :system do
   end
 end
 
-describe "Pages/client_side_log_throw", :js, type: :system do
+describe "Pages/client_side_log_throw", :js do
   subject { page }
 
   before { visit "/client_side_log_throw" }
@@ -102,7 +102,7 @@ describe "Pages/client_side_log_throw", :js, type: :system do
   end
 end
 
-describe "Pages/Pure Component", :js, type: :system do
+describe "Pages/Pure Component", :js do
   subject { page }
 
   before { visit "/pure_component" }
@@ -110,31 +110,31 @@ describe "Pages/Pure Component", :js, type: :system do
   it { is_expected.to have_text "This is a Pure Component!" }
 end
 
-describe "Pages/server_side_log_throw", :js, type: :system do
+describe "Pages/server_side_log_throw", :js do
   subject { page }
 
   before { visit "/server_side_log_throw" }
 
-  it "page has server side throw messages", driver: js_errors_driver do
+  it "page has server side throw messages", :js do
     expect(subject).to have_text "This example demonstrates server side logging and error handling."
     expect(subject).to have_text "Exception in rendering!\n\nMessage: throw in HelloWorldWithLogAndThrow"
   end
 end
 
-describe "Pages/server_side_log_throw_raise" do
+describe "Pages/server_side_log_throw_raise", :js do
   subject { page }
 
   before { visit "/server_side_log_throw_raise" }
 
   it "redirects to /client_side_hello_world and flashes an error" do
-    expect(page).to have_current_path("/server_side_log_throw_raise_invoker")
     flash_message = page.find(:css, ".flash").text
     expect(flash_message).to eq("Error prerendering in react_on_rails. Redirected back to"\
       " '/server_side_log_throw_raise_invoker'. See server logs for output.")
+    expect(page).to have_current_path("/server_side_log_throw_raise_invoker")
   end
 end
 
-describe "Pages/index after using browser's back button", :js, type: :system do
+describe "Pages/index after using browser's back button", :js do
   subject { page }
 
   before do
@@ -171,7 +171,7 @@ describe "React Router", js: true, driver: js_errors_driver do
   end
 end
 
-describe "Manual Rendering", :js, type: :system do
+describe "Manual Rendering", :js do
   subject { page }
 
   before { visit "/client_side_manual_render" }
@@ -183,7 +183,7 @@ describe "Manual Rendering", :js, type: :system do
   end
 end
 
-describe "Code Splitting", :js, type: :system do
+describe "Code Splitting", :js do
   subject { page }
 
   before { visit "/deferred_render_with_server_rendering" }
@@ -200,7 +200,7 @@ describe "Code Splitting", :js, type: :system do
   end
 end
 
-describe "Code Splitting w/ Server Rendering", :js, type: :system do
+describe "Code Splitting w/ Server Rendering", :js do
   subject { page }
 
   before { visit "/deferred_render_with_server_rendering/async_page" }
@@ -211,7 +211,7 @@ describe "Code Splitting w/ Server Rendering", :js, type: :system do
   end
 end
 
-describe "renderedHtml from generator function", :js, type: :system do
+describe "renderedHtml from generator function", :js do
   subject { page }
 
   before { visit "/rendered_html" }
@@ -222,7 +222,7 @@ describe "renderedHtml from generator function", :js, type: :system do
   end
 end
 
-describe "returns hash if hash_result == true even with prerendering error", :js, type: :system do
+describe "returns hash if hash_result == true even with prerendering error", :js do
   subject { page }
 
   before do
@@ -255,12 +255,12 @@ describe "generator function returns renderedHtml as an object with additional H
     include_examples "renderedHtmls should not have any errors and set correct page title"
   end
 
-  describe "with enabled JS", :js, type: :system do
+  describe "with enabled JS", :js do
     include_examples "renderedHtmls should not have any errors and set correct page title"
   end
 end
 
-describe "display images", :js, type: :system do
+describe "display images", :js do
   subject { page }
 
   before { visit "/image_example" }
@@ -301,26 +301,26 @@ shared_examples "React Component Shared Store" do |url|
   end
 end
 
-describe "2 react components, 1 store, client only", :js, type: :system do
+describe "2 react components, 1 store, client only", :js do
   include_examples "React Component Shared Store", "/client_side_hello_world_shared_store"
 end
 
-describe "2 react components, 1 store, server side", :js, type: :system do
+describe "2 react components, 1 store, server side", :js do
   include_examples "React Component Shared Store", "/server_side_hello_world_shared_store"
 end
 
-describe "2 react components, 1 store, client only, controller setup", :js, type: :system do
+describe "2 react components, 1 store, client only, controller setup", :js do
   include_examples "React Component Shared Store", "/client_side_hello_world_shared_store_controller"
 end
 
-describe "2 react components, 1 store, server side, controller setup", :js, type: :system do
+describe "2 react components, 1 store, server side, controller setup", :js do
   include_examples "React Component Shared Store", "/server_side_hello_world_shared_store_controller"
 end
 
-describe "2 react components, 1 store, client only, defer", :js, type: :system do
+describe "2 react components, 1 store, client only, defer", :js do
   include_examples "React Component Shared Store", "/client_side_hello_world_shared_store_defer"
 end
 
-describe "2 react components, 1 store, server side, defer", :js, type: :system do
+describe "2 react components, 1 store, server side, defer", :js do
   include_examples "React Component Shared Store", "/server_side_hello_world_shared_store_defer"
 end
