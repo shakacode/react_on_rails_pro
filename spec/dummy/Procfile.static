@@ -5,4 +5,4 @@ rails: rails s
 rails-client-assets: yarn run build:dev:watch
 
 # Start Node server for server rendering.
-vm-renderer: yarn run vm-renderer
+node-renderer: yarn run node-renderer

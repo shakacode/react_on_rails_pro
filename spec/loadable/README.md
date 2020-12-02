@@ -12,7 +12,7 @@
 
 ## Setup
 
-Before setup you need to run `yarn` in the root of the directory lib to install react_on_rails_pro-vm-renderer.
+Before setup you need to run `yarn` in the root of the directory lib to install react_on_rails_pro-node-renderer.
 Then go back to `spec/loadable` and continue:
 
 1. Run these commands. Ignore the warning on the db:setup. 
