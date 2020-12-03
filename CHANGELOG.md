@@ -3,6 +3,10 @@ All notable changes to this project will be documented in this file. Items under
 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
+
+## [2.0.0.beta.1] - 2020-12-03
+* Renamed VM Renderer to Node Renderer
+
 ## [1.5.6] - 2020-12-02
 Switched to releases being published packages.
 
@@ -114,7 +118,7 @@ Above are in [PR 65](https://github.com/shakacode/react_on_rails_pro/pull/65) by
 
 ### Changed
 - Default usage of PORT and LOG_LEVEL for the node-renderer bin file changed to use values RENDERER_PORT and RENDERER_LOG_LEVEL
-- Default Rails config.server_render is "ExecJS". Previously was "NodeRenderer"
+- Default Rails config.server_render is "ExecJS". Previously was "VmRenderer"
 
 Above changes in [PR 52](https://github.com/shakacode/react_on_rails_pro/pull/52) by [justin808](https://github.com/justin808).
 
@@ -124,7 +128,8 @@ Above changes in [PR 52](https://github.com/shakacode/react_on_rails_pro/pull/52
 - support for javascript evaluation caching
 - advanced error handling
 
-[Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/1.5.6...HEAD
+[Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/2.0.0.beta.0...HEAD
+[2.0.0.beta.0]: https://github.com/shakacode/react_on_rails_pro/compare/1.5.6...2.0.0.beta.0
 [1.5.6]: https://github.com/shakacode/react_on_rails_pro/compare/1.5.5...1.5.6
 [1.5.5]: https://github.com/shakacode/react_on_rails_pro/compare/1.5.4...1.5.5
 [1.5.4]: https://github.com/shakacode/react_on_rails_pro/compare/1.5.3...1.5.4
