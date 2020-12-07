@@ -4,10 +4,11 @@
  * @module worker/configBuilder
  */
 const os = require('os');
-
+const Sentry = require('@sentry/node');
 const log = require('./log');
 const { configureLogger } = require('./log');
 const errorReporter = require('./errorReporter');
+const tracing = require('./tracing');
 const packageJson = require('./packageJson');
 const truthy = require('./truthy');
 
@@ -70,6 +71,8 @@ const defaultConfig = {
   honeybadgerApiKey: env.HONEYBADGER_API_KEY || null,
 
   sentryDsn: env.SENTRY_DSN || null,
+
+  sentryTracing: env.SENTRY_TRACING || null,
 };
 
 function envValuesUsed() {
@@ -137,7 +140,11 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
   }
 
   if (config.sentryDsn) {
-    errorReporter.addSentryDsn(config.sentryDsn);
+    errorReporter.addSentryDsn(config.sentryDsn, config.sentryTracing !== null);
+  }
+
+  if (config.sentryTracing) {
+    tracing.setSentry(Sentry);
   }
 
   configureLogger(log, config.logLevel);
