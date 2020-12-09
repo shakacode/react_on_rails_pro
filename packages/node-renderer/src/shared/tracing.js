@@ -1,5 +1,3 @@
-const util = require('util');
-
 class Tracing {
   constructor() {
     this.Sentry = null;
@@ -19,14 +17,14 @@ class Tracing {
 
   async withinTransaction(fn, op, name) {
     if(this.Sentry === null) {
-      return await fn();
+      return fn();
     }
     const transaction = this.Sentry.startTransaction({
       op,
       name,
     });
     try {
-      await fn(transaction);
+      return await fn(transaction);
     } finally {
       transaction.finish();
     }

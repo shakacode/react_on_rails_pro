@@ -9,8 +9,8 @@ test('should run function and finish transaction', async () => {
   Sentry.startTransaction.mockReturnValue({ finish: finishMock });
   tracing.setSentry(Sentry);
   await tracing.withinTransaction(fn, 'sample', 'Sample');
-  expect(finishMock.mock.calls.length).toBe(1);
-  expect(fn.mock.calls.length).toBe(1);
+  expect(finishMock.mock.calls).toHaveLength(1);
+  expect(fn.mock.calls).toHaveLength(1);
 });
 
 test('should throw if inner function throws', async () => {
@@ -18,7 +18,7 @@ test('should throw if inner function throws', async () => {
   Sentry.startTransaction.mockReturnValue({ finish: finishMock });
   tracing.setSentry(Sentry);
   await expect(async () => {
-    return await tracing.withinTransaction(
+    await tracing.withinTransaction(
       () => {
         throw new Error();
       },
@@ -26,5 +26,5 @@ test('should throw if inner function throws', async () => {
       'Sample',
     );
   }).rejects.toThrow();
-  expect(finishMock.mock.calls.length).toBe(1);
+  expect(finishMock.mock.calls).toHaveLength(1);
 });

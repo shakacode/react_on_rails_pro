@@ -1,5 +1,5 @@
 const Sentry = require('@sentry/node');
-const tracing = require('../../src/shared/tracing');
+const tracing = require('../../src/shared/tracing')
 const errorReporter = require('../../src/shared/errorReporter');
 const { buildConfig } = require('../../src/shared/configBuilder');
 
