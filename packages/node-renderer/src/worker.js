@@ -112,24 +112,33 @@ module.exports = function run(config) {
 
       try {
         const assetsToCopy = Object.values(assetsToCopyObj);
-        tracing.withinTransaction(async (transaction) => {
-          try {
-            const result = await handleRenderRequest({ renderingRequest, bundleTimestamp, providedNewBundle, assetsToCopy })
-            setResponse(result, res);
-          } catch(err) {
-            const exceptionMessage = formatExceptionMessage(
-              renderingRequest,
-              err,
-              'UNHANDLED error in handleRenderRequest',
-            );
-            log.error(exceptionMessage);
-            // TODO: check if this working
-            errorReporter.notify(exceptionMessage, {}, scope => {
-              scope.setSpan(transaction);
-            });
-            setResponse(errorResponseResult(exceptionMessage), res);
-          }
-        }, 'handleRenderRequest', 'SSR Request')
+        tracing.withinTransaction(
+          async (transaction) => {
+            try {
+              const result = await handleRenderRequest({
+                renderingRequest,
+                bundleTimestamp,
+                providedNewBundle,
+                assetsToCopy,
+              });
+              setResponse(result, res);
+            } catch (err) {
+              const exceptionMessage = formatExceptionMessage(
+                renderingRequest,
+                err,
+                'UNHANDLED error in handleRenderRequest',
+              );
+              log.error(exceptionMessage);
+              // TODO: check if this working
+              errorReporter.notify(exceptionMessage, {}, (scope) => {
+                scope.setSpan(transaction);
+              });
+              setResponse(errorResponseResult(exceptionMessage), res);
+            }
+          },
+          'handleRenderRequest',
+          'SSR Request',
+        );
       } catch (theErr) {
         const exceptionMessage = formatExceptionMessage(renderingRequest, theErr);
         log.error(`UNHANDLED TOP LEVEL error ${exceptionMessage}`);

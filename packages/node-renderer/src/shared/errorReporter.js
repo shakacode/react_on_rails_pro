@@ -8,15 +8,15 @@ class ErrorReporter {
   }
 
   reportingServices() {
-    if(this.sentry && this.honeybadger) {
+    if (this.sentry && this.honeybadger) {
       return ['sentry', 'honeybadger'];
     }
 
-    if(this.sentry) {
+    if (this.sentry) {
       return ['sentry'];
     }
 
-    if(this.honeybadger) {
+    if (this.honeybadger) {
       return ['honeybadger'];
     }
 
@@ -40,7 +40,7 @@ class ErrorReporter {
           // enable HTTP calls tracing
           new Sentry.Integrations.Http({ tracing: true }),
         ],
-      
+
         // We recommend adjusting this value in production, or using tracesSampler
         // for finer control
         tracesSampleRate: 1.0,

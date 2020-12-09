@@ -4,8 +4,8 @@ class Tracing {
   }
 
   tracingServices() {
-    if(this.Sentry) {
-      return ['sentry']
+    if (this.Sentry) {
+      return ['sentry'];
     }
 
     return null;
@@ -16,7 +16,7 @@ class Tracing {
   }
 
   async withinTransaction(fn, op, name) {
-    if(this.Sentry === null) {
+    if (this.Sentry === null) {
       return fn();
     }
     const transaction = this.Sentry.startTransaction({
