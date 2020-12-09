@@ -28,7 +28,7 @@ class ErrorReporter {
     this.honeybadger = true;
   }
 
-  addSentryDsn(sentryDsn, tracing = false) {
+  addSentryDsn(sentryDsn, tracing = false, tracesSampleRate) {
     let options = {
       dsn: sentryDsn,
     };
@@ -43,7 +43,7 @@ class ErrorReporter {
 
         // We recommend adjusting this value in production, or using tracesSampler
         // for finer control
-        tracesSampleRate: 1.0,
+        tracesSampleRate,
       };
     }
     Sentry.init(options);

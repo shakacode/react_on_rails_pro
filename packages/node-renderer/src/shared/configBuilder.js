@@ -73,6 +73,8 @@ const defaultConfig = {
   sentryDsn: env.SENTRY_DSN || null,
 
   sentryTracing: env.SENTRY_TRACING || null,
+
+  tracesSampleRate: env.TRACES_SAMPLE_RATE || 0.5,
 };
 
 function envValuesUsed() {
@@ -140,7 +142,7 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
   }
 
   if (config.sentryDsn) {
-    errorReporter.addSentryDsn(config.sentryDsn, config.sentryTracing !== null);
+    errorReporter.addSentryDsn(config.sentryDsn, config.sentryTracing !== null, config.tracesSampleRate);
   }
 
   if (config.sentryTracing) {
