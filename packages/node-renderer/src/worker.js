@@ -130,7 +130,7 @@ module.exports = function run(config) {
               );
               log.error(exceptionMessage);
               errorReporter.notify(exceptionMessage, {}, (scope) => {
-                if (!!transaction) {
+                if (transaction) {
                   scope.setSpan(transaction);
                 }
               });
