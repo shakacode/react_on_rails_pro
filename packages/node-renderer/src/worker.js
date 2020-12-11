@@ -129,9 +129,10 @@ module.exports = function run(config) {
                 'UNHANDLED error in handleRenderRequest',
               );
               log.error(exceptionMessage);
-              // TODO: check if this working
               errorReporter.notify(exceptionMessage, {}, (scope) => {
-                scope.setSpan(transaction);
+                if (!!transaction) {
+                  scope.setSpan(transaction);
+                }
               });
               setResponse(errorResponseResult(exceptionMessage), res);
             }
