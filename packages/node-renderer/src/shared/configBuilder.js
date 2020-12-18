@@ -143,13 +143,10 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
   }
 
   if (config.sentryDsn) {
-    errorReporter.addSentryDsn(
-      config.sentryDsn,
-      {
-        tracing: config.sentryTracing,
-        tracesSampleRate: parseFloat(config.sentryTracesSampleRate),
-      }
-    );
+    errorReporter.addSentryDsn(config.sentryDsn, {
+      tracing: config.sentryTracing,
+      tracesSampleRate: parseFloat(config.sentryTracesSampleRate),
+    });
   }
 
   if (config.sentryTracing) {
