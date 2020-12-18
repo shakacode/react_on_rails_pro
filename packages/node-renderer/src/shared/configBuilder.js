@@ -123,6 +123,7 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
   config = Object.assign({}, defaultConfig, userConfig);
 
   config.supportModules = truthy(config.supportModules);
+  config.sentryTracing = truthy(config.sentryTracing);
 
   let currentArg;
 
@@ -145,7 +146,7 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
     errorReporter.addSentryDsn(
       config.sentryDsn,
       {
-        tracing: truthy(config.sentryTracing),
+        tracing: config.sentryTracing,
         tracesSampleRate: parseFloat(config.sentryTracesSampleRate),
       }
     );
