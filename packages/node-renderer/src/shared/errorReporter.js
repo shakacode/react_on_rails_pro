@@ -1,5 +1,6 @@
-const Honeybadger = require('honeybadger');
-const Sentry = require('@sentry/node');
+const requireOptional = require('../shared/requireOptional')
+const Honeybadger = requireOptional('honeybadger');
+const Sentry = requireOptional('@sentry/node');
 
 class ErrorReporter {
   constructor() {
@@ -24,11 +25,17 @@ class ErrorReporter {
   }
 
   addHoneybadgerApiKey(apiKey) {
+    if (Honeybadger === null) {
+      throw new Error("Honeybadger is not installed. Please, install it in order to use error reporting with Honeybadger.")
+    }
     Honeybadger.configure({ apiKey });
     this.honeybadger = true;
   }
 
   addSentryDsn(sentryDsn, options = {}) {
+    if (Sentry === null) {
+      throw new Error("Sentry is not installed. Please, install it in order to use error reporting with Sentry.")
+    }
     let sentryOptions = {
       dsn: sentryDsn,
     };

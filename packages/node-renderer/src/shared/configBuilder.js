@@ -4,13 +4,15 @@
  * @module worker/configBuilder
  */
 const os = require('os');
-const Sentry = require('@sentry/node');
 const log = require('./log');
+const requireOptional = require('./requireOptional');
 const { configureLogger } = require('./log');
 const errorReporter = require('./errorReporter');
 const tracing = require('./tracing');
 const packageJson = require('./packageJson');
 const truthy = require('./truthy');
+
+const Sentry = requireOptional('@sentry/node');
 
 const DEFAULT_TMP_DIR = '/tmp/react-on-rails-pro-node-renderer-bundles';
 // usually remote renderers are on staging or production,

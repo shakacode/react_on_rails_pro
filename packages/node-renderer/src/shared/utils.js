@@ -14,6 +14,7 @@ utils.workerIdLabel = function workerIdLabel() {
   return workerId;
 };
 
+
 // From https://stackoverflow.com/a/831583/1009332
 utils.smartTrim = function smartTrim(value, maxLength = getConfig().maxDebugSnippetLength) {
   let string;
