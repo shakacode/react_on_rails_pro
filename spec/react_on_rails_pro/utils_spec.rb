@@ -28,7 +28,7 @@ module ReactOnRailsPro
               .and_return("/webpack/production/client-bundle-0123456789abcdef.js")
           end
 
-          it { expect(subject).to eq("client-bundle-0123456789abcdef.js") }
+          it { is_expected.to eq("client-bundle-0123456789abcdef.js") }
         end
 
         describe ".bundle_hash" do
@@ -122,7 +122,7 @@ module ReactOnRailsPro
             described_class.mine_type_from_file_name("loadable-stats.json")
           end
 
-          it { expect(subject).to eq("application/json") }
+          it { is_expected.to eq("application/json") }
         end
 
         describe "JSON" do
@@ -130,7 +130,7 @@ module ReactOnRailsPro
             described_class.mine_type_from_file_name("LOADABLE-STATS.JSON")
           end
 
-          it { expect(subject).to eq("application/json") }
+          it { is_expected.to eq("application/json") }
         end
 
         describe "js" do
@@ -138,7 +138,7 @@ module ReactOnRailsPro
             described_class.mine_type_from_file_name("loadable-stats.js")
           end
 
-          it { expect(subject).to eq("application/javascript") }
+          it { is_expected.to eq("application/javascript") }
         end
       end
 
@@ -148,7 +148,7 @@ module ReactOnRailsPro
             described_class.mine_type_from_file_name("loadable-stats.foo")
           end
 
-          it { expect(subject).to eq("application/octet-stream") }
+          it { is_expected.to eq("application/octet-stream") }
         end
       end
     end
