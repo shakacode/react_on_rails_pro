@@ -75,7 +75,7 @@ module ReactOnRailsPro
     end
 
     describe ".with_trace" do
-      let(:logger_mock) { double("Rails.logger").as_null_object }
+      let(:logger_mock) { instance_double("Rails.logger").as_null_object }
 
       context "with tracing on" do
         before do
@@ -157,7 +157,7 @@ module ReactOnRailsPro
       # http.rb uses a string for status
       raise "Use a string for status #{status}" unless status.is_a?(String)
 
-      resp = double("response")
+      resp = instance_double("response")
       allow(resp).to receive(:code).and_return(status)
       allow(resp).to receive(:body).and_return(status == "200" ? "Ok" : "Server error")
       resp

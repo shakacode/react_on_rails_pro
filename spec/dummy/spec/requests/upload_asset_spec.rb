@@ -12,7 +12,7 @@ describe "Upload asset" do
   let(:asset_path_expanded2) { File.expand_path(asset_filename2, "#{__dir__}/../../tmp/bundles") }
 
   before do
-    dbl_configuration = double("configuration",
+    dbl_configuration = instance_double("Configuration",
                                server_renderer: "NodeRenderer",
                                renderer_password: "myPassword1",
                                renderer_url: "http://localhost:3800",

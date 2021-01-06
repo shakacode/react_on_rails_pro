@@ -4,7 +4,7 @@ require_relative "./spec_helper"
 
 describe ReactOnRailsPro::Cache, :caching do
   describe ".fetch_react_component" do
-    let(:logger_mock) { double("Rails.logger").as_null_object }
+    let(:logger_mock) { instance_double("Rails.logger").as_null_object }
 
     before do
       allow(Rails).to receive(:logger).and_return(logger_mock)
@@ -12,7 +12,7 @@ describe ReactOnRailsPro::Cache, :caching do
 
     it "fetches the value from the cache" do
       result = "<div>Something</div>"
-      create_component_code = double("create_component_code")
+      create_component_code = instance_double("create_component_code")
       allow(create_component_code).to receive(:call) { result }
 
       react_component_string1 = described_class.fetch_react_component("MyComponent",
@@ -36,7 +36,7 @@ describe ReactOnRailsPro::Cache, :caching do
 
     it "fetches the value from the cache if cache_key is a lambda" do
       result = "<div>Something</div>"
-      create_component_code = double("create_component_code")
+      create_component_code = instance_double("create_component_code")
       allow(create_component_code).to receive(:call) { result }
 
       react_component_string1 = described_class.fetch_react_component("MyComponent",
@@ -60,7 +60,7 @@ describe ReactOnRailsPro::Cache, :caching do
 
     it "skips the cache if option :if is false" do
       result = "<div>Something</div>"
-      create_component_code = double("create_component_code")
+      create_component_code = instance_double("create_component_code")
       allow(create_component_code).to receive(:call) { result }
 
       react_component_string1 = described_class.fetch_react_component("MyComponent",
@@ -82,7 +82,7 @@ describe ReactOnRailsPro::Cache, :caching do
 
     it "skips the cache if option :unless is true" do
       result = "<div>Something</div>"
-      create_component_code = double("create_component_code")
+      create_component_code = instance_double("create_component_code")
       allow(create_component_code).to receive(:call) { result }
 
       react_component_string1 = described_class.fetch_react_component("MyComponent",
@@ -121,7 +121,7 @@ describe ReactOnRailsPro::Cache, :caching do
 
   describe ".react_component_cache_key" do
     it "properly expands cache keys without the serializers" do
-      cacheable = double("cacheable")
+      cacheable = instance_double("cacheable")
       allow(cacheable).to receive(:cache_key).and_return("the_cache_key")
       allow(ReactOnRailsPro::Utils).to receive(:bundle_hash).and_return("123456")
 
@@ -133,7 +133,7 @@ describe ReactOnRailsPro::Cache, :caching do
     end
 
     it "properly expands cache keys with the serializers" do
-      cacheable = double("cacheable")
+      cacheable = instance_double("cacheable")
       allow(cacheable).to receive(:cache_key).and_return("the_cache_key")
       allow(ReactOnRailsPro::Utils).to receive(:bundle_hash).and_return("123456")
       allow(described_class).to receive(:serializers_cache_key).and_return("abc")
