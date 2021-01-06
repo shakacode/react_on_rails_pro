@@ -147,7 +147,7 @@ describe ReactOnRailsPro::Cache, :caching do
   end
 
   describe ".serializers_cache_key" do
-    context "serializer_files is defined" do
+    context "when serializer_files is defined" do
       it "returns an MD5 based on the files" do
         serializer_glob = File.join(FixturesHelper.fixtures_dir, "app", "views", "**", "*.jbuilder")
         allow(ReactOnRailsPro.configuration).to receive(:serializer_globs).and_return(serializer_glob)
@@ -159,7 +159,7 @@ describe ReactOnRailsPro::Cache, :caching do
       end
     end
 
-    context "serializer_files is not defined" do
+    context "when serializer_files is not defined" do
       it "returns nil" do
         allow(ReactOnRailsPro.configuration).to receive(:serializer_globs).and_return(nil)
 

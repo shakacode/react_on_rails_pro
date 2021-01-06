@@ -27,7 +27,7 @@ describe "Upload asset" do
     File.delete(asset_path_expanded2) if File.exist?(asset_path_expanded2)
   end
 
-  context("assets exist") do
+  context("when assets exist") do
     before do
       FileUtils.cp(fixture_path, Rails.root.join("public", "webpack", "production", asset_filename))
       FileUtils.cp(fixture_path2, Rails.root.join("public", "webpack", "production", asset_filename2))
@@ -52,7 +52,7 @@ describe "Upload asset" do
     end
   end
 
-  context("assets not existing") do
+  context("when assets don't exist") do
     it "throws error if asset not found" do
       first_asset_path = Rails.root.join("public", "webpack", "production", asset_filename)
       File.delete(first_asset_path) if File.exist?(first_asset_path)
