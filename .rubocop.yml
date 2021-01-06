@@ -1,7 +1,8 @@
 # This is the configuration used to check the rubocop source code.
 # Check out: https://github.com/bbatsov/rubocop
 require:
-  - "rubocop-performance"
+  - rubocop-performance
+  - rubocop-rspec
 
 # Todo: turn on rubocop-rspec
 #  - "rubocop-rspec"
@@ -78,6 +79,18 @@ Metrics/MethodLength:
 
 Metrics/ModuleLength:
   Max: 180
+
+RSpec/DescribeClass:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: false
+
+RSpec/MessageSpies:
+  Enabled: false
+
+RSpec/NestedGroups:
+  Max: 4
 
 Style/GlobalVars:
   Exclude:
