@@ -13,14 +13,14 @@ describe "Upload asset" do
 
   before do
     dbl_configuration = instance_double("Configuration",
-                               server_renderer: "NodeRenderer",
-                               renderer_password: "myPassword1",
-                               renderer_url: "http://localhost:3800",
-                               renderer_request_retry_limit: 5,
-                               assets_to_copy: [
-                                 Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
-                                 Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
-                               ])
+                                        server_renderer: "NodeRenderer",
+                                        renderer_password: "myPassword1",
+                                        renderer_url: "http://localhost:3800",
+                                        renderer_request_retry_limit: 5,
+                                        assets_to_copy: [
+                                          Rails.root.join("public", "webpack", "production", "loadable-stats.json"),
+                                          Rails.root.join("public", "webpack", "production", "loadable-stats2.json")
+                                        ])
     allow(ReactOnRailsPro).to receive(:configuration).and_return(dbl_configuration)
     FileUtils.mkdir_p(Rails.root.join("public", "webpack", "production"))
     File.delete(asset_path_expanded) if File.exist?(asset_path_expanded)
