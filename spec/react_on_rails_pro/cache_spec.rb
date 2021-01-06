@@ -147,11 +147,14 @@ describe ReactOnRailsPro::Cache, :caching do
   end
 
   describe ".serializers_cache_key" do
+    let(:md5_instance) { instance_double(Digest::MD5) }
+
     context "when serializer_files is defined" do
       it "returns an MD5 based on the files" do
         serializer_glob = File.join(FixturesHelper.fixtures_dir, "app", "views", "**", "*.jbuilder")
         allow(ReactOnRailsPro.configuration).to receive(:serializer_globs).and_return(serializer_glob)
-        allow_any_instance_of(Digest::MD5).to receive(:hexdigest).and_return("eb3dc8ec96886ec81203c9e13f0277a7")
+        allow(Digest::MD5).to receive(:new).and_return(md5_instance)
+        allow(md5_instance).to receive(:hexdigest).and_return("eb3dc8ec96886ec81203c9e13f0277a7")
 
         result = described_class.serializers_cache_key
 
