@@ -25,6 +25,7 @@ const urlLoader = {
     loader: 'url-loader',
     options: {
       limit: urlFileSizeCutover,
+      esModule: false,
       // NO leading slash
       name: 'images/[name]-[hash].[ext]',
     },

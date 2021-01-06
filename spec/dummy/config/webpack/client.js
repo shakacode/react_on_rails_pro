@@ -10,21 +10,29 @@ if (!module.hot && devBuild) {
 //adding exposeLoader
 const exposeLoader = {
   test: require.resolve('jquery'),
-  use: [{ loader: 'expose-loader', options: 'jQuery' }],
+  use: [{ loader: 'expose-loader', options: { exposes: ['$', 'jQuery'] } }],
 };
 environment.loaders.insert('expose', exposeLoader, { after: 'file' });
 
 //adding es5Loader
 const es5Loader = {
   test: require.resolve('react'),
-  use: [{ loader: 'imports-loader', options: { shim: 'es5-shim/es5-shim', sham: 'es5-shim/es5-sham' } }],
+  use: [
+    {
+      loader: 'imports-loader',
+      options: {
+        type: 'commonjs',
+        imports: [' single es5-shim/es5-shim shim', 'single es5-shim/es5-sham sham'],
+      },
+    },
+  ],
 };
 environment.loaders.insert('react', es5Loader, { after: 'sass' });
 
 //adding jqueryUjsLoader
 const jqueryUjsLoader = {
   test: require.resolve('jquery-ujs'),
-  use: [{ loader: 'imports-loader', options: { jQuery: 'jquery' } }],
+  use: [{ loader: 'imports-loader', options: { type: 'commonjs', imports: 'single jquery jQuery' } }],
 };
 environment.loaders.insert('jquery-ujs', jqueryUjsLoader, { after: 'react' });
 
