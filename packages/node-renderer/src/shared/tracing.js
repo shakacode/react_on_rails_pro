@@ -1,6 +1,6 @@
-const requireOptional = require("./requireOptional");
+const requireOptional = require('./requireOptional');
 
-const sentryTracing = requireOptional('@sentry/tracing')
+const sentryTracing = requireOptional('@sentry/tracing');
 class Tracing {
   constructor() {
     this.Sentry = null;
@@ -15,8 +15,10 @@ class Tracing {
   }
 
   setSentry(Sentry) {
-    if(sentryTracing === null) {
-      throw new Error('@sentry/tracing not installed. Please, install it in order to use tracing with sentry.')
+    if (sentryTracing === null) {
+      throw new Error(
+        '@sentry/tracing package is not installed. Either install it in order to use tracing with Sentry or remove the sentryTracing from your config.',
+      );
     }
     this.Sentry = Sentry;
   }

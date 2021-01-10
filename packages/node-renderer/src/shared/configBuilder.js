@@ -21,6 +21,7 @@ const DEFAULT_PORT = 3800;
 const DEFAULT_LOG_LEVEL = 'info';
 const { env } = process;
 const MAX_DEBUG_SNIPPET_LENGTH = 1000;
+const DEFAULT_SAMPLE_RATE = 0.5
 
 let config;
 let userConfig;
@@ -76,7 +77,7 @@ const defaultConfig = {
 
   sentryTracing: env.SENTRY_TRACING || null,
 
-  sentryTracesSampleRate: env.SENTRY_TRACES_SAMPLE_RATE || 0.5,
+  sentryTracesSampleRate: env.SENTRY_TRACES_SAMPLE_RATE || DEFAULT_SAMPLE_RATE,
 };
 
 function envValuesUsed() {
@@ -145,10 +146,21 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
   }
 
   if (config.sentryDsn) {
-    errorReporter.addSentryDsn(config.sentryDsn, {
-      tracing: config.sentryTracing,
-      tracesSampleRate: parseFloat(config.sentryTracesSampleRate),
-    });
+    if (config.sentryTracing) {
+      let sampleRate = parseFloat(config.sentryTracesSampleRate);
+
+      if(Number.isNaN(sampleRate)) {
+        log.warn('SENTRY_TRACES_SAMPLE_RATE is not a number');
+        sampleRate = DEFAULT_SAMPLE_RATE;
+      }
+
+      errorReporter.addSentryDsn(config.sentryDsn, {
+        tracing: config.sentryTracing,
+        tracesSampleRate: sampleRate,
+      });
+    } else {
+      errorReporter.addSentryDsn(config.sentryDsn);
+    }
   }
 
   if (config.sentryTracing) {

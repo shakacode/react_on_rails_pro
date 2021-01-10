@@ -1,8 +1,13 @@
 module.exports = function requireOptional(path) {
   try {
-    return require(path)
-  } catch {
-    console.log(`requireOptional: ${path} couldn't be loaded.`)
-    return null;
+    // eslint-disable-next-line import/no-dynamic-require, global-require
+    return require(path);
+  } catch (e) {
+    if (e.code === 'MODULE_NOT_FOUND') {
+      console.log(`requireOptional: ${path} couldn't be loaded.`);
+      return null;
+    }
+
+    throw e;
   }
 };
