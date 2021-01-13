@@ -150,7 +150,9 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
       let sampleRate = parseFloat(config.sentryTracesSampleRate);
 
       if (Number.isNaN(sampleRate)) {
-        log.warn(`SENTRY_TRACES_SAMPLE_RATE "${sentryTracesSampleRate}" is not a number. Using default of ${DEFAULT_SAMPLE_RATE}`);
+        log.warn(
+          `SENTRY_TRACES_SAMPLE_RATE "${config.sentryTracesSampleRate}" is not a number. Using default of ${DEFAULT_SAMPLE_RATE}`,
+        );
         sampleRate = DEFAULT_SAMPLE_RATE;
       }
 
