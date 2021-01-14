@@ -154,6 +154,7 @@ describe ReactOnRailsPro::Cache, :caching do
         serializer_glob = File.join(FixturesHelper.fixtures_dir, "app", "views", "**", "*.jbuilder")
         allow(ReactOnRailsPro.configuration).to receive(:serializer_globs).and_return(serializer_glob)
         allow(Digest::MD5).to receive(:new).and_return(md5_instance)
+        allow(md5_instance).to receive(:file)
         allow(md5_instance).to receive(:hexdigest).and_return("eb3dc8ec96886ec81203c9e13f0277a7")
 
         result = described_class.serializers_cache_key
