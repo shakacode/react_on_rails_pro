@@ -4,9 +4,6 @@ require:
   - rubocop-performance
   - rubocop-rspec
 
-# Todo: turn on rubocop-rspec
-#  - "rubocop-rspec"
-
 AllCops:
   NewCops: enable
   DisplayCopNames: true
