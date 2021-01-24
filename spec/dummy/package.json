@@ -6,6 +6,8 @@
   "dependencies": {
     "@babel/preset-react": "^7.10.1",
     "@rails/webpacker": "^5.2.1",
+    "@sentry/node": "^5.30.0",
+    "@sentry/tracing": "^5.30.0",
     "@shakacode-tools/react-on-rails-pro-node-renderer": "link:.yalc/@shakacode-tools/react-on-rails-pro-node-renderer",
     "babel-plugin-module-resolver": "^4.0.0",
     "core-js": "3",

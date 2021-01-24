@@ -20,7 +20,7 @@ Here are the options available for the JavaScript renderer configuration object,
 1. **honeybadgerApiKey** - (default: `env.HONEYBADGER_API_KEY`) - If you want errors on the Node Renderer to be sent to Honeybadger, set this value.
 1. **sentryDsn**: - (default: `env.SENTRY_DSN || null`) - Enables server rendering errors catching with Sentry if the options is set.
 1. **sentryTracing** - (default: `env.SENTRY_TRACING || null`) - Should be set to `true` to enable adding trace context to the error. Requires **sentryDsn** to be set.
-1. **sentryTracesSampleRate** - (default: `env.SENTRY_TRACES_SAMPLE_RATE || 0.5`) - With this option set, every transaction created will have that percentage chance of being sent to Sentry. (So, for example, if you set sentryTracesSampleRate to 0.2, approximately 20% of your transactions will get recorded and sent.) 
+1. **sentryTracesSampleRate** - (default: `env.SENTRY_TRACES_SAMPLE_RATE || 0.1`) - With this option set, every transaction created will have that percentage chance of being sent to Sentry. So, for example, if you set sentryTracesSampleRate to 0.2, approximately 20% of your transactions will get recorded and sent. See below for more details on Sentry Tracing. 
 
 ## Example Launch Files
 
@@ -62,3 +62,26 @@ And add this line to your `scripts` section of `package.json`
 ```
 
 `yarn start` will run the renderer.
+
+## Error Tracking
+## Sentry
+1. Create a new Sentry Node project. After creating it, you will get directed to a [page like this](https://sentry.io/react-on-rails-pro/nodejs/getting-started/node/). You need to know your 
+1. Install these 2 packages: `@sentry/node` and `@sentry/tracing`
+2. Set the `sentryDsn` config value. To find your DSN, click on the gear icon next to your project
+   name to get to the settings screen. Then click on the left side menu **Client Keys (DSN)**.
+   
+
+### Sentry Tracing
+To use this feature, you need to add `config.sentryTracing = true` (or ENV `SENTRY_TRACING=true`) 
+and optionally the `config.sentryTracesSampleRate = 0.1` (or ENV `SENTRY_TRACES_SAMPLE_RATE=0.1`).
+The value of the sample rate is the percentage of requests to trace. The default 
+**config.sentryTracesSampleRate** is **0.1**, meaning 10% of requests are traced.
+
+For documentation of Sentry Tracing, see the
+* [Sentry Performance Monitoring Docs](https://docs.sentry.io/platforms/ruby/performance/)
+* [Sentry Distributed Tracing Docs](https://docs.sentry.io/product/performance/distributed-tracing/)
+* [Sentry Sampling Transactions Docs](https://docs.sentry.io/platforms/ruby/performance/sampling/).
+
+## Honeybadger
+1. Install package: `honeybadger`
+2. Set the `honeybadgerApiKey` config value.
