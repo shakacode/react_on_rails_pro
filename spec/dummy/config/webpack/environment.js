@@ -8,6 +8,9 @@ const rules = environment.loaders;
 const fileLoader = rules.get('file');
 const ManifestPlugin = environment.plugins.get('Manifest');
 
+const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
+const isHMR = process.env.HMR;
+
 // For details on the pros and cons of inlining images:
 // https://developers.google.com/web/fundamentals/design-and-ux/responsive/images
 // https://survivejs.com/webpack/loading/images/
@@ -75,6 +78,18 @@ environment.plugins.append(
     jQuery: 'jquery',
   }),
 );
+
+if (isWebpackDevServer || isHMR) {
+  environment.plugins.append(
+    'NormalModuleReplacement',
+    new webpack.NormalModuleReplacementPlugin(/(.*)\.imports-loadable(\.jsx)?/, (resource) => {
+      /* eslint-disable no-param-reassign */
+      resource.request = resource.request.replace(/imports-loadable/, 'imports-hmr');
+      /* eslint-enable no-param-reassign */
+      return resource.request;
+    }),
+  );
+}
 
 environment.loaders.append('expose', {
   test: require.resolve('jquery'),
