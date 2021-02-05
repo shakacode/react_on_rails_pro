@@ -95,45 +95,6 @@ function setModule(builderConfig, webpackConfig) {
         ],
         exclude: /node_modules/,
       },
-      // Support loading .gql files as GraphQL queries/mutations/fragments
-      // https://github.com/apollographql/graphql-tag#webpack-preprocessing-with-graphql-tagloader
-      {
-        test: /\.(graphql|gql)$/,
-        exclude: /node_modules/,
-        loader: 'graphql-tag/loader',
-      },
-      {
-        test: /\.woff2?$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            name: '[name].[hash].[ext]',
-            limit: urlFileSizeCutover,
-            publicPath: `/webpack/${process.env.NODE_ENV}/`,
-          },
-        },
-      },
-      {
-        test: /\.(jpe?g|png|gif|ico)$/,
-        use: {
-          loader: 'url-loader',
-          options: {
-            name: '[name].[hash].[ext]',
-            limit: urlFileSizeCutover,
-            publicPath: `/webpack/${process.env.NODE_ENV}/`,
-          },
-        },
-      },
-      {
-        test: /\.(ttf|eot)$/,
-        use: {
-          loader: 'file-loader',
-          options: {
-            name: '[name].[hash].[ext]',
-            publicPath: `/webpack/${process.env.NODE_ENV}/`,
-          },
-        },
-      },
     ],
   };
 
