@@ -96,8 +96,7 @@ const configureServer = () => {
   // If using the React on Rails Pro node server renderer, uncomment the next line
   serverWebpackConfig.target = 'node';
 
-  // https://codeburst.io/use-webpack-with-dirname-correctly-4cad3b265a92
-  serverWebpackConfig.node.__dirname = false;
+  serverWebpackConfig.node = false;
 
   return serverWebpackConfig;
 };

@@ -12,7 +12,7 @@ const webpackConfig = (envSpecific) => {
     // eslint-disable-next-line no-console
     console.log('[React on Rails] Creating only the client bundles.');
     result = clientConfig();
-  } else if (process.env.HMR || process.env.SERVER_BUNDLE_ONLY) {
+  } else if (process.env.SERVER_BUNDLE_ONLY) {
     // eslint-disable-next-line no-console
     console.log('[React on Rails] Creating only the server bundle.');
     result = serverConfig();
