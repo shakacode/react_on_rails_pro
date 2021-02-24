@@ -18,8 +18,8 @@ ReactOnRailsPro.configure do |config|
   config.tracing = true
 
   # Array of globs to find any files for which changes should bust the fragment cache for
-  # cached_react_component and cached_react_component_hash. This should
-  # include any files used to generate the JSON props.
+  # cached_react_component and cached_react_component_hash. This should include any files used to
+  # generate the JSON props, webpack and/or webpacker configuration files, and npm package lockfiles.
   config.dependency_globs = [ File.join(Rails.root, "app", "views", "**", "*.jbuilder") ]
 
 
