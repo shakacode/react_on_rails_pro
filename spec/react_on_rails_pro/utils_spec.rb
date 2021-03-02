@@ -140,6 +140,14 @@ module ReactOnRailsPro
       end
     end
 
+    describe ".printable_cache_key" do
+      subject do
+        cache_key = [1, 2, [3, 4, 5]]
+        ReactOnRailsPro::Utils.printable_cache_key(cache_key)
+      end
+      it { expect(subject).to eq("1_2_3_4_5") }
+    end
+
     def mock_response(status)
       # http.rb uses a string for status
       raise "Use a string for status #{status}" unless status.is_a?(String)

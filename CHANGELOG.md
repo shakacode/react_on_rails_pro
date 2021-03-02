@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file. Items under
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+## [1.6.0] - 2021-03-02
+### Added
+- Improve cache information from react_component_hash. Hash result now includes 2 new keys
+  * RORP_CACHE_HIT
+  * RORP_CACHE_KEY
+  Additionally, ReactOnRailsPro::Utils.printable_cache_key(cache_key) added.
+
+ [PR 140](https://github.com/shakacode/react_on_rails_pro/pull/140) by [justin808](https://github.com/justin808).
+
 ## [1.5.5] - 2020-08-10
 ### Added
 - Added request retrying in case of timeouts. [PR 136](https://github.com/shakacode/react_on_rails_pro/pull/136) by [ashgaliyev](https://github.com/ashgaliyev).
