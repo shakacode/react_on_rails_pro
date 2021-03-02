@@ -25,7 +25,7 @@ gem "puma"
 gem "rails", ">= 5.2"
 
 gem "rails_12factor"
-gem "rubocop", require: false
+gem "rubocop", "0.91.1", require: false
 gem "ruby-lint", require: false
 gem "sass-rails"
 gem "scss_lint", require: false
