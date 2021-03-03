@@ -12,7 +12,17 @@ module ReactOnRailsPro
           cache_key = react_component_cache_key(component_name, options)
           Rails.logger.debug { "React on Rails Pro cache_key is #{cache_key.inspect}" }
           cache_options = options[:cache_options]
-          Rails.cache.fetch(cache_key, cache_options) { yield }
+          cache_hit = true
+          result = Rails.cache.fetch(cache_key, cache_options) do
+            cache_hit = false
+            yield
+          end
+          # Pass back the cache key in the results only if the result is a Hash
+          if result.is_a?(Hash)
+            result[:RORP_CACHE_KEY] = cache_key
+            result[:RORP_CACHE_HIT] = cache_hit
+          end
+          result
         else
           yield
         end
