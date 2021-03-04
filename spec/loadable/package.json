@@ -36,6 +36,7 @@
     "idempotent-babel-polyfill": "^7.2.5",
     "lodash": "^4.17.20",
     "mini-css-extract-plugin": "^1.2.1",
+    "moment": "^2.24.0",
     "nps": "^5.10.0",
     "react": "17.0.1",
     "react-dom": "17.0.1",
