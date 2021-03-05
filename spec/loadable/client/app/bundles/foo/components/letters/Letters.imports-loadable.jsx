@@ -1,33 +1,33 @@
-import React from 'react'
+import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
-import loadable from '@loadable/component'
-import './main.css'
+import loadable from '@loadable/component';
+import './main.css';
 
-const A = loadable(() => import('./A'))
-const B = loadable(() => import('./B'))
-const C = loadable(() => import(/* webpackPreload: true */ './C'))
-const D = loadable(() => import(/* webpackPrefetch: true */ './D'))
-const E = loadable(() => import('./E?param'), { ssr: false })
-const X = loadable(props => import(`./${props.letter}`))
-const Sub = loadable(props => import(`./${props.letter}/file`))
+const A = loadable(() => import('./A'));
+const B = loadable(() => import('./B'));
+const C = loadable(() => import(/* webpackPreload: true */ './C'));
+const D = loadable(() => import(/* webpackPrefetch: true */ './D'));
+const E = loadable(() => import('./E?param'), { ssr: false });
+const X = loadable((props) => import(`./${props.letter}`));
+const Sub = loadable((props) => import(`./${props.letter}/file`));
 
 // Load the 'G' component twice: once in SSR and once fully client-side
 const GClient = loadable(() => import('./G'), {
   ssr: false,
   fallback: <span className="loading-state">ssr: false - Loading...</span>,
-})
+});
 const GServer = loadable(() => import('./G'), {
   ssr: true,
   fallback: <span className="loading-state">ssr: true - Loading...</span>,
-})
+});
 
 // We keep some references to prevent uglify remove
-A.C = C
-A.D = D
+A.C = C;
+A.D = D;
 
 const Moment = loadable.lib(() => import('moment'), {
-  resolveComponent: moment => moment.default || moment,
-})
+  resolveComponent: (moment) => moment.default || moment,
+});
 
 const Letters = () => (
   <div>
@@ -47,8 +47,8 @@ const Letters = () => (
     <br />
     <Sub letter="Z" />
     <br />
-    <Moment>{moment => moment().format('HH:mm')}</Moment>
+    <Moment>{(moment) => moment().format('HH:mm')}</Moment>
   </div>
-)
+);
 
-export default Letters
+export default Letters;

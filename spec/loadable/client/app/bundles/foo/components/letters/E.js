@@ -1,1 +1,1 @@
-export default () => 'E'
+export default () => 'E';

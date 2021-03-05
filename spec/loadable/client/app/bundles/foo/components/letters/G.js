@@ -1,5 +1,5 @@
-import React from 'react'
+import React from 'react';
 
-const G = ({ prefix }) => <span className="my-cool-class">{prefix} - G</span>
+const G = ({ prefix }) => <span className="my-cool-class">{prefix} - G</span>;
 
-export default G
+export default G;
