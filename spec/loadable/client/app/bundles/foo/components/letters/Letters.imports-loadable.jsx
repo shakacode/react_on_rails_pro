@@ -31,6 +31,7 @@ const Moment = loadable.lib(() => import('moment'), {
 
 const Letters = () => (
   <div>
+    <h1>Check out how these letters are imported in the source code!</h1>
     <A />
     <br />
     <B />

@@ -1,6 +1,7 @@
 const path = require('path');
 const _ = require('lodash/fp');
 const { devServer } = require('@rails/webpacker');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 function setModule(builderConfig, webpackConfig) {
   const isDevelopment = process.env.NODE_ENV !== 'production';
@@ -95,6 +96,28 @@ function setModule(builderConfig, webpackConfig) {
         ],
         exclude: /node_modules/,
       },
+      {
+        test: /\.css$/,
+        use: builderConfig.serverRendering
+          ? {
+              loader: 'css-loader',
+              options: {
+                modules: true,
+                importLoaders: 0,
+              },
+            }
+          : [
+              'style-loader',
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true,
+                  importLoaders: 1,
+                },
+              },
+            ],
+      },
+      /* example configuration
       // Support loading .gql files as GraphQL queries/mutations/fragments
       // https://github.com/apollographql/graphql-tag#webpack-preprocessing-with-graphql-tagloader
       {
@@ -133,7 +156,7 @@ function setModule(builderConfig, webpackConfig) {
             publicPath: `/webpack/${process.env.NODE_ENV}/`,
           },
         },
-      },
+      },*/
     ],
   };
 
