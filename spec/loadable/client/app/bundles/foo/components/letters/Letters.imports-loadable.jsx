@@ -1,7 +1,6 @@
 import React from 'react';
 // eslint-disable-next-line import/no-extraneous-dependencies
 import loadable from '@loadable/component';
-import './main.css';
 
 const A = loadable(() => import('./A'));
 const B = loadable(() => import('./B'));
@@ -21,35 +20,8 @@ const GServer = loadable(() => import('./G'), {
   fallback: <span className="loading-state">ssr: true - Loading...</span>,
 });
 
-// We keep some references to prevent uglify remove
-A.C = C;
-A.D = D;
-
 const Moment = loadable.lib(() => import('moment'), {
   resolveComponent: (moment) => moment.default || moment,
 });
 
-const Letters = () => (
-  <div>
-    <h1>Check out how these letters are imported in the source code!</h1>
-    <A />
-    <br />
-    <B />
-    <br />
-    <X letter="A" />
-    <br />
-    <X letter="F" />
-    <br />
-    <E />
-    <br />
-    <GClient prefix="ssr: false" />
-    <br />
-    <GServer prefix="ssr: true" />
-    <br />
-    <Sub letter="Z" />
-    <br />
-    <Moment>{(moment) => moment().format('HH:mm')}</Moment>
-  </div>
-);
-
-export default Letters;
+export { A, B, C, D, E, X, Sub, GClient, GServer, Moment };

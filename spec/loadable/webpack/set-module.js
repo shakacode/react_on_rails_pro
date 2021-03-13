@@ -1,7 +1,6 @@
 const path = require('path');
 const _ = require('lodash/fp');
 const { devServer } = require('@rails/webpacker');
-const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 function setModule(builderConfig, webpackConfig) {
   const isDevelopment = process.env.NODE_ENV !== 'production';
