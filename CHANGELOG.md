@@ -7,7 +7,18 @@ All notable changes to this project will be documented in this file. Items under
 ### 2.0 Upgrade Steps
 In your `config/initializers/react_on_rails_pro.rb`:
 1. Rename any references from `config.serializer_globs` to `config.dependency_globs`
+1. Rename any references from `vm-renderer` to `node-renderer`
+1. Rename `vmRenderer` to `NodeRenderer`
+1. Be sure to namespace the package like `require('@shakacode-tools/react-on-rails-pro-node-renderer');`
 
+For example, the old code might be:
+```js
+const { reactOnRailsProVmRenderer } = require('react-on-rails-pro-vm-renderer');
+```
+New
+```js
+const { reactOnRailsProNodeRenderer } = require('@shakacode-tools/react-on-rails-pro-node-renderer');
+```
 
 ## [2.0.0.beta.1] - 2021-01
 * Added Sentry Tracing support. [PR 150](https://github.com/shakacode/react_on_rails_pro/pull/150) by [ashgaliyev](https://github.com/ashgaliyev). To use this feature, you need to add `config.sentryTracing = true` (or ENV `SENTRY_TRACING=true`) and optionally the `config.sentryTracesSampleRate = 0.5` (or ENV `SENTRY_TRACES_SAMPLE_RATE=0.5`). The value of the sample rate is the percentage of requests to trace. For documentation of Sentry Tracing, see the [Sentry Performance Monitoring Docs](https://docs.sentry.io/platforms/ruby/performance/), the [Sentry Distributed Tracing Docs](https://docs.sentry.io/product/performance/distributed-tracing/), and the [Sentry Sampling Transactions Docs](https://docs.sentry.io/platforms/ruby/performance/sampling/). The default **config.sentryTracesSampleRate** is **0.1**.
@@ -19,20 +30,6 @@ In your `config/initializers/react_on_rails_pro.rb`:
 ## [2.0.0.beta.0] - 2020-12-03
 * Renamed VM Renderer to Node Renderer
 
-### Upgrade Steps
-In your code:
-1. Rename any references from `vm-renderer` to `node-renderer`
-2. Rename `vmRenderer` to `NodeRenderer`
-3. Be sure to namespace the package like `require('@shakacode-tools/react-on-rails-pro-node-renderer');`
-
-For example, the old code might be:
-```js
-const { reactOnRailsProVmRenderer } = require('react-on-rails-pro-vm-renderer');
-```
-New
-```js
-const { reactOnRailsProNodeRenderer } = require('@shakacode-tools/react-on-rails-pro-node-renderer');
-```
 
 ## [1.5.5-fixes] - 2021-03-02
 ### Added
