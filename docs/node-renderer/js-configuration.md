@@ -17,10 +17,10 @@ Here are the options available for the JavaScript renderer configuration object,
 1. **allWorkersRestartInterval** (default: `env.RENDERER_ALL_WORKERS_RESTART_INTERVAL`) - Interval in minutes between scheduled restarts of all cluster of workers. By default restarts are not enabled. If restarts are enabled, `delayBetweenIndividualWorkerRestarts` should also be set.
 1. **delayBetweenIndividualWorkerRestarts** (default: `env.RENDERER_DELAY_BETWEEN_INDIVIDUAL_WORKER_RESTARTS`) - Interval in minutes between individual worker restarts (when cluster restart is triggered). By default restarts are not enabled. If restarts are enabled, `allWorkersRestartInterval` should also be set.
 1. **supportModules** - (default: `env.RENDERER_SUPPORT_MODULES || null`) - Should be set to `true` to allow the server-bundle code to see require, exports, etc. `false` is like the ExecJS behavior.
-1. **honeybadgerApiKey** - (default: `env.HONEYBADGER_API_KEY`) - If you want errors on the Node Renderer to be sent to Honeybadger, set this value.
-1. **sentryDsn**: - (default: `env.SENTRY_DSN || null`) - Enables server rendering errors catching with Sentry if the options is set.
+1. **honeybadgerApiKey** - (default: `env.HONEYBADGER_API_KEY`) - If you want errors on the Node Renderer to be sent to Honeybadger, set this value and add package `honeybadger`.
+1. **sentryDsn**: - (default: `env.SENTRY_DSN || null`) - Enables server rendering errors catching with Sentry if the options is set. Add package `@sentry/node`.
 1. **sentryTracing** - (default: `env.SENTRY_TRACING || null`) - Should be set to `true` to enable adding trace context to the error. Requires **sentryDsn** to be set.
-1. **sentryTracesSampleRate** - (default: `env.SENTRY_TRACES_SAMPLE_RATE || 0.1`) - With this option set, every transaction created will have that percentage chance of being sent to Sentry. So, for example, if you set sentryTracesSampleRate to 0.2, approximately 20% of your transactions will get recorded and sent. See below for more details on Sentry Tracing. 
+1. **sentryTracesSampleRate** - (default: `env.SENTRY_TRACES_SAMPLE_RATE || 0.1`) - With this option set, every transaction created will have that percentage chance of being sent to Sentry. So, for example, if you set sentryTracesSampleRate to 0.2, approximately 20% of your transactions will get recorded and sent. See below for more details on Sentry Tracing. See [additional docs](./error-reporting-and-tracing.md).
 
 ## Example Launch Files
 
@@ -63,25 +63,3 @@ And add this line to your `scripts` section of `package.json`
 
 `yarn start` will run the renderer.
 
-## Error Tracking
-## Sentry
-1. Create a new Sentry Node project. After creating it, you will get directed to a [page like this](https://sentry.io/react-on-rails-pro/nodejs/getting-started/node/). You need to know your 
-1. Install these 2 packages: `@sentry/node` and `@sentry/tracing`
-2. Set the `sentryDsn` config value. To find your DSN, click on the gear icon next to your project
-   name to get to the settings screen. Then click on the left side menu **Client Keys (DSN)**.
-   
-
-### Sentry Tracing
-To use this feature, you need to add `config.sentryTracing = true` (or ENV `SENTRY_TRACING=true`) 
-and optionally the `config.sentryTracesSampleRate = 0.1` (or ENV `SENTRY_TRACES_SAMPLE_RATE=0.1`).
-The value of the sample rate is the percentage of requests to trace. The default 
-**config.sentryTracesSampleRate** is **0.1**, meaning 10% of requests are traced.
-
-For documentation of Sentry Tracing, see the
-* [Sentry Performance Monitoring Docs](https://docs.sentry.io/platforms/ruby/performance/)
-* [Sentry Distributed Tracing Docs](https://docs.sentry.io/product/performance/distributed-tracing/)
-* [Sentry Sampling Transactions Docs](https://docs.sentry.io/platforms/ruby/performance/sampling/).
-
-## Honeybadger
-1. Install package: `honeybadger`
-2. Set the `honeybadgerApiKey` config value.
