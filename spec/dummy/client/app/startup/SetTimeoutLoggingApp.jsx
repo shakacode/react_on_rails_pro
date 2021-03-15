@@ -5,13 +5,13 @@ import React from 'react';
  */
 const SetTimeoutLoggingApp = (_props) => {
   // eslint-disable-next-line no-console
-  const component = () => (<div>Called setTimeout and returned this.</div>);
+  const component = () => <div>Called setTimeout and returned this.</div>;
   const doIt = () => component;
   console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
   console.log('about to call setTimeout');
   console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
 
-  const promise =  setTimeout(doIt, 5000);
+  const promise = setTimeout(doIt, 5000);
   return promise;
 };
 
