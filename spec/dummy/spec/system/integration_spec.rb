@@ -213,7 +213,7 @@ describe "generator function returns renderedHtml as an object with additional H
   shared_examples "renderedHtmls should not have any errors and set correct page title" do
     subject { page }
 
-    before { visit react_helmet_path }
+    before { visit cached_react_helmet_path }
 
     it "renderedHtmls should not have any errors" do
       expect(page).to have_text 'Props: {"helloWorldData":{"name":"Mr. Server Side Rendering"}}'
