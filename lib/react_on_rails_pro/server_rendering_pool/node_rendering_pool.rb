@@ -3,7 +3,7 @@
 module ReactOnRailsPro
   module ServerRenderingPool
     # This implementation of the rendering pool uses NodeJS to execute javasript code
-    class VmRenderingPool
+    class NodeRenderingPool
       RENDERED_HTML_KEY = "renderedHtml"
 
       class << self
