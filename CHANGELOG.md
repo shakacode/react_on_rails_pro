@@ -12,6 +12,9 @@ Gem and package versions are the same except for beta releases where the gem use
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+#### Fixed
+- Logs missing error reporting packages (Sentry/HoneyBadger) instead of throwing an error. [PR 173](https://github.com/shakacode/react_on_rails_pro/pull/173) by [judahmeek](https://github.com/judahmeek)
+
 ### 2.0 Upgrade Steps
 In your `config/initializers/react_on_rails_pro.rb`:
 1. Rename any references from `config.serializer_globs` to `config.dependency_globs`
@@ -45,7 +48,7 @@ const { reactOnRailsProNodeRenderer } = require('@shakacode-tools/react-on-rails
 * Renamed VM Renderer to Node Renderer. [PR 140](https://github.com/shakacode/react_on_rails_pro/pull/140) by [justin808](https://github.com/justin808).
 
 ### Fixed
-- Cache key not stable between machines same deploy. [PR 159](https://github.com/shakacode/react_on_rails_pro/pull/136) by [justin808](https://github.com/justin808). 
+- Cache key not stable between machines same deploy. [PR 159](https://github.com/shakacode/react_on_rails_pro/pull/136) by [justin808](https://github.com/justin808).
 
 ## [1.5.6] - 2020-12-02
 Switched to releases being published packages.
