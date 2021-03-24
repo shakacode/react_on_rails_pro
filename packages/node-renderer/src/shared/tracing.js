@@ -16,11 +16,12 @@ class Tracing {
 
   setSentry(Sentry) {
     if (sentryTracing === null) {
-      throw new Error(
+      log.error(
         '@sentry/tracing package is not installed. Either install it in order to use tracing with Sentry or remove the sentryTracing from your config.',
       );
+    } else {
+      this.Sentry = Sentry;
     }
-    this.Sentry = Sentry;
   }
 
   async withinTransaction(fn, op, name) {
