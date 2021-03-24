@@ -1,4 +1,5 @@
 const requireOptional = require('../shared/requireOptional');
+const log = require('./log');
 
 const Honeybadger = requireOptional('honeybadger');
 const Sentry = requireOptional('@sentry/node');
@@ -27,39 +28,41 @@ class ErrorReporter {
 
   addHoneybadgerApiKey(apiKey) {
     if (Honeybadger === null) {
-      throw new Error(
+      log.error(
         'Honeybadger package is not installed. Either install it in order to use error reporting with Honeybadger or remove the honeybadgerApiKey from your config.',
       );
+    } else {
+      Honeybadger.configure({ apiKey });
+      this.honeybadger = true;
     }
-    Honeybadger.configure({ apiKey });
-    this.honeybadger = true;
   }
 
   addSentryDsn(sentryDsn, options = {}) {
     if (Sentry === null) {
-      throw new Error(
+      log.error(
         '@sentry/node package is not installed. Either install it in order to use error reporting with Sentry or remove the sentryDsn from your config.',
       );
-    }
-    let sentryOptions = {
-      dsn: sentryDsn,
-    };
-
-    if (options.tracing) {
-      sentryOptions = {
-        ...sentryOptions,
-        integrations: [
-          // enable HTTP calls tracing
-          new Sentry.Integrations.Http({ tracing: true }),
-        ],
-
-        // We recommend adjusting this value in production, or using tracesSampler
-        // for finer control
-        tracesSampleRate: options.tracesSampleRate,
+    } else {
+      let sentryOptions = {
+        dsn: sentryDsn,
       };
+
+      if (options.tracing) {
+        sentryOptions = {
+          ...sentryOptions,
+          integrations: [
+            // enable HTTP calls tracing
+            new Sentry.Integrations.Http({ tracing: true }),
+          ],
+
+          // We recommend adjusting this value in production, or using tracesSampler
+          // for finer control
+          tracesSampleRate: options.tracesSampleRate,
+        };
+      }
+      Sentry.init(sentryOptions);
+      this.sentry = true;
     }
-    Sentry.init(sentryOptions);
-    this.sentry = true;
   }
 
   setContext(context) {
