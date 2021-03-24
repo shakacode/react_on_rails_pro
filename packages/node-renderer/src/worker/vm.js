@@ -14,7 +14,6 @@ const log = require('../shared/log');
 const { getConfig } = require('../shared/configBuilder');
 const { formatExceptionMessage, smartTrim } = require('../shared/utils');
 const errorReporter = require('../shared/errorReporter');
-const tracing = require('../shared/tracing');
 
 const readFileAsync = promisify(fs.readFile);
 const writeFileAsync = promisify(fs.writeFile);
@@ -70,22 +69,21 @@ exports.buildVM = async function buildVM(filePath) {
   if (filePath === vmBundleFilePath && context) {
     return Promise.resolve(true);
   }
-  tracing.withinTransaction(
-    async (transaction) => {
-      try {
-        const { supportModules } = getConfig();
-        vmBundleFilePath = undefined;
-        if (supportModules) {
-          context = vm.createContext({ Buffer, process });
-        } else {
-          context = vm.createContext();
-        }
-        // Create explicit reference to global context, just in case (some libs can use it):
-        vm.runInContext('global = this', context);
 
-        // Reimplement console methods for replaying on the client:
-        vm.runInContext(
-          `
+  try {
+    const { supportModules } = getConfig();
+    vmBundleFilePath = undefined;
+    if (supportModules) {
+      context = vm.createContext({ Buffer, process });
+    } else {
+      context = vm.createContext();
+    }
+    // Create explicit reference to global context, just in case (some libs can use it):
+    vm.runInContext('global = this', context);
+
+    // Reimplement console methods for replaying on the client:
+    vm.runInContext(
+      `
     console = { history: [] };
     ['error', 'log', 'info', 'warn'].forEach(function (level) {
       console[level] = function () {
@@ -96,12 +94,12 @@ exports.buildVM = async function buildVM(filePath) {
         console.history.push({level: level, arguments: argArray});
       };
     });`,
-          context,
-        );
+      context,
+    );
 
-        // Define global getStackTrace() function:
-        vm.runInContext(
-          `
+    // Define global getStackTrace() function:
+    vm.runInContext(
+      `
     function getStackTrace() {
       var stack;
       try {
@@ -113,67 +111,55 @@ exports.buildVM = async function buildVM(filePath) {
       stack = stack.split('\\n').map(function (line) { return line.trim(); });
       return stack.splice(stack[0] == 'Error' ? 2 : 1);
     }`,
-          context,
-        );
+      context,
+    );
 
-        // Define timer polyfills:
-        // TODO: This should be made optional
-        vm.runInContext(`function setInterval() { ${undefinedForExecLogging('setInterval')} }`,
-          context);
-        vm.runInContext(`function setTimeout() { ${undefinedForExecLogging('setTimeout')} }`,
-          context);
-        vm.runInContext(`function clearTimeout() { ${undefinedForExecLogging('clearTimeout')} }`,
-          context);
+    // Define timer polyfills:
+    vm.runInContext(`function setInterval() { ${undefinedForExecLogging('setInterval')} }`, context);
+    vm.runInContext(`function setTimeout() { ${undefinedForExecLogging('setTimeout')} }`, context);
+    vm.runInContext(`function clearTimeout() { ${undefinedForExecLogging('clearTimeout')} }`, context);
 
-        // Run bundle code in created context:
-        const bundleContents = await readFileAsync(filePath, 'utf8');
+    // Run bundle code in created context:
+    const bundleContents = await readFileAsync(filePath, 'utf8');
 
-        // If node-specific code is provided then it must be wrapped into a module wrapper. The bundle
-        // may need the `require` function, which is not available when running in vm unless passed in.
-        if (supportModules) {
-          vm.runInContext(m.wrap(bundleContents), context)(
-            exports,
-            require,
-            module,
-            filePath,
-            path.dirname(filePath),
-          );
-        } else {
-          vm.runInContext(bundleContents, context);
-        }
+    // If node-specific code is provided then it must be wrapped into a module wrapper. The bundle
+    // may need the `require` function, which is not available when running in vm unless passed in.
+    if (supportModules) {
+      vm.runInContext(m.wrap(bundleContents), context)(
+        exports,
+        require,
+        module,
+        filePath,
+        path.dirname(filePath),
+      );
+    } else {
+      vm.runInContext(bundleContents, context);
+    }
 
-        // !isMaster check is required for JS unit testing:
-        if (!cluster.isMaster) {
-          log.debug(`Built VM for worker #${cluster.worker.id}`);
-        }
+    // !isMaster check is required for JS unit testing:
+    if (!cluster.isMaster) {
+      log.debug(`Built VM for worker #${cluster.worker.id}`);
+    }
 
-        if (log.level === 'debug') {
-          log.debug(
-            'Required objects now in VM sandbox context: %s',
-            vm.runInContext('global.ReactOnRails', context) !== undefined,
-          );
-          log.debug(
-            'Required objects should not leak to the global context (true means OK): %s',
-            !!global.ReactOnRails,
-          );
-        }
+    if (log.level === 'debug') {
+      log.debug(
+        'Required objects now in VM sandbox context: %s',
+        vm.runInContext('global.ReactOnRails', context) !== undefined,
+      );
+      log.debug(
+        'Required objects should not leak to the global context (true means OK): %s',
+        !!global.ReactOnRails,
+      );
+    }
 
-        vmBundleFilePath = filePath;
+    vmBundleFilePath = filePath;
 
-        return Promise.resolve(true);
-      } catch (error) {
-        log.error('Caught Error when creating context in buildVM, %O', error);
-        errorReporter.notify(error, {}, (scope) => {
-          if (transaction) {
-            scope.setSpan(transaction);
-          }
-        });
-        return Promise.reject(error);
-      }
-    },
-    "buildVM",
-    "buildVM"
-  );
+    return Promise.resolve(true);
+  } catch (error) {
+    log.error('Caught Error when creating context in buildVM, %O', error);
+    errorReporter.notify(error);
+    return Promise.reject(error);
+  }
 };
 
 /**
