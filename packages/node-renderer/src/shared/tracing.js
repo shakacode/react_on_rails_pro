@@ -17,7 +17,7 @@ class Tracing {
 
   setSentry(Sentry) {
     if (sentryTracing === null) {
-      log.error('@sentry/tracing package is not installed. Either install it in order to use tracing with Sentry or remove the sentryTracing from your config.');
+      log.error('@sentry/tracing package is not installed. Either install it in order to use tracing with Sentry or set sentryTracing to false in your config.');
     } else {
       this.Sentry = Sentry;
     }

@@ -160,13 +160,11 @@ configBuilder.buildConfig = function buildConfig(providedUserConfig) {
         tracing: config.sentryTracing,
         tracesSampleRate: sampleRate,
       });
+
+      tracing.setSentry(Sentry);
     } else {
       errorReporter.addSentryDsn(config.sentryDsn);
     }
-  }
-
-  if (config.sentryTracing) {
-    tracing.setSentry(Sentry);
   }
 
   configureLogger(log, config.logLevel);

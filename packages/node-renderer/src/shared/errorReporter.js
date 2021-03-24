@@ -51,7 +51,7 @@ class ErrorReporter {
       if (options.tracing) {
         if (SentryTracing === null) {
           log.error(
-            '@sentry/tracing package is not installed. Either install it in order to use error reporting with Sentry or remove the sentryDsn from your config.');
+            '@sentry/tracing package is not installed. Either install it in order to use error reporting with Sentry or set config sentryTracing to false.');
         } else {
           sentryOptions = {
             ...sentryOptions,
