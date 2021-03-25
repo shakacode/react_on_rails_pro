@@ -6853,10 +6853,10 @@ react-is@^16.12.0, react-is@^16.6.0, react-is@^16.7.0, react-is@^16.8.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-on-rails@12.1.0:
-  version "12.1.0"
-  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-12.1.0.tgz#16afa4b0a332d4997fadef5b43aa9b1630a601ea"
-  integrity sha512-gvqgSjNCD9o0+Amhe+SZd6bmmhOSG2vNQZB824f8+7EsSgcJ23yfFkiyPTQ64Y448jpiMQEHRWAb+Ct6YirWgw==
+react-on-rails@12.2.0:
+  version "12.2.0"
+  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-12.2.0.tgz#289d3752f695be7a9e71c8075a2601029e1ac71e"
+  integrity sha512-ev51+38S/CcivIE9PU7kGPkt/ckVaIbZbUKqfXR7BcM5V45vl0NUs1O0tjfT/XVggz7MWV2DA+My2lRjAPIeJA==
   dependencies:
     "@babel/runtime-corejs3" "^7.12.5"
     concurrently "^5.1.0"

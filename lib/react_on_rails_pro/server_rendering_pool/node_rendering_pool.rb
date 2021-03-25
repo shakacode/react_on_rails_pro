@@ -43,6 +43,7 @@ module ReactOnRailsPro
         # Calling code will probably call 'html_safe' on return value before rendering to the view.
         def exec_server_render_js(js_code, render_options)
           # The secret sauce is passing self as the 3rd param, the js_evaluator
+          render_options.set_option(:throw_js_errors, ReactOnRailsPro.configuration.throw_js_errors)
           ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript
             .exec_server_render_js(js_code, render_options, self)
         end

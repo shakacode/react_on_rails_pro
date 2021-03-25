@@ -12,16 +12,17 @@ Gem and package versions are the same except for beta releases where the gem use
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
-## [2.0.0.beta.2] - 2021-03-23
-#### Fixed
-- Logs missing error reporting packages (Sentry/HoneyBadger) instead of throwing an error. [PR 173](https://github.com/shakacode/react_on_rails_pro/pull/173) by [judahmeek](https://github.com/judahmeek)
-- Added additional tracing for buildVM which is the parsing of the SSR bundle.
+------
 
 ### 2.0 Upgrade Steps
+1. Update React on Rails to 12.2.0
+
 In your `config/initializers/react_on_rails_pro.rb`:
 1. Rename any references from `config.serializer_globs` to `config.dependency_globs`
 1. Rename any references from `vm-renderer` to `node-renderer`
 1. Rename `vmRenderer` to `NodeRenderer`
+  
+Follow the steps for the new installation that uses Github Packages: [docs/installation.md](https://github.com/shakacode/react_on_rails_pro/blob/master/docs/installation.md).
 1. Be sure to namespace the package like `require('@shakacode-tools/react-on-rails-pro-node-renderer');`
 1. Add the Honeybadger ("honeybadger") or Sentry ("@sentry/node") NPM packages, as those used to be **dependencies**. Now they are optional.
 1. Add the `@sentry/tracing` package if you want to try Sentry tracing. See [Error Reporting and Tracing for Sentry and HoneyBadger](./docs/node-renderer/error-reporting-and-tracing.md).
@@ -34,6 +35,14 @@ New
 ```js
 const { reactOnRailsProNodeRenderer } = require('@shakacode-tools/react-on-rails-pro-node-renderer');
 ```
+------
+
+## [2.0.0.beta.2] - 2021-03-23
+#### Added
+- Added option `config.throw_js_errors` so that any errors in SSR will go to the console plus HoneyBadger/Sentry. [PR 174](https://github.com/shakacode/react_on_rails_pro/pull/174) by [justin808](https://github.com/justin808).
+
+#### Fixed
+- Logs missing error reporting packages (Sentry/HoneyBadger) instead of throwing an error. [PR 174](https://github.com/shakacode/react_on_rails_pro/pull/174) by [justin808](https://github.com/justin808).
 
 ## [2.0.0.beta.1] - 2021-03-14
 * Added Sentry Tracing support. [PR 150](https://github.com/shakacode/react_on_rails_pro/pull/150) by [ashgaliyev](https://github.com/ashgaliyev). To use this feature, you need to add `config.sentryTracing = true` (or ENV `SENTRY_TRACING=true`) and optionally the `config.sentryTracesSampleRate = 0.5` (or ENV `SENTRY_TRACES_SAMPLE_RATE=0.5`). The value of the sample rate is the percentage of requests to trace. For documentation of Sentry Tracing, see the [Sentry Performance Monitoring Docs](https://docs.sentry.io/platforms/ruby/performance/), the [Sentry Distributed Tracing Docs](https://docs.sentry.io/product/performance/distributed-tracing/), and the [Sentry Sampling Transactions Docs](https://docs.sentry.io/platforms/ruby/performance/sampling/). The default **config.sentryTracesSampleRate** is **0.1**.

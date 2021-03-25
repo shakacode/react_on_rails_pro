@@ -3,7 +3,7 @@ const log = require('./log');
 
 const Honeybadger = requireOptional('honeybadger');
 const Sentry = requireOptional('@sentry/node');
-const SentryTracing = requireOptional('@sentry/tracing')
+const SentryTracing = requireOptional('@sentry/tracing');
 
 class ErrorReporter {
   constructor() {
@@ -51,7 +51,8 @@ class ErrorReporter {
       if (options.tracing) {
         if (SentryTracing === null) {
           log.error(
-            '@sentry/tracing package is not installed. Either install it in order to use error reporting with Sentry or set config sentryTracing to false.');
+            '@sentry/tracing package is not installed. Either install it in order to use error reporting with Sentry or set config sentryTracing to false.',
+          );
         } else {
           sentryOptions = {
             ...sentryOptions,
@@ -78,7 +79,7 @@ class ErrorReporter {
   }
 
   notify(msg, context = {}, scopeFn = undefined) {
-    console.log('ErrorReporter postMessage', msg);
+    log.error(`ErrorReporter notification: ${msg}`);
     if (this.honeybadger) {
       Honeybadger.notify(msg, context);
     }
