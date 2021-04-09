@@ -18,6 +18,18 @@ module ReactOnRailsPro
       ReactOnRailsPro::Request.upload_assets
     end
 
+    def self.digest_file_or_directory(file, digest)
+      # Dir.glob distinguishes files/directories by extension presense.
+      # Most of the paths with extensions are files, but sometimes there are directories with extensions.
+      # That's why this function is recoursive.
+      if File.directory?(file)
+        files = Dir.glob("#{file}/*").uniq.sort!
+        files.each { |f| self.digest_file_or_directory(f, digest) }
+      else
+        digest.file(file)
+      end
+    end
+
     # takes an array of globs & returns a md5 hash
     def self.digest_of_globs(globs)
       # NOTE: Dir.glob is not stable between machines, even with same OS. So we must sort.
@@ -26,7 +38,7 @@ module ReactOnRailsPro
       # We've tested it to make sure that it adds less than a second even in the case of thousands of files
       files = Dir.glob(globs).uniq.sort!
       digest = Digest::MD5.new
-      files.each { |f| digest.file(f) }
+      files.each { |f| self.digest_file_or_directory(f, digest) }
       digest.hexdigest
     end
 
