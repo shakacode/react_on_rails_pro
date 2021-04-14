@@ -25,7 +25,7 @@ module ReactOnRailsPro
       # dependency_globs & source code in order to create a cache key for production bundles
       # We've tested it to make sure that it adds less than a second even in the case of thousands of files
       files = Dir.glob(globs).uniq
-      if options.enable_exclusion_globs
+      if options[:enable_exclusion_globs]
         excluded_files = Dir.glob(ReactOnRailsPro.configuration.excluded_globs).uniq
         filtered_files = files - excluded_files
         files = filtered_files.sort!
