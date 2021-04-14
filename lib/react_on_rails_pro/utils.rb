@@ -19,12 +19,17 @@ module ReactOnRailsPro
     end
 
     # takes an array of globs & returns a md5 hash
-    def self.digest_of_globs(globs)
+    def self.digest_of_globs(globs, options = {})
       # NOTE: Dir.glob is not stable between machines, even with same OS. So we must sort.
       # .uniq was added to remove redundancies in the case digest_of_globs is used on a union of
       # dependency_globs & source code in order to create a cache key for production bundles
       # We've tested it to make sure that it adds less than a second even in the case of thousands of files
-      files = Dir.glob(globs).uniq.sort!
+      files = Dir.glob(globs).uniq
+      if options.enable_exclusion_globs
+        excluded_files = Dir.glob(ReactOnRailsPro.configuration.excluded_globs).uniq
+        filtered_files = files - excluded_files
+        files = filtered_files.sort!
+      end
       digest = Digest::MD5.new
       files.each { |f| digest.file(f) unless File.directory?(f) }
       digest.hexdigest

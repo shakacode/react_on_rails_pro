@@ -18,6 +18,10 @@ module ReactOnRailsPro
       renderer_password: nil,
       tracing: Configuration::DEFAULT_TRACING,
       dependency_globs: Configuration::DEFAULT_DEPENDENCY_GLOBS,
+      exclusion_globs: Configuration::DEFAULT_EXCLUSION_GLOBS,
+      enable_exclusion_globs_for_bundle_caching: Configuration::DEFAULT_ENABLE_EXCLUSION_GLOBS_FOR_BUNDLE_CACHING,
+      enable_exclusion_globs_for_fragment_caching: Configuration::DEFAULT_ENABLE_EXCLUSION_GLOBS_FOR_FRAGMENT_CACHING,
+      remote_bundle_cache_adapter: Configuration::DEFAULT_REMOTE_BUNDLE_CACHE_ADAPTER,
       ssr_pre_hook_js: nil,
       assets_to_copy: nil,
       renderer_request_retry_limit: Configuration::DEFAULT_RENDERER_REQUEST_RETRY_LIMIT,
@@ -35,20 +39,30 @@ module ReactOnRailsPro
     DEFAULT_PRERENDER_CACHING = false
     DEFAULT_TRACING = false
     DEFAULT_DEPENDENCY_GLOBS = nil
+    DEFAULT_EXCLUSION_GLOBS = nil
+    DEFAULT_ENABLE_EXCLUSION_GLOBS_FOR_BUNDLE_CACHING = false
+    DEFAULT_ENABLE_EXCLUSION_GLOBS_FOR_FRAGMENT_CACHING = false
+    DEFAULT_REMOTE_BUNDLE_CACHE_ADAPTER = nil
     DEFAULT_RENDERER_REQUEST_RETRY_LIMIT = 5
     DEFAULT_THROW_JS_ERRORS = false
 
     attr_accessor :renderer_url, :renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
-                  :dependency_globs, :ssr_pre_hook_js, :assets_to_copy,
+                  :dependency_globs, :exclusion_globs,
+                  :enable_exclusion_globs_for_bundle_caching,
+                  :enable_exclusion_globs_for_fragment_caching,
+                  :remote_bundle_cache_adapter, :ssr_pre_hook_js, :assets_to_copy,
                   :renderer_request_retry_limit, :throw_js_errors
 
     def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil,
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
                    renderer_http_pool_warn_timeout: nil, tracing: nil,
-                   dependency_globs: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
+                   dependency_globs: nil, exclusion_globs: nil,
+                   enable_exclusion_globs_for_bundle_caching: nil,
+                   enable_exclusion_globs_for_fragment_caching: nil,
+                   remote_bundle_cache_adapter: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
                    renderer_request_retry_limit: nil, throw_js_errors: nil)
       self.renderer_url = renderer_url
       self.renderer_password = renderer_password
@@ -60,6 +74,10 @@ module ReactOnRailsPro
       self.renderer_http_pool_warn_timeout = renderer_http_pool_warn_timeout
       self.tracing = tracing
       self.dependency_globs = dependency_globs
+      self.exclusion_globs = exclusion_globs
+      self.enable_exclusion_globs_for_bundle_caching = enable_exclusion_globs_for_bundle_caching
+      self.enable_exclusion_globs_for_fragment_caching = enable_exclusion_globs_for_fragment_caching
+      self.remote_bundle_cache_adapter = remote_bundle_cache_adapter
       self.ssr_pre_hook_js = ssr_pre_hook_js
       self.assets_to_copy = assets_to_copy
       self.renderer_request_retry_limit = renderer_request_retry_limit
