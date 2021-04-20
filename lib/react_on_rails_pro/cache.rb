@@ -63,7 +63,7 @@ module ReactOnRailsPro
 
         @dependency_checksum = ReactOnRailsPro::Utils.digest_of_globs(
           ReactOnRailsPro.configuration.dependency_globs,
-          enable_exclusion_globs: ReactOnRailsPro.configuration.enable_exclusion_globs_for_fragment_caching
+          enable_glob_exclusion: ReactOnRailsPro.configuration.enable_glob_exclusion_for_fragment_caching
         )
       end
 
