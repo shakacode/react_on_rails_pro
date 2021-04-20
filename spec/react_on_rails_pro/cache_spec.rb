@@ -186,6 +186,25 @@ describe ReactOnRailsPro::Cache, :caching do
         allow(md5_instance).to receive(:file)
         allow(md5_instance).to receive(:hexdigest).and_return("eb3dc8ec96886ec81203c9e13f0277a7")
 
+        expect(md5_instance).to receive(:file).exactly(3).times
+
+        result = described_class.dependencies_cache_key
+
+        expect(result).to eq("eb3dc8ec96886ec81203c9e13f0277a7")
+      end
+
+      it "excludes exclusion_globs if enable_glob_exclusion_for_fragment_caching is true" do
+        dependency_glob = File.join(FixturesHelper.fixtures_dir, "app", "views", "**", "*.jbuilder")
+        excluded_glob = File.join(FixturesHelper.fixtures_dir, "app", "views", "**", "index.json.jbuilder")
+        allow(ReactOnRailsPro.configuration).to receive(:dependency_globs).and_return(dependency_glob)
+        allow(ReactOnRailsPro.configuration).to receive(:excluded_globs).and_return(excluded_glob)
+        allow(ReactOnRailsPro.configuration).to receive(:enable_glob_exclusion_for_fragment_caching).and_return(true)
+        allow(Digest::MD5).to receive(:new).and_return(md5_instance)
+        allow(md5_instance).to receive(:file)
+        allow(md5_instance).to receive(:hexdigest).and_return("eb3dc8ec96886ec81203c9e13f0277a7")
+
+        expect(md5_instance).to receive(:file).twice
+
         result = described_class.dependencies_cache_key
 
         expect(result).to eq("eb3dc8ec96886ec81203c9e13f0277a7")
