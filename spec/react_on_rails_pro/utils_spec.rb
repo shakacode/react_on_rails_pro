@@ -84,7 +84,8 @@ module ReactOnRailsPro
 
         expect(md5_instance).to receive(:file).exactly(3).times
 
-        result = described_class.digest_of_globs(File.join(FixturesHelper.fixtures_dir, "app", "views", "**", "*.jbuilder"))
+        result = described_class.digest_of_globs(File.join(FixturesHelper.fixtures_dir, "app", "views", "**",
+                                                           "*.jbuilder"))
 
         expect(result).to eq("eb3dc8ec96886ec81203c9e13f0277a7")
       end

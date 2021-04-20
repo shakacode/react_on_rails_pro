@@ -34,9 +34,8 @@ describe ReactOnRailsPro::AssetsPrecompile do
 
   describe ".build_or_fetch_bundles" do
     context "when ENV['DISABLE_PRECOMPILE_CACHE'] is not present" do
-
       before do
-        ENV['DISABLE_PRECOMPILE_CACHE'] = nil
+        ENV["DISABLE_PRECOMPILE_CACHE"] = nil
       end
 
       it "tries to fetch cached bundles" do
@@ -64,9 +63,8 @@ describe ReactOnRailsPro::AssetsPrecompile do
     end
 
     context "when ENV['DISABLE_PRECOMPILE_CACHE'] is present" do
-
       before do
-        ENV['DISABLE_PRECOMPILE_CACHE'] = 'true'
+        ENV["DISABLE_PRECOMPILE_CACHE"] = "true"
       end
 
       it "doesn't check for cached bundles" do
@@ -95,7 +93,7 @@ describe ReactOnRailsPro::AssetsPrecompile do
     context "when config.remote_bundle_cache_adapter is correct" do
       it "writes the fetched bundle cache to disk" do
         adapter = Module.new do
-          def self.fetch(filename)
+          def self.fetch(_filename)
             true
           end
         end
@@ -117,9 +115,8 @@ describe ReactOnRailsPro::AssetsPrecompile do
 
   describe ".fetch_and_unzip_cached_bundles" do
     context "when ENV['DISABLE_PRECOMPILE_CACHE'] is present" do
-
       before do
-        ENV['DISABLE_PRECOMPILE_CACHE'] = 'true'
+        ENV["DISABLE_PRECOMPILE_CACHE"] = "true"
       end
 
       it "imediately returns" do
@@ -130,9 +127,8 @@ describe ReactOnRailsPro::AssetsPrecompile do
     end
 
     context "when ENV['DISABLE_PRECOMPILE_CACHE'] is not present" do
-
       before do
-        ENV['DISABLE_PRECOMPILE_CACHE'] = nil
+        ENV["DISABLE_PRECOMPILE_CACHE"] = nil
       end
 
       it "tries to fetch bundles if local cache is not detected" do

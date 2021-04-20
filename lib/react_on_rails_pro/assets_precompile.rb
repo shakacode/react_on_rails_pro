@@ -75,8 +75,7 @@ module ReactOnRailsPro
           false
         end
       rescue StandardError => e
-        raise e
-        puts "There was an error during the remote bundle cache fetch request:"\
+        puts "There was an error during the remote bundle cache fetch request:" \
              "#{e.inspect}. This will be evaluated as a remote bundle cache miss."
         false
       end
