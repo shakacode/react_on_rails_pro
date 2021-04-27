@@ -21,12 +21,9 @@ describe ReactOnRailsPro::AssetsPrecompile do
 
       allow(ror_pro_config).to receive(:dependency_globs).and_return([expected_parameters.last])
 
-      allow(ror_pro_config).to receive(:enable_glob_exclusion_for_bundle_caching).and_return(false)
-
       allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
 
-      expect(ReactOnRailsPro::Utils).to receive(:digest_of_globs).with(expected_parameters,
-                                                                       enable_exclusion_globs: false)
+      expect(ReactOnRailsPro::Utils).to receive(:digest_of_globs).with(expected_parameters)
 
       described_class.instance.bundles_cache_key
     end

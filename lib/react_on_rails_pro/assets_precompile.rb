@@ -23,10 +23,7 @@ module ReactOnRailsPro
           starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
           cache_dependencies = [Webpacker.config.source_path.join("**/*.*")]
                                .union(ReactOnRailsPro.configuration.dependency_globs)
-          result = ReactOnRailsPro::Utils.digest_of_globs(
-            cache_dependencies,
-            enable_exclusion_globs: ReactOnRailsPro.configuration.enable_glob_exclusion_for_bundle_caching
-          )
+          result = ReactOnRailsPro::Utils.digest_of_globs(cache_dependencies)
           ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
           elapsed = (ending - starting).round(2)
           puts "Completed calculating digest of bundle dependencies in #{elapsed} seconds."
