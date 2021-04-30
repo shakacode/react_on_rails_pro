@@ -40,7 +40,7 @@ module ReactOnRailsPro
     end
 
     def build_or_fetch_bundles
-      if ENV["DISABLE_PRECOMPILE_CACHE"].present?
+      if disable_precompile_cache?
         build_bundles
         return
       end
@@ -49,6 +49,10 @@ module ReactOnRailsPro
 
       build_bundles
       cache_bundles
+    end
+
+    def disable_precompile_cache?
+      ENV["DISABLE_PRECOMPILE_CACHE"] == 'true'
     end
 
     def fetch_bundles
@@ -79,8 +83,8 @@ module ReactOnRailsPro
     end
 
     def fetch_and_unzip_cached_bundles
-      if ENV["DISABLE_PRECOMPILE_CACHE"].present?
-        puts 'ENV["DISABLE_PRECOMPILE_CACHE"] is present. Skipping dependency hashing & bundle cache fetch.'
+      if disable_precompile_cache?
+        puts 'The sentinel value for disabling precompile caching has been detected. Skipping dependency hashing & bundle cache fetch.'
         return false
       end
 
