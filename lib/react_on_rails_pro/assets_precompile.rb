@@ -1,5 +1,4 @@
 # frozen_string_literal: true
-require 'rake'
 
 module ReactOnRailsPro
   class AssetsPrecompile
@@ -33,6 +32,7 @@ module ReactOnRailsPro
     end
 
     def build_bundles
+      remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
       unless remote_adapter.present? && remote_adapter.methods.include?(:build)
         raise "config.remote_bundle_cache_adapter is either not configured or not properly implemented."
       end
