@@ -32,7 +32,7 @@ module ReactOnRailsPro
     end
 
     def build_bundles
-      Rake.task["react_on_rails:assets:webpack"].invoke
+      Rake::Task["react_on_rails:assets:webpack"].invoke
     end
 
     def self.call
