@@ -32,7 +32,7 @@ module ReactOnRailsPro
     end
 
     def build_bundles
-      Rake::Task["react_on_rails:assets:webpack"].invoke
+      sh "rake react_on_rails:assets:webpack"
     end
 
     def self.call
@@ -117,7 +117,7 @@ module ReactOnRailsPro
       begin
         remote_adapter.upload(zipped_bundles_filepath)
       rescue StandardError => e
-        puts "There was an error during the remote bundle cache fetch request: #{e.inspect}"
+        puts "There was an error during the remote bundle cache upload request: #{e.inspect}"
       end
     end
   end
