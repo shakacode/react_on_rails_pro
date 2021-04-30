@@ -1,4 +1,5 @@
 # frozen_string_literal: true
+require 'rake'
 
 module ReactOnRailsPro
   class AssetsPrecompile
@@ -32,7 +33,11 @@ module ReactOnRailsPro
     end
 
     def build_bundles
-      sh "rake react_on_rails:assets:webpack"
+      unless remote_adapter.present? && remote_adapter.methods.include?(:build)
+        raise "config.remote_bundle_cache_adapter is either not configured or not properly implemented."
+      end
+
+      remote_adapter.build
     end
 
     def self.call
