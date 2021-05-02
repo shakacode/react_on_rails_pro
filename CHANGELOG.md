@@ -12,6 +12,9 @@ Gem and package versions are the same except for beta releases where the gem use
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+### Added
+- Optional production bundle caching. [PR 179](https://github.com/shakacode/react_on_rails_pro/pull/179) by [judahmeek](https://github.com/judahmeek).
+
 ------
 
 ### 2.0 Upgrade Steps

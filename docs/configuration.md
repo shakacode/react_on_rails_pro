@@ -22,6 +22,15 @@ ReactOnRailsPro.configure do |config|
   # generate the JSON props, webpack and/or webpacker configuration files, and npm package lockfiles.
   config.dependency_globs = [ File.join(Rails.root, "app", "views", "**", "*.jbuilder") ]
 
+  # Array of globs to exclude from config.dependency_globs for ReactOnRailsPro cache key hashing
+  config.excluded_dependency_globs = [ File.join(Rails.root, "app", "views", "**", "dont_hash_this.jbuilder") ]
+
+  # if configured, ReactOnRailsPro::AssetsPrecompile will call the build, fetch, & upload methods of remote_bundle_cache_adapter
+  # to cache webpack production bundles remotely
+  # To run ReactOnRailsPro::AssetsPrecompile, assign it to ReactonRails config.build_production_command
+  # See the example below for an example definition of the adapter module
+  #
+  # config.remote_bundle_cache_adapter = S3Adapter
 
   # ALL OPTIONS BELOW ONLY APPLY IF SERVER RENDERING
 
@@ -40,12 +49,12 @@ ReactOnRailsPro.configure do |config|
   # mini_racer rendering. Other option is NodeRenderer
   # Default for `server_renderer` is "ExecJS"
   config.server_renderer = "NodeRenderer"
-  
+
   # If you're using the NodeRenderer, a value of true allows errors to be thrown from the bundle
   # code for SSR so that an error tracking system on the NodeRender can use the exceptions.
   # This value defaults to false. It should only be set to true when using the NodeRender.
   config.throw_js_errors = false
-  
+
   # You may provide a password and/or a port that will be sent to renderer for simple authentication.
   # `https://:<password>@url:<port>`. For example: https://:myPassword1@renderer:3800. Don't forget
   # the leading `:` before the password. Your password must also not contain certain characters that
@@ -100,5 +109,34 @@ ReactOnRailsPro.configure do |config|
      Rails.root.join("public", "webpack", Rails.env, "loadable-stats.json"),
      Rails.root.join("public", "webpack", Rails.env, "manifest.json")
   ]
+end
+```
+
+Example of a module for custom methods for the `remote_bundle_cache_adapter`:
+
+```ruby
+class S3Adapter
+  def self.build
+    Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
+  end
+
+  def self.fetch(zipped_bundles_filename:)
+    result = S3UploadService.new.fetch_object(zipped_bundles_filename)
+    result.get.body.read if result
+  end
+
+  def self.upload(zipped_bundles_filepath:)
+    return unless ENV['UPLOAD_BUNDLES_TO_S3'] == 'true'
+
+    zipped_bundles_filename = zipped_bundles_filepath.basename.to_s
+    puts "Bundles are being uploaded to s3 as #{zipped_bundles_filename}"
+    starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    S3UploadService.new.upload_object(zipped_bundles_filename,
+                                      File.read(zipped_bundles_filepath, mode: 'rb'),
+                                      'application/zip', expiration_months: 12)
+    ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+    elapsed = (ending - starting).round(2)
+    puts "Bundles uploaded to s3 as #{zipped_bundles_filename} in #{elapsed} seconds"
+  end
 end
 ```
