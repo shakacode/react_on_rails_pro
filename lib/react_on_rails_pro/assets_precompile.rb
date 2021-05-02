@@ -65,7 +65,7 @@ module ReactOnRailsPro
       remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
       unless remote_adapter.present? && remote_adapter.methods.include?(:fetch)
         puts "config.remote_bundle_cache_adapter is either not configured or not properly implemented"
-        puts "config.remote_bundle_cache_adapter must be a module or class with a static method: fetch(zipped_bundles_filename:)"
+        puts "it must be a module or class with a static method: fetch(zipped_bundles_filename:)"
         puts "This will be evaluated as a remote bundle cache miss"
         return false
       end
@@ -120,7 +120,7 @@ module ReactOnRailsPro
 
       unless remote_adapter.present? && remote_adapter.methods.include?(:upload)
         puts "config.remote_bundle_cache_adapter is either not configured or not properly implemented"
-        puts "config.remote_bundle_cache_adapter must be a module or class with a static method: upload(zipped_bundles_filepath:)"
+        puts "it must be a module or class with a static method: upload(zipped_bundles_filepath:)"
         return
       end
 
