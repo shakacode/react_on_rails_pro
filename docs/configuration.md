@@ -28,6 +28,8 @@ ReactOnRailsPro.configure do |config|
   # if configured, ReactOnRailsPro::AssetsPrecompile will call the build, fetch, & upload methods of remote_bundle_cache_adapter
   # to cache webpack production bundles remotely
   # To run ReactOnRailsPro::AssetsPrecompile, assign it to ReactonRails config.build_production_command
+  # Once configured, ReactOnRailsPro::AssetsPrecompile's caching functionality can be disabled
+  # by setting ENV["DISABLE_PRECOMPILE_CACHE"] equal to "true"
   # See the example below for an example definition of the adapter module
   #
   # config.remote_bundle_cache_adapter = S3Adapter
