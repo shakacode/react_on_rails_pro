@@ -34,7 +34,8 @@ module ReactOnRailsPro
     def build_bundles
       remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
       unless remote_adapter.present? && remote_adapter.methods.include?(:build)
-        raise "config.remote_bundle_cache_adapter is either not configured or not properly implemented."
+        raise "config.remote_bundle_cache_adapter is either not configured or not properly implemented."\
+              " It must be a module or class with a static method named 'build' that takes no parameters."
       end
 
       remote_adapter.build
@@ -63,14 +64,15 @@ module ReactOnRailsPro
     def fetch_bundles
       remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
       unless remote_adapter.present? && remote_adapter.methods.include?(:fetch)
-        puts "config.remote_bundle_cache_adapter is either not configured or not properly implemented." \
-        "This will be evaluated as a remote bundle cache miss."
+        puts "config.remote_bundle_cache_adapter is either not configured or not properly implemented"
+        puts "config.remote_bundle_cache_adapter must be a module or class with a static method: fetch(zipped_bundles_filename:)"
+        puts "This will be evaluated as a remote bundle cache miss"
         return false
       end
 
       puts "Checking for a cached bundle: #{zipped_bundles_filename}"
       begin
-        fetch_result = remote_adapter.fetch(zipped_bundles_filename)
+        fetch_result = remote_adapter.fetch({ zipped_bundles_filename: zipped_bundles_filename })
 
         if fetch_result
           puts "Remote bundle cache detected. Bundles will be restored to local bundle cache."
@@ -116,11 +118,15 @@ module ReactOnRailsPro
 
       remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
 
-      return unless remote_adapter.present? && remote_adapter.methods.include?(:upload)
+      unless remote_adapter.present? && remote_adapter.methods.include?(:upload)
+        puts "config.remote_bundle_cache_adapter is either not configured or not properly implemented"
+        puts "config.remote_bundle_cache_adapter must be a module or class with a static method: upload(zipped_bundles_filepath:)"
+        return
+      end
 
       puts "Bundles are being uploaded to remote bundle cache as #{zipped_bundles_filename}"
       begin
-        remote_adapter.upload(zipped_bundles_filepath)
+        remote_adapter.upload({ zipped_bundles_filepath: zipped_bundles_filepath })
       rescue StandardError => e
         puts "There was an error during the remote bundle cache upload request: #{e.inspect}"
       end

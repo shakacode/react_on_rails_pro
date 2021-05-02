@@ -3,7 +3,34 @@
 require_relative "./spec_helper"
 require_relative "../../lib/react_on_rails_pro/assets_precompile"
 
-describe ReactOnRailsPro::AssetsPrecompile do
+describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLength
+  describe ".zipped_bundles_filename" do
+    it "returns a string dependant on bundles_cache_key" do
+      instance = described_class.instance
+      allow(instance).to receive(:bundles_cache_key).and_return("bundles_cache_key")
+
+      expect(instance.zipped_bundles_filename).to eq("precompile-cache.bundles_cache_key.production.gz")
+      expect(instance).to have_received(:bundles_cache_key).once
+    end
+  end
+
+  describe ".zipped_bundles_filepath" do
+    it "returns a pathname dependant on Rails.root & zipped_bundles_filename" do
+      rails_stub = Module.new do
+        def self.root
+          Pathname.new(Dir.pwd)
+        end
+      end
+      stub_const("Rails", rails_stub)
+
+      instance = described_class.instance
+      allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
+
+      expect(instance.zipped_bundles_filepath).to eq(Rails.root.join("tmp", "bundle_cache", "zipped_bundles_filename"))
+      expect(instance).to have_received(:zipped_bundles_filename).once
+    end
+  end
+
   describe ".bundles_cache_key" do
     it "calls ReactOnRailsPro::Utils.digest_of_globs with the union of " \
     "Webpacker.config.source_path & ReactOnRailsPro.configuration.dependency_globs" do
@@ -26,6 +53,30 @@ describe ReactOnRailsPro::AssetsPrecompile do
       expect(ReactOnRailsPro::Utils).to receive(:digest_of_globs).with(expected_parameters)
 
       described_class.instance.bundles_cache_key
+    end
+  end
+
+  describe ".build_bundles" do
+    it "raises an error if config.remote_bundle_cache_adapter is not properly implemented" do
+      error_message = "config.remote_bundle_cache_adapter is either not configured or not properly implemented."\
+                      " It must be a module or class with a class method named 'build' that takes no parameters."
+      expect { described_class.instance.build_bundles }.to raise_error(error_message)
+    end
+
+    it "triggers build without any parameters" do
+      adapter = Module.new do
+        def self.build(_filename)
+          true
+        end
+      end
+      ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
+      allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter)
+      allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
+
+      expect do
+        described_class.instance.build_bundles
+      end.to raise_error(ArgumentError,
+                         "wrong number of arguments (given 0, expected 1)")
     end
   end
 
@@ -88,24 +139,32 @@ describe ReactOnRailsPro::AssetsPrecompile do
     end
 
     context "when config.remote_bundle_cache_adapter is correct" do
-      it "writes the fetched bundle cache to disk" do
-        adapter = Module.new do
-          def self.fetch(_filename)
+      it "calls remote_bundle_cache_adapter.fetch with zipped_bundles_filename" do
+        adapter = Class.new do
+          def self.fetch(*)
             true
           end
         end
+
+        adapter_double = class_double(adapter)
+        allow(adapter_double).to receive(:fetch).and_return(true)
+
         ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
-        allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter)
+        allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
         allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
 
+        unique_variable = { unique_key: "a unique value" }
+
         instance = described_class.instance
-        allow(instance).to receive(:zipped_bundles_filename).and_return("a")
-        allow(instance).to receive(:zipped_bundles_filepath).and_return("b")
+        allow(instance).to receive(:zipped_bundles_filename).and_return(unique_variable)
+        allow(instance).to receive(:zipped_bundles_filepath).and_return("zipped_bundles_filepath")
 
         allow(File).to receive(:open).and_return(true)
         expect(File).to receive(:open).once
 
         expect(instance.fetch_bundles).to be_truthy
+
+        expect(adapter_double).to have_received(:fetch).with({ zipped_bundles_filename: unique_variable })
       end
     end
   end
@@ -157,6 +216,40 @@ describe ReactOnRailsPro::AssetsPrecompile do
 
         expect(instance.fetch_and_unzip_cached_bundles).to eq(true)
       end
+    end
+  end
+
+  describe ".cache_bundles" do
+    it "calls remote_bundle_cache_adapter.upload with zipped_bundles_filepath" do
+      rake_stub = Module.new do
+        def self.sh(_string)
+          true
+        end
+      end
+      stub_const("Rake", rake_stub)
+
+      adapter = Class.new do
+        def self.upload(*)
+          true
+        end
+      end
+
+      adapter_double = class_double(adapter)
+      allow(adapter_double).to receive(:upload).and_return(true)
+
+      ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
+      allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
+      allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
+
+      unique_variable = { another_unique_key: "another unique value" }
+
+      instance = described_class.instance
+      allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
+      allow(instance).to receive(:zipped_bundles_filepath).and_return(unique_variable)
+
+      instance.cache_bundles
+
+      expect(adapter_double).to have_received(:upload).with({ zipped_bundles_filepath: unique_variable })
     end
   end
 end
