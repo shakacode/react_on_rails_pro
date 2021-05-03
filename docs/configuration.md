@@ -25,13 +25,13 @@ ReactOnRailsPro.configure do |config|
   # Array of globs to exclude from config.dependency_globs for ReactOnRailsPro cache key hashing
   config.excluded_dependency_globs = [ File.join(Rails.root, "app", "views", "**", "dont_hash_this.jbuilder") ]
 
-  # if configured, ReactOnRailsPro::AssetsPrecompile will call the build, fetch, & upload methods of remote_bundle_cache_adapter
-  # to cache webpack production bundles remotely
-  # To run ReactOnRailsPro::AssetsPrecompile, assign it to ReactonRails config.build_production_command
+  # If configured, ReactOnRailsPro::AssetsPrecompile will call the build, fetch, & upload methods
+  # of config.remote_bundle_cache_adapter to cache webpack production bundles remotely
+  # To run this during assets precompilation, configure config/initializers/react_on_rails.rb as follows:
+  # (don't uncomment this) config.build_production_command = ReactOnRailsPro::AssetsPrecompile
   # Once configured, ReactOnRailsPro::AssetsPrecompile's caching functionality can be disabled
   # by setting ENV["DISABLE_PRECOMPILE_CACHE"] equal to "true"
-  # See the example below for an example definition of the adapter module
-  #
+  # See the example below for an example definition of a S3BundleCacheAdapter
   # config.remote_bundle_cache_adapter = S3Adapter
 
   # ALL OPTIONS BELOW ONLY APPLY IF SERVER RENDERING
@@ -117,7 +117,7 @@ end
 Example of a module for custom methods for the `remote_bundle_cache_adapter`:
 
 ```ruby
-class S3Adapter
+class S3BundleCacheAdapter
   def self.build
     Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
   end
