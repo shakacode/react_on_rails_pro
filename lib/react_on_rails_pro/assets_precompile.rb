@@ -77,20 +77,14 @@ module ReactOnRailsPro
       end
 
       ReactOnRailsPro::Utils.rorp_puts "Checking for a cached bundle: #{zipped_bundles_filename}"
-      begin
-        fetch_result = remote_bundle_cache_adapter.fetch({ zipped_bundles_filename: zipped_bundles_filename })
+      fetch_result = remote_bundle_cache_adapter.fetch({ zipped_bundles_filename: zipped_bundles_filename })
 
-        if fetch_result
-          ReactOnRailsPro::Utils.rorp_puts "Remote bundle cache detected. Bundles will be restored to local cache."
-          File.open(zipped_bundles_filepath, "wb") { |file| file.write(fetch_result) }
-          true
-        else
-          ReactOnRailsPro::Utils.rorp_puts "Remote bundle cache not found."
-          false
-        end
-      rescue StandardError => e
-        ReactOnRailsPro::Utils.rorp_puts "There was an error during the remote bundle cache fetch request: #{e.inspect}"
-        ReactOnRailsPro::Utils.rorp_puts "This will be evaluated as a remote bundle cache miss."
+      if fetch_result
+        ReactOnRailsPro::Utils.rorp_puts "Remote bundle cache detected. Bundles will be restored to local cache."
+        File.open(zipped_bundles_filepath, "wb") { |file| file.write(fetch_result) }
+        true
+      else
+        ReactOnRailsPro::Utils.rorp_puts "Remote bundle cache not found."
         false
       end
     end
@@ -129,11 +123,7 @@ module ReactOnRailsPro
       end
 
       ReactOnRailsPro::Utils.rorp_puts "Bundles will be uploaded to remote bundle cache as #{zipped_bundles_filename}"
-      begin
-        remote_bundle_cache_adapter.upload({ zipped_bundles_filepath: zipped_bundles_filepath })
-      rescue StandardError => e
-        ReactOnRailsPro::Utils.rorp_puts "There was an error during the remote bundle cache upload request: #{e.inspect}"
-      end
+      remote_bundle_cache_adapter.upload({ zipped_bundles_filepath: zipped_bundles_filepath })
     end
   end
 end
