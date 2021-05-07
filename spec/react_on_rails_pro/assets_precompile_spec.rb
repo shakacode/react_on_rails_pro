@@ -56,22 +56,52 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
     end
   end
 
-  describe ".build_bundles" do
-    it "raises an error if config.remote_bundle_cache_adapter is not properly implemented" do
-      error_message = "config.remote_bundle_cache_adapter is either not configured or not properly implemented."\
-                      " It must be a module or class with a class method named 'build' that takes no parameters."
-      expect { described_class.instance.build_bundles }.to raise_error(error_message)
+  describe ".remote_bundle_cache_adapter" do
+    it "raises an error if not assigned a module" do
+      error_message = "config.remote_bundle_cache_adapter must have a module assigned"
+      expect do
+        described_class.instance.remote_bundle_cache_adapter
+      end.to raise_error(ReactOnRailsPro::AssetsPrecompileError,
+                         error_message)
     end
 
+    it "raises an error if the adapter module does not have a 'build' method" do
+      adapter = Module.new
+      ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
+      allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter)
+      allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
+
+      error_message = "config.remote_bundle_cache_adapter must be a module or class with a static method named 'build'"
+      expect do
+        described_class.instance.remote_bundle_cache_adapter
+      end.to raise_error(ReactOnRailsPro::AssetsPrecompileError,
+                         error_message)
+    end
+
+    it "returns configuration.remote_bundle_cache_adapter" do
+      adapter = Module.new do
+        def self.build(_filename)
+          true
+        end
+      end
+
+      ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
+      allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter)
+      allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
+
+      expect(described_class.instance.remote_bundle_cache_adapter).to equal(adapter)
+    end
+  end
+
+  describe ".build_bundles" do
     it "triggers build without any parameters" do
       adapter = Module.new do
         def self.build(_filename)
           true
         end
       end
-      ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
-      allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter)
-      allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
+
+      allow(described_class.instance).to receive(:remote_bundle_cache_adapter).and_return(adapter)
 
       expect do
         described_class.instance.build_bundles
@@ -129,16 +159,17 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
   end
 
   describe ".fetch_bundles" do
-    context "when config.remote_bundle_cache_adapter is not correct" do
+    context "when config.remote_bundle_cache_adapter.fetch is not configured" do
       it "prints an error message and returns false" do
-        ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
-        allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(nil)
+        adapter = Module.new
+        instance = described_class.instance
+        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter)
 
-        expect(described_class.instance.fetch_bundles).to be_falsey
+        expect(instance.fetch_bundles).to be_falsey
       end
     end
 
-    context "when config.remote_bundle_cache_adapter is correct" do
+    context "when config.remote_bundle_cache_adapter.fetch is configured" do
       it "calls remote_bundle_cache_adapter.fetch with zipped_bundles_filename" do
         adapter = Class.new do
           def self.fetch(*)
@@ -149,13 +180,10 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
         adapter_double = class_double(adapter)
         allow(adapter_double).to receive(:fetch).and_return(true)
 
-        ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
-        allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
-        allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
-
         unique_variable = { unique_key: "a unique value" }
 
         instance = described_class.instance
+        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
         allow(instance).to receive(:zipped_bundles_filename).and_return(unique_variable)
         allow(instance).to receive(:zipped_bundles_filepath).and_return("zipped_bundles_filepath")
 
@@ -220,36 +248,47 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
   end
 
   describe ".cache_bundles" do
-    it "calls remote_bundle_cache_adapter.upload with zipped_bundles_filepath" do
+    before do
       rake_stub = Module.new do
         def self.sh(_string)
           true
         end
       end
       stub_const("Rake", rake_stub)
+    end
 
-      adapter = Class.new do
-        def self.upload(*)
-          true
-        end
+    context "when config.remote_bundle_cache_adapter.upload is not configured" do
+      it "prints an error message and returns false" do
+        adapter = Module.new
+        instance = described_class.instance
+        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter)
+
+        expect(instance.cache_bundles).to be_falsey
       end
+    end
 
-      adapter_double = class_double(adapter)
-      allow(adapter_double).to receive(:upload).and_return(true)
+    context "when config.remote_bundle_cache_adapter.upload is configured" do
+      it "calls remote_bundle_cache_adapter.upload with zipped_bundles_filepath" do
+        adapter = Class.new do
+          def self.upload(*)
+            true
+          end
+        end
 
-      ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
-      allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
-      allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
+        adapter_double = class_double(adapter)
+        allow(adapter_double).to receive(:upload).and_return(true)
 
-      unique_variable = { another_unique_key: "another unique value" }
+        unique_variable = { another_unique_key: "another unique value" }
 
-      instance = described_class.instance
-      allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
-      allow(instance).to receive(:zipped_bundles_filepath).and_return(unique_variable)
+        instance = described_class.instance
+        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
+        allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
+        allow(instance).to receive(:zipped_bundles_filepath).and_return(unique_variable)
 
-      instance.cache_bundles
+        instance.cache_bundles
 
-      expect(adapter_double).to have_received(:upload).with({ zipped_bundles_filepath: unique_variable })
+        expect(adapter_double).to have_received(:upload).with({ zipped_bundles_filepath: unique_variable })
+      end
     end
   end
 end

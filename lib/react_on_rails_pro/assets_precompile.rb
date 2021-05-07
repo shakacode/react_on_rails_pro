@@ -4,6 +4,19 @@ module ReactOnRailsPro
   class AssetsPrecompile
     include Singleton
 
+    def remote_bundle_cache_adapter
+      if ReactOnRailsPro.configuration.remote_bundle_cache_adapter.nil?
+        raise ReactOnRailsPro::AssetsPrecompileError, "config.remote_bundle_cache_adapter must have a module assigned"
+      end
+
+      unless ReactOnRailsPro.configuration.remote_bundle_cache_adapter.methods.include?(:build)
+        raise ReactOnRailsPro::AssetsPrecompileError,
+              "config.remote_bundle_cache_adapter must be a module or class with a static method named 'build'"
+      end
+
+      ReactOnRailsPro.configuration.remote_bundle_cache_adapter
+    end
+
     def zipped_bundles_filename
       "precompile-cache.#{bundles_cache_key}.production.gz"
     end
@@ -32,13 +45,7 @@ module ReactOnRailsPro
     end
 
     def build_bundles
-      remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
-      if remote_adapter.nil? || !remote_adapter.methods.include?(:build)
-        raise "config.remote_bundle_cache_adapter is either not configured or not properly implemented."\
-              " It must be a module or class with a static method named 'build' that takes no parameters."
-      end
-
-      remote_adapter.build
+      remote_bundle_cache_adapter.build
     end
 
     def self.call
@@ -62,8 +69,7 @@ module ReactOnRailsPro
     end
 
     def fetch_bundles
-      remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
-      if remote_adapter.nil? || !remote_adapter.methods.include?(:fetch)
+      unless remote_bundle_cache_adapter.methods.include?(:fetch)
         puts "config.remote_bundle_cache_adapter is either not configured or not properly implemented"
         puts "it must be a module or class with a static method: fetch(zipped_bundles_filename:)"
         puts "This will be evaluated as a remote bundle cache miss"
@@ -72,7 +78,7 @@ module ReactOnRailsPro
 
       puts "Checking for a cached bundle: #{zipped_bundles_filename}"
       begin
-        fetch_result = remote_adapter.fetch({ zipped_bundles_filename: zipped_bundles_filename })
+        fetch_result = remote_bundle_cache_adapter.fetch({ zipped_bundles_filename: zipped_bundles_filename })
 
         if fetch_result
           puts "Remote bundle cache detected. Bundles will be restored to local bundle cache."
@@ -116,17 +122,15 @@ module ReactOnRailsPro
       puts "Gzipping built bundles to #{zipped_bundles_filepath}."
       Rake.sh "tar -czf #{zipped_bundles_filepath} --auto-compress public/webpack/production"
 
-      remote_adapter = ReactOnRailsPro.configuration.remote_bundle_cache_adapter
-
-      if !remote_adapter.nil? || !remote_adapter.methods.include?(:upload)
+      unless remote_bundle_cache_adapter.methods.include?(:upload)
         puts "config.remote_bundle_cache_adapter is either not configured or not properly implemented"
         puts "it must be a module or class with a static method: upload(zipped_bundles_filepath:)"
-        return
+        return false
       end
 
       puts "Bundles are being uploaded to remote bundle cache as #{zipped_bundles_filename}"
       begin
-        remote_adapter.upload({ zipped_bundles_filepath: zipped_bundles_filepath })
+        remote_bundle_cache_adapter.upload({ zipped_bundles_filepath: zipped_bundles_filepath })
       rescue StandardError => e
         puts "There was an error during the remote bundle cache upload request: #{e.inspect}"
       end
