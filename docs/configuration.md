@@ -118,15 +118,20 @@ Example of a module for custom methods for the `remote_bundle_cache_adapter`:
 
 ```ruby
 class S3BundleCacheAdapter
+  # return value is ignored
   def self.build
     Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
   end
 
+  # parameter zipped_bundles_filename will be a string
+  # should return the zipped file as a string if successful & nil if not
   def self.fetch(zipped_bundles_filename:)
     result = S3UploadService.new.fetch_object(zipped_bundles_filename)
     result.get.body.read if result
   end
 
+  # parameter zipped_bundles_filepath will be a Pathname
+  # return value is ignored
   def self.upload(zipped_bundles_filepath:)
     return unless ENV['UPLOAD_BUNDLES_TO_S3'] == 'true'
 
