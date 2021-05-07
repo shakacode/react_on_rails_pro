@@ -12,6 +12,10 @@ module ReactOnRailsPro
     # PUBLIC API
     ###########################################################
 
+    def self.rorp_puts(message)
+      puts "[ReactOnRailsPro] #{message}"
+    end
+
     def self.copy_assets
       return if ReactOnRailsPro.configuration.assets_to_copy.blank?
 
