@@ -77,6 +77,7 @@ module ReactOnRailsPro
     def setup_config_values
       configure_default_url_if_not_provided
       validate_url
+      validate_remote_bundle_cache_adapter
       setup_renderer_password
       setup_assets_to_copy
     end
@@ -96,6 +97,32 @@ module ReactOnRailsPro
     rescue URI::InvalidURIError => e
       message = "Unparseable ReactOnRailsPro.config.renderer_url #{renderer_url} provided.\n#{e.message}"
       raise ReactOnRailsPro::Error, message
+    end
+
+    def validate_remote_bundle_cache_adapter
+      if !remote_bundle_cache_adapter.nil? && !remote_bundle_cache_adapter.is_a?(Module)
+        raise ReactOnRailsPro::Error, "config.remote_bundle_cache_adapter can only have a module or class assigned"
+      end
+
+      return unless remote_bundle_cache_adapter.is_a?(Module)
+
+      unless remote_bundle_cache_adapter.methods.include?(:build)
+        raise ReactOnRailsPro::Error,
+              "config.remote_bundle_cache_adapter must have a static method named 'build'"
+      end
+
+      unless remote_bundle_cache_adapter.methods.include?(:fetch)
+        raise ReactOnRailsPro::Error,
+              "config.remote_bundle_cache_adapter must have a static method named 'fetch'" \
+              "which takes a single named String parameter 'zipped_bundles_filename'" \
+              "and returns the zipped file as a string if fetch attempt is successful & nil if not"
+      end
+
+      unless remote_bundle_cache_adapter.methods.include?(:upload) # rubocop:disable Style/GuardClause
+        raise ReactOnRailsPro::Error,
+              "config.remote_bundle_cache_adapter must have a static method named 'upload'" \
+              "which takes a single named Pathname parameter 'zipped_bundles_filepath' & returns nil"
+      end
     end
 
     def setup_renderer_password

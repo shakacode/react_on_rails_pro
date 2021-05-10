@@ -61,20 +61,7 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
       error_message = "config.remote_bundle_cache_adapter must have a module assigned"
       expect do
         described_class.instance.remote_bundle_cache_adapter
-      end.to raise_error(ReactOnRailsPro::AssetsPrecompileError,
-                         error_message)
-    end
-
-    it "raises an error if the adapter module does not have a 'build' method" do
-      adapter = Module.new
-      ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
-      allow(ror_pro_config).to receive(:remote_bundle_cache_adapter).and_return(adapter)
-      allow(ReactOnRailsPro).to receive(:configuration).and_return(ror_pro_config)
-
-      error_message = "config.remote_bundle_cache_adapter must be a module or class with a static method named 'build'"
-      expect do
-        described_class.instance.remote_bundle_cache_adapter
-      end.to raise_error(ReactOnRailsPro::AssetsPrecompileError,
+      end.to raise_error(ReactOnRailsPro::Error,
                          error_message)
     end
 
@@ -159,134 +146,103 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
   end
 
   describe ".fetch_bundles" do
-    context "when config.remote_bundle_cache_adapter.fetch is not configured" do
-      it "prints an error message and returns false" do
-        adapter = Module.new
-        instance = described_class.instance
-        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter)
-
-        expect(instance.fetch_bundles).to be_falsey
-      end
-    end
-
-    context "when config.remote_bundle_cache_adapter.fetch is configured" do
-      it "calls remote_bundle_cache_adapter.fetch with zipped_bundles_filename" do
-        adapter = Class.new do
-          def self.fetch(*)
-            true
-          end
+    it "calls remote_bundle_cache_adapter.fetch with zipped_bundles_filename" do
+      adapter = Class.new do
+        def self.fetch(*)
+          true
         end
-
-        adapter_double = class_double(adapter)
-        allow(adapter_double).to receive(:fetch).and_return(true)
-
-        unique_variable = { unique_key: "a unique value" }
-
-        instance = described_class.instance
-        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
-        allow(instance).to receive(:zipped_bundles_filename).and_return(unique_variable)
-        allow(instance).to receive(:zipped_bundles_filepath).and_return("zipped_bundles_filepath")
-
-        allow(File).to receive(:open).and_return(true)
-        expect(File).to receive(:open).once
-
-        expect(instance.fetch_bundles).to be_truthy
-
-        expect(adapter_double).to have_received(:fetch).with({ zipped_bundles_filename: unique_variable })
       end
+
+      adapter_double = class_double(adapter)
+      allow(adapter_double).to receive(:fetch).and_return(true)
+
+      unique_variable = { unique_key: "a unique value" }
+
+      instance = described_class.instance
+      allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
+      allow(instance).to receive(:zipped_bundles_filename).and_return(unique_variable)
+      allow(instance).to receive(:zipped_bundles_filepath).and_return("zipped_bundles_filepath")
+
+      allow(File).to receive(:open).and_return(true)
+      expect(File).to receive(:open).once
+
+      expect(instance.fetch_bundles).to be_truthy
+
+      expect(adapter_double).to have_received(:fetch).with({ zipped_bundles_filename: unique_variable })
     end
   end
 
   describe ".fetch_and_unzip_cached_bundles" do
-    context "when ENV['DISABLE_PRECOMPILE_CACHE'] is present" do
-      before do
-        ENV["DISABLE_PRECOMPILE_CACHE"] = "true"
-      end
+    it "tries to fetch bundles if local cache is not detected" do
+      allow(File).to receive(:exist?).and_return(false)
 
-      it "imediately returns" do
-        expect(File).not_to receive(:exist?)
+      instance = described_class.instance
+      allow(instance).to receive(:fetch_bundles).and_return(false)
+      allow(instance).to receive(:zipped_bundles_filepath).and_return("a")
 
-        expect(described_class.instance.fetch_and_unzip_cached_bundles).to eq(false)
-      end
+      expect(instance.fetch_and_unzip_cached_bundles).to eq(false)
     end
 
-    context "when ENV['DISABLE_PRECOMPILE_CACHE'] is not present" do
-      before do
-        ENV["DISABLE_PRECOMPILE_CACHE"] = nil
-      end
+    it "does not try to fetch remote cache if local cache exists" do
+      allow(File).to receive(:exist?).and_return(true, false)
 
-      it "tries to fetch bundles if local cache is not detected" do
-        allow(File).to receive(:exist?).and_return(false)
+      instance = described_class.instance
+      expect(instance).not_to receive(:fetch_bundles)
+      allow(instance).to receive(:zipped_bundles_filepath).and_return("a")
 
-        instance = described_class.instance
-        allow(instance).to receive(:fetch_bundles).and_return(false)
-        allow(instance).to receive(:zipped_bundles_filepath).and_return("a")
+      expect(instance.fetch_and_unzip_cached_bundles).to eq(true)
+    end
 
-        expect(instance.fetch_and_unzip_cached_bundles).to eq(false)
-      end
+    it "returns the same value as fetch_bundles" do
+      allow(File).to receive(:exist?).and_return(false)
 
-      it "does not try to fetch remote cache if local cache exists" do
-        allow(File).to receive(:exist?).and_return(true, false)
+      instance = described_class.instance
+      allow(instance).to receive(:zipped_bundles_filepath).and_return("a")
+      expect(instance).to receive(:fetch_bundles).once.and_return(true)
 
-        instance = described_class.instance
-        expect(instance).not_to receive(:fetch_bundles)
-        allow(instance).to receive(:zipped_bundles_filepath).and_return("a")
-
-        expect(instance.fetch_and_unzip_cached_bundles).to eq(true)
-      end
-
-      it "returns the same value as fetch_bundles" do
-        allow(File).to receive(:exist?).and_return(false)
-
-        instance = described_class.instance
-        allow(instance).to receive(:zipped_bundles_filepath).and_return("a")
-        expect(instance).to receive(:fetch_bundles).once.and_return(true)
-
-        expect(instance.fetch_and_unzip_cached_bundles).to eq(true)
-      end
+      expect(instance.fetch_and_unzip_cached_bundles).to eq(true)
     end
   end
 
   describe ".cache_bundles" do
-    context "when config.remote_bundle_cache_adapter.upload is not configured" do
-      it "prints an error message and returns false" do
-        adapter = Module.new
-        instance = described_class.instance
-        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter)
-
-        expect(instance.cache_bundles).to be_falsey
-      end
-    end
-
-    context "when config.remote_bundle_cache_adapter.upload is configured" do
-      it "calls remote_bundle_cache_adapter.upload with zipped_bundles_filepath" do
-        rake_stub = Module.new do
-          def self.sh(_string)
-            true
-          end
-        end
-        stub_const("Rake", rake_stub)
-
-        adapter = Class.new do
-          def self.upload(*)
-            true
-          end
+    it "calls remote_bundle_cache_adapter.upload with zipped_bundles_filepath" do
+      webpacker_stub = Module.new do
+        def self.public_output_path
+          "a"
         end
 
-        adapter_double = class_double(adapter)
-        allow(adapter_double).to receive(:upload).and_return(true)
-
-        unique_variable = { another_unique_key: "another unique value" }
-
-        instance = described_class.instance
-        allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
-        allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
-        allow(instance).to receive(:zipped_bundles_filepath).and_return(unique_variable)
-
-        expect(instance.cache_bundles).to be_truthy
-
-        expect(adapter_double).to have_received(:upload).with({ zipped_bundles_filepath: unique_variable })
+        def self.config
+          self
+        end
       end
+      stub_const("Webpacker", webpacker_stub)
+
+      rake_stub = Module.new do
+        def self.sh(_string)
+          true
+        end
+      end
+      stub_const("Rake", rake_stub)
+
+      adapter = Class.new do
+        def self.upload(*)
+          true
+        end
+      end
+
+      adapter_double = class_double(adapter)
+      allow(adapter_double).to receive(:upload).and_return(true)
+
+      unique_variable = { another_unique_key: "another unique value" }
+
+      instance = described_class.instance
+      allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
+      allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
+      allow(instance).to receive(:zipped_bundles_filepath).and_return(unique_variable)
+
+      expect(instance.cache_bundles).to be_truthy
+
+      expect(adapter_double).to have_received(:upload).with({ zipped_bundles_filepath: unique_variable })
     end
   end
 end

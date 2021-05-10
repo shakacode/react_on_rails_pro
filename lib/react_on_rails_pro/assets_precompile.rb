@@ -5,13 +5,8 @@ module ReactOnRailsPro
     include Singleton
 
     def remote_bundle_cache_adapter
-      if ReactOnRailsPro.configuration.remote_bundle_cache_adapter.nil?
-        raise ReactOnRailsPro::AssetsPrecompileError, "config.remote_bundle_cache_adapter must have a module assigned"
-      end
-
-      unless ReactOnRailsPro.configuration.remote_bundle_cache_adapter.methods.include?(:build)
-        raise ReactOnRailsPro::AssetsPrecompileError,
-              "config.remote_bundle_cache_adapter must be a module or class with a static method named 'build'"
+      unless ReactOnRailsPro.configuration.remote_bundle_cache_adapter.is_a?(Module)
+        raise ReactOnRailsPro::Error, "config.remote_bundle_cache_adapter must have a module assigned"
       end
 
       ReactOnRailsPro.configuration.remote_bundle_cache_adapter
@@ -69,13 +64,6 @@ module ReactOnRailsPro
     end
 
     def fetch_bundles
-      unless remote_bundle_cache_adapter.methods.include?(:fetch)
-        ReactOnRailsPro::Utils.rorp_puts "config.remote_bundle_cache_adapter must have a static method named 'fetch'"
-        ReactOnRailsPro::Utils.rorp_puts "which takes a single named String parameter 'zipped_bundles_filename'"
-        ReactOnRailsPro::Utils.rorp_puts "This will be evaluated as a remote bundle cache miss"
-        return false
-      end
-
       ReactOnRailsPro::Utils.rorp_puts "Checking for a cached bundle: #{zipped_bundles_filename}"
       fetch_result = remote_bundle_cache_adapter.fetch({ zipped_bundles_filename: zipped_bundles_filename })
 
@@ -90,13 +78,6 @@ module ReactOnRailsPro
     end
 
     def fetch_and_unzip_cached_bundles
-      if disable_precompile_cache?
-        ReactOnRailsPro::Utils.rorp_puts "The sentinel value for disabling precompile caching has been detected."
-        ReactOnRailsPro::Utils.rorp_puts "Skipping dependency hashing & bundle cache fetch."
-        return false
-      end
-
-      # First check for file in tmp directory from last build
       if File.exist?(zipped_bundles_filepath)
         ReactOnRailsPro::Utils.rorp_puts "Found a local cache of bundles: #{zipped_bundles_filepath}"
         result = true
@@ -113,14 +94,8 @@ module ReactOnRailsPro
     end
 
     def cache_bundles
-      unless remote_bundle_cache_adapter.methods.include?(:upload)
-        ReactOnRailsPro::Utils.rorp_puts "config.remote_bundle_cache_adapter must have a static method named 'upload'"
-        ReactOnRailsPro::Utils.rorp_puts "which takes a single named Pathname parameter 'zipped_bundles_filepath'"
-        return false
-      end
-      
       ReactOnRailsPro::Utils.rorp_puts "Gzipping built bundles to #{zipped_bundles_filepath}."
-      Rake.sh "tar -czf #{zipped_bundles_filepath} --auto-compress public/webpack/production"
+      Rake.sh "tar -czf #{zipped_bundles_filepath} --auto-compress #{Webpacker.config.public_output_path}"
 
       ReactOnRailsPro::Utils.rorp_puts "Bundles will be uploaded to remote bundle cache as #{zipped_bundles_filename}"
       remote_bundle_cache_adapter.upload({ zipped_bundles_filepath: zipped_bundles_filepath })
