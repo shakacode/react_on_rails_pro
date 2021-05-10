@@ -23,6 +23,8 @@
   "directories": {
     "doc": "docs"
   },
+  "resolutions": {
+  },
   "dependencies": {
     "console.history": "^1.5.0",
     "express": "^4.15.2",
