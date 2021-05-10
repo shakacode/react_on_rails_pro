@@ -248,15 +248,6 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
   end
 
   describe ".cache_bundles" do
-    before do
-      rake_stub = Module.new do
-        def self.sh(_string)
-          true
-        end
-      end
-      stub_const("Rake", rake_stub)
-    end
-
     context "when config.remote_bundle_cache_adapter.upload is not configured" do
       it "prints an error message and returns false" do
         adapter = Module.new
@@ -269,6 +260,13 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
 
     context "when config.remote_bundle_cache_adapter.upload is configured" do
       it "calls remote_bundle_cache_adapter.upload with zipped_bundles_filepath" do
+        rake_stub = Module.new do
+          def self.sh(_string)
+            true
+          end
+        end
+        stub_const("Rake", rake_stub)
+
         adapter = Class.new do
           def self.upload(*)
             true
@@ -285,7 +283,7 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
         allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
         allow(instance).to receive(:zipped_bundles_filepath).and_return(unique_variable)
 
-        instance.cache_bundles
+        expect(instance.cache_bundles).to be_truthy
 
         expect(adapter_double).to have_received(:upload).with({ zipped_bundles_filepath: unique_variable })
       end

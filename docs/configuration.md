@@ -118,7 +118,7 @@ Example of a module for custom methods for the `remote_bundle_cache_adapter`:
 
 ```ruby
 class S3BundleCacheAdapter
-  # return value is ignored
+  # return value is unused
   def self.build
     Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
   end
@@ -131,7 +131,7 @@ class S3BundleCacheAdapter
   end
 
   # parameter zipped_bundles_filepath will be a Pathname
-  # return value is ignored
+  # return value is unused
   def self.upload(zipped_bundles_filepath:)
     return unless ENV['UPLOAD_BUNDLES_TO_S3'] == 'true'
 

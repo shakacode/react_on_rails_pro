@@ -113,14 +113,14 @@ module ReactOnRailsPro
     end
 
     def cache_bundles
-      ReactOnRailsPro::Utils.rorp_puts "Gzipping built bundles to #{zipped_bundles_filepath}."
-      Rake.sh "tar -czf #{zipped_bundles_filepath} --auto-compress public/webpack/production"
-
       unless remote_bundle_cache_adapter.methods.include?(:upload)
         ReactOnRailsPro::Utils.rorp_puts "config.remote_bundle_cache_adapter must have a static method named 'upload'"
         ReactOnRailsPro::Utils.rorp_puts "which takes a single named Pathname parameter 'zipped_bundles_filepath'"
         return false
       end
+      
+      ReactOnRailsPro::Utils.rorp_puts "Gzipping built bundles to #{zipped_bundles_filepath}."
+      Rake.sh "tar -czf #{zipped_bundles_filepath} --auto-compress public/webpack/production"
 
       ReactOnRailsPro::Utils.rorp_puts "Bundles will be uploaded to remote bundle cache as #{zipped_bundles_filename}"
       remote_bundle_cache_adapter.upload({ zipped_bundles_filepath: zipped_bundles_filepath })
