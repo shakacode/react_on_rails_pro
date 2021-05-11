@@ -57,16 +57,16 @@ module ReactOnRailsPro
       end
 
       begin
-        result = fetch_and_unzip_cached_bundles
+        bundles_fetched = fetch_and_unzip_cached_bundles
       rescue RuntimeError => e
         ReactOnRailsPro::Utils.rorp_puts "An error occurred while attempting to fetch cached bundles."
         ReactOnRailsPro::Utils.rorp_puts "This will be evaluated as a bundle cache miss."
-        puts e.message
-        print e.backtrace.join('\n')
-        result = false
+        ReactOnRailsPro::Utils.rorp_puts e.message
+        puts e.backtrace.join('\n')
+        bundles_fetched = false
       end
 
-      return if result
+      return if bundles_fetched
 
       build_bundles
 
@@ -74,8 +74,8 @@ module ReactOnRailsPro
         cache_bundles
       rescue RuntimeError => e
         ReactOnRailsPro::Utils.rorp_puts "An error occurred while attempting to cache the built bundles."
-        puts e.message
-        print e.backtrace.join('\n')
+        ReactOnRailsPro::Utils.rorp_puts e.message
+        puts e.backtrace.join('\n')
       end
     end
 

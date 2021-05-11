@@ -26,11 +26,15 @@ ReactOnRailsPro.configure do |config|
   config.excluded_dependency_globs = [ File.join(Rails.root, "app", "views", "**", "dont_hash_this.jbuilder") ]
 
   # If configured, ReactOnRailsPro::AssetsPrecompile will call the build, fetch, & upload methods
-  # of config.remote_bundle_cache_adapter to cache webpack production bundles remotely
+  # of the module assigned to config.remote_bundle_cache_adapter to cache webpack production bundles remotely
   # To run this during assets precompilation, configure config/initializers/react_on_rails.rb as follows:
-  # (don't uncomment this) config.build_production_command = ReactOnRailsPro::AssetsPrecompile
-  # Once configured, ReactOnRailsPro::AssetsPrecompile's caching functionality can be disabled
-  # by setting ENV["DISABLE_PRECOMPILE_CACHE"] equal to "true"
+  # Note, this next line is the React on Rails, not the Pro, configuration!
+  # config.build_production_command = ReactOnRailsPro::AssetsPrecompile
+  # 
+  # Once configured for bundle caching, ReactOnRailsPro::AssetsPrecompile's caching functionality
+  # can be disabled by setting ENV["DISABLE_PRECOMPILE_CACHE"] equal to "true"
+  # 
+  # Next, uncomment and configure the next line, substituting your own remote_bundle_cache_adapter
   # See the example below for an example definition of a S3BundleCacheAdapter
   # config.remote_bundle_cache_adapter = S3Adapter
 
@@ -114,11 +118,35 @@ ReactOnRailsPro.configure do |config|
 end
 ```
 
-Example of a module for custom methods for the `remote_bundle_cache_adapter`:
+Example of a module for custom methods for the `remote_bundle_cache_adapter` that does not save files
+remotely. Local caches are used.
+
+```ruby
+class LocalBundleCacheAdapter
+  def self.build
+    Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
+  end
+
+  def self.fetch(zipped_bundles_filename:)
+    # no-op
+  end
+
+  def self.upload(zipped_bundles_filepath:)
+    # no-op
+  end
+end
+```
+
+
+## S3BundleCacheAdapter 
+Example of a module for custom methods for the `remote_bundle_cache_adapter`.
+
+Note, S3UploadService is your own code that fetches and uploads.
 
 ```ruby
 class S3BundleCacheAdapter
   # return value is unused
+  # This command should build the bundles
   def self.build
     Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
   end
@@ -144,6 +172,26 @@ class S3BundleCacheAdapter
     ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     elapsed = (ending - starting).round(2)
     puts "Bundles uploaded to s3 as #{zipped_bundles_filename} in #{elapsed} seconds"
+  end
+end
+```
+
+## LocalBundleCacheAdapter
+Example of a module for custom methods for the `remote_bundle_cache_adapter` that does not save files
+remotely. Local caches are used.
+
+```ruby
+class LocalBundleCacheAdapter
+  def self.build
+    Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
+  end
+
+  def self.fetch(zipped_bundles_filename:)
+    # no-op
+  end
+
+  def self.upload(zipped_bundles_filepath:)
+    # no-op
   end
 end
 ```

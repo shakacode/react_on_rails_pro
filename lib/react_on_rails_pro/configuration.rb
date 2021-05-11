@@ -108,19 +108,19 @@ module ReactOnRailsPro
 
       unless remote_bundle_cache_adapter.methods.include?(:build)
         raise ReactOnRailsPro::Error,
-              "config.remote_bundle_cache_adapter must have a static method named 'build'"
+              "config.remote_bundle_cache_adapter must have a class method named 'build'"
       end
 
       unless remote_bundle_cache_adapter.methods.include?(:fetch)
         raise ReactOnRailsPro::Error,
-              "config.remote_bundle_cache_adapter must have a static method named 'fetch'" \
+              "config.remote_bundle_cache_adapter must have a class method named 'fetch'" \
               "which takes a single named String parameter 'zipped_bundles_filename'" \
               "and returns the zipped file as a string if fetch attempt is successful & nil if not"
       end
 
       unless remote_bundle_cache_adapter.methods.include?(:upload) # rubocop:disable Style/GuardClause
         raise ReactOnRailsPro::Error,
-              "config.remote_bundle_cache_adapter must have a static method named 'upload'" \
+              "config.remote_bundle_cache_adapter must have a class method named 'upload'" \
               "which takes a single named Pathname parameter 'zipped_bundles_filepath' & returns nil"
       end
     end
