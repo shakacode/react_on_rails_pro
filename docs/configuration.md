@@ -25,18 +25,9 @@ ReactOnRailsPro.configure do |config|
   # Array of globs to exclude from config.dependency_globs for ReactOnRailsPro cache key hashing
   config.excluded_dependency_globs = [ File.join(Rails.root, "app", "views", "**", "dont_hash_this.jbuilder") ]
 
-  # If configured, ReactOnRailsPro::AssetsPrecompile will call the build, fetch, & upload methods
-  # of the module assigned to config.remote_bundle_cache_adapter to cache webpack production bundles remotely
-  # To run this during assets precompilation, configure config/initializers/react_on_rails.rb as follows:
-  # Note, this next line is the React on Rails, not the Pro, configuration!
-  # config.build_production_command = ReactOnRailsPro::AssetsPrecompile
-  # 
-  # Once configured for bundle caching, ReactOnRailsPro::AssetsPrecompile's caching functionality
-  # can be disabled by setting ENV["DISABLE_PRECOMPILE_CACHE"] equal to "true"
-  # 
-  # Next, uncomment and configure the next line, substituting your own remote_bundle_cache_adapter
-  # See the example below for an example definition of a S3BundleCacheAdapter
-  # config.remote_bundle_cache_adapter = S3Adapter
+  # Remote bundle caching saves deployment time by caching bundles.
+  # See /docs/bundle-caching.md for usage and an example of a module called S3BundleCacheAdapter.
+  config.remote_bundle_cache_adapter = nil
 
   # ALL OPTIONS BELOW ONLY APPLY IF SERVER RENDERING
 
@@ -115,83 +106,5 @@ ReactOnRailsPro.configure do |config|
      Rails.root.join("public", "webpack", Rails.env, "loadable-stats.json"),
      Rails.root.join("public", "webpack", Rails.env, "manifest.json")
   ]
-end
-```
-
-Example of a module for custom methods for the `remote_bundle_cache_adapter` that does not save files
-remotely. Local caches are used.
-
-```ruby
-class LocalBundleCacheAdapter
-  def self.build
-    Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
-  end
-
-  def self.fetch(zipped_bundles_filename:)
-    # no-op
-  end
-
-  def self.upload(zipped_bundles_filepath:)
-    # no-op
-  end
-end
-```
-
-
-## S3BundleCacheAdapter 
-Example of a module for custom methods for the `remote_bundle_cache_adapter`.
-
-Note, S3UploadService is your own code that fetches and uploads.
-
-```ruby
-class S3BundleCacheAdapter
-  # return value is unused
-  # This command should build the bundles
-  def self.build
-    Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
-  end
-
-  # parameter zipped_bundles_filename will be a string
-  # should return the zipped file as a string if successful & nil if not
-  def self.fetch(zipped_bundles_filename:)
-    result = S3UploadService.new.fetch_object(zipped_bundles_filename)
-    result.get.body.read if result
-  end
-
-  # parameter zipped_bundles_filepath will be a Pathname
-  # return value is unused
-  def self.upload(zipped_bundles_filepath:)
-    return unless ENV['UPLOAD_BUNDLES_TO_S3'] == 'true'
-
-    zipped_bundles_filename = zipped_bundles_filepath.basename.to_s
-    puts "Bundles are being uploaded to s3 as #{zipped_bundles_filename}"
-    starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    S3UploadService.new.upload_object(zipped_bundles_filename,
-                                      File.read(zipped_bundles_filepath, mode: 'rb'),
-                                      'application/zip', expiration_months: 12)
-    ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
-    elapsed = (ending - starting).round(2)
-    puts "Bundles uploaded to s3 as #{zipped_bundles_filename} in #{elapsed} seconds"
-  end
-end
-```
-
-## LocalBundleCacheAdapter
-Example of a module for custom methods for the `remote_bundle_cache_adapter` that does not save files
-remotely. Local caches are used.
-
-```ruby
-class LocalBundleCacheAdapter
-  def self.build
-    Rake.sh(ReactOnRails::Utils.prepend_cd_node_modules_directory('yarn start build.prod').to_s)
-  end
-
-  def self.fetch(zipped_bundles_filename:)
-    # no-op
-  end
-
-  def self.upload(zipped_bundles_filepath:)
-    # no-op
-  end
 end
 ```
