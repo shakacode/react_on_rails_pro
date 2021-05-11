@@ -24,9 +24,14 @@
     "doc": "docs"
   },
   "resolutions": {
+    "diff": "^3.5.0",
+    "ini": "^1.3.6",
     "is-svg": "^4.2.2",
     "lodash": "^4.17.21",
     "node-notifier": "^8.0.1",
+    "sockjs": "^0.3.20",
+    "url-parse": "^1.5.0",
+    "yargs-parser": "^5.0.0-security.0",
     "y18n": "^3.2.2 || ^4.0.1"
   },
   "dependencies": {
