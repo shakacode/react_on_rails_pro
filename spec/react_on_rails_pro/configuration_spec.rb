@@ -43,16 +43,16 @@ module ReactOnRailsPro
       end
 
       context "when assigned a module" do
-        it "throws if the assigned module does not have a static method named 'build'" do
+        it "throws if the assigned module does not have a class method named 'build'" do
           expect do
             ReactOnRailsPro.configure do |config|
               config.remote_bundle_cache_adapter = Class.new
             end
           end.to raise_error(ReactOnRailsPro::Error,
-                             /config.remote_bundle_cache_adapter must have a static method named 'build'/)
+                             /config.remote_bundle_cache_adapter must have a class method named 'build'/)
         end
 
-        it "throws if the assigned module does not have a static method named 'fetch'" do
+        it "throws if the assigned module does not have a class method named 'fetch'" do
           expect do
             ReactOnRailsPro.configure do |config|
               config.remote_bundle_cache_adapter = Class.new do
@@ -62,10 +62,10 @@ module ReactOnRailsPro
               end
             end
           end.to raise_error(ReactOnRailsPro::Error,
-                             /config.remote_bundle_cache_adapter must have a static method named 'fetch'/)
+                             /config.remote_bundle_cache_adapter must have a class method named 'fetch'/)
         end
 
-        it "throws if the assigned module does not have a static method named 'upload'" do
+        it "throws if the assigned module does not have a class method named 'upload'" do
           expect do
             ReactOnRailsPro.configure do |config|
               config.remote_bundle_cache_adapter = Class.new do
@@ -79,7 +79,7 @@ module ReactOnRailsPro
               end
             end
           end.to raise_error(ReactOnRailsPro::Error,
-                             /config.remote_bundle_cache_adapter must have a static method named 'upload'/)
+                             /config.remote_bundle_cache_adapter must have a class method named 'upload'/)
         end
       end
     end
