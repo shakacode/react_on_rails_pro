@@ -33,7 +33,7 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
 
   describe ".bundles_cache_key" do
     it "calls ReactOnRailsPro::Utils.digest_of_globs with the union of " \
-    "Webpacker.config.source_path & ReactOnRailsPro.configuration.dependency_globs" do
+       "Webpacker.config.source_path & ReactOnRailsPro.configuration.dependency_globs" do
       expected_parameters = %w[source_path dependency_globs]
 
       source_path = instance_double(Pathname)
