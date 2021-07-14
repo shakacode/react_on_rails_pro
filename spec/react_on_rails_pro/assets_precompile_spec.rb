@@ -66,7 +66,7 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
 
       ENV["NODE_ENV"] = "production"
 
-      expect(described_class.instance.bundles_cache_key).to eq("27068ea70ce38aae39876fc596ec37de")
+      expect(described_class.instance.bundles_cache_key).to eq("d91fce3a1ee60d62951cb6bab94d77bd")
     end
   end
 
