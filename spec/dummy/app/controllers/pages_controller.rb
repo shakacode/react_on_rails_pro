@@ -20,6 +20,22 @@ class PagesController < ApplicationController
   before_action :initialize_shared_store, only: %i[client_side_hello_world_shared_store_controller
                                                    server_side_hello_world_shared_store_controller]
 
+  def cached_react_helmet
+    render "/pages/pro/cached_react_helmet"
+  end
+
+  def loadable_component
+    render "/pages/pro/loadable_component"
+  end
+
+  def component_with_lodash
+    render "/pages/pro/component_with_lodash"
+  end
+
+  def shared_redux_store
+    render "/pages/pro/shared_redux_store"
+  end
+
   # See files in spec/dummy/app/views/pages
 
   helper_method :calc_slow_app_props_server_render
@@ -33,7 +49,7 @@ class PagesController < ApplicationController
       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     MSG
     Rails.logger.info msg
-    render_to_string(template: "/pages/serialize_props.json.jbuilder",
+    render_to_string(template: "/pages/pro/serialize_props.json.jbuilder",
                      locals: { name: PROPS_NAME }, format: :json)
   end
 
