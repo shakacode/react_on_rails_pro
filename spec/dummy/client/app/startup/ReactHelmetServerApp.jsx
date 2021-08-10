@@ -12,13 +12,14 @@ import ReactHelmet from '../components/ReactHelmet';
  *  This is imported as "ReactHelmetApp" by "serverRegistration.jsx". Note that rendered
  *  component markup must go under "componentHtml" key.
  */
-export default (props, _railsContext) => {
+export default async (props, _railsContext) => {
   const componentHtml = renderToString(<ReactHelmet {...props} />);
   const helmet = Helmet.renderStatic();
+  const namePromise = Promise.resolve(helmet.title.toString())
 
-  const renderedHtml = {
+  const promiseObject = {
     componentHtml,
-    title: helmet.title.toString(),
+    title: await namePromise,
   };
-  return { renderedHtml };
+  return promiseObject;
 };

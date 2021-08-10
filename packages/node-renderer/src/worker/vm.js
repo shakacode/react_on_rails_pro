@@ -183,7 +183,9 @@ ${smartTrim(renderingRequest)}`);
 
     vm.runInContext('console.history = []', context);
 
-    const result = vm.runInContext(renderingRequest, context);
+    const promiseResult = vm.runInContext(renderingRequest, context);
+    const objectResult = await promiseResult;
+    const result = JSON.stringify(objectResult);
 
     if (log.level === 'debug') {
       log.debug(`result from JS:
