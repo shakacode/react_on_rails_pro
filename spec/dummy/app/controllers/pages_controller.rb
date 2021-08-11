@@ -3,11 +3,6 @@
 class PagesController < ApplicationController
   XSS_PAYLOAD = { "<script>window.alert('xss1');</script>" => '<script>window.alert("xss2");</script>' }.freeze
   PROPS_NAME = "Mr. Server Side Rendering"
-  APP_PROPS_SERVER_RENDER = {
-    helloWorldData: {
-      name: PROPS_NAME
-    }.merge(XSS_PAYLOAD)
-  }.freeze
 
   include ReactOnRails::Controller
 
@@ -36,6 +31,10 @@ class PagesController < ApplicationController
     render "/pages/pro/shared_redux_store"
   end
 
+  def cached_react_component_redux
+    render "/pages/pro/cached_react_component_redux"
+  end
+
   # See files in spec/dummy/app/views/pages
 
   helper_method :calc_slow_app_props_server_render
@@ -59,7 +58,11 @@ class PagesController < ApplicationController
 
   def data
     # This is the props used by the React component.
-    @app_props_server_render = APP_PROPS_SERVER_RENDER
+    @app_props_server_render = {
+      helloWorldData: {
+        name: PROPS_NAME
+      }.merge(XSS_PAYLOAD)
+    }
 
     @app_props_hello = {
       helloWorldData: {

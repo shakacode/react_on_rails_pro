@@ -11,6 +11,7 @@ Rails.application.routes.draw do
   get "server_side_redux_app_cached" => "pages#server_side_redux_app_cached"
   get "cached_react_helmet" => "pages#cached_react_helmet"
   get "loadable(/*all)" => "pages#loadable_component", as: :loadable_component
+  get "cached_react_component_redux" => "pages#cached_react_component_redux"
   get "component_with_lodash" => "pages#component_with_lodash"
   get "shared_redux_store" => "pages#shared_redux_store"
 
