@@ -34,8 +34,6 @@ import ImageExample from '../components/ImageExample';
 
 import SetTimeoutLoggingApp from '../startup/SetTimeoutLoggingApp';
 
-import ComponentWithLodashApp from '../startup/ComponentWithLodashApp';
-
 import Loadable from '../startup/loadable-client.imports-loadable';
 
 ReactOnRails.setOptions({
@@ -62,7 +60,6 @@ ReactOnRails.register({
   ReactHelmetApp,
   ImageExample,
   SetTimeoutLoggingApp,
-  ComponentWithLodashApp,
   Loadable,
 });
 

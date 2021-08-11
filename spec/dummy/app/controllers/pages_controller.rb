@@ -23,14 +23,6 @@ class PagesController < ApplicationController
     render "/pages/pro/loadable_component"
   end
 
-  def component_with_lodash
-    render "/pages/pro/component_with_lodash"
-  end
-
-  def shared_redux_store
-    render "/pages/pro/shared_redux_store"
-  end
-
   def cached_react_component_redux
     render "/pages/pro/cached_react_component_redux"
   end
