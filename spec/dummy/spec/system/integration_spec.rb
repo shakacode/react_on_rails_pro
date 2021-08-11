@@ -76,7 +76,7 @@ describe "Pages/Index", :js do
   end
 end
 
-context "when Server Rendering with Options", :js do
+context "when Server Rendering with Options" do
   subject { page }
 
   before do
@@ -86,7 +86,7 @@ context "when Server Rendering with Options", :js do
   include_examples "React Component", "div#my-hello-world-id"
 end
 
-context "when Server Rendering Cached", :caching, :js do
+context "when Server Rendering Cached", :caching do
   subject { page }
 
   let(:dependencies_cache_key) { ReactOnRailsPro::Cache.dependencies_cache_key }
@@ -260,6 +260,20 @@ describe "generator function returns renderedHtml as an object with additional H
       expect(page).to have_text 'Props: {"helloWorldData":{"name":"Mr. Server Side Rendering"}}'
       expect(page).to have_css "title", text: /\ACustom page title\z/, visible: :hidden
       expect(page.html).to include("[SERVER] RENDERED ReactHelmetApp to dom node with id")
+    end
+  end
+
+  shared_examples "renderedHtmls should have errors" do
+    subject { page }
+
+    before { visit react_helmet_broken_path }
+
+    it "renderedHtmls should have errors" do
+      puts "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+      puts "integration_spec.rb: #{__LINE__},  method: #{__method__}"
+      puts "subject.html = #{subject.html.ai}"
+      puts "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
+      expect(subject.html).to include("[SERVER] RENDERED ReactHelmetApp to dom node with id")
     end
   end
 
