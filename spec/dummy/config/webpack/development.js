@@ -21,6 +21,7 @@ const developmentOnly = () => {
       }),
     );
   }
+  debugger
 };
 
 module.exports = webpackConfig(developmentOnly);

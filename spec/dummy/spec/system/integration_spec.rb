@@ -93,7 +93,7 @@ context "when Server Rendering Cached", :caching, :js do
   let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
 
   before do
-    visit cached_redux_component_path
+    visit cached_react_component_path
   end
 
   include_examples "React Component", "div#ReduxApp-react-component-0"
@@ -263,7 +263,7 @@ describe "generator function returns renderedHtml as an object with additional H
     end
   end
 
-  describe "with disabled JS", :rack_test do
+  describe "with disabled JS" do
     include_examples "renderedHtmls should not have any errors and set correct page title"
   end
 
