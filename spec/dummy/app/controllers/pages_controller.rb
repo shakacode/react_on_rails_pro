@@ -23,8 +23,8 @@ class PagesController < ApplicationController
     render "/pages/pro/loadable_component"
   end
 
-  def cached_react_component_redux
-    render "/pages/pro/cached_react_component_redux"
+  def cached_redux_component
+    render "/pages/pro/cached_redux_component"
   end
 
   # See files in spec/dummy/app/views/pages
