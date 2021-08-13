@@ -263,20 +263,6 @@ describe "generator function returns renderedHtml as an object with additional H
     end
   end
 
-  shared_examples "renderedHtmls should have errors" do
-    subject { page }
-
-    before { visit react_helmet_broken_path }
-
-    it "renderedHtmls should have errors" do
-      puts "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
-      puts "integration_spec.rb: #{__LINE__},  method: #{__method__}"
-      puts "subject.html = #{subject.html.ai}"
-      puts "ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ"
-      expect(subject.html).to include("[SERVER] RENDERED ReactHelmetApp to dom node with id")
-    end
-  end
-
   describe "with disabled JS", :rack_test do
     include_examples "renderedHtmls should not have any errors and set correct page title"
   end
