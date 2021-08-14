@@ -14,7 +14,7 @@ aliases:
              echo "Bundler version: "; bundle --version
   - &lint-js
     name: Linting of JS
-    command: yarn start lint
+    command: yarn start eslint
 
   - &lint-ruby
     name: Linting of Ruby
