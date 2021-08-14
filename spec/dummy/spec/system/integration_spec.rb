@@ -76,7 +76,7 @@ describe "Pages/Index", :js do
   end
 end
 
-context "when Server Rendering with Options" do
+context "when Server Rendering with Options", :js do
   subject { page }
 
   before do
@@ -86,7 +86,7 @@ context "when Server Rendering with Options" do
   include_examples "React Component", "div#my-hello-world-id"
 end
 
-context "when Server Rendering Cached", :caching do
+context "when Server Rendering Cached", :caching, :js do
   subject { page }
 
   let(:dependencies_cache_key) { ReactOnRailsPro::Cache.dependencies_cache_key }
