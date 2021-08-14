@@ -86,7 +86,9 @@ context "when Server Rendering with Options", :js do
   include_examples "React Component", "div#my-hello-world-id"
 end
 
-context "when Server Rendering Cached", :caching do
+context "when Server Rendering Cached", :caching, :js do
+  subject { page }
+
   let(:dependencies_cache_key) { ReactOnRailsPro::Cache.dependencies_cache_key }
   let(:base_component_cache_key) { "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}" }
 
