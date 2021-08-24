@@ -47,6 +47,11 @@ ReactOnRailsPro.configure do |config|
   # Default for `server_renderer` is "ExecJS"
   config.server_renderer = "NodeRenderer"
 
+  # If you are using the NodeRenderer, then you stop React on Rails from stubbing setTimeout, setInterval, & clearTimeout
+  # by this option to false. Also, if server_renderer is not set to "NodeRenderer", this option will be ignored.
+  # Default is true.
+  config.include_execjs_polyfills = true
+
   # If you're using the NodeRenderer, a value of true allows errors to be thrown from the bundle
   # code for SSR so that an error tracking system on the NodeRender can use the exceptions.
   # This value defaults to false. It should only be set to true when using the NodeRender.

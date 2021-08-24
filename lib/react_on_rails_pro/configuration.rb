@@ -23,7 +23,8 @@ module ReactOnRailsPro
       ssr_pre_hook_js: nil,
       assets_to_copy: nil,
       renderer_request_retry_limit: Configuration::DEFAULT_RENDERER_REQUEST_RETRY_LIMIT,
-      throw_js_errors: Configuration::DEFAULT_THROW_JS_ERRORS
+      throw_js_errors: Configuration::DEFAULT_THROW_JS_ERRORS,
+      include_execjs_polyfills: Configuration::DEFAULT_INCLUDE_EXECJS_POLYFILLS
     )
   end
 
@@ -41,8 +42,9 @@ module ReactOnRailsPro
     DEFAULT_REMOTE_BUNDLE_CACHE_ADAPTER = nil
     DEFAULT_RENDERER_REQUEST_RETRY_LIMIT = 5
     DEFAULT_THROW_JS_ERRORS = false
+    DEFAULT_INCLUDE_EXECJS_POLYFILLS = true
 
-    attr_accessor :renderer_url, :renderer_password, :tracing,
+    attr_accessor :renderer_url, :renderer_password, :tracing, :include_execjs_polyfills,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
                   :dependency_globs, :excluded_dependency_globs,
@@ -52,7 +54,7 @@ module ReactOnRailsPro
     def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil,
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
-                   renderer_http_pool_warn_timeout: nil, tracing: nil,
+                   renderer_http_pool_warn_timeout: nil, tracing: nil, include_execjs_polyfills: nil,
                    dependency_globs: nil, excluded_dependency_globs: nil,
                    remote_bundle_cache_adapter: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
                    renderer_request_retry_limit: nil, throw_js_errors: nil)
@@ -65,6 +67,7 @@ module ReactOnRailsPro
       self.renderer_http_pool_timeout = renderer_http_pool_timeout
       self.renderer_http_pool_warn_timeout = renderer_http_pool_warn_timeout
       self.tracing = tracing
+      self.include_execjs_polyfills = server_renderer == "NodeRenderer" ? include_execjs_polyfills : true
       self.dependency_globs = dependency_globs
       self.excluded_dependency_globs = excluded_dependency_globs
       self.remote_bundle_cache_adapter = remote_bundle_cache_adapter
