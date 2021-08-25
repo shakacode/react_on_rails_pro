@@ -52,6 +52,11 @@ ReactOnRailsPro.configure do |config|
   # Default is true.
   config.include_execjs_polyfills = true
 
+  # React on Rails Node Renderer now support render functions returning promises! To enable this optional functionality,
+  # toggle the following option.
+  # Default is false
+  config.rendering_returns_promises = false
+
   # If you're using the NodeRenderer, a value of true allows errors to be thrown from the bundle
   # code for SSR so that an error tracking system on the NodeRender can use the exceptions.
   # This value defaults to false. It should only be set to true when using the NodeRender.

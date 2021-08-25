@@ -24,7 +24,8 @@ module ReactOnRailsPro
       assets_to_copy: nil,
       renderer_request_retry_limit: Configuration::DEFAULT_RENDERER_REQUEST_RETRY_LIMIT,
       throw_js_errors: Configuration::DEFAULT_THROW_JS_ERRORS,
-      include_execjs_polyfills: Configuration::DEFAULT_INCLUDE_EXECJS_POLYFILLS
+      include_execjs_polyfills: Configuration::DEFAULT_INCLUDE_EXECJS_POLYFILLS,
+      rendering_returns_promises: Configuration::DEFAULT_RENDERING_RETURNS_PROMISES
     )
   end
 
@@ -43,11 +44,12 @@ module ReactOnRailsPro
     DEFAULT_RENDERER_REQUEST_RETRY_LIMIT = 5
     DEFAULT_THROW_JS_ERRORS = false
     DEFAULT_INCLUDE_EXECJS_POLYFILLS = true
+    DEFAULT_RENDERING_RETURNS_PROMISES = false
 
     attr_accessor :renderer_url, :renderer_password, :tracing, :include_execjs_polyfills,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
-                  :dependency_globs, :excluded_dependency_globs,
+                  :dependency_globs, :excluded_dependency_globs, :rendering_returns_promises,
                   :remote_bundle_cache_adapter, :ssr_pre_hook_js, :assets_to_copy,
                   :renderer_request_retry_limit, :throw_js_errors
 
@@ -55,7 +57,7 @@ module ReactOnRailsPro
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
                    renderer_http_pool_warn_timeout: nil, tracing: nil, include_execjs_polyfills: nil,
-                   dependency_globs: nil, excluded_dependency_globs: nil,
+                   dependency_globs: nil, excluded_dependency_globs: nil, rendering_returns_promises: nil,
                    remote_bundle_cache_adapter: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
                    renderer_request_retry_limit: nil, throw_js_errors: nil)
       self.renderer_url = renderer_url
@@ -68,6 +70,7 @@ module ReactOnRailsPro
       self.renderer_http_pool_warn_timeout = renderer_http_pool_warn_timeout
       self.tracing = tracing
       self.include_execjs_polyfills = server_renderer == "NodeRenderer" ? include_execjs_polyfills : true
+      self.rendering_returns_promises = server_renderer == "NodeRenderer" ? rendering_returns_promises : false
       self.dependency_globs = dependency_globs
       self.excluded_dependency_globs = excluded_dependency_globs
       self.remote_bundle_cache_adapter = remote_bundle_cache_adapter
