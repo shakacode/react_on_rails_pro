@@ -21,7 +21,7 @@ module ReactOnRailsPro
             trace: #{render_options.trace},
             railsContext: railsContext,
             throwJsErrors: #{ReactOnRailsPro.configuration.throw_js_errors},
-            returnPromise: true
+            nodeRendering: #{ReactOnRailsPro.configuration.server_renderer === "NodeRenderer"}
           });
         })()
         JS
