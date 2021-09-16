@@ -142,6 +142,10 @@ module ReactOnRailsPro
           pool_size: ReactOnRailsPro.configuration.renderer_http_pool_size,
           pool_timeout: ReactOnRailsPro.configuration.renderer_http_pool_timeout,
           warn_timeout: ReactOnRailsPro.configuration.renderer_http_pool_warn_timeout,
+
+          # https://docs.ruby-lang.org/en/2.0.0/Net/HTTP.html#attribute-i-read_timeout
+          # https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http/connection.rb#L168
+          read_timeout: ReactOnRailsPro.configuration.ssr_timeout,
           force_retry: true,
           url: ReactOnRailsPro.configuration.renderer_url
         )

@@ -11,6 +11,12 @@ Gem and package versions are the same except for beta releases where the gem use
 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
+
+
+- Add `ssr_timeout` configuration so the Rails server will not wait more than this many seconds for a SSR request to return once issued.
+- Change default for `renderer_use_fallback_exec_js` to `false`.
+- Change default log level to info.
+
 ## [2.2.0] - 2021-07-13
 - Change rake react_on_rails_pro:pre_stage_bundle_for_vm_renderer to use symlinks to save slug size. [PR 202](https://github.com/shakacode/react_on_rails_pro/pull/202) by [justin808](https://github.com/justin808).
 
