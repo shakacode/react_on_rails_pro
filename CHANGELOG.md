@@ -12,6 +12,14 @@ Gem and package versions are the same except for beta releases where the gem use
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+- Add `ssr_timeout` configuration so the Rails server will not wait more than this many seconds for a SSR request to return once issued.
+- Change default for `renderer_use_fallback_exec_js` to `false`.
+- Change default log level to info.
+  [PR 220](https://github.com/shakacode/react_on_rails_pro/pull/220) by
+  [justin808](https://github.com/justin808).
+
+- Add support for render functions to be async (returning promises). Also add `include_execjs_polyfills` option to configuration for React on Rails to optionally stop stubbing of setTimeout, setInterval, & clearTimeout polyfills while using NodeRenderer. [PR 210](https://github.com/shakacode/react_on_rails_pro/pull/210) by [judahmeek](https://github.com/judahmeek)
+
 ## [2.3.0] - 2021-09-22
 
 ### Added
@@ -23,8 +31,6 @@ Gem and package versions are the same except for beta releases where the gem use
 
   [PR 221](https://github.com/shakacode/react_on_rails_pro/pull/221) by
   [justin808](https://github.com/justin808) and [ershadul1](https://github.com/ershadul1).
-
-  - Add support for render functions to be async (returning promises). Also add `include_execjs_polyfills` option to configuration for React on Rails to optionally stop stubbing of setTimeout, setInterval, & clearTimeout polyfills while using NodeRenderer. [PR 210](https://github.com/shakacode/react_on_rails_pro/pull/210) by [judahmeek](https://github.com/judahmeek)
 
 ## [2.2.0] - 2021-07-13
 - Change rake react_on_rails_pro:pre_stage_bundle_for_vm_renderer to use symlinks to save slug size. [PR 202](https://github.com/shakacode/react_on_rails_pro/pull/202) by [justin808](https://github.com/justin808).
