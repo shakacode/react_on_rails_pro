@@ -98,6 +98,12 @@ class S3BundleCacheAdapter
     result = S3UploadService.new.fetch_object(zipped_bundles_filename)
     result.get.body.read if result
   end
+  
+  def self.extra_files_to_cache
+      [ ["app", "javascript", "utils", "operationStore.json"] ]
+      # in zip file like "extra_files/app---javascript---utils---operationStore.json"
+      # Then `rm -rf extra_files` after extracted
+  end
 
   # parameter zipped_bundles_filepath will be a Pathname
   # return value is unused

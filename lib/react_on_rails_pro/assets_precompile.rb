@@ -83,6 +83,8 @@ module ReactOnRailsPro
 
       build_bundles
 
+      copy_extra_files_to_cache_dir
+
       begin
         cache_bundles
       rescue RuntimeError => e
@@ -132,9 +134,23 @@ module ReactOnRailsPro
         Dir.chdir(public_output_path) do
           Rake.sh "tar -xzf #{zipped_bundles_filepath}"
         end
+
+        extract_extra_files_from_cache_dir
+
         ReactOnRailsPro::Utils.rorp_puts "gunzipped bundle cache: #{zipped_bundles_filepath} to #{public_output_path}"
       end
       result
+    end
+
+    def copy_extra_files_to_cache_dir
+      def self.extra_files_to_cache
+        remote_bundle_cache_adapter.extra_files_to_cache.each do |file|
+
+        end
+    end
+
+    def extract_extra_files_from_cache_dir
+
     end
 
     def cache_bundles
