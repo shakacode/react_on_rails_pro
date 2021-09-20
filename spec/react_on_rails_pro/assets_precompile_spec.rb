@@ -265,4 +265,65 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
       expect(adapter_double).to have_received(:upload).with(zipped_bundles_filepath)
     end
   end
+
+  describe ".copy_extra_files_to_cache_dir" do
+    after do
+      FileUtils.remove_dir("extra_files_cache_dir")
+    end
+
+    it "copies the files in extra_files_to_cache to cache directory" do
+      rails_stub = Module.new do
+        def self.root
+          Pathname.new(Dir.pwd)
+        end
+      end
+      stub_const("Rails", rails_stub)
+
+      adapter = Module.new do
+        def self.extra_files_to_cache
+          [Pathname.new(Dir.pwd).join("Gemfile")]
+        end
+      end
+
+      instance = described_class.instance
+
+      allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter)
+      FileUtils.mkdir_p("extra_files_cache_dir")
+      allow(instance).to receive(:extra_files_path).and_return(Pathname.new(Dir.pwd).join("extra_files_cache_dir"))
+      copied_file_path = Pathname.new(Dir.pwd).join("extra_files_cache_dir", "Gemfile")
+
+      instance.copy_extra_files_to_cache_dir
+
+      expect(copied_file_path.exist?).to eq(true)
+    end
+  end
+
+  describe ".extract_extra_files_from_cache_dir" do
+    after do
+      FileUtils.remove_dir("extra_files_extract_destination")
+    end
+
+    it "extracts extra files from cache dir to their destination" do
+      rails_stub = Module.new do
+        def self.root
+          Pathname.new(Dir.pwd)
+        end
+      end
+      stub_const("Rails", rails_stub)
+
+      FileUtils.mkdir_p("extra_files_cache_dir")
+      FileUtils.mkdir_p("extra_files_extract_destination")
+      FileUtils.touch("extra_files_cache_dir/extra_files_extract_destination---extra_file_for_test.md")
+
+      instance = described_class.instance
+
+      allow(instance).to receive(:extra_files_path).and_return(Pathname.new(Dir.pwd).join("extra_files_cache_dir"))
+
+      instance.extract_extra_files_from_cache_dir
+
+      extracted_file_path = Pathname.new(Dir.pwd).join("extra_files_extract_destination", "extra_file_for_test.md")
+
+      expect(extracted_file_path.exist?).to eq(true)
+    end
+  end
 end
