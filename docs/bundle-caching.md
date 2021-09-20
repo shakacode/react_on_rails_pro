@@ -99,10 +99,11 @@ class S3BundleCacheAdapter
     result.get.body.read if result
   end
   
+  # should contain an array of extra files paths, that needs to be cached in the bundles
+  # these files will be copied to extra_files cache dir, before zipping the bundles
+  # and will be moved to original places from extra_files cache dir, after unzipping the bundles
   def self.extra_files_to_cache
       [ Rails.root.join("app", "javascript", "utils", "operationStore.json") ]
-      # in zip file like "extra_files/app---javascript---utils---operationStore.json"
-      # Then `rm -rf extra_files` after extracted
   end
 
   # parameter zipped_bundles_filepath will be a Pathname
