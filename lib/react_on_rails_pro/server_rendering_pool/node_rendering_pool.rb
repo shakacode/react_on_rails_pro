@@ -11,6 +11,11 @@ module ReactOnRailsPro
 
         def reset_pool
           ReactOnRailsPro::Request.reset_connection
+
+          lock = Concurrent::ReadWriteLock.new
+          lock.with_write_lock do
+            @path_to_bad_requests_count ||= Concurrent::Hash.new { |_hash, _key| Concurrent::AtomicFixnum.new }
+          end
         end
 
         def reset_pool_if_server_bundle_was_modified
@@ -57,6 +62,10 @@ module ReactOnRailsPro
           # path = "/bundles/#{@bundle_update_utc_timestamp}/render"
           path = "/bundles/#{@bundle_update_utc_timestamp}/render/#{render_options.request_digest}"
 
+          if invalid_request?(path, render_options)
+            return "INVALID REQUEST #{pretty_print_options(render_options)}"
+          end
+
           response = ReactOnRailsPro::Request.render_code(path, js_code, send_bundle)
 
           case response.code
@@ -72,6 +81,8 @@ module ReactOnRailsPro
             raise ReactOnRailsPro::Error, "Unknown response code from renderer: #{response.code}:\n#{response.body}"
           end
         rescue StandardError => e
+          track_invalid_request(path, render_options)
+
           raise e unless ReactOnRailsPro.configuration.renderer_use_fallback_exec_js
 
           fallback_exec_js(js_code, render_options, e)
@@ -96,6 +107,28 @@ module ReactOnRailsPro
           include ScoutApm::Tracer
           instrument_method :exec_server_render_js, type: "ReactOnRails", name: "Node React Server Rendering"
         end
+      end
+
+      def pretty_print_options(render_options)
+        "path #{render_options.path}, component #{render_options.component_name}"
+      end
+
+      def invalid_request?(path, render_options)
+        # Return early to avoid putting every key in map
+        return unless @path_to_bad_requests_count.key?(path)
+
+        bad_requests = @path_to_bad_requests_count[path].value
+
+        return false if bad_requests.nil? || bad_requests < ReactOnRailsPro.configuration.ssr_errors_before_blocking
+
+        Rails.logger.warn do
+          "[ReactOnRailsPro] Skipping rendering execution of request #{path}, #{pretty_print_options(render_options)} because threshold #{ReactOnRailsPro.configuration.ssr_errors_before_blocking} exceeded"
+        end
+        true
+      end
+
+      def track_invalid_request(path)
+        @path_to_bad_requests_count[path].increment
       end
     end
   end
