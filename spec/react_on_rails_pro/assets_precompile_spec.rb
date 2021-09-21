@@ -259,6 +259,7 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
       allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter_double)
       allow(instance).to receive(:zipped_bundles_filename).and_return("zipped_bundles_filename")
       allow(instance).to receive(:zipped_bundles_filepath).and_return(zipped_bundles_filepath)
+      allow(instance).to receive(:remove_extra_files_cache_dir).and_return(nil)
 
       expect(instance.cache_bundles).to be_truthy
 
@@ -281,20 +282,23 @@ describe ReactOnRailsPro::AssetsPrecompile do # rubocop:disable Metrics/BlockLen
 
       adapter = Module.new do
         def self.extra_files_to_cache
-          [Pathname.new(Dir.pwd).join("Gemfile")]
+          [Pathname.new(Dir.pwd).join("Gemfile"),
+           Pathname.new(Dir.pwd).join("lib", "react_on_rails_pro", "assets_precompile.rb")]
         end
       end
 
       instance = described_class.instance
 
       allow(instance).to receive(:remote_bundle_cache_adapter).and_return(adapter)
-      FileUtils.mkdir_p("extra_files_cache_dir")
       allow(instance).to receive(:extra_files_path).and_return(Pathname.new(Dir.pwd).join("extra_files_cache_dir"))
-      copied_file_path = Pathname.new(Dir.pwd).join("extra_files_cache_dir", "Gemfile")
+      copied_gemfile_path = Pathname.new(Dir.pwd).join("extra_files_cache_dir", "Gemfile")
+      copied_assets_precompile_path = Pathname.new(Dir.pwd).join("extra_files_cache_dir",
+                                                                 "lib---react_on_rails_pro---assets_precompile.rb")
 
       instance.copy_extra_files_to_cache_dir
 
-      expect(copied_file_path.exist?).to eq(true)
+      expect(copied_gemfile_path.exist?).to eq(true)
+      expect(copied_assets_precompile_path.exist?).to eq(true)
     end
   end
 

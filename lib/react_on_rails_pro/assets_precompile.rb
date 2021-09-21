@@ -151,13 +151,12 @@ module ReactOnRailsPro
       copied_extra_files_paths = []
 
       remote_bundle_cache_adapter.extra_files_to_cache.each do |file_path|
-        unless file_path.file?
-          ReactOnRailsPro::Utils.rorp_puts "Extra file: #{file_path}, doesn't exist"
-          next
+        if file_path.file?
+          copy_file_to_extra_files_cache_dir(file_path)
+          copied_extra_files_paths.push(file_path.relative_path_from(Rails.root).to_s)
+        else
+          ReactOnRailsPro::Utils.rorp_puts "Extra file: #{file_path}, doesn't exist. Skipping"
         end
-
-        copy_file_to_extra_files_cache_dir(file_path)
-        copied_extra_files_paths.push(file_path.relative_path_from(Rails.root).to_s)
       end
 
       ReactOnRailsPro::Utils.rorp_puts "Copied extra files: #{copied_extra_files_paths.join(', ')}"\
@@ -170,7 +169,7 @@ module ReactOnRailsPro
     end
 
     def convert_to_destination(source)
-      new_file_name = source.relative_path_from(Rails.root).each_filename.to_a.map(&:to_s).join("---")
+      new_file_name = source.relative_path_from(Rails.root).each_filename.to_a.join("---")
       extra_files_path.join(new_file_name)
     end
 
@@ -203,6 +202,7 @@ module ReactOnRailsPro
         ReactOnRailsPro::Utils.rorp_puts "An error occurred while attempting to zip the built bundles."
         ReactOnRailsPro::Utils.rorp_puts e.message
         puts e.backtrace.join('\n')
+      ensure
         remove_extra_files_cache_dir
       end
 
