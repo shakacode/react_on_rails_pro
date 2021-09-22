@@ -3,7 +3,8 @@
  * @module worker
  */
 
-const TESTING_TIMEOUTS = true
+// Set next value to true to test timeouts
+// const TESTING_TIMEOUTS = false
 
 const path = require('path');
 const cluster = require('cluster');
@@ -29,16 +30,16 @@ const errorReporter = require('./shared/errorReporter');
 const tracing = require('./shared/tracing');
 const { lock, unlock } = require('./shared/locks');
 
-
-function sleep(ms) {
-  return new Promise((resolve) => {
-    setTimeout(resolve, ms);
-  });
-}
-
-function getRandomInt(max) {
-  return Math.floor(Math.random() * Math.floor(max));
-}
+// Uncomment next 2 functions for testing timeouts
+// function sleep(ms) {
+//   return new Promise((resolve) => {
+//     setTimeout(resolve, ms);
+//   });
+// }
+//
+// function getRandomInt(max) {
+//   return Math.floor(Math.random() * Math.floor(max));
+// }
 
 function setHeaders(headers, res) {
   Object.keys(headers).forEach((key) => res.set(key, headers[key]));
@@ -119,15 +120,15 @@ module.exports = function run(config) {
         return;
       }
 
-      if(TESTING_TIMEOUTS && getRandomInt(2) === 1) {
-        console.log(
-          'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
-        console.log(`Sleeping, to test timeouts`);
-        console.log(
-          'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
-
-        await sleep(100000);
-      }
+      // if(TESTING_TIMEOUTS && getRandomInt(2) === 1) {
+      //   console.log(
+      //     'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
+      //   console.log(`Sleeping, to test timeouts`);
+      //   console.log(
+      //     'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
+      //
+      //   await sleep(100000);
+      // }
 
       const { renderingRequest } = req.body;
       const { bundleTimestamp } = req.params;

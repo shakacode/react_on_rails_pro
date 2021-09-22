@@ -48,11 +48,11 @@ module ReactOnRailsPro
               raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n"\
                                             "Original error:\n#{e}\n#{e.backtrace}"
             end
-            available_retries -= 1
             Rails.logger.info do
-              "[ReactOnRailsPro] Timed out trying to connect to the Node Renderer.\
-               Retrying #{available_retries} more times..."
+              "[ReactOnRailsPro] Timed out trying to connect to the Node Renderer."\
+                " Retrying #{available_retries} more times..."
             end
+            available_retries -= 1
             next
           rescue StandardError => e
             raise ReactOnRailsPro::Error, "Can't connect to NodeRenderer renderer: #{path}.\n"\
