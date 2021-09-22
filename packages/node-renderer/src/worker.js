@@ -3,6 +3,8 @@
  * @module worker
  */
 
+const TESTING_TIMEOUTS = false
+
 const path = require('path');
 const cluster = require('cluster');
 const express = require('express');
@@ -26,6 +28,17 @@ const {
 const errorReporter = require('./shared/errorReporter');
 const tracing = require('./shared/tracing');
 const { lock, unlock } = require('./shared/locks');
+
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * Math.floor(max));
+}
 
 function setHeaders(headers, res) {
   Object.keys(headers).forEach((key) => res.set(key, headers[key]));
@@ -106,6 +119,11 @@ module.exports = function run(config) {
         return;
       }
 
+      if(TESTING_TIMEOUTS && getRandomInt(2) === 1) {
+        console.log(`Sleeping, to test timeouts`);
+        await sleep(100000);
+      }
+
       const { renderingRequest } = req.body;
       const { bundleTimestamp } = req.params;
       const { bundle: providedNewBundle, ...assetsToCopyObj } = req.files;
@@ -120,7 +138,7 @@ module.exports = function run(config) {
                 bundleTimestamp,
                 providedNewBundle,
                 assetsToCopy,
-              });
+              })
               setResponse(result, res);
             } catch (err) {
               const exceptionMessage = formatExceptionMessage(
