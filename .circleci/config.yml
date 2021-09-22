@@ -50,7 +50,6 @@ aliases:
     command: |
       gem install bundler
       echo "Bundler version: "; bundle --version
-      bundle config set --local disable_checksum_validation true
       bundle check --path=vendor/bundle || bundle install --path=vendor/bundle --jobs=4 --retry=3
 
   # Restore node_modules dir from cache using yarn.lock checksum as a key.
