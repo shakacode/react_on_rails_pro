@@ -144,7 +144,7 @@ module.exports = function run(config) {
                 bundleTimestamp,
                 providedNewBundle,
                 assetsToCopy,
-              })
+              });
               setResponse(result, res);
             } catch (err) {
               const exceptionMessage = formatExceptionMessage(
