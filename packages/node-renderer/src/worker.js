@@ -3,7 +3,7 @@
  * @module worker
  */
 
-const TESTING_TIMEOUTS = false
+const TESTING_TIMEOUTS = true
 
 const path = require('path');
 const cluster = require('cluster');
@@ -120,7 +120,12 @@ module.exports = function run(config) {
       }
 
       if(TESTING_TIMEOUTS && getRandomInt(2) === 1) {
+        console.log(
+          'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
         console.log(`Sleeping, to test timeouts`);
+        console.log(
+          'ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
+
         await sleep(100000);
       }
 
