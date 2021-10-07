@@ -1,5 +1,3 @@
-const { jest } = require('@jest/globals');
-
 jest.mock('@sentry/node');
 
 const Sentry = require('@sentry/node');
