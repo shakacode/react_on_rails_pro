@@ -15,7 +15,7 @@ import ReactHelmet from '../components/ReactHelmet';
 export default async (props, _railsContext) => {
   const componentHtml = renderToString(<ReactHelmet {...props} />);
   const helmet = Helmet.renderStatic();
-  const namePromise = Promise.resolve(helmet.title.toString())
+  const namePromise = Promise.resolve(helmet.title.toString());
 
   const promiseObject = {
     componentHtml,

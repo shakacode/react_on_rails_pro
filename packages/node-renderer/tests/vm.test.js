@@ -144,7 +144,9 @@ describe('buildVM and runInVM', () => {
     await buildVM(uploadedBundlePathForTest());
 
     const vmResult = await runInVM('console.log("Console message inside of VM") || console.history;');
-    const consoleHistory = JSON.stringify([{ level: 'log', arguments: ['[SERVER] Console message inside of VM'] }]);
+    const consoleHistory = JSON.stringify([
+      { level: 'log', arguments: ['[SERVER] Console message inside of VM'] },
+    ]);
 
     expect(vmResult).toEqual(consoleHistory);
   });

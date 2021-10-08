@@ -184,7 +184,7 @@ ${smartTrim(renderingRequest)}`);
     vm.runInContext('console.history = []', context);
 
     let result = vm.runInContext(renderingRequest, context);
-    if(typeof result !== "string") {
+    if (typeof result !== 'string') {
       const objectResult = await result;
       result = JSON.stringify(objectResult);
     }

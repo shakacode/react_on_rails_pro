@@ -5,6 +5,8 @@ ReactOnRailsPro.configure do |config|
   # Get timing of server render calls
   config.tracing = true
 
+  config.renderingReturnsPromises = true
+
   config.server_renderer = "NodeRenderer"
   # If you want Honeybadger or Sentry on the Node renderer side to report rendering errors
   config.throw_js_errors = false

@@ -25,7 +25,7 @@ const renderResult = {
   status: 200,
   headers: { 'Cache-Control': 'public, max-age=31536000' },
   data: JSON.stringify({ html: 'Dummy Object' }),
-}
+};
 
 describe(testName, () => {
   beforeEach(async () => {
