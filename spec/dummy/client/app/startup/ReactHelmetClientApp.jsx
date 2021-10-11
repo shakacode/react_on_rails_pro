@@ -2,4 +2,6 @@
 import React from 'react';
 import ReactHelmet from '../components/ReactHelmet';
 
-export default (props, _railsContext) => () => <ReactHelmet {...props} serverResponse={"API requests during server rendering work!"} />;
+const stubbedResponse = {"name":"ReactOnRails","country":[]}
+
+export default (props, _railsContext) => () => <ReactHelmet {...props} apiRequestResponse={stubbedResponse} />;

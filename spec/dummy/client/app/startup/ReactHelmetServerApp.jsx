@@ -16,7 +16,7 @@ import ReactHelmet from '../components/ReactHelmet';
  */
 export default async (props, railsContext) => {
   const portSuffix = railsContext.port ? `:${railsContext.port}` : ''
-  const { message } = await fetch(`http://${railsContext.host}${portSuffix}/test_network_request`)
+  const apiRequestResponse = await fetch(`https://api.nationalize.io/?name=ReactOnRails`)
 	.then(function(response) {
 		if (response.status >= 400) {
 			throw new Error("Bad response from server");
@@ -24,7 +24,7 @@ export default async (props, railsContext) => {
 		return response.json();
 	}).catch(error => console.error(`There was an error doing an API request during server rendering: ${error}`))
 
-  const componentHtml = renderToString(<ReactHelmet {...props} serverResponse={message} />);
+  const componentHtml = renderToString(<ReactHelmet {...props} apiRequestResponse={apiRequestResponse} />);
   const helmet = Helmet.renderStatic();
 
   const promiseObject = {
