@@ -44,7 +44,6 @@ module ReactOnRailsPro
         def exec_server_render_js(js_code, render_options)
           # The secret sauce is passing self as the 3rd param, the js_evaluator
           render_options.set_option(:throw_js_errors, ReactOnRailsPro.configuration.throw_js_errors)
-          render_options.set_option(:include_execjs_polyfills, ReactOnRailsPro.configuration.include_execjs_polyfills)
           ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript
             .exec_server_render_js(js_code, render_options, self)
         end

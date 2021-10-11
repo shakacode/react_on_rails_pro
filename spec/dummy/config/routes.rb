@@ -12,7 +12,6 @@ Rails.application.routes.draw do
   get "cached_react_helmet" => "pages#cached_react_helmet"
   get "loadable(/*all)" => "pages#loadable_component", as: :loadable_component
   get "cached_redux_component" => "pages#cached_redux_component"
-  get "test_network_request" => "api#test_network_request"
 
   # routes copied over from react on rails
   get "client_side_hello_world" => "pages#client_side_hello_world"
