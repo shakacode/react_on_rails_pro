@@ -262,6 +262,7 @@ describe "generator function returns renderedHtml as an object with additional H
       expect(page).to have_text expected_text
       expect(page).to have_css "title", text: /\ACustom page title\z/, visible: :hidden
       expect(page.html).to include("[SERVER] RENDERED ReactHelmetApp to dom node with id")
+      expect(page.html).not_to include("not defined for server rendering")
     end
   end
 

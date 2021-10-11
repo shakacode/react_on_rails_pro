@@ -158,7 +158,7 @@ GEM
       mini_mime (>= 0.1.1)
     marcel (1.0.2)
     method_source (1.0.0)
-    mini_mime (1.1.1)
+    mini_mime (1.1.2)
     mini_portile2 (2.6.1)
     mini_racer (0.3.1)
       libv8 (~> 8.4.255)
@@ -224,7 +224,7 @@ GEM
     rb-fsevent (0.10.4)
     rb-inotify (0.10.1)
       ffi (~> 1.0)
-    react_on_rails (12.4.0.rc.0)
+    react_on_rails (12.4.0)
       addressable
       connection_pool
       execjs (~> 2.5)
@@ -376,7 +376,7 @@ DEPENDENCIES
   pry-theme
   puma
   rails
-  react_on_rails (= 12.4.0.rc.0)
+  react_on_rails (= 12.4.0)
   react_on_rails_pro!
   rspec-rails
   rspec-retry
