@@ -16,6 +16,7 @@
     "babel-plugin-module-resolver": "^4.0.0",
     "core-js": "3",
     "create-react-class": "^15.6.3",
+    "cross-fetch": "^3.1.4",
     "es5-shim": "^4.5.9",
     "expose-loader": "1.0.3",
     "history": "^4.6.3",
