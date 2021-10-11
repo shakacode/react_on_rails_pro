@@ -1,4 +1,4 @@
-import 'cross-fetch/polyfill'
+import 'cross-fetch/polyfill';
 
 // Top level component for simple client side only rendering
 import React from 'react';
@@ -15,14 +15,17 @@ import ReactHelmet from '../components/ReactHelmet';
  *  component markup must go under "componentHtml" key.
  */
 export default async (props, railsContext) => {
-  const portSuffix = railsContext.port ? `:${railsContext.port}` : ''
+  const portSuffix = railsContext.port ? `:${railsContext.port}` : '';
   const apiRequestResponse = await fetch(`https://api.nationalize.io/?name=ReactOnRails`)
-	.then(function(response) {
-		if (response.status >= 400) {
-			throw new Error("Bad response from server");
-		}
-		return response.json();
-	}).catch(error => console.error(`There was an error doing an API request during server rendering: ${error}`))
+    .then(function (response) {
+      if (response.status >= 400) {
+        throw new Error('Bad response from server');
+      }
+      return response.json();
+    })
+    .catch((error) =>
+      console.error(`There was an error doing an API request during server rendering: ${error}`),
+    );
 
   const componentHtml = renderToString(<ReactHelmet {...props} apiRequestResponse={apiRequestResponse} />);
   const helmet = Helmet.renderStatic();

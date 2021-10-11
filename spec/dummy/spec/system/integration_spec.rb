@@ -257,7 +257,9 @@ describe "generator function returns renderedHtml as an object with additional H
     before { visit react_helmet_path }
 
     it "renderedHtmls should not have any errors" do
-      expect(page).to have_text 'Props: {"helloWorldData":{"name":"Mr. Server Side Rendering"},"apiRequestResponse":{"name":"ReactOnRails","country":[]}}'
+      expected_text = 'Props: {"helloWorldData":{"name":"Mr. Server Side Rendering"},'\
+                      '"apiRequestResponse":{"name":"ReactOnRails","country":[]}}'
+      expect(page).to have_text expected_text
       expect(page).to have_css "title", text: /\ACustom page title\z/, visible: :hidden
       expect(page.html).to include("[SERVER] RENDERED ReactHelmetApp to dom node with id")
     end
