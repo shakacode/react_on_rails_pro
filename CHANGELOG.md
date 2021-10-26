@@ -15,7 +15,6 @@ Gem and package versions are the same except for beta releases where the gem use
 ### Changed
 - Moved default location of placed node renderer sym links to be /.node-renderer-bundles as the /tmp directory is typically
   cleared during slug trimming
-  
 
 ### Upgrading
 1. Changed rake task name from vm to node:
