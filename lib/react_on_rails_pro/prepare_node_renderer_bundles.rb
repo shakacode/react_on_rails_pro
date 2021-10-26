@@ -9,7 +9,7 @@ module ReactOnRailsPro
       # TODO: temporarily hardcoding tmp/bundles directory. renderer and rails should read from a Yaml file
       src_bundle_path = ReactOnRails::Utils.server_bundle_js_file_path
       renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
-      dest_path = ENV["RENDERER_BUNDLE_PATH"].presence || Rails.root.join("tmp", "bundles").to_s
+      dest_path = ENV["RENDERER_BUNDLE_PATH"].presence || Rails.root.join(".node-renderer-bundles").to_s
       bundle_dest_path = File.join(dest_path, renderer_bundle_file_name.to_s).to_s
       puts "[ReactOnRailsPro] Symlinking assets to local node-renderer, path #{dest_path}"
       mkdir_p(dest_path)

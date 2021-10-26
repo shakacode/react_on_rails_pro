@@ -11,7 +11,12 @@ Gem and package versions are the same except for beta releases where the gem use
 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
-                                          
+
+### Changed
+- Moved default location of placed node renderer sym links to be /.node-renderer-bundles as the /tmp directory is typically
+  cleared during slug trimming
+  
+
 ### Upgrading
 1. Changed rake task name from vm to node:
    Rename react_on_rails_pro:pre_stage_bundle_for_vm_renderer to react_on_rails_pro:pre_stage_bundle_for_node_renderer 
