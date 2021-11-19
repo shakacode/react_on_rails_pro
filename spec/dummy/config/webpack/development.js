@@ -7,12 +7,12 @@ module.exports = webpackConfig();
 
 const developmentOnly = () => {
   const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-  const environment = require('./environment');
+  const commonWebpackConfig = require('./commonWebpackConfig');
   const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
 
   //plugins
   if (isWebpackDevServer) {
-    environment.plugins.append(
+    commonWebpackConfig.plugins.append(
       'ReactRefreshWebpackPlugin',
       new ReactRefreshWebpackPlugin({
         overlay: {
