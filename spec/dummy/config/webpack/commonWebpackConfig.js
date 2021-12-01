@@ -6,12 +6,10 @@ const aliasConfig = require('./alias.js');
 
 const commonOptions = {
   resolve: {
-    extensions: ['.css', '.ts', '.tsx', '.png', '.svg', '.scss'],
+    extensions: ['.css', '.ts', '.tsx'],
     fallback: { "path": false, "fs": false }
   },
 };
-
-debugger;
 
 const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
 
@@ -28,15 +26,12 @@ const sassLoaderConfig = {
   },
 };
 
-debugger;
-
 const scssConfigIndex = baseClientWebpackConfig.module.rules.findIndex((config) =>
   '.scss'.match(config.test),
 );
 baseClientWebpackConfig.module.rules[scssConfigIndex].use.push(sassLoaderConfig);
 
 //baseClientWebpackConfig.splitChunks();
-
 if (isWebpackDevServer) {
   baseClientWebpackConfig.plugins.push(
     'NormalModuleReplacement',
@@ -70,7 +65,5 @@ const jqueryUjsLoader = {
 baseClientWebpackConfig.module.rules.push(exposeJQuery, jqueryUjsLoader);
 
 const commonWebpackConfig = () => merge({}, baseClientWebpackConfig, commonOptions, aliasConfig);
-
-debugger;
 
 module.exports = commonWebpackConfig;
