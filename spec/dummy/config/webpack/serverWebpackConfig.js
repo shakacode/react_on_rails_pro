@@ -105,7 +105,9 @@ const configureServer = () => {
   // If using the default 'web', then libraries like Emotion and loadable-components
   // break with SSR. The fix is to use a node renderer and change the target.
   // If using the React on Rails Pro node server renderer, uncomment the next line
-  // serverWebpackConfig.target = 'node'
+  serverWebpackConfig.target = 'node';
+
+  serverWebpackConfig.node = false;
 
   return serverWebpackConfig;
 };
