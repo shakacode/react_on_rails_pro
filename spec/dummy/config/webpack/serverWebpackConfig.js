@@ -38,7 +38,7 @@ const configureServer = () => {
   serverWebpackConfig.optimization = {
     minimize: false,
   };
-  
+
   serverWebpackConfig.plugins.unshift(new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
   // Custom output for the server-bundle that matches the config in
   // config/initializers/react_on_rails.rb
@@ -80,12 +80,14 @@ const configureServer = () => {
       });
       const cssLoader = rule.use.find((item) => {
         let testValue;
+
         if (typeof item === 'string') {
           testValue = item;
         } else if (typeof item.loader === 'string') {
           testValue = item.loader;
         }
-        return testValue === 'css-loader';
+
+        return testValue.includes('css-loader');
       });
       if (cssLoader && cssLoader.options) {
         cssLoader.options.modules = { exportOnlyLocals: true };
