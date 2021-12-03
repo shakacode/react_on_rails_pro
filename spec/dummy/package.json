@@ -38,7 +38,7 @@
     "react-on-rails": "12.4.0-rc.0",
     "react-proptypes": "^1.0.0",
     "react-redux": "^5.0.5",
-    "react-refresh": "^0.8.1",
+    "react-refresh": "^0.11.0",
     "react-router-dom": "^5.2.0",
     "react-select": "^2.0.0-beta.7",
     "redux": "^4.0.1",
@@ -52,7 +52,7 @@
     "webpack-manifest-plugin": "^2.0.4"
   },
   "devDependencies": {
-    "@pmmmwh/react-refresh-webpack-plugin": "0.4.2",
+    "@pmmmwh/react-refresh-webpack-plugin": "0.5.3",
     "body-parser": "^1.19.0",
     "jsdom": "^16.4.0",
     "preload-webpack-plugin": "^3.0.0-alpha.1",
