@@ -7,7 +7,7 @@ const aliasConfig = require('./alias.js');
 const commonOptions = {
   resolve: {
     extensions: ['.css', '.ts', '.tsx'],
-    fallback: { "path": false, "fs": false }
+    fallback: { path: false, fs: false },
   },
 };
 
