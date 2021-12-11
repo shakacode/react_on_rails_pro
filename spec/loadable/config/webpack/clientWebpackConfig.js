@@ -1,7 +1,7 @@
 const commonWebpackConfig = require('./commonWebpackConfig');
 const LoadablePlugin = require('@loadable/webpack-plugin');
 
-const isHMR = process.env.HMR;
+const { devServer } = require('@rails/webpacker');
 
 const configureClient = () => {
   const clientConfig = commonWebpackConfig();
@@ -12,7 +12,7 @@ const configureClient = () => {
   // client config is going to try to load chunks.
   delete clientConfig.entry['server-bundle'];
 
-  if (!isHMR) {
+  if (!devServer.hmr) {
     clientConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
   }
 
