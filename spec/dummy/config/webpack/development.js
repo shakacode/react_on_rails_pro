@@ -4,7 +4,7 @@ const { devServer, inliningCss } = require('@rails/webpacker');
 
 const webpackConfig = require('./webpackConfig');
 
-const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {  
+const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
   const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
   const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
 

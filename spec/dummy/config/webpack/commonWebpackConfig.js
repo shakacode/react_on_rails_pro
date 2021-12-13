@@ -7,7 +7,6 @@ const aliasConfig = require('./alias.js');
 const commonOptions = {
   resolve: {
     extensions: ['.css', '.ts', '.tsx'],
-    fallback: { "path": false, "fs": false }
   },
 };
 
@@ -31,7 +30,6 @@ const scssConfigIndex = baseClientWebpackConfig.module.rules.findIndex((config) 
 );
 baseClientWebpackConfig.module.rules[scssConfigIndex].use.push(sassLoaderConfig);
 
-//baseClientWebpackConfig.splitChunks();
 if (isWebpackDevServer) {
   baseClientWebpackConfig.plugins.push(
     'NormalModuleReplacement',
