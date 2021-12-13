@@ -2,7 +2,7 @@ scripts:
   webpack-dev-server:
     default:
       description: Run the webpack dev server.
-      script: NODE_OPTIONS="--max-old-space-size=4096" NODE_ENV=development RAILS_ENV=development webpack-dev-server --env=devServer --config webpack.config.babel.js
+      script: NODE_OPTIONS="--max-old-space-size=4096" NODE_ENV=development RAILS_ENV=development bin/webpack-dev-server
     debug:
       description: Run the webpack dev server using the debugger.
       script: NODE_OPTIONS="--max-old-space-size=4096" NODE_ENV=development node --inspect-brk node_modules/.bin/webpack-dev-server --env=devServer --config webpack.config.babel.js
@@ -31,6 +31,13 @@ scripts:
         default:
           description: Build client bundles for dev env.
           script: NODE_OPTIONS="--max-old-space-size=4096" NODE_ENV=development RAILS_ENV=development bin/webpack --watch
+      server:
+        default:
+          description: Build server bundle for dev env.
+          script: NODE_ENV=development RAILS_ENV=development SERVER_BUNDLE_ONLY=yes bin/webpack
+        watch:
+          description: Build server bundle for dev env (watch mode enabled).
+          script: nps "build.dev.server --watch"
     rspec:
       default:
         description: Build client and server bundles for RSpec tests.
