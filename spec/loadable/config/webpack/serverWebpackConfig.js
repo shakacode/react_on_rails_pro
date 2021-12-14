@@ -13,12 +13,14 @@ const configureServer = () => {
   const serverWebpackConfig = commonWebpackConfig();
 
   if (isHMR) {
-    serverWebpackConfig.plugins.unshift(new webpack.NormalModuleReplacementPlugin(/(.*)\.imports-loadable(\.jsx)?/, (resource) => {
-      /* eslint-disable no-param-reassign */
-      resource.request = resource.request.replace(/imports-loadable/, 'imports-hmr');
-      /* eslint-enable no-param-reassign */
-      return resource.request;
-    }))
+    serverWebpackConfig.plugins.unshift(
+      new webpack.NormalModuleReplacementPlugin(/(.*)\.imports-loadable(\.jsx)?/, (resource) => {
+        /* eslint-disable no-param-reassign */
+        resource.request = resource.request.replace(/imports-loadable/, 'imports-hmr');
+        /* eslint-enable no-param-reassign */
+        return resource.request;
+      }),
+    );
   }
 
   // We just want the single server bundle entry

@@ -1,4 +1,4 @@
-const webpack = require('webpack')
+const webpack = require('webpack');
 const commonWebpackConfig = require('./commonWebpackConfig');
 const LoadablePlugin = require('@loadable/webpack-plugin');
 
@@ -16,12 +16,14 @@ const configureClient = () => {
   if (!isHMR) {
     clientConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
   } else {
-    clientConfig.plugins.unshift(new webpack.NormalModuleReplacementPlugin(/(.*)\.imports-loadable(\.jsx)?/, (resource) => {
-      /* eslint-disable no-param-reassign */
-      resource.request = resource.request.replace(/imports-loadable/, 'imports-hmr');
-      /* eslint-enable no-param-reassign */
-      return resource.request;
-    }))
+    clientConfig.plugins.unshift(
+      new webpack.NormalModuleReplacementPlugin(/(.*)\.imports-loadable(\.jsx)?/, (resource) => {
+        /* eslint-disable no-param-reassign */
+        resource.request = resource.request.replace(/imports-loadable/, 'imports-hmr');
+        /* eslint-enable no-param-reassign */
+        return resource.request;
+      }),
+    );
   }
 
   return clientConfig;
