@@ -2,6 +2,7 @@ const { merge, config } = require('@rails/webpacker');
 const commonWebpackConfig = require('./commonWebpackConfig');
 
 const webpack = require('webpack');
+const isHMR = process.env.HMR;
 
 const configureServer = () => {
   // We need to use "merge" because the clientConfigObject, EVEN after running
@@ -9,6 +10,17 @@ const configureServer = () => {
   // entry value will result in changing the client config!
   // Using webpack-merge into an empty object avoids this issue.
   const serverWebpackConfig = commonWebpackConfig();
+
+  if (isHMR) {
+    serverWebpackConfig.plugins.unshift(
+      new webpack.NormalModuleReplacementPlugin(/(.*)\.imports-loadable(\.jsx)?/, (resource) => {
+        /* eslint-disable no-param-reassign */
+        resource.request = resource.request.replace(/imports-loadable/, 'imports-hmr');
+        /* eslint-enable no-param-reassign */
+        return resource.request;
+      }),
+    );
+  }
 
   // We just want the single server bundle entry
   const serverEntry = {
