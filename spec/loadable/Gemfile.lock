@@ -362,7 +362,7 @@ DEPENDENCIES
   web-console
   webdrivers
   webmock
-  webpacker (= 6.0.0.rc.6)
+  webpacker
 
 BUNDLED WITH
    2.1.4
