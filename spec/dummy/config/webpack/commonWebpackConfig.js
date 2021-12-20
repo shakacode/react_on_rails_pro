@@ -32,7 +32,6 @@ baseClientWebpackConfig.module.rules[scssConfigIndex].use.push(sassLoaderConfig)
 
 if (isHMR) {
   baseClientWebpackConfig.plugins.push(
-    'NormalModuleReplacement',
     new webpack.NormalModuleReplacementPlugin(/(.*)\.imports-loadable(\.jsx)?/, (resource) => {
       /* eslint-disable no-param-reassign */
       resource.request = resource.request.replace(/imports-loadable/, 'imports-hmr');
@@ -41,26 +40,6 @@ if (isHMR) {
     }),
   );
 }
-
-baseClientWebpackConfig.plugins.push(
-  new webpack.ProvidePlugin({
-    $: 'jquery',
-    jQuery: 'jquery',
-  }),
-);
-
-// add jquery
-const exposeJQuery = {
-  test: require.resolve('jquery'),
-  use: [{ loader: 'expose-loader', options: { exposes: ['$', 'jQuery'] } }],
-};
-
-const jqueryUjsLoader = {
-  test: require.resolve('jquery-ujs'),
-  use: [{ loader: 'imports-loader', options: { type: 'commonjs', imports: 'single jquery jQuery' } }],
-};
-
-baseClientWebpackConfig.module.rules.push(exposeJQuery, jqueryUjsLoader);
 
 const commonWebpackConfig = () => merge({}, baseClientWebpackConfig, commonOptions, aliasConfig);
 
