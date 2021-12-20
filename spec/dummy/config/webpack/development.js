@@ -6,12 +6,11 @@ const webpackConfig = require('./webpackConfig');
 
 const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
   const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
-  const isWebpackDevServer = process.env.WEBPACK_DEV_SERVER;
+  const isHMR = process.env.HMR;
 
   //plugins
-  if (isWebpackDevServer) {
+  if (isHMR) {
     clientWebpackConfig.plugins.push(
-      'ReactRefreshWebpackPlugin',
       new ReactRefreshWebpackPlugin({
         overlay: {
           sockPort: devServer.port,
