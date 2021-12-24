@@ -26,8 +26,6 @@
     "history": "^4.6.3",
     "honeybadger": "^1.4.0",
     "imports-loader": "^1.2.0",
-    "jquery": "^3.5.1",
-    "jquery-ujs": "^1.2.2",
     "lodash": "^4.17.4",
     "mini-css-extract-plugin": "^2.4.5",
     "node-libs-browser": "^2.2.1",
