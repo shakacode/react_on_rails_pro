@@ -2,14 +2,14 @@
 
 require "rails_helper"
 
-describe ReactOnRailsPro::PrepareNodeRenderBundles do
+describe ReactOnRailsPro::PrepareNodeRenderBundles do # rubocop:disable RSpec/FilePath
   let(:asset_filename) { "loadable-stats2.json" }
   let(:asset_filename2) { "loadable-stats3.json" }
   let(:fixture_path) { File.expand_path("./spec/fixtures/#{asset_filename}") }
   let(:fixture_path2) { File.expand_path("./spec/fixtures/#{asset_filename2}") }
   let(:non_exist_fixture_path) { File.expand_path("./spec/fixtures/sample99.json") }
-  let(:asset_path_expanded) { Rails.root.join('.node-renderer-bundles', asset_filename) }
-  let(:asset_path_expanded2) { Rails.root.join('.node-renderer-bundles', asset_filename2) }
+  let(:asset_path_expanded) { Rails.root.join(".node-renderer-bundles", asset_filename) }
+  let(:asset_path_expanded2) { Rails.root.join(".node-renderer-bundles", asset_filename2) }
 
   before do
     dbl_configuration = instance_double("Configuration",
@@ -36,7 +36,7 @@ describe ReactOnRailsPro::PrepareNodeRenderBundles do
     it "copying asset to public folder" do
       expect(asset_exist_on_renderer?(asset_filename)).to eq(false)
       expect(asset_exist_on_renderer?(asset_filename2)).to eq(false)
-      ReactOnRailsPro::PrepareNodeRenderBundles.call
+      described_class.call
       expect(asset_exist_on_renderer?(asset_filename)).to eq(true)
       expect(asset_exist_on_renderer?(asset_filename2)).to eq(true)
     end
@@ -47,12 +47,14 @@ describe ReactOnRailsPro::PrepareNodeRenderBundles do
       first_asset_path = Rails.root.join("public", "webpack", "production", asset_filename)
       File.delete(first_asset_path) if File.exist?(first_asset_path)
       expect do
-        ReactOnRailsPro::PrepareNodeRenderBundles.call
-      end.to raise_error(ReactOnRails::Error) { |error| expect(error.message).to eq "Asset not found #{first_asset_path}" }
+        described_class.call
+      end.to raise_error(ReactOnRails::Error) { |error|
+               expect(error.message).to eq "Asset not found #{first_asset_path}"
+             }
     end
   end
 
   def asset_exist_on_renderer?(filename)
-    File.exist?(Rails.root.join('.node-renderer-bundles', filename))
+    File.exist?(Rails.root.join(".node-renderer-bundles", filename))
   end
 end
