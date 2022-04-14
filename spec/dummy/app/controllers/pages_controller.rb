@@ -48,7 +48,7 @@ class PagesController < ApplicationController
       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
     MSG
     Rails.logger.info msg
-    render_to_string(template: "/pages/pro/serialize_props",
+    render_to_string(template: "/pages/pro/serialize_props.json.jbuilder",
                      locals: { name: PROPS_NAME }, format: :json)
   end
 
