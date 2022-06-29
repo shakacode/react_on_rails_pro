@@ -17,9 +17,7 @@ module ReactOnRailsPro
           # Resetting the pool for server bundle modifications is accomplished by changing the mtime
           # of the server bundle in the request to the remote rendering server.
           # In non-development mode, we don't need to re-read this value.
-          if @bundle_hash.present? && !ReactOnRails.configuration.development_mode
-            return @bundle_hash
-          end
+          return @bundle_hash if @bundle_hash.present? && !ReactOnRails.configuration.development_mode
 
           @bundle_hash = ReactOnRailsPro::Utils.bundle_hash
         end
