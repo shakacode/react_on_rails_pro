@@ -73,6 +73,9 @@ ReactOnRails.register({
   Loadable,
 });
 
-ReactOnRails.registerStore({
-  SharedReduxStore,
-});
+setTimeout(
+  ReactOnRails.registerStore({
+    SharedReduxStore,
+  }),
+  1,
+);
