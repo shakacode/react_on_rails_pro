@@ -21,7 +21,7 @@ const DEFAULT_LOG_LEVEL = 'info';
 const { env } = process;
 const MAX_DEBUG_SNIPPET_LENGTH = 1000;
 const DEFAULT_SAMPLE_RATE = 0.1;
-const DEFAULT_INCLUDE_TIMER_POLYFILLS = false;
+const DEFAULT_INCLUDE_TIMER_POLYFILLS = true;
 
 let config;
 let userConfig;
