@@ -1,18 +1,15 @@
 import React from 'react';
+import { renderToString } from 'react-dom/server';
 
 /**
  * TODO: Node rendering server should handle a timeout.
  */
-const SetTimeoutLoggingApp = (_props) => {
-  // eslint-disable-next-line no-console
-  const component = () => <div>Called setTimeout and returned this.</div>;
-  const doIt = () => component;
-  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
-  console.log('about to call setTimeout');
-  console.log('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ');
-
-  const promise = setTimeout(doIt, 5000);
-  return promise;
-};
-
-export default SetTimeoutLoggingApp;
+ export default async (_props, _railsContext) => {
+   // eslint-disable-next-line no-console
+   let x = 'initial value';
+   setTimeout(x = 'value set by setTimeout', 1);
+   const Komponent = <div>Called setTimeout and returned this {x}.</div>
+   return {
+     componentHtml: renderToString(<Komponent />)
+   };
+ };
