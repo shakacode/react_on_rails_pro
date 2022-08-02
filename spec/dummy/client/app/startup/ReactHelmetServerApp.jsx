@@ -6,13 +6,6 @@ import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 import ReactHelmet from '../components/ReactHelmet';
 
-const resolve = function (response) {
-  if (response.status >= 400) {
-    throw new Error('Bad response from server');
-  }
-  return response.json();
-}
-
 /*
  *  Export a function that takes the props and returns an object with { renderedHtml }
  *  This example shows returning renderedHtml as an object itself that contains rendered
@@ -23,11 +16,18 @@ const resolve = function (response) {
  */
 export default async (props, railsContext) => {
   const portSuffix = railsContext.port ? `:${railsContext.port}` : '';
-  const apiRequestResponse = await fetch(`https://api.nationalize.io/?name=ReactOnRails`)
-    .then(resolve => setTimeout(resolve, 1))
+  const apiRequestResponse = fetch(`https://api.nationalize.io/?name=ReactOnRails`)
+    .then(function (response) {
+      if (response.status >= 400) {
+        throw new Error('Bad response from server');
+      }
+      return response.json();
+    })
     .catch((error) =>
       console.error(`There was an error doing an API request during server rendering: ${error}`),
     );
+
+  await setTimeout(apiRequestResponse.resolve(), 1)
 
   const componentHtml = renderToString(<ReactHelmet {...props} apiRequestResponse={apiRequestResponse} />);
   const helmet = Helmet.renderStatic();

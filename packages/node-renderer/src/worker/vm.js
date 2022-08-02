@@ -73,7 +73,7 @@ exports.buildVM = async function buildVM(filePath) {
     const { supportModules, includeTimerPolyfills } = getConfig();
     vmBundleFilePath = undefined;
     if (supportModules) {
-      context = vm.createContext({ Buffer, process });
+      context = vm.createContext({ Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval });
     } else {
       context = vm.createContext();
     }
