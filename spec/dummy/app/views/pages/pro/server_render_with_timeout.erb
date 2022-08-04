@@ -6,20 +6,21 @@ This page demonstrates the use of setTimeout during server rendering.<br/>
 Here's the render-function:
 
 <pre>
-  export default async (_props, _railsContext) => {
-    // eslint-disable-next-line no-console
-    let x = 'initial value';
-    x = await new Promise(resolve => {
-     setTimeout(() => {
-       resolve('value set by setTimeout');
-     }, 1);
-   });
-    const Komponent = () => <div>Called setTimeout during SSR and returned this {x}.</div>
-    return {
-      componentHtml: renderToString(<Komponent />)
-    };
-  };
+  import React from 'react';
+  import { renderToString } from 'react-dom/server';
 
+  /**
+   * TODO: Node rendering server should handle a timeout.
+   */
+   export default async (_props, _railsContext) => {
+     const delayedValue = await new Promise((resolve) => {
+       setTimeout(() => {
+         resolve('this value is set by setTimeout during SSR');
+       }, 1);
+     });
+     const element = <div>Disable javascript in your browser options to confirm {delayedValue}.</div>;
+     return renderToString(element);
+   };
 </pre>
 
 Here's the helper method call in the view:
@@ -28,4 +29,6 @@ Here's the helper method call in the view:
   <%%= react_component_hash("SetTimeoutLoggingApp", prerender: true, trace: true)['componentHtml'] %>
 </pre>
 
-Result: <%= react_component_hash("SetTimeoutLoggingApp", prerender: true, trace: true)['componentHtml'] %>
+Result:
+<hr/>
+<%= react_component("SetTimeoutLoggingApp", prerender: true, trace: true) %>

@@ -1,3 +1,5 @@
 import React from 'react';
 
-export default (railsContext) => <div>Disable javascript in your devTools to see the important stuff.</div>;
+export default () => (
+  <div>Disable javascript in your browser options to confirm this value is set by setTimeout during SSR.</div>
+);

@@ -5,15 +5,11 @@ import { renderToString } from 'react-dom/server';
  * TODO: Node rendering server should handle a timeout.
  */
 export default async (_props, _railsContext) => {
-  // eslint-disable-next-line no-console
-  let x = 'initial value';
-  x = await new Promise((resolve) => {
+  const delayedValue = await new Promise((resolve) => {
     setTimeout(() => {
-      resolve('value set by setTimeout');
+      resolve('this value is set by setTimeout during SSR');
     }, 1);
   });
-  const Komponent = () => <div>Called setTimeout during SSR and returned this {x}.</div>;
-  return {
-    componentHtml: renderToString(<Komponent />),
-  };
+  const element = <div>Disable javascript in your browser options to confirm {delayedValue}.</div>;
+  return renderToString(element);
 };
