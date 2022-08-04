@@ -273,7 +273,7 @@ describe "setTimeout", :rack_test do
   before { visit "/server_render_with_timeout" }
 
   it "sets the variable correctly" do
-    expect(page).to have_text "value set by setTimeout"
+    expect(page).to have_text "this value is set by setTimeout during SSR"
   end
 end
 

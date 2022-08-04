@@ -13,9 +13,9 @@ You can find the **package** version numbers from this repo's tags and below in 
 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
-
+## [3.1.0] - 2022-08-03
 ### fixed
-- Removes `include_execjs_polyfills` options from RoRP gem configuration & adds `include_timer_polyfills` option for Node Renderer configuration. [PR 280](https://github.com/shakacode/react_on_rails_pro/pull/280) by [judahmeek](https://github.com/judahmeek).
+- Removes `include_execjs_polyfills` options from RoRP gem configuration & adds `include_timer_polyfills` option for Node Renderer configuration, which enables use of setTimeout & other timer functions during server rendering. [PR 281](https://github.com/shakacode/react_on_rails_pro/pull/281) by [judahmeek](https://github.com/judahmeek).
 
 ### Improvement
 - Warn, do not raise on missing assets [PR 280](https://github.com/shakacode/react_on_rails_pro/pull/280) by [Romex91](https://github.com/Romex91)

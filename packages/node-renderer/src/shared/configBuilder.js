@@ -21,7 +21,6 @@ const DEFAULT_LOG_LEVEL = 'info';
 const { env } = process;
 const MAX_DEBUG_SNIPPET_LENGTH = 1000;
 const DEFAULT_SAMPLE_RATE = 0.1;
-const DEFAULT_INCLUDE_TIMER_POLYFILLS = true;
 
 let config;
 let userConfig;
@@ -83,7 +82,8 @@ const defaultConfig = {
 
   sentryTracesSampleRate: env.SENTRY_TRACES_SAMPLE_RATE || DEFAULT_SAMPLE_RATE,
 
-  includeTimerPolyfills: env.INCLUDE_TIMER_POLYFILLS || DEFAULT_INCLUDE_TIMER_POLYFILLS,
+  // // default to true if empty // otherwise it is set to false
+  includeTimerPolyfills: env.INCLUDE_TIMER_POLYFILLS === 'true' || !env.INCLUDE_TIMER_POLYFILLS,
 };
 
 function envValuesUsed() {
