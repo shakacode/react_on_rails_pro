@@ -12,8 +12,11 @@ tmp
 
 **/spec/examples.txt
 /spec/dummy/client/node_modules
+/spec/react18-graphql/client/node_modules
 /spec/dummy/app/assets/webpack/
+/spec/react18-graphql/app/assets/webpack/
 /spec/dummy/coverage/
+/spec/react18-graphql/coverage/
 /spec/react_on_rails/dummy-for-generators/
 
 # RVM
@@ -29,8 +32,10 @@ node_modules
 
 yarn-debug.*
 spec/dummy/client/yarn-debug.log*
+spec/react18-graphql/client/yarn-debug.log*
 npm-debug.*
 spec/dummy/client/npm-debug.log*
+spec/react18-graphql/client/npm-debug.log*
 
 /gen-examples
 

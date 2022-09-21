@@ -1,0 +1,34 @@
+This page demonstrates the use of setTimeout during server rendering.<br/>
+
+
+<br/>
+
+Here's the render-function:
+
+<pre>
+  import React from 'react';
+  import { renderToString } from 'react-dom/server';
+
+  /**
+   * TODO: Node rendering server should handle a timeout.
+   */
+   export default async (_props, _railsContext) => {
+     const delayedValue = await new Promise((resolve) => {
+       setTimeout(() => {
+         resolve('this value is set by setTimeout during SSR');
+       }, 1);
+     });
+     const element = <div>Disable javascript in your browser options to confirm {delayedValue}.</div>;
+     return renderToString(element);
+   };
+</pre>
+
+Here's the helper method call in the view:
+
+<pre>
+  <%%= react_component("SetTimeoutLoggingApp", prerender: true, trace: true) %>
+</pre>
+
+Result:
+<hr/>
+<%= react_component("SetTimeoutLoggingApp", prerender: true, trace: true) %>
