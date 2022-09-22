@@ -22,7 +22,7 @@ class PagesController < ApplicationController
 
 
   def suspense_graphql
-    render "/pages/pro/suspense_graphql"
+    render "/pages/suspense_graphql"
   end
 
   # See files in spec/dummy/app/views/pages

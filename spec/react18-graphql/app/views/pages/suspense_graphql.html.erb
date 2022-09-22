@@ -1,0 +1,11 @@
+
+<% loadable_app = react_component_hash("SuspenceGraphQLApp", props: { title: "This is a Loadable Component!" }, prerender: true, trace: true, id: "SuspenceGraphQLApp-react-component-0") %>
+
+<%= yield :head %>
+
+
+<!--  NOTE: Must use defer and not async to keep async scripts loading in correct order  -->
+<%= javascript_pack_tag('client-bundle', 'data-turbolinks-track': true, defer: true) %>
+
+
+<%= loadable_app["componentHtml"] %>
