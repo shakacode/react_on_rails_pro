@@ -2,7 +2,7 @@ import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 
-import App from './LoadableApp';
+import App from './SuspenceGraphQLApp';
 
 // Version of the consumer app to use without loadable components to enable HMR
 const hmrApp = (props, railsContext) => {
