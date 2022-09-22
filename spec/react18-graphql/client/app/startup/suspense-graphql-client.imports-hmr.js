@@ -1,1 +1,1 @@
-export { default } from './SuspenceGraphQLApp';
+export { default } from './SuspenceGraphQlApp';

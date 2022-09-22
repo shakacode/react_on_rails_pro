@@ -1,12 +1,12 @@
 import React from 'react';
 import { hydrateRoot } from 'react-dom/client';
 
-import SuspenceGraphQLApp from './SuspenceGraphQLApp';
+import SuspenceGraphQlApp from './SuspenceGraphQlApp';
 
-const suspenceGraphQLApp = (props, _railsContext, domNodeId) => {
+const suspenceGraphQlApp = (props, _railsContext, domNodeId) => {
   console.log(">>> App!")
   const root = document.getElementById(domNodeId);
-  hydrateRoot(root, <SuspenceGraphQLApp {...props} />);
+  hydrateRoot(root, <SuspenceGraphQlApp {...props} />);
 };
 
-export default suspenceGraphQLApp;
+export default suspenceGraphQlApp;

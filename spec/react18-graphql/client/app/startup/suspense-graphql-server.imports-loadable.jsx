@@ -3,7 +3,7 @@ import { ChunkExtractor } from '@loadable/server';
 import { renderToString } from 'react-dom/server';
 import { Helmet } from 'react-helmet';
 
-import SuspenceGraphQLApp from './SuspenceGraphQLApp';
+import SuspenceGraphQlApp from './SuspenceGraphQlApp';
 
 const loadableApp = (props, _railsContext) => {
   const path = require('path');
@@ -12,7 +12,7 @@ const loadableApp = (props, _railsContext) => {
   // server-bundle.js. Thus, the __dirname of this code is where we can find loadable-stats.json.
   const statsFile = path.resolve(__dirname, 'loadable-stats.json');
   const extractor = new ChunkExtractor({ entrypoints: ['client-bundle'], statsFile });
-  const componentHtml = renderToString(extractor.collectChunks(<SuspenceGraphQLApp {...props} />));
+  const componentHtml = renderToString(extractor.collectChunks(<SuspenceGraphQlApp {...props} />));
   const helmet = Helmet.renderStatic();
 
   return {

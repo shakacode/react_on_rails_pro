@@ -127,6 +127,8 @@ GEM
       nokogiri (>= 1.4.3)
     erubi (1.10.0)
     execjs (2.8.1)
+    faker (2.23.0)
+      i18n (>= 1.8.11, < 2)
     ffi (1.15.5)
     gene_pool (1.5.0)
       concurrent-ruby (>= 1.0)
@@ -135,6 +137,10 @@ GEM
       railties (>= 3.0.0)
     globalid (1.0.0)
       activesupport (>= 5.0)
+    graphiql-rails (1.8.0)
+      railties
+      sprockets-rails
+    graphql (2.0.14)
     hashdiff (1.0.1)
     i18n (1.10.0)
       concurrent-ruby (~> 1.0)
@@ -390,7 +396,10 @@ DEPENDENCIES
   capybara-screenshot
   coveralls
   equivalent-xml
+  faker
   generator_spec
+  graphiql-rails
+  graphql
   jbuilder
   jquery-rails
   launchy
@@ -426,7 +435,7 @@ DEPENDENCIES
   webmock
 
 RUBY VERSION
-   ruby 2.7.5p203
+   ruby 3.0.3p157
 
 BUNDLED WITH
    2.3.3
