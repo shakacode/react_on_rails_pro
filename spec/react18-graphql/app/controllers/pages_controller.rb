@@ -20,41 +20,16 @@ class PagesController < ApplicationController
   before_action :initialize_shared_store, only: %i[client_side_hello_world_shared_store_controller
                                                    server_side_hello_world_shared_store_controller]
 
-  def cached_react_helmet
-    render "/pages/pro/cached_react_helmet"
+
+  def suspense_graphql
+    render "/pages/pro/suspense_graphql"
   end
 
-  def loadable_component
-    render "/pages/pro/loadable_component"
-  end
-
-  def cached_redux_component
-    render "/pages/pro/cached_redux_component"
-  end
-
-  def server_render_with_timeout
-    render "/pages/pro/server_render_with_timeout"
-  end
   # See files in spec/dummy/app/views/pages
 
   helper_method :calc_slow_app_props_server_render
 
   private
-
-  def calc_slow_app_props_server_render
-    msg = <<-MSG.strip_heredoc
-      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      calling slow calc_slow_app_props_server_render
-      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    MSG
-    Rails.logger.info msg
-    render_to_string(template: "/pages/pro/serialize_props",
-                     locals: { name: PROPS_NAME }, formats: :json)
-  end
-
-  def initialize_shared_store
-    redux_store("SharedReduxStore", props: @app_props_server_render)
-  end
 
   def data
     # This is the props used by the React component.

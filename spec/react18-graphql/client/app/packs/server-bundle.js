@@ -1,8 +1,8 @@
 // Shows the mapping from the exported object to the name used by the server rendering.
 import ReactOnRails from 'react-on-rails';
 
-import Loadable from '../startup/loadable-server.imports-loadable';
+import SuspenceGraphQLApp from '../startup/SuspenceGraphQLApp';
 
 ReactOnRails.register({
-  Loadable,
+  SuspenceGraphQLApp,
 });

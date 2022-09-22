@@ -1,11 +1,8 @@
 import ReactOnRails from 'react-on-rails';
 
-import Loadable from '../startup/loadable-client.imports-loadable';
+import SuspenceGraphQLApp from '../startup/SuspenceGraphQLApp';
 
-ReactOnRails.setOptions({
-  traceTurbolinks: true,
-});
 
 ReactOnRails.register({
-  Loadable,
+  SuspenceGraphQLApp,
 });
