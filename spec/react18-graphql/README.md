@@ -16,7 +16,7 @@
 
 ```sh
 cd react_on_rails_pro
-bundle && yarn && cd spec/dummy && bundle && yarn
+bundle && yarn && cd spec/react18-graphql && bundle && yarn
 ```
 
 ## Running

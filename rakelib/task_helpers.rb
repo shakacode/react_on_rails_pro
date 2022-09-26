@@ -11,6 +11,10 @@ module ReactOnRailsPro
       File.join(gem_root, "spec/dummy")
     end
 
+    def react18_graphql_dir
+      File.join(gem_root, "spec/react18-graphql")
+    end
+
     # Executes a string or an array of strings in a shell in the given directory
     def sh_in_dir(dir, *shell_commands)
       Dir.chdir(dir) do

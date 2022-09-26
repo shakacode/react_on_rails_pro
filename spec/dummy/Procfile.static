@@ -5,4 +5,4 @@ rails: bin/rails s -p 3000
 rails-client-assets: yarn run build:dev:watch
 
 # Start Node server for server rendering.
-node-renderer: yarn run node-renderer
+node-renderer: yarn run node-renderer-debug

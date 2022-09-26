@@ -51,7 +51,7 @@ const config = {
 // of CPUs number allocated for current container. This results in spawning many workers while
 // only 1-2 of them really needed.
 if (env.CI) {
-  config.workersCount = 2;
+  config.workersCount = 1;
 }
 
 reactOnRailsProNodeRenderer(config);

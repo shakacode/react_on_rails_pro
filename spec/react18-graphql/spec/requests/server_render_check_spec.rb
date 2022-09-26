@@ -80,12 +80,6 @@ describe "Server Rendering", :server_rendering do
   end
 
   describe "server render mailer" do
-    it "sends email okay" do
-      mail = DummyMailer.hello_email
-      expect(mail.subject).to match "mail"
-      expect(mail.body).to match "Mr. Mailing Server Side Rendering"
-      expect(mail.body).to match "\"inMailer\":true"
-    end
 
     it "sets inMailer properly" do
       get client_side_hello_world_path

@@ -1,9 +1,10 @@
 {
-  "name": "react_on_rails_pro_dummy",
+  "name": "react_on_rails_pro_react18_graphql",
   "version": "1.0.0",
   "description": "example of server rendering",
   "main": "server.js",
   "dependencies": {
+    "@apollo/client": "^3.6.9",
     "@babel/core": "7",
     "@babel/plugin-transform-runtime": "7",
     "@babel/preset-env": "7",
@@ -28,6 +29,7 @@
     "es5-shim": "^4.5.9",
     "expose-loader": "1.0.3",
     "file-loader": "^6.2.0",
+    "graphql": "^16.6.0",
     "history": "^4.6.3",
     "honeybadger": "^1.4.0",
     "imports-loader": "^1.2.0",
@@ -40,7 +42,7 @@
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-helmet": "^6.0.0-beta.2",
-    "react-on-rails": "12.4.0-rc.0",
+    "react-on-rails": "13.1.0",
     "react-proptypes": "^1.0.0",
     "react-redux": "^5.0.5",
     "react-refresh": "^0.11.0",
@@ -84,7 +86,7 @@
     "build:production": "RAILS_ENV=production NODE_ENV=production bin/webpacker -p",
     "build:clean": "rm -rf public/webpack || true",
     "node-renderer-debug": "RENDERER_PORT=3800 ndb client/node-renderer.js",
-    "node-renderer": "RENDERER_PORT=3800 node client/node-renderer.js"
+    "node-renderer": "RENDERER_PORT=3800 node --inspect-brk client/node-renderer.js"
   },
   "license": "UNLICENSED",
   "repository": {

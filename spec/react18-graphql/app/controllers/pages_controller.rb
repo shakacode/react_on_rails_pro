@@ -25,8 +25,6 @@ class PagesController < ApplicationController
     render "/pages/suspense_graphql"
   end
 
-  # See files in spec/dummy/app/views/pages
-
   helper_method :calc_slow_app_props_server_render
 
   private

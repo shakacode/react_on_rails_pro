@@ -1,7 +1,7 @@
 // Shows the mapping from the exported object to the name used by the server rendering.
 import ReactOnRails from 'react-on-rails';
 
-import SuspenceGraphQlApp from '../startup/suspense-graphql-server.imports-loadable';
+import SuspenceGraphQlApp from '../startup/SuspenceGraphQLAppServer';
 
 ReactOnRails.register({
   SuspenceGraphQlApp,
