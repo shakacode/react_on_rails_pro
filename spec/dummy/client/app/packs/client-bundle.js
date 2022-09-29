@@ -33,6 +33,9 @@ import SetTimeoutLoggingApp from '../startup/SetTimeoutClientApp';
 
 import Loadable from '../startup/loadable-client.imports-loadable';
 
+// react 18 suspense and graphql
+import SuspenseGraphQLApp from "../startup/SuspenseGraphQLAppClient";
+
 ReactOnRails.setOptions({
   traceTurbolinks: true,
 });
@@ -58,6 +61,7 @@ ReactOnRails.register({
   ImageExample,
   SetTimeoutLoggingApp,
   Loadable,
+  SuspenseGraphQLApp,
 });
 
 ReactOnRails.registerStore({

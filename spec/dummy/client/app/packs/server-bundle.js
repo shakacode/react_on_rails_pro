@@ -49,6 +49,9 @@ import SetTimeoutLoggingApp from '../startup/SetTimeoutServerApp';
 
 import Loadable from '../startup/loadable-server.imports-loadable';
 
+// react 18 suspense and graphql
+import SuspenseGraphQLApp from "../startup/SuspenseGraphQLAppServer";
+
 ReactOnRails.register({
   BrokenApp,
   HelloWorld,
@@ -71,6 +74,7 @@ ReactOnRails.register({
   ImageExample,
   SetTimeoutLoggingApp,
   Loadable,
+  SuspenseGraphQLApp,
 });
 
 ReactOnRails.registerStore({
