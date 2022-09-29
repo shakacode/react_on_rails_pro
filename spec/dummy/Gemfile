@@ -6,3 +6,9 @@ ENV["SPEC_DUMMY"] = "yes"
 eval_gemfile File.expand_path("../../Gemfile.development_dependencies", __dir__)
 
 gem "react_on_rails_pro", path: "../.."
+
+gem "graphql"
+group :development, :test do
+  gem "graphiql-rails"
+  gem "faker"
+end
