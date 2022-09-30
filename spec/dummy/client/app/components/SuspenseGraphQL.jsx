@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React from 'react';
 
 import { gql, useQuery } from '@apollo/client';
 
@@ -11,20 +11,16 @@ const GET_FIRST_USER = gql`
   }
 `;
 
-export const Context = React.createContext(1);
-const Internal = () => {
-  // const { data } = useQuery(GET_FIRST_USER, { ssr: false });
-  return <div style={{ width: 100, height: 100, backgroundColor: 'yellow' }}>
-    {/* <b>{data.name}</b>
-    <span>{data.name}</span> */}
-  </div>;
-};
-
 const SuspenseGraphQL = () => {
-  // return <Internal />;
-  const [value] = useState(12);
-  // const value = useContext(Context);
-    return value;
+  const { data, error, loading } = useQuery(GET_FIRST_USER);
+  if (error) {
+    return <div>{error.message}</div>
+  }
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+  const { name, email } = data.user;
+  return <div><b>{name}:</b><div>{email}</div></div>;
 };
 
 export default SuspenseGraphQL;

@@ -1,7 +1,7 @@
-import React from 'react';
-import { renderToStaticMarkup } from 'react-dom/server';
-import { getDataFromTree } from "@apollo/client/react/ssr";
-import SuspenseGraphQL, { Context } from '../components/SuspenseGraphQL';
+import React from "react";
+import { renderToString } from 'react-dom/server';
+import { getMarkupFromTree } from "@apollo/client/react/ssr";
+import SuspenseGraphQL from '../components/SuspenseGraphQL';
 import {
   ApolloProvider,
   ApolloClient,
@@ -9,44 +9,30 @@ import {
   InMemoryCache
 } from '@apollo/client';
 
-export function Html({ content, state }) {
-  return (
-    <>
-      <div id="root" dangerouslySetInnerHTML={{ __html: content }} />
-      <script dangerouslySetInnerHTML={{
-        __html: `window.__APOLLO_STATE__=${JSON.stringify(state).replace(/</g, '\\u003c')};`,
-      }} />
-    </>
-  );
-}
-
 export default async (_props, _railsContext) => {
+  const client = new ApolloClient({
+    ssrMode: true,
+    link: createHttpLink({
+      uri: 'http://localhost:3000/graphql',
+      credentials: 'same-origin',
+      headers: {
+      },
+    }),
+    cache: new InMemoryCache(),
+  });
+  const App = <ApolloProvider client={client}>
+    <SuspenseGraphQL />
+  </ApolloProvider>;
 
-  try {
-    const client = new ApolloClient({
-      ssrMode: true,
-      link: createHttpLink({
-        uri: 'http://localhost:3000/graphql',
-        credentials: 'same-origin',
-        headers: {
-        },
-      }),
-      cache: new InMemoryCache(),
-    });
-    const App = <Context.Provider value="2">
-      <ApolloProvider client={client}>
-        <SuspenseGraphQL />
-      </ApolloProvider>
-    </Context.Provider>;
-    const content = await getDataFromTree(App);
-    const initialState = client.extract();
-    const componentHtml = renderToStaticMarkup(
-      <Html content={content} state={initialState} />
-    );
-    return { componentHtml };
-  } catch (err) {
-    // const componentHtml = `<div style="background-color: red;">${err.message}</div>`;
-    const componentHtml = `<script type="text/javascript">console.log(">>> ${err.message}")</script>`;
-    return { componentHtml };;
-  }
+  const componentHtml = await getMarkupFromTree({
+    renderFunction: renderToString,
+    tree: App,
+  });
+
+  const initialState = client.extract();
+  const dataTags = renderToString(<script dangerouslySetInnerHTML={{
+    __html: `window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};`,
+  }} />);
+  return { componentHtml, dataTags };
+}
 };

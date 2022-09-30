@@ -1,9 +1,16 @@
-This page demonstrates the use of setTimeout during server rendering.<br/>
+<% result = react_component_hash("SuspenseGraphQLApp", prerender: true, trace: true) %>
 
+<% content_for :head do %>
+  <%= result["dataTags"] %>
+<% end %>
+
+This page demonstrates the use of apollo client during server rendering.<br/>
 
 <br/>
 
 Here's the render-function:
+
+
 
 <pre>
 
@@ -17,6 +24,6 @@ Here's the helper method call in the view:
 
 Result:
 <hr/>
-<% result = react_component_hash("SuspenseGraphQLApp", prerender: true, trace: true) %>
+
 
 <%= result["componentHtml"] %>
