@@ -1,7 +1,7 @@
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { getDataFromTree } from "@apollo/client/react/ssr";
-import SuspenseGraphQL from '../components/SuspenseGraphQL';
+import SuspenseGraphQL, { Context } from '../components/SuspenseGraphQL';
 import {
   ApolloProvider,
   ApolloClient,
@@ -11,14 +11,12 @@ import {
 
 export function Html({ content, state }) {
   return (
-    <html>
-      <body>
-        <div id="root" dangerouslySetInnerHTML={{ __html: content }} />
-        <script dangerouslySetInnerHTML={{
-          __html: `window.__APOLLO_STATE__=${JSON.stringify(state).replace(/</g, '\\u003c')};`,
-        }} />
-      </body>
-    </html>
+    <>
+      <div id="root" dangerouslySetInnerHTML={{ __html: content }} />
+      <script dangerouslySetInnerHTML={{
+        __html: `window.__APOLLO_STATE__=${JSON.stringify(state).replace(/</g, '\\u003c')};`,
+      }} />
+    </>
   );
 }
 
@@ -35,17 +33,20 @@ export default async (_props, _railsContext) => {
       }),
       cache: new InMemoryCache(),
     });
-    const App = <ApolloProvider client={client}>
-      <SuspenseGraphQL />
-    </ApolloProvider>;
+    const App = <Context.Provider value="2">
+      <ApolloProvider client={client}>
+        <SuspenseGraphQL />
+      </ApolloProvider>
+    </Context.Provider>;
     const content = await getDataFromTree(App);
-    // const initialState = client.extract();
-    // const html = <Html content={content} state={initialState} />;
-    // const componentHtml = renderToStaticMarkup(App);
-    const componentHtml = "<div>YEAH!!!!!!!!!! </div>";
+    const initialState = client.extract();
+    const componentHtml = renderToStaticMarkup(
+      <Html content={content} state={initialState} />
+    );
     return { componentHtml };
   } catch (err) {
-    const componentHtml = `<div style="background-color: red;">${err.message}</div>`;
+    // const componentHtml = `<div style="background-color: red;">${err.message}</div>`;
+    const componentHtml = `<script type="text/javascript">console.log(">>> ${err.message}")</script>`;
     return { componentHtml };;
   }
 };
