@@ -36,8 +36,8 @@ class PagesController < ApplicationController
     render "/pages/pro/server_render_with_timeout"
   end
 
-  def suspense_graphql
-    render "/pages/pro/suspense_graphql"
+  def apollo_graphql
+    render "/pages/pro/apollo_graphql"
   end
 
   # See files in spec/dummy/app/views/pages

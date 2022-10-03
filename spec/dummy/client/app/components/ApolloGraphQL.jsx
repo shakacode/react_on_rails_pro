@@ -20,7 +20,7 @@ const SuspenseGraphQL = () => {
     return <div>Loading...</div>;
   }
   const { name, email } = data.user;
-  return <div><b>{name}:</b><div>{email}</div></div>;
+  return <p><b>{name}: </b>{email}</p>;
 };
 
 export default SuspenseGraphQL;

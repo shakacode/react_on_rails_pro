@@ -1,0 +1,41 @@
+<% result = react_component_hash("ApolloGraphQLApp", prerender: true, trace: true) %>
+
+<% content_for :head do %>
+  <%= result["dataTags"] %>
+<% end %>
+
+This page demonstrates the use of apollo client during server rendering.<br/>
+
+<br/>
+
+Here's the server render-function:
+<pre>
+<%= File.read(Rails.root.join "client/app/startup/ApolloGraphQLAppServer.jsx") %>
+</pre>
+
+
+Here's the client render-function:
+<pre>
+<%= File.read(Rails.root.join "client/app/startup/ApolloGraphQLAppClient.jsx") %>
+</pre>
+
+Here's the helper method call in the view:
+
+<pre>
+  <%%= result = react_component_hash("ApolloGraphQLApp", prerender: true, trace: true) %>
+</pre>
+
+
+Don't forget to insert the <b>dataTags</b> field in the document <b>head</b> to enable hydration
+
+<pre>
+  <%%= content_for :head do %>
+    <%%= result["dataTags"] %>
+  <%% end %>
+</pre>
+
+Result:
+<hr/>
+
+
+<%= result["componentHtml"] %>
