@@ -33,7 +33,6 @@ import SetTimeoutLoggingApp from '../startup/SetTimeoutClientApp';
 
 import Loadable from '../startup/loadable-client.imports-loadable';
 
-// react 18 suspense and graphql
 import ApolloGraphQLApp from "../startup/ApolloGraphQLAppClient";
 
 ReactOnRails.setOptions({

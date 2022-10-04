@@ -9,6 +9,6 @@ gem "react_on_rails_pro", path: "../.."
 
 gem "graphql"
 group :development, :test do
-  gem "graphiql-rails"
   gem "faker"
+  gem "graphiql-rails"
 end
