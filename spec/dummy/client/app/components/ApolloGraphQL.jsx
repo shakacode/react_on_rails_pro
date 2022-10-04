@@ -14,13 +14,18 @@ const GET_FIRST_USER = gql`
 const SuspenseGraphQL = () => {
   const { data, error, loading } = useQuery(GET_FIRST_USER);
   if (error) {
-    return <div>{error.message}</div>
+    return <div>{error.message}</div>;
   }
   if (loading) {
     return <div>Loading...</div>;
   }
   const { name, email } = data.user;
-  return <p><b>{name}: </b>{email}</p>;
+  return (
+    <p>
+      <b>{name}: </b>
+      {email}
+    </p>
+  );
 };
 
 export default SuspenseGraphQL;

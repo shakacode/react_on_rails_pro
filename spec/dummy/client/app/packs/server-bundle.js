@@ -49,7 +49,7 @@ import SetTimeoutLoggingApp from '../startup/SetTimeoutServerApp';
 
 import Loadable from '../startup/loadable-server.imports-loadable';
 
-import ApolloGraphQLApp from "../startup/ApolloGraphQLAppServer";
+import ApolloGraphQLApp from '../startup/ApolloGraphQLAppServer';
 
 ReactOnRails.register({
   BrokenApp,

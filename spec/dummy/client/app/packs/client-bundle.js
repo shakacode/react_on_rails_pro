@@ -33,7 +33,7 @@ import SetTimeoutLoggingApp from '../startup/SetTimeoutClientApp';
 
 import Loadable from '../startup/loadable-client.imports-loadable';
 
-import ApolloGraphQLApp from "../startup/ApolloGraphQLAppClient";
+import ApolloGraphQLApp from '../startup/ApolloGraphQLAppClient';
 
 ReactOnRails.setOptions({
   traceTurbolinks: true,
