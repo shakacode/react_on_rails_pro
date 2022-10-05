@@ -32,13 +32,13 @@ export default async (_props, _railsContext) => {
   // const initialState = {};
   const initialState = client.extract();
 
-  // you need to return additional property `dataTags`, to fullfill the state for hydration
-  const dataTags = renderToString(
+  // you need to return additional property `apolloStateTag`, to fullfill the state for hydration
+  const apolloStateTag = renderToString(
     <script
       dangerouslySetInnerHTML={{
         __html: `window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};`,
       }}
     />,
   );
-  return { componentHtml, dataTags };
+  return { componentHtml, apolloStateTag };
 };

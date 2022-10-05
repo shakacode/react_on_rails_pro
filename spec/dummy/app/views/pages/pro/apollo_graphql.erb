@@ -11,7 +11,7 @@
   }) %>
 
 <% content_for :head do %>
-  <%= result["dataTags"] %>
+  <%= result["apolloStateTag"] %>
 <% end %>
 
 This page demonstrates the use of apollo client during server rendering.<br/>
@@ -47,11 +47,11 @@ Here's the helper method call in the view:
 </pre>
 
 
-Don't forget to insert the <b>dataTags</b> field in the document <b>head</b> to enable hydration
+Don't forget to insert the <b>apolloStateTag</b> field in the document <b>head</b> to enable hydration
 
 <pre>
   <%%= content_for :head do %>
-    <%%= result["dataTags"] %>
+    <%%= result["apolloStateTag"] %>
   <%% end %>
 </pre>
 
