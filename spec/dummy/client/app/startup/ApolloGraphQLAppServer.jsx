@@ -5,13 +5,14 @@ import ApolloGraphQL from '../components/ApolloGraphQL';
 import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 
 export default async (_props, _railsContext) => {
+  const { csrf, sessionCookie } = _props.__ssrOnly;
   const client = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
       uri: 'http://localhost:3000/graphql',
       headers: {
-        'X-CSRF-Token': _props.csrf,
-        Cookie: `_dummy_session=${_props.sessionCookie}`,
+        'X-CSRF-Token': csrf,
+        Cookie: `_dummy_session=${sessionCookie}`,
       },
     }),
     cache: new InMemoryCache(),

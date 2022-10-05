@@ -3,8 +3,11 @@
   prerender: true,
   trace: true,
   props: {
-    csrf: form_authenticity_token,
-    sessionCookie: cookies["_dummy_session"]
+    # since _dummy_session is a http only cookie, it shouldn't be passed to the FE javascript code
+    __ssrOnly: {
+      csrf: form_authenticity_token,
+      sessionCookie: cookies["_dummy_session"]
+    }
   }) %>
 
 <% content_for :head do %>
@@ -29,7 +32,18 @@ Here's the client render-function:
 Here's the helper method call in the view:
 
 <pre>
-  <%%= result = react_component_hash("ApolloGraphQLApp", prerender: true, trace: true) %>
+  <%%=
+    result = react_component_hash(
+      "ApolloGraphQLApp",
+      prerender: true,
+      trace: true,
+      # since _dummy_session is a http only cookie, it shouldn't be passed to the FE javascript code
+      __ssrOnly: {
+        csrf: form_authenticity_token,
+        sessionCookie: cookies["_dummy_session"]
+      }
+    )
+  %>
 </pre>
 
 
