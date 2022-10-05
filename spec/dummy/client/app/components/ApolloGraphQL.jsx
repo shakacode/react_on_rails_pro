@@ -11,7 +11,7 @@ const GET_FIRST_USER = gql`
   }
 `;
 
-const SuspenseGraphQL = () => {
+const ApolloGraphQL = () => {
   const { data, error, loading } = useQuery(GET_FIRST_USER);
   if (error) {
     return <div>{error.message}</div>;
@@ -28,4 +28,4 @@ const SuspenseGraphQL = () => {
   );
 };
 
-export default SuspenseGraphQL;
+export default ApolloGraphQL;

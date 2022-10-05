@@ -9,6 +9,10 @@ export default async (_props, _railsContext) => {
     ssrMode: true,
     link: createHttpLink({
       uri: 'http://localhost:3000/graphql',
+      headers: {
+        'X-CSRF-Token': _props.csrf,
+        Cookie: `_dummy_session=${_props.sessionCookie}`,
+      },
     }),
     cache: new InMemoryCache(),
   });
@@ -18,12 +22,15 @@ export default async (_props, _railsContext) => {
     </ApolloProvider>
   );
 
+  // const componentHtml = _props.sessionCookie;
   const componentHtml = await getMarkupFromTree({
     renderFunction: renderToString,
     tree: App,
   });
 
+  // const initialState = {};
   const initialState = client.extract();
+
   // you need to return additional property `dataTags`, to fullfill the state for hydration
   const dataTags = renderToString(
     <script
