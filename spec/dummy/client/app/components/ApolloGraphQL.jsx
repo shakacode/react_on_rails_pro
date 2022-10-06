@@ -14,7 +14,7 @@ const GET_FIRST_USER = gql`
 const ApolloGraphQL = () => {
   const { data, error, loading } = useQuery(GET_FIRST_USER);
   if (error) {
-    return <div>{error.message}</div>;
+    throw error;
   }
   if (loading) {
     return <div>Loading...</div>;

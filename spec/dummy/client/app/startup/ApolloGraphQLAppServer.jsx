@@ -5,7 +5,7 @@ import ApolloGraphQL from '../components/ApolloGraphQL';
 import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 
 export default async (_props, _railsContext) => {
-  const { csrf, sessionCookie } = _props.__ssrOnly;
+  const { csrf, sessionCookie } = _props.ssrOnlyProp;
   const client = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
@@ -23,16 +23,14 @@ export default async (_props, _railsContext) => {
     </ApolloProvider>
   );
 
-  // const componentHtml = _props.sessionCookie;
   const componentHtml = await getMarkupFromTree({
     renderFunction: renderToString,
     tree: App,
   });
 
-  // const initialState = {};
   const initialState = client.extract();
 
-  // you need to return additional property `apolloStateTag`, to fullfill the state for hydration
+  // you need to return additional property `apolloStateTag`, to fulfill the state for hydration
   const apolloStateTag = renderToString(
     <script
       dangerouslySetInnerHTML={{
