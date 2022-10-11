@@ -17,7 +17,11 @@ end
 
 module RenderingPropsExtension
   def self.adjust_props_for_client_side_hydration(_component_name, props)
-    props.except(:ssrOnlyProp) if props.instance_of?(Hash)
+    if props.instance_of?(Hash)
+      props.except(:ssrOnlyProp)
+    else
+      props
+    end
   end
 end
 
