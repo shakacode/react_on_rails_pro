@@ -4,7 +4,7 @@
   trace: true,
   props: {
     # since _dummy_session is a http only cookie, it shouldn't be passed to the FE javascript code
-    ssrOnlyProp: {
+    ssrOnlyProps: {
       csrf: form_authenticity_token,
       sessionCookie: cookies["_dummy_session"]
     }
@@ -38,7 +38,7 @@ Here's the helper method call in the view:
       prerender: true,
       trace: true,
       # since _dummy_session is a http only cookie, it shouldn't be passed to the FE javascript code
-      ssrOnlyProp: {
+      ssrOnlyProps: {
         csrf: form_authenticity_token,
         sessionCookie: cookies["_dummy_session"]
       }

@@ -43,6 +43,8 @@ group :development do
 end
 
 group :development, :test do
+  gem 'faker'
+  gem 'graphiql-rails'
   gem 'pry', '>= 0.14.1' # Console with powerful introspection capabilities
   # Need to use master of pry-byebug to use latest pry version
   gem 'pry-byebug', github: 'shakacode/pry-byebug' # Integrates pry with byebug

@@ -5,7 +5,7 @@ import ApolloGraphQL from '../components/ApolloGraphQL';
 import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 
 export default async (_props, _railsContext) => {
-  const { csrf, sessionCookie } = _props.ssrOnlyProp;
+  const { csrf, sessionCookie } = _props.ssrOnlyProps;
   const client = new ApolloClient({
     ssrMode: true,
     link: createHttpLink({
