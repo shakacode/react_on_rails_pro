@@ -31,7 +31,6 @@ gem "sprockets"
 gem "sass-rails"
 
 gem "amazing_print"
-gem "mini_racer"
 
 group :development do
   # Access an interactive console on exception pages or by calling 'console' anywhere in the code.
