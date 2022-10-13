@@ -44,7 +44,7 @@ aliases:
       echo "Bundler version: "; bundle --version
       bundle config set --local path 'vendor/bundle'
       bundle config set --local disable_checksum_validation true
-      cd spec/dummy && bundle lock --add-platform 'x86_64-linux' && bundle _2.2.28_ check || bundle _2.2.28_ install --jobs=4 --retry=3
+      cd spec/dummy && bundle lock --add-platform 'x86_64-linux' && bundle _2.2.28_ check || bundle _2.2.28_ install --jobs=4 --retry=3 || bundle update
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-package-ruby-gems
