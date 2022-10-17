@@ -1,11 +1,16 @@
-
-<% react_helmet_app = cached_react_component_hash("ReactHelmetApp",
-                                                  cache_key: "A",
-                                                  id: "react-helmet-0",
-                                                  trace: true) do
+<h1 class="page-header">Caching: Generator function returns object with renderedHtml</h1>
+<br/>
+This page demonstrates a generator function that returns htmlResult as an object
+with HTML strings on the server side. It is useful to manipulating &lt;head&gt;
+content. Check out the page title!
+<h2 class="section-header">Result</h2>
+<% react_helmet_app = cached_react_component_hash(
+  "ReactHelmetApp",
+  cache_key: "A",
+  id: "react-helmet-0",
+  trace: true) do
   calc_slow_app_props_server_render
 end %>
-
 
 <% content_for :title do %>
   <%= react_helmet_app['title'] %>
@@ -13,28 +18,45 @@ end %>
 
 <%= react_helmet_app["componentHtml"] %>
 
-<hr/>
+<h1 class="section-header">React Rails Server Rendering code</h1>
+<pre><code class="language-ruby">
+<%% react_helmet_app = cached_react_component_hash(
+  "ReactHelmetApp",
+  cache_key: "A",
+  id: "react-helmet-0",
+  trace: true) do
+  calc_slow_app_props_server_render
+end %>
 
-This page demonstrates a generator function that returns htmlResult as an object
-with HTML strings on the server side. It is useful to manipulating &lt;head&gt;
-content. Check out the page title!
+  <%% content_for :title do %>
+  <%%= react_helmet_app['title'] %>
+<%% end %>
 
-<h2>
+<%%= react_helmet_app["componentHtml"] %>
+</code></pre>
+
+<h2 class="section-header">
+  Server rendering function
+</h2>
+<pre><code class="language-jsx">
+<%= ApplicationHelper::include_code "startup/ReactHelmetServerApp.jsx" %>
+</code></pre>
+
+<h2 class="section-header">
   Notes on Fragment Caching
 </h2>
 <ol>
   <li>
-    Toggle caching in development mode: `rails dev:cache`
+    Toggle caching in development mode: <code>rails dev:cache</code>
   </li>
   <li>
     Refresh this page and you will NOT see this print again in your console for your server.
     This confirms that the fragment of HTML was cached and your calculation of props was not done again.
     This can be a big performance boost!
 
-    <pre>
-      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-      calling slow calc_app_props_server_render
-      XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
-    </pre>
+    <pre class="log-section">
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+  calling slow calc_app_props_server_render
+  XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX</pre>
   </li>
 </ol>
