@@ -183,8 +183,8 @@ describe ReactOnRailsPro::AssetsPrecompile do
       allow(instance).to receive(:zipped_bundles_filename).and_return(unique_variable)
       allow(instance).to receive(:zipped_bundles_filepath).and_return("zipped_bundles_filepath")
 
-      allow(File).to receive(:open).and_return(true)
-      expect(File).to receive(:open).once
+      allow(File).to receive(:binwrite).and_return(true)
+      expect(File).to receive(:binwrite).once
 
       expect(instance.fetch_bundles).to be_truthy
 
