@@ -107,7 +107,7 @@ module ReactOnRailsPro
     end
 
     describe ".with_trace" do
-      let(:logger_mock) { instance_double("Rails.logger").as_null_object }
+      let(:logger_mock) { instance_double(ActiveSupport::Logger).as_null_object }
 
       context "with tracing on" do
         before do

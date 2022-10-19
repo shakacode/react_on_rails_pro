@@ -106,9 +106,6 @@ RSpec/MultipleDescribes:
 RSpec/MultipleMemoizedHelpers:
   Max: 12
 
-RSpec/VerifiedDoubleReference:
-  Enabled: false
-
 RSpec:
   Language:
     Expectations:
