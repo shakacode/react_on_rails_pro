@@ -14,6 +14,9 @@ You can find the **package** version numbers from this repo's tags and below in 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+## Updated Rubocop and fixed Rubocop errors
+Updated `Rubocop` version from `1.18.3` to `1.36.0`. Fixed Rubocop warnings present in the RSpec Files. [PR 296](https://github.com/shakacode/react_on_rails_pro/pull/296) by [alkesh26](https://github.com/alkesh26).
+
 ## Doc and Spec Only Updates
 React 18 is noow supported! Check the [React on Rails CHANGELOG.md](https://github.com/shakacode/react_on_rails/blob/master/CHANGELOG.md) for details and the updates to the [loadable-components instructions](https://github.com/shakacode/react_on_rails_pro/blob/master/docs/code-splitting-loadable-components.md).
 

@@ -11,10 +11,7 @@ describe ReactOnRailsProHelper, type: :helper do
   include ReactOnRails::Helper
   before do
     allow(self).to receive(:request) {
-      RequestDetails.new(
-        "http://foobar.com/development",
-        { "HTTP_ACCEPT_LANGUAGE" => "en" }
-      )
+      RequestDetails.new("http://foobar.com/development", { "HTTP_ACCEPT_LANGUAGE" => "en" })
     }
   end
 
