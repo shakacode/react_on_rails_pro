@@ -1,10 +1,14 @@
 # Using Ubuntu Xenial Xerus 16.04 LTS (this is a minimal image with curl and vcs tool pre-installed):
-FROM buildpack-deps:xenial
+#FROM buildpack-deps:xenial
+FROM ruby:3.1.2
+#FROM ubuntu:focal
+ARG TARGETARCH
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Install dependencies.
 RUN \
   apt-get update \
-  && apt-get install tzdata build-essential \
+  && apt-get install tzdata build-essential wget git \
      chrpath libssl-dev libxft-dev libfreetype6 \
      libfreetype6-dev libfontconfig1 libfontconfig1-dev -y
 
@@ -16,33 +20,41 @@ RUN \
  && mv $PHANTOM_JS /usr/local/share \
  && ln -sf /usr/local/share/$PHANTOM_JS/bin/phantomjs /usr/local/bin
 
+# Create a directory for the application and run further commands form there.
+
+COPY package.json ./
+COPY yarn.lock ./
+COPY spec/ ./spec
+COPY Gemfile ./
+COPY Gemfile.development_dependencies ./
+COPY Gemfile.lock ./
+COPY app/ ./app
+COPY lib/ ./lib
+COPY packages/ ./packages
+COPY rakelib/ ./rakelib
+COPY react_on_rails_pro.gemspec ./
+
 # Add new user "renderer":
 RUN adduser renderer
 
-# Switch to created user and run further commands form its home directory.
-# $HOME does not work under ENV directive (https://github.com/moby/moby/issues/2637), so we use custom ENV variable:
+RUN chown -R renderer:renderer /Gemfile.lock
+RUN chmod 777 /Gemfile.lock
+
 USER renderer
 ENV USER_HOME=/home/renderer
 WORKDIR $USER_HOME
 
-# Install Ruby 2.4.3 from source, set GEM_HOME and expose executable paths:
-ENV RUBY_MAJOR_MINOR=2.4
-ENV RUBY_VERSION=$RUBY_MAJOR_MINOR.3
-RUN \
-  wget http://ftp.ruby-lang.org/pub/ruby/$RUBY_MAJOR_MINOR/ruby-$RUBY_VERSION.tar.gz \
-  && tar -xvzf ruby-$RUBY_VERSION.tar.gz \
-  && rm ruby-$RUBY_VERSION.tar.gz \
-  && cd ruby-$RUBY_VERSION/ \
-  && ./configure --prefix=$USER_HOME \
-  && make \
-  && make install
+# Install Ruby 2.7.5 from source, set GEM_HOME and expose executable paths:
+ENV RUBY_MAJOR_MINOR=3.1
+ENV RUBY_VERSION=$RUBY_MAJOR_MINOR.2
+
 ENV RUBY_HOME=$USER_HOME/ruby-$RUBY_VERSION
 ENV GEM_HOME=$RUBY_HOME/gems
 ENV PATH=$PATH:$RUBY_HOME:$RUBY_HOME/bin:$RUBY_HOME/gems/bin:
 
 RUN gem install bundler
 
-ENV NODE_VERSION=8.9.4
+ENV NODE_VERSION=16.4.2
 RUN \
   wget https://nodejs.org/dist/v$NODE_VERSION/node-v$NODE_VERSION-linux-x64.tar.gz \
   && tar -xvzf node-v$NODE_VERSION-linux-x64.tar.gz \
@@ -50,7 +62,7 @@ RUN \
   && rm node-v$NODE_VERSION-linux-x64.tar.gz
 ENV PATH=$PATH:$USER_HOME/nodejs/bin:
 
-ENV YARN_VERSION=1.6.0
+ENV YARN_VERSION=1.22.19
 RUN \
   wget https://github.com/yarnpkg/yarn/releases/download/v$YARN_VERSION/yarn-v$YARN_VERSION.tar.gz \
   && mkdir yarn \
@@ -58,6 +70,11 @@ RUN \
   && rm yarn-v$YARN_VERSION.tar.gz
 ENV PATH=$PATH:$USER_HOME/yarn/yarn-v$YARN_VERSION/bin:
 
-# Create a directory for the application and run further commands form there.
-RUN mkdir -p project
-WORKDIR $USER_HOME/project
+#RUN apt-get update -qq && apt-get install -y libpq-dev
+
+
+RUN bundle install --verbose --without development test
+RUN yarn
+RUN cd specs/dummy && bundle test && yarn
+
+CMD ["overmind", "start", "-f", "Procfile.static"]
