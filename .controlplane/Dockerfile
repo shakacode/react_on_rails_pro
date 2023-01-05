@@ -28,9 +28,6 @@ COPY lib/ ./lib
 COPY packages/ ./packages
 COPY rakelib/ ./rakelib
 
-## add entrypoint
-COPY .controlplane/entrypoint.sh ./spec/dummy
-
 WORKDIR /app/spec/dummy
 
 RUN bundle config set without 'development test' && \
@@ -39,5 +36,7 @@ RUN bundle config set without 'development test' && \
 
 RUN yarn global add yalc
 RUN yarn install
+RUN rails react_on_rails:locale && rails assets:precompile
 
-ENTRYPOINT ["/app/spec/dummy/entrypoint.sh"]
+#ENTRYPOINT ["/app/spec/dummy/entrypoint.sh"]
+CMD ["rails", "s"]
