@@ -3,7 +3,7 @@ import React from 'react';
 import RailsContext from './RailsContext';
 
 // Example of CSS modules.
-import css from './HelloWorld.module.scss';
+// import css from './HelloWorld.module.scss';
 
 // Super simple example of the simplest possible React component
 class HelloWorld extends React.Component {
@@ -43,7 +43,7 @@ class HelloWorld extends React.Component {
 
     return (
       <div>
-        <h3 className={css.brightColor}>Hello, {name}!</h3>
+        {/*<h3 className={css.brightColor}>Hello, {name}!</h3>*/}
         <p>
           Say hello to:
           <input type="text" ref={this.setNameDomRef} defaultValue={name} onChange={this.handleChange} />

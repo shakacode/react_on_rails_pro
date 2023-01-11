@@ -1,0 +1,5 @@
+# Run Rails without hot reloading (static assets).
+rails: bin/rails s -p 3000
+
+# Start Node server for server rendering.
+node-renderer: yarn run node-renderer
