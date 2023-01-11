@@ -43,4 +43,4 @@ ENV RAILS_ENV=production
 RUN rails assets:precompile
 
 
-CMD ["./startups.sh"]
+CMD ["rails", "s"]
