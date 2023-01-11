@@ -42,5 +42,6 @@ ENV RAILS_ENV=production
 
 RUN rails assets:precompile
 
+EXPOSE 3000 3800
 
 CMD ["rails", "s"]
