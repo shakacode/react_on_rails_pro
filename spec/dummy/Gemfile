@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 ENV["SPEC_DUMMY"] = "yes"
 eval_gemfile File.expand_path("../../Gemfile.development_dependencies", __dir__)

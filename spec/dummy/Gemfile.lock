@@ -19,7 +19,7 @@ PATH
       react_on_rails (>= 12.4)
 
 GEM
-  remote: http://rubygems.org/
+  remote: https://rubygems.org/
   specs:
     actioncable (7.0.4)
       actionpack (= 7.0.4)

@@ -12,7 +12,7 @@ const envSpecificConfig = () => {
     webpackConfig.resolve.fallback ||= {};
     webpackConfig.resolve.fallback["path"] = require.resolve("path-browserify");
     webpackConfig.resolve.fallback["fs"] = false;
-    webpackConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
+    // webpackConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
     console.log(">>> webpackConfig:", webpackConfig);
     // throw new Error("not calling client");
     return webpackConfig;
