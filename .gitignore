@@ -13,6 +13,7 @@ tmp
 **/spec/examples.txt
 /spec/dummy/client/node_modules
 /spec/dummy/app/assets/webpack/
+/spec/dummy/app/assets/builds/
 /spec/dummy/coverage/
 /spec/dummy/public/assets
 
