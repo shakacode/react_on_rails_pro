@@ -245,6 +245,9 @@ jobs:
       - run: *install-latest-chrome
       - run: *install-dummy-app-node-modules
       - run:
+          name: Compile tailwind assets
+          command: cd spec/dummy && bundle exec tailwindcss -o public/stylesheets/tailwind.css
+      - run:
           name: Run Node renderer in a background
           command: cd spec/dummy && yarn run node-renderer
           background: true
