@@ -17,12 +17,24 @@
 
 The source HTML of this page will show the server rendered HTML.<br/>
 <pre><code class="language-markup">
-    <%= '<div id="ReduxApp-react-component-0"><div data-reactid=".uwwa3eq70g" data-react-checksum="-1318287018">' %>
-  <%= '<h3 data-reactid=".uwwa3eq70g.0"><span data-reactid=".uwwa3eq70g.0.0">Redux Hello, </span><span data-reactid=".uwwa3eq70g.0.1">' %>
-  <%= 'Mr. Server Side Rendering</span><span data-reactid=".uwwa3eq70g.0.2">!</span></h3><p data-reactid=".uwwa3eq70g.1">' %>
-  <%= '<span data-reactid=".uwwa3eq70g.1.0">With Redux, say hello to:</span>' %>
-  <%= '<input type="text" value="Mr. Server Side Rendering" data-reactid=".uwwa3eq70g.1.1"></p></div></div>' %>
-  </code></pre>
+<%= <<-CODE
+<div id="ReduxApp-react-component-0">
+  <div data-reactid=".uwwa3eq70g" data-react-checksum="-1318287018">
+    <h3 data-reactid=".uwwa3eq70g.0">
+      <span data-reactid=".uwwa3eq70g.0.0">Redux Hello, </span>
+      <span data-reactid=".uwwa3eq70g.0.1">
+        Mr. Server Side Rendering
+      </span>
+      <span data-reactid=".uwwa3eq70g.0.2">!</span>
+    </h3>
+    <p data-reactid=".uwwa3eq70g.1">
+      <span data-reactid=".uwwa3eq70g.1.0">With Redux, say hello to:</span>
+      <input type="text" value="Mr. Server Side Rendering" data-reactid=".uwwa3eq70g.1.1">
+    </p>
+  </div>
+</div>
+CODE
+%></code></pre>
 
 <h2 class="section-header">Setup</h2>
 <ol>
