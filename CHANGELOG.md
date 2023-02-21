@@ -13,6 +13,8 @@ You can find the **package** version numbers from this repo's tags and below in 
 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
+### Fixed
+- Removed console errors when `setTimeout` is used server-size. The call is silently ignored for seamless integration of https://github.com/petyosi/react-virtuoso
 
 ## Doc and Spec Only Updates
 React 18 is now supported! Check the [React on Rails CHANGELOG.md](https://github.com/shakacode/react_on_rails/blob/master/CHANGELOG.md) for details and the updates to the [loadable-components instructions](https://github.com/shakacode/react_on_rails_pro/blob/master/docs/code-splitting-loadable-components.md).
