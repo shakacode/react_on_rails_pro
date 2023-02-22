@@ -2,6 +2,6 @@
 
 module ApplicationHelper
   def self.include_code(path)
-    File.read(Rails.root.join "client/app/" + path)
+    File.read(Rails.root.join("client/app/#{path}"))
   end
 end

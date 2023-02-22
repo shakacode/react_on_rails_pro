@@ -7,8 +7,8 @@ eval_gemfile File.expand_path("../../Gemfile.development_dependencies", __dir__)
 
 gem "react_on_rails_pro", path: "../.."
 
-gem "tailwindcss-rails", "~> 2.0"
 gem "graphql"
-gem 'prism-rails'
+gem "prism-rails"
+gem "tailwindcss-rails", "~> 2.0"
 
 gem "csso-rails", "~> 1.0"
