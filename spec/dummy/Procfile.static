@@ -6,6 +6,3 @@ rails-client-assets: yarn run build:dev:watch
 
 # Start Node server for server rendering.
 node-renderer: yarn run node-renderer
-
-# Start tailwind server.
-css: bin/rails tailwindcss:watch
