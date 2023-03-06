@@ -1,4 +1,4 @@
-import "../assets/styles/application.css";
+import '../assets/styles/application.css';
 
 import ReactOnRails from 'react-on-rails';
 
