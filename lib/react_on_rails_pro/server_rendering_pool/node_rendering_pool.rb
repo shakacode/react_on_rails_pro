@@ -49,10 +49,7 @@ module ReactOnRailsPro
           # is needed.
           @bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
 
-          # TODO: Remove the request_digest. See https://github.com/shakacode/react_on_rails_pro/issues/119
-          # From the request path
-          # path = "/bundles/#{@bundle_hash}/render"
-          path = "/bundles/#{@bundle_hash}/render/#{render_options.request_digest}"
+          path = "/bundles/#{@bundle_hash}"
 
           response = ReactOnRailsPro::Request.render_code(path, js_code, send_bundle)
 
