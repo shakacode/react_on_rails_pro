@@ -64,128 +64,112 @@ describe('express worker', () => {
       });
   });
 
-  test(
-    'POST /bundles/:bundleTimestamp ' +
-      'when password is required but no password was provided',
-    async (done) => {
-      expect.assertions(2);
-      await createVmBundleForTest();
+  test('POST /bundles/:bundleTimestamp when password is required but no password was provided', async (done) => {
+    expect.assertions(2);
+    await createVmBundleForTest();
 
-      const app = worker({
-        bundlePath: bundlePathForTest(),
-        password: 'password',
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+      password: 'password',
+    });
+
+    request(app)
+      .post('/bundles/1495063024898')
+      .type('json')
+      .send({
+        renderingRequest: 'ReactOnRails.dummy',
+        password: undefined,
+        gemVersion,
+        protocolVersion,
+      })
+      .end((_err, res) => {
+        expect(res.error.status).toBe(401);
+        expect(res.error.text).toBe('Wrong password');
+        done();
       });
+  });
 
-      request(app)
-        .post('/bundles/1495063024898')
-        .type('json')
-        .send({
-          renderingRequest: 'ReactOnRails.dummy',
-          password: undefined,
-          gemVersion,
-          protocolVersion,
-        })
-        .end((_err, res) => {
-          expect(res.error.status).toBe(401);
-          expect(res.error.text).toBe('Wrong password');
-          done();
-        });
-    },
-  );
+  test('POST /bundles/:bundleTimestamp when password is required but wrong password was provided', async (done) => {
+    expect.assertions(2);
 
-  test(
-    'POST /bundles/:bundleTimestamp ' +
-      'when password is required but wrong password was provided',
-    async (done) => {
-      expect.assertions(2);
+    await createVmBundleForTest();
 
-      await createVmBundleForTest();
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+      password: 'password',
+    });
 
-      const app = worker({
-        bundlePath: bundlePathForTest(),
-        password: 'password',
+    request(app)
+      .post('/bundles/1495063024898')
+      .type('json')
+      .send({
+        renderingRequest: 'ReactOnRails.dummy',
+        password: 'wrong',
+        gemVersion,
+        protocolVersion,
+      })
+      .end((_err, res) => {
+        console.log('res', JSON.stringify(res));
+        expect(res.error.status).toBe(401);
+        expect(res.error.text).toBe('Wrong password');
+        done();
       });
+  });
 
-      request(app)
-        .post('/bundles/1495063024898')
-        .type('json')
-        .send({
-          renderingRequest: 'ReactOnRails.dummy',
-          password: 'wrong',
-          gemVersion,
-          protocolVersion,
-        })
-        .end((_err, res) => {
-          console.log('res', JSON.stringify(res));
-          expect(res.error.status).toBe(401);
-          expect(res.error.text).toBe('Wrong password');
-          done();
-        });
-    },
-  );
+  test('POST /bundles/:bundleTimestamp when password is required and correct password was provided', async (done) => {
+    expect.assertions(3);
 
-  test(
-    'POST /bundles/:bundleTimestamp ' +
-      'when password is required and correct password was provided',
-    async (done) => {
-      expect.assertions(3);
+    await createVmBundleForTest();
 
-      await createVmBundleForTest();
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+      password: 'my_password',
+      gemVersion,
+      protocolVersion,
+    });
 
-      const app = worker({
-        bundlePath: bundlePathForTest(),
+    request(app)
+      .post('/bundles/1495063024898')
+      .type('json')
+      .send({
+        renderingRequest: 'ReactOnRails.dummy',
         password: 'my_password',
         gemVersion,
         protocolVersion,
+      })
+      .end((_err, res) => {
+        expect(res.headers['cache-control']).toBe('public, max-age=31536000');
+        expect(res.status).toBe(200);
+        expect(res.text).toEqual('{"html":"Dummy Object"}');
+        done();
       });
+  });
 
-      request(app)
-        .post('/bundles/1495063024898')
-        .type('json')
-        .send({
-          renderingRequest: 'ReactOnRails.dummy',
-          password: 'my_password',
-          gemVersion,
-          protocolVersion,
-        })
-        .end((_err, res) => {
-          expect(res.headers['cache-control']).toBe('public, max-age=31536000');
-          expect(res.status).toBe(200);
-          expect(res.text).toEqual('{"html":"Dummy Object"}');
-          done();
-        });
-    },
-  );
+  test('POST /bundles/:bundleTimestamp when password is not required and no password was provided', async (done) => {
+    expect.assertions(3);
 
-  test(
-    'POST /bundles/:bundleTimestamp ' +
-      'when password is not required and no password was provided',
-    async (done) => {
-      expect.assertions(3);
+    await createVmBundleForTest();
 
-      await createVmBundleForTest();
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+    });
 
-      const app = worker({
-        bundlePath: bundlePathForTest(),
+    request(app)
+      .post('/bundles/1495063024898')
+      .type('json')
+      .send({
+        renderingRequest: 'ReactOnRails.dummy',
+        password: undefined,
+        gemVersion,
+        protocolVersion,
+      })
+      .end((_err, res) => {
+        expect(res.headers['cache-control']).toBe('public, max-age=31536000');
+        expect(res.status).toBe(200);
+        expect(res.text).toEqual('{"html":"Dummy Object"}');
+        done();
       });
-
-      request(app)
-        .post('/bundles/1495063024898')
-        .type('json')
-        .send({
-          renderingRequest: 'ReactOnRails.dummy',
-          password: undefined,
-          gemVersion,
-          protocolVersion,
-        })
-        .end((_err, res) => {
-          expect(res.headers['cache-control']).toBe('public, max-age=31536000');
-          expect(res.status).toBe(200);
-          expect(res.text).toEqual('{"html":"Dummy Object"}');
-          done();
-        });
-    },
-  );
+  });
 
   test('post /asset-exists when asset exists', async (done) => {
     expect.assertions(2);
