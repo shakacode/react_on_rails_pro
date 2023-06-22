@@ -47,8 +47,6 @@ module ReactOnRailsPro
         end
 
         def cache_key(js_code, render_options)
-          set_request_digest_on_render_options(js_code, render_options)
-
           [
             *ReactOnRailsPro::Cache.base_cache_key("ror_pro_rendered_html",
                                                    prerender: render_options.prerender),

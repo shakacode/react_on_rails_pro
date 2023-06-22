@@ -42,9 +42,6 @@ module ReactOnRailsPro
         end
 
         def eval_js(js_code, render_options, send_bundle: false)
-          ReactOnRailsPro::ServerRenderingPool::ProRendering
-            .set_request_digest_on_render_options(js_code, render_options)
-
           # In case this method is called with simple, raw JS, not depending on the bundle, next line
           # is needed.
           @bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
