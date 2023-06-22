@@ -37,7 +37,7 @@ describe('express worker', () => {
     await resetForTest(testName);
   });
 
-  test('POST /bundles/:bundleTimestamp/render/:renderRequestDigest when bundle is provided and did not yet exist', async (done) => {
+  test('POST /bundles/:bundleTimestamp when bundle is provided and did not yet exist', async (done) => {
     expect.assertions(6);
 
     const app = worker({
@@ -45,7 +45,7 @@ describe('express worker', () => {
     });
 
     request(app)
-      .post(`/bundles/${BUNDLE_TIMESTAMP}/render/d41d8cd98f00b204e9800998ecf8427e`)
+      .post(`/bundles/${BUNDLE_TIMESTAMP}`)
       .type('json')
       .field('renderingRequest', 'ReactOnRails.dummy')
       .field('gemVersion', gemVersion)
@@ -65,7 +65,7 @@ describe('express worker', () => {
   });
 
   test(
-    'POST /bundles/:bundleTimestamp/render/:renderRequestDigest ' +
+    'POST /bundles/:bundleTimestamp ' +
       'when password is required but no password was provided',
     async (done) => {
       expect.assertions(2);
@@ -77,7 +77,7 @@ describe('express worker', () => {
       });
 
       request(app)
-        .post('/bundles/1495063024898/render/d41d8cd98f00b204e9800998ecf8427e')
+        .post('/bundles/1495063024898')
         .type('json')
         .send({
           renderingRequest: 'ReactOnRails.dummy',
@@ -94,7 +94,7 @@ describe('express worker', () => {
   );
 
   test(
-    'POST /bundles/:bundleTimestamp/render/:renderRequestDigest ' +
+    'POST /bundles/:bundleTimestamp ' +
       'when password is required but wrong password was provided',
     async (done) => {
       expect.assertions(2);
@@ -107,7 +107,7 @@ describe('express worker', () => {
       });
 
       request(app)
-        .post('/bundles/1495063024898/render/d41d8cd98f00b204e9800998ecf8427e')
+        .post('/bundles/1495063024898')
         .type('json')
         .send({
           renderingRequest: 'ReactOnRails.dummy',
@@ -125,7 +125,7 @@ describe('express worker', () => {
   );
 
   test(
-    'POST /bundles/:bundleTimestamp/render/:renderRequestDigest ' +
+    'POST /bundles/:bundleTimestamp ' +
       'when password is required and correct password was provided',
     async (done) => {
       expect.assertions(3);
@@ -140,7 +140,7 @@ describe('express worker', () => {
       });
 
       request(app)
-        .post('/bundles/1495063024898/render/d41d8cd98f00b204e9800998ecf8427e')
+        .post('/bundles/1495063024898')
         .type('json')
         .send({
           renderingRequest: 'ReactOnRails.dummy',
@@ -158,7 +158,7 @@ describe('express worker', () => {
   );
 
   test(
-    'POST /bundles/:bundleTimestamp/render/:renderRequestDigest ' +
+    'POST /bundles/:bundleTimestamp ' +
       'when password is not required and no password was provided',
     async (done) => {
       expect.assertions(3);
@@ -170,7 +170,7 @@ describe('express worker', () => {
       });
 
       request(app)
-        .post('/bundles/1495063024898/render/d41d8cd98f00b204e9800998ecf8427e')
+        .post('/bundles/1495063024898')
         .type('json')
         .send({
           renderingRequest: 'ReactOnRails.dummy',
