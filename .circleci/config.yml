@@ -255,7 +255,7 @@ jobs:
           name: Run rspec tests
           command: |
             cd spec/dummy && bundle exec rspec --format RspecJunitFormatter \
-                                               --out ~/rspec/rspec.xml \
+                                               --out ../../tmp/rspec-output.xml \
                                                --format documentation
       - store_test_results:
           path: ~/rspec
