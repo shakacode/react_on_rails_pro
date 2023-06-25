@@ -1,4 +1,4 @@
 --format RspecJunitFormatter
---out ./tmp/rspec-output.xml
+--out ./tmp/rspec/rspec.xml
 --format documentation
 --color

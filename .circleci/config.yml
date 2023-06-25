@@ -220,7 +220,7 @@ jobs:
           command: |
             bundle exec rspec spec/react_on_rails_pro
       - store_test_results:
-          path: ~/rspec
+          path: ./tmp/rspec
       - store_artifacts:
           path: log/test.log
 
@@ -255,10 +255,10 @@ jobs:
           name: Run rspec tests
           command: |
             cd spec/dummy && bundle exec rspec --format RspecJunitFormatter \
-                                               --out ../../tmp/rspec-output.xml \
+                                               --out ../../tmp/rspec/rspec.xml \
                                                --format documentation
       - store_test_results:
-          path: ~/rspec
+          path: ./tmp/rspec
       - store_artifacts:
           path: spec/dummy/tmp/screenshots
       - store_artifacts:
