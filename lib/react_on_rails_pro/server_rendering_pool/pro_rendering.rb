@@ -20,7 +20,7 @@ module ReactOnRailsPro
           ::ReactOnRailsPro::Utils.with_trace(render_options.react_component_name) do
             if ReactOnRailsPro.configuration.prerender_caching &&
                render_options.internal_option(:skip_prerender_cache).nil?
-              prerender_cache_key = cache_key(js_code, render_options)
+              prerender_cache_key = cache_key(render_options)
               prerender_cache_hit = true
               result = Rails.cache.fetch(prerender_cache_key) do
                 prerender_cache_hit = false
@@ -46,7 +46,7 @@ module ReactOnRailsPro
           js_code.gsub(/domNodeId: '[\w-]*',/, "")
         end
 
-        def cache_key(js_code, render_options)
+        def cache_key(render_options)
           [
             *ReactOnRailsPro::Cache.base_cache_key("ror_pro_rendered_html",
                                                    prerender: render_options.prerender),
