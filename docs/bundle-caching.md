@@ -74,7 +74,7 @@ examples of this below.
 Also, add whatever file the remote_bundle_cache_adapter module is defined in to `config.dependency_globs`.
 
 If there are any other files for which changes should bust the fragment cache for
-cached_react_component and cached_react_component_hash, add those as well to `config.dependency_globs`. This should include any files used to generate the JSON props, webpack and/or webpacker configuration files, and npm package lockfiles.
+cached_react_component and cached_react_component_hash, add those as well to `config.dependency_globs`. This should include any files used to generate the JSON props, webpack and/or Shakapacker configuration files, and package lockfiles.
 
 To simplify your configuration, entire directories can be added to `config.dependency_globs` & then any irrelevant files or subdirectories can be added to `config.excluded_dependency_globs`
 
