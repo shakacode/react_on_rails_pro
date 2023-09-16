@@ -1,5 +1,6 @@
 import React from 'react';
-import { BrowserRouter, StaticRouter } from 'react-router-dom';
+import { parsePath, BrowserRouter } from 'react-router-dom';
+import { StaticRouter } from 'react-router-dom/server';
 
 import Header from '../components/Loadable/Header';
 import Routes from '../components/Loadable/routes/Routes';
@@ -9,6 +10,7 @@ const basename = 'loadable';
 
 const LoadableApp = (props) => {
   if (typeof window === `undefined`) {
+    console.log(JSON.stringify(props));
     return (
       <StaticRouter basename={basename} location={props.path} context={{}}>
         <Header />
