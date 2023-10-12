@@ -28,8 +28,7 @@ module ReactOnRailsPro
       ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.eval_js(
         js_code,
         render_options,
-        false,
-        response
+        live_response: response
       )
     ensure
       response.stream.close
