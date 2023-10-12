@@ -42,7 +42,8 @@ ReactOnRailsPro.configure do |config|
   # These assets are also transferred any time a new bundle is sent from Rails to the renderer.
   # The value should be a file_path or an Array of file_paths. The files should have extensions
   # to resolve the content types, such as "application/json".
-  config.assets_to_copy = (if ENV["HMR"] != "true"
-                             Rails.root.join("public", "webpack", Rails.env, "loadable-stats.json")
-                           end)
+  config.assets_to_copy = [Rails.root.join("public", "webpack", Rails.env, "react-client-manifest.json")]
+  if ENV["HMR"] != "true"
+    config.assets_to_copy.push(Rails.root.join("public", "webpack", Rails.env, "loadable-stats.json"))
+  end
 end

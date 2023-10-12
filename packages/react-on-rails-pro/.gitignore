@@ -1,0 +1,12 @@
+node_modules
+
+lib
+
+yarn-debug.*
+yarn-error.*
+npm-debug.*
+
+.DS_Store
+
+.yalc
+yalc.lock

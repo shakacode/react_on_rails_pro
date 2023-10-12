@@ -41,21 +41,21 @@ module ReactOnRailsPro
             .exec_server_render_js(js_code, render_options, self)
         end
 
-        def eval_js(js_code, render_options, send_bundle: false)
+        def eval_js(js_code, render_options, send_bundle = false, live_response = nil)
           # In case this method is called with simple, raw JS, not depending on the bundle, next line
           # is needed.
           @bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
 
           path = "/bundles/#{@bundle_hash}"
 
-          response = ReactOnRailsPro::Request.render_code(path, js_code, send_bundle)
+          response = ReactOnRailsPro::Request.render_code(path, js_code, send_bundle, live_response)
 
           case response.code
           when "200"
             response.body
           when "410"
             # 410 is a special value meaning send the updated bundle with the next request.
-            eval_js(js_code, render_options, send_bundle: true)
+            eval_js(js_code, render_options, true, live_response)
           when "400"
             raise ReactOnRailsPro::Error,
                   "Renderer unhandled error at the VM level: #{response.code}:\n#{response.body}"

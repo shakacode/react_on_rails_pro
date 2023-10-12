@@ -26,6 +26,26 @@ module ReactOnRailsPro
         })()
         JS
       end
+
+      # TODO: async?
+      def render_rsc(props_string, redux_stores, react_component_name, render_options)
+        <<-JS
+        (function() {
+        #{ssr_pre_hook_js}
+        #{redux_stores}
+          var props = #{props_string};
+          return ReactOnRailsPro.renderReactServerComponent({
+            name: '#{react_component_name}',
+            domNodeId: '#{render_options.dom_id}',
+            props: props,
+            trace: #{render_options.trace},
+            throwJsErrors: #{ReactOnRailsPro.configuration.throw_js_errors},
+            renderingReturnsPromises: #{ReactOnRailsPro.configuration.rendering_returns_promises},
+            expressRes: expressRes
+          });
+        })()
+        JS
+      end
     end
   end
 end

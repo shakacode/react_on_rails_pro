@@ -12,9 +12,9 @@ module ReactOnRailsPro
         @connection = create_connection
       end
 
-      def render_code(path, js_code, send_bundle)
+      def render_code(path, js_code, send_bundle, live_response = nil)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request #{path}" }
-        perform_request(path, form_with_code(js_code, send_bundle))
+        perform_request(path, form_with_code(js_code, send_bundle), live_response)
       end
 
       def upload_assets
@@ -34,43 +34,84 @@ module ReactOnRailsPro
         @connection ||= create_connection
       end
 
-      def perform_request(path, form)
-        available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
-        retry_request = true
-        while retry_request
-          begin
-            response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
-            retry_request = false
-          rescue Timeout::Error => e
-            # Testing timeout catching:
-            # https://github.com/shakacode/react_on_rails_pro/pull/136#issue-463421204
-            if available_retries.zero?
-              raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n" \
+      # TODO: Fix Metrics/AbcSize
+      # rubocop:disable Metrics/AbcSize
+      def perform_request(path, form, live_response = nil)
+        if live_response
+          date = Time.now.httpdate
+
+          live_response.headers["Content-Type"] = "text/x-component"
+          live_response.headers["Date"] = date
+          live_response.headers["Connection"] = "keep-alive"
+          live_response.headers["Keep-Alive"] = "timeout=5"
+          live_response.headers["Last-Modified"] = date
+        end
+
+        response_code = nil
+        response_body = ""
+
+        cache_key = Digest::MD5.hexdigest(form["renderingRequest"])
+        cached_response = Rails.cache.read(cache_key)
+
+        if cached_response
+          response_code = "200"
+          response_body = cached_response
+          live_response.status = 200
+          live_response.stream.write(response_body)
+        else
+          available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
+          retry_request = true
+
+          while retry_request
+            begin
+              connection.request(Net::HTTP::Post::Multipart.new(path, form)) do |res|
+                response_code = res.code
+                if response_code == "200"
+                  if live_response
+                    live_response.status = res.code
+                  end
+                  res.read_body do |chunk|
+                    response_body += chunk
+                    if live_response
+                      live_response.stream.write(chunk)
+                    end
+                  end
+                  Rails.cache.write(cache_key, response_body)
+                end
+              end
+              retry_request = false
+            rescue Timeout::Error => e
+              # Testing timeout catching:
+              # https://github.com/shakacode/react_on_rails_pro/pull/136#issue-463421204
+              if available_retries.zero?
+                raise ReactOnRailsPro::Error, "Time out error when getting the response on: #{path}.\n" \
+                                              "Original error:\n#{e}\n#{e.backtrace}"
+              end
+              Rails.logger.info do
+                "[ReactOnRailsPro] Timed out trying to connect to the Node Renderer. " \
+                  "Retrying #{available_retries} more times..."
+              end
+              available_retries -= 1
+              next
+            rescue StandardError => e
+              raise ReactOnRailsPro::Error, "Can't connect to NodeRenderer renderer: #{path}.\n" \
                                             "Original error:\n#{e}\n#{e.backtrace}"
             end
-            Rails.logger.info do
-              "[ReactOnRailsPro] Timed out trying to connect to the Node Renderer. " \
-                "Retrying #{available_retries} more times..."
-            end
-            available_retries -= 1
-            next
-          rescue StandardError => e
-            raise ReactOnRailsPro::Error, "Can't connect to NodeRenderer renderer: #{path}.\n" \
-                                          "Original error:\n#{e}\n#{e.backtrace}"
           end
         end
 
         Rails.logger.info { "[ReactOnRailsPro] Node Renderer responded" }
 
-        case response.code
+        case response_code
         when "412"
           # 412 is a protocol error, meaning the server and renderer are running incompatible versions
           # of React on Rails.
-          raise ReactOnRailsPro::Error, response.body
+          raise ReactOnRailsPro::Error, response_body
         else
-          response
+          OpenStruct.new(code: response_code, body: response_body)
         end
       end
+      # rubocop:enable Metrics/AbcSize
 
       def form_with_code(js_code, send_bundle)
         form = common_form_data

@@ -1,0 +1,127 @@
+{
+  "name": "react-on-rails-pro",
+  "version": "13.4.0",
+  "description": "react-on-rails-pro JavaScript for react_on_rails_pro Ruby gem",
+  "main": "lib/index.js",
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "release-it": {
+    "git": {
+      "requireCleanWorkingDir": false
+    },
+    "github": {
+      "release": false
+    },
+    "npm": {
+      "publish": true,
+      "skipChecks": true
+    }
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.20.7",
+    "@babel/core": "^7.20.12",
+    "@babel/plugin-transform-runtime": "^7.19.6",
+    "@babel/plugin-transform-typescript": "^7.20.13",
+    "@babel/preset-env": "^7.20.2",
+    "@babel/preset-react": "^7.18.6",
+    "@babel/types": "^7.20.7",
+    "@types/jest": "^28.1.3",
+    "@types/node": "^20.5.9",
+    "@types/react": "^18.2.28",
+    "@types/react-dom": "^18.2.13",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/turbolinks": "^5.2.0",
+    "@types/webpack-env": "^1.18.0",
+    "@typescript-eslint/eslint-plugin": "^4.33.0",
+    "@typescript-eslint/parser": "^4.33.0",
+    "babelify": "^10.0.0",
+    "blue-tape": "^1.0.0",
+    "concurrently": "^8.2.0",
+    "create-react-class": "^15.7.0",
+    "eslint": "^7.32.0",
+    "eslint-config-prettier": "^7.0.0",
+    "eslint-config-shakacode": "^16.0.1",
+    "eslint-plugin-import": "^2.27.5",
+    "eslint-plugin-jsx-a11y": "^6.7.1",
+    "eslint-plugin-prettier": "^3.4.1",
+    "eslint-plugin-react": "^7.32.1",
+    "husky": "^4.3.6",
+    "jest": "^28.1.3",
+    "jest-environment-jsdom": "^28.1.3",
+    "jsdom": "^16.4.0",
+    "nps": "^5.9.3",
+    "prettier": "^2.8.3",
+    "prettier-eslint-cli": "^5.0.0",
+    "prop-types": "^15.8.1",
+    "react": "^18.3.0-canary-201becd3d-20230808",
+    "react-dom": "^18.3.0-canary-201becd3d-20230808",
+    "react-on-rails": "link:.yalc/react-on-rails",
+    "react-router-dom": "5.3.3",
+    "react-server-dom-webpack": "^18.3.0-canary-201becd3d-20230808",
+    "react-transform-hmr": "^1.0.4",
+    "ts-jest": "^28.0.8",
+    "typescript": "^4.9.4",
+    "yalc": "^1.0.0-pre.27"
+  },
+  "dependencies": {
+    "@babel/runtime-corejs3": "^7.12.5"
+  },
+  "peerDependencies": {
+    "js-yaml": ">= 3.0.0",
+    "react": ">= 18",
+    "react-dom": ">= 18"
+  },
+  "resolutions": {
+    "@types/react": "^18.2.28",
+    "@types/react-dom": "^18.2.13"
+  },
+  "exports": {
+    ".": {
+      "node": "./lib/ReactOnRailsProServer.js",
+      "browser": "./lib/ReactOnRailsProClient.js",
+      "default": "./lib/index.js"
+    },
+    "./RSCWebpackLoader": "./lib/RSCWebpackLoader.js"
+  },
+  "files": [
+    "lib",
+    "webpackConfigLoader.js"
+  ],
+  "scripts": {
+    "preinstall": "yarn run link-source && yalc add --link --dev react-on-rails",
+    "link-source": "cd ../../../react_on_rails && yalc publish",
+    "prerelease": "nps check",
+    "clean": "rm -rf lib",
+    "start": "nps",
+    "prepare": "yarn run build",
+    "build": "yarn run clean && yarn run tsc --declaration",
+    "build-watch": "yarn run clean && yarn run tsc --watch",
+    "lint": "nps eslint",
+    "check": "yarn run lint && yarn run test && yarn run type-check",
+    "type-check": "yarn run tsc --noEmit --noErrorTruncation"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shakacode/react_on_rails_pro.git"
+  },
+  "keywords": [
+    "react",
+    "webpack",
+    "JavaScript",
+    "Ruby",
+    "on",
+    "Rails"
+  ],
+  "author": "justin@shakacode.com",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/shakacode/react_on_rails_pro/issues"
+  },
+  "homepage": "https://github.com/shakacode/react_on_rails_pro#readme",
+  "husky": {
+    "hooks": {
+      "pre-commit": "yalc check"
+    }
+  }
+}

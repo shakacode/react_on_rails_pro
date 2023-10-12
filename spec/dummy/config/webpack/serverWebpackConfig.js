@@ -99,6 +99,14 @@ const configureServer = () => {
     }
   });
 
+  rules.push({
+    test: /\.jsx$/,
+    loader: 'react-on-rails-pro/RSCWebpackLoader',
+    exclude: /node_modules/,
+  });
+
+  serverWebpackConfig.resolve.conditionNames = ['node', 'import', 'require', 'default'];
+
   // eval works well for the SSR bundle because it's the fastest and shows
   // lines in the server bundle which is good for debugging SSR
   // The default of cheap-module-source-map is slow and provides poor info.

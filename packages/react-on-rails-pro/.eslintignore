@@ -1,0 +1,11 @@
+node_modules
+lib/
+webpack.config.js
+**/node_modules/**
+**/assets/webpack/**
+**/public/webpack/**
+**/generated/**
+**/app/assets/javascripts/application.js
+**/cable.js
+**/public/packs*/*
+bundle/

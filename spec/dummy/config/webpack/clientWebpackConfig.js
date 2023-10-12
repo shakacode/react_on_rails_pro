@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const commonWebpackConfig = require('./commonWebpackConfig');
 const LoadablePlugin = require('@loadable/webpack-plugin');
+const ReactServerWebpackPlugin = require('react-server-dom-webpack/plugin');
 
 const isHMR = process.env.HMR;
 
@@ -16,6 +17,18 @@ const configureClient = () => {
   if (!isHMR) {
     clientConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
   }
+
+  clientConfig.plugins.unshift(new ReactServerWebpackPlugin({
+    isServer: false, clientReferences: [
+      {
+        directory: './client/app/',
+        recursive: true,
+        include: /\.(js|ts|jsx|tsx)$/,
+      },
+    ]
+  }));
+
+  clientConfig.resolve.conditionNames = ['browser', 'import', 'require', 'default'];
 
   return clientConfig;
 };

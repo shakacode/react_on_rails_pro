@@ -8,6 +8,9 @@ const commonOptions = {
   resolve: {
     extensions: ['.css', '.ts', '.tsx'],
   },
+  stats: {
+    errorDetails: true,
+  },
 };
 
 const isHMR = process.env.HMR;

@@ -40,6 +40,14 @@ class PagesController < ApplicationController
     render "/pages/pro/apollo_graphql"
   end
 
+  def react_server_components_router
+    render "/pages/pro/react_server_components_router"
+  end
+
+  def react_server_components_demo_without_rsc
+    render "/pages/pro/react_server_components_demo_without_rsc"
+  end
+
   # See files in spec/dummy/app/views/pages
 
   helper_method :calc_slow_app_props_server_render

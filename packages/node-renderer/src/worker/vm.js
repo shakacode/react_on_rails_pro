@@ -67,7 +67,7 @@ exports.buildVM = async function buildVM(filePath) {
     const { supportModules, includeTimerPolyfills } = getConfig();
     vmBundleFilePath = undefined;
     if (supportModules) {
-      context = vm.createContext({ Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval });
+      context = vm.createContext({ Buffer, process, setTimeout, setInterval, setImmediate, clearTimeout, clearInterval, clearImmediate });
     } else {
       context = vm.createContext();
     }
@@ -111,8 +111,10 @@ exports.buildVM = async function buildVM(filePath) {
       // Define timer polyfills:
       vm.runInContext(`function setInterval() {}`, context);
       vm.runInContext(`function setTimeout() {}`, context);
+      vm.runInContext(`function setImmediate() {}`, context);
       vm.runInContext(`function clearTimeout() {}`, context);
       vm.runInContext(`function clearInterval() {}`, context);
+      vm.runInContext(`function clearImmediate() {}`, context);
     }
 
     // Run bundle code in created context:
@@ -164,7 +166,7 @@ exports.buildVM = async function buildVM(filePath) {
  * @param vmCluster
  * @returns {{exceptionMessage: string}}
  */
-exports.runInVM = async function runInVM(renderingRequest, vmCluster) {
+exports.runInVM = async function runInVM(renderingRequest, vmCluster, res) {
   const { bundlePath } = getConfig();
 
   try {
@@ -179,6 +181,7 @@ ${smartTrim(renderingRequest)}`);
 
     vm.runInContext('console.history = []', context);
 
+    context.expressRes = res;
     let result = vm.runInContext(renderingRequest, context);
     if (typeof result !== 'string') {
       const objectResult = await result;

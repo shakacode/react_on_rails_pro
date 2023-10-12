@@ -131,8 +131,12 @@ module.exports = function run(config) {
                 bundleTimestamp,
                 providedNewBundle,
                 assetsToCopy,
+                res,
               });
-              setResponse(result, res);
+              // Check if response is already sent
+              if (!res.headersSent) {
+                setResponse(result, res);
+              }
             } catch (err) {
               const exceptionMessage = formatExceptionMessage(
                 renderingRequest,
@@ -149,7 +153,7 @@ module.exports = function run(config) {
             }
           },
           'handleRenderRequest',
-          'SSR Request',
+          'Server Render Request',
         );
       } catch (theErr) {
         const exceptionMessage = formatExceptionMessage(renderingRequest, theErr);

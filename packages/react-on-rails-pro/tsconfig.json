@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "esModuleInterop": true,
+    "jsx": "react",
+    "lib": ["es6"],
+    "module": "node16",
+    "moduleResolution": "node16",
+    "noImplicitAny": true,
+    "outDir": "lib",
+    "strict": true,
+    "target": "es6"
+  },
+  "include": ["src/**/*"]
+}
