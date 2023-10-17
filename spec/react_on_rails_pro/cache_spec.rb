@@ -66,6 +66,8 @@ describe ReactOnRailsPro::Cache, :caching do
       expect(create_component_code).to have_received(:call).once
       string_cache_key = "ror_component/#{ReactOnRails::VERSION}/#{ReactOnRailsPro::VERSION}/MyComponent/the_cache_key"
       expect(cache_data.keys.first).to eq(string_cache_key)
+      puts "XYZYX"
+      p cache_data.values.first.value
       expect(cache_data.values.first.value[:component_html]).to eq(html)
     end
 
