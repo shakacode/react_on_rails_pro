@@ -1,17 +1,30 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSSRComputation } from '@shakacode/use-ssr-computation.macro';
 
 const ApolloGraphQL = () => {
-  const data = useSSRComputation('../ssr-computations/userQuery.ssr-computation', [1], {});
+  const [userId, setUserId] = useState(1);
+  const data = useSSRComputation('../ssr-computations/userQuery.ssr-computation', [userId], {});
   if (!data) {
-    return <div>Loading...</div>;
+    return(
+      <div>
+        <div>Loading...</div>
+        <button onClick={() => setUserId(prevState => prevState === 1 ? 2 : 1)}>
+          Change User
+        </button>
+      </div>
+    );
   }
   const { name, email } = data.user;
   return (
-    <p>
-      <b>{name}: </b>
-      {email}
-    </p>
+    <div>
+      <p>
+        <b>{name}: </b>
+        {email}
+      </p>
+      <button onClick={() => setUserId(prevState => prevState === 1 ? 2 : 1)}>
+        Change User
+      </button>
+    </div>
   );
 };
 

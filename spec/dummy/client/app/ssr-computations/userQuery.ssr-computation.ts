@@ -1,5 +1,7 @@
 import { gql } from "@apollo/client";
-import { getApolloClient } from "../utils/lazyApollo";
+import { NoResult } from '@shakacode/use-ssr-computation.runtime';
+import { getApolloClient, initilizeApolloClient } from "../utils/lazyApollo";
+import { isSSR } from '../utils/dom';
 
 const USER_QUERY = gql`
   query User($id: ID!) {
@@ -13,6 +15,9 @@ const USER_QUERY = gql`
 
 export const preloadQuery = (userId: number) => {
   const apolloClient = getApolloClient();
+  if (!apolloClient) {
+    throw new Error("Apollo client not found");
+  }
   return apolloClient.query({
     query: USER_QUERY,
     variables: { id: userId },
@@ -20,9 +25,34 @@ export const preloadQuery = (userId: number) => {
 }
 
 export const compute = (userId: number) => {
-  const apolloClient = getApolloClient();
-  return apolloClient.cache.readQuery({
+  const initializedApolloClient = getApolloClient();
+  if (!initializedApolloClient && isSSR) {
+    console.log('Apollo Client is not initialized on server-side before calling useSSRComputation');
+  }
+
+  const apolloClient = initializedApolloClient ?? initilizeApolloClient();
+  const data = apolloClient.cache.readQuery({
     query: USER_QUERY,
     variables: { id: userId },
   });
+  return data ?? NoResult;
 };
+
+export const subscribe = (
+  getCurrentResult: () => any,
+  next: (result: any) => void,
+  userId: number,
+) => {
+  const apolloClient = getApolloClient();
+  if (!apolloClient) {
+    throw new Error("Apollo client not found");
+  }
+  return apolloClient.watchQuery({
+    query: USER_QUERY,
+    variables: { id: userId },
+  }).subscribe({
+    next: (result) => {
+      next(result.data);
+    }
+  });
+}
