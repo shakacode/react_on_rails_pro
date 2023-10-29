@@ -39,17 +39,23 @@ const UserPanel = () => {
   };
 
   const { name, email } = data || {};
+  const buttonStyle = {
+    background: "rgba(51, 51, 51, 0.05)",
+    border: "1px solid rgba(51, 51, 51, 0.1)",
+    borderRadius: "4px",
+    padding: "4px 8px",
+  }
   return (
     <div>
       { renderUserInfo() }
-      <button onClick={changeUser}>Change User</button>
+      <button style={buttonStyle} onClick={changeUser}>Change User</button>
       <br />
       <br />
       <div><b>Update User</b></div>
       <label>New User Name: </label>
       <input type="text" ref={newNameInputRef} />
       <br />
-      <button onClick={updateUser}>Update User</button>
+      <button style={buttonStyle} className="bg-blue-500 hover:bg-blue-700" onClick={updateUser}>Update User</button>
 
       { updating && <div>Updating...</div> }
       { updateError && <div style={{ color: 'red' }}>Error while updating User: {updateError.message}</div> }
