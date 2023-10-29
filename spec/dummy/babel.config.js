@@ -14,8 +14,9 @@ module.exports = function (api) {
         },
       ],
     ].filter(Boolean),
-    plugins: [[
-      'macros',
+    plugins: [
+      [
+        'macros',
         {
           useSSRComputation: {
             side,
