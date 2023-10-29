@@ -12,38 +12,47 @@ const ApolloGraphQL = () => {
   const newNameInputRef = useRef<HTMLInputElement>(null);
 
   const data = useSSRComputation('../ssr-computations/userQuery.ssr-computation', [userId], {});
-  const { loading, error } = useSSRComputation('../ssr-computations/updateUser.ssr-computation', [userId, newName || ''], {
+  const { loading: updating, error: updateError } = useSSRComputation('../ssr-computations/updateUser.ssr-computation', [userId, newName || ''], {
     skip: (newName === undefined),
   }) || {};
-  if (!data) {
-    return <div>Loading...</div>;
-  }
-  if (loading) {
-    return <div>Updating...</div>;
-  }
-  if (error) {
-    return <div>Error while updating User: {error.message}</div>;
-  }
-  const { name, email } = data.user;
-  return (
-    <div>
+
+  const renderUserInfo = () => {
+    if (!data) {
+      return <div>Loading...</div>;
+    }
+    const { name, email } = data.user;
+    return (
       <p>
         <b>{name}: </b>
         {email}
       </p>
-      <button onClick={() => {
-        setUserId(prevState => prevState === 1 ? 2 : 1);
-        setNewName(undefined);
-      }}>
-        Change User
-      </button>
+    );
+  };
 
+  const changeUser = () => {
+    setUserId(prevState => prevState === 1 ? 2 : 1);
+    setNewName(undefined);
+  };
+
+  const updateUser = () => {
+    setNewName(newNameInputRef.current?.value);
+  };
+
+  const { name, email } = data || {};
+  return (
+    <div>
+      { renderUserInfo() }
+      <button onClick={changeUser}>Change User</button>
+      <br />
+      <br />
+      <div><b>Update User</b></div>
+      <label>New User Name: </label>
       <input type="text" ref={newNameInputRef} />
-      <button onClick={() => {
-        setNewName(newNameInputRef.current?.value);
-      }}>
-        Update User
-      </button>
+      <br />
+      <button onClick={updateUser}>Update User</button>
+
+      { updating && <div>Updating...</div> }
+      { updateError && <div style={{ color: 'red' }}>Error while updating User: {updateError.message}</div> }
     </div>
   );
 };
