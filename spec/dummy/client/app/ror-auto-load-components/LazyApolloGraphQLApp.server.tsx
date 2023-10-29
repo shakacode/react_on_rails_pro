@@ -3,9 +3,9 @@ import { renderToString } from 'react-dom/server';
 import { getMarkupFromTree } from '@apollo/client/react/ssr';
 import ApolloGraphQL from '../components/LazyApolloGraphQL';
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
-import {preloadQuery} from "../ssr-computations/userQuery.ssr-computation";
-import {setApolloClient} from "../utils/lazyApollo";
-import {setSSRCache} from "@shakacode/use-ssr-computation.runtime";
+import { preloadQuery } from "../ssr-computations/userQuery.ssr-computation";
+import { setApolloClient } from "../utils/lazyApollo";
+import { getSSRCache } from "@shakacode/use-ssr-computation.runtime/lib/ssrCache";
 
 export default async (props, _railsContext) => {
   const { csrf, sessionCookie } = props.ssrOnlyProps;
@@ -25,8 +25,6 @@ export default async (props, _railsContext) => {
       <ApolloGraphQL />
   );
 
-  const ssrComputationCache = {}
-  setSSRCache(ssrComputationCache);
   // `ssr-computation` doesn't support async code on server side, so needs to preload the query before rendering
   await preloadQuery(1);
   const componentHtml = await getMarkupFromTree({
@@ -42,7 +40,7 @@ export default async (props, _railsContext) => {
       dangerouslySetInnerHTML={{
         __html: `
           window.__APOLLO_STATE__=${JSON.stringify(initialState).replace(/</g, '\\u003c')};
-          window.__SSR_COMPUTATION_CACHE=${JSON.stringify(ssrComputationCache)};
+          window.__SSR_COMPUTATION_CACHE=${JSON.stringify(getSSRCache())};
         `,
       }}
     />,

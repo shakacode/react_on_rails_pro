@@ -1,6 +1,9 @@
 <h2 class="page-header">
-  This page demonstrates the use of apollo client during server rendering.
+  This page demonstrates the use <a href="https://github.com/shakacode/use-ssr-computation.macro">useSSRComputation</a> babel macro to <b>Lazy Load Apollo Client</b> package.
 </h2>
+<br />
+<p>Please have a look at the <a href="https://github.com/shakacode/use-ssr-computation.macro">macro docs</a> before proceeding to this example.</p>
+<p>Watch the <b>Network</b> tab in browser to ensure that the <b>Apollo GraphQL</b> bundle is downloaded only when user is changed or updated.</p>
 
 <div class="section-header">
   Result
@@ -24,18 +27,53 @@
 <% end %>
 
 <div class="section-header">
+  Query SSR Computation file
+</div>
+<h2 class="section-subheader">Consists of:</h2>
+<ul class="menu">
+  <li><code>preloadQuery</code> method: should be called on server-side before using the <i>ssr-computation</i> file. Because the ssr compute function must be sync, so it will read the query directly from cache.</li>
+  <li><code>compute</code> method: called on server side to get the current result of the query. Also, will be called on client side if there is a cache miss or when subscriptions are resumed.</li>
+  <li><code>subscribe</code> method: called on client-side when subscriptions are resumed. Responsible for watching changes happen to the Query and pass them to the ssr-computation macro.</li>
+</ul>
+
+<h2 class="section-subheader">Notes</h2>
+<p>The <code>preloadQuery</code> is called in <code>LazyApolloGraphQLApp.server.tsx</code> before rendering the tree.</p>
+
+<pre><code class="language-ts">
+<%= File.read(Rails.root.join "client/app/ssr-computations/userQuery.ssr-computation.ts") %>
+</code></pre>
+
+<div class="section-header">
+  Mutation SSR Computation file
+</div>
+<ul class="menu">
+  <li>Have the <code>compute</code> and <code>subscribe</code> functions. The <code>Promise</code> returned by the `apolloClient.mutate` function is converted into a <code>Subscription</code> that can be understood by ssr-computation.</li>
+  <li><b>It also calls the <code>fetchSubscriptions()</code> method to make other ssr-computations listen to changes that may happen in their queries, this will make the `userQuery` ssr-computation start listening to changes that may happen in the user object and pass the changes to the component using it.</b></li>
+  <li>We can test this behavior by updating user name in one component and we will see that it changes in the other component as well.</li>
+</ul>
+
+<h2 class="section-subheader">Notes</h2>
+<p>The <code>preloadQuery</code> is called in <code>LazyApolloGraphQLApp.server.tsx</code> before rendering the tree.</p>
+
+<pre><code class="language-ts">
+<%= File.read(Rails.root.join "client/app/ssr-computations/updateUser.ssr-computation.ts") %>
+</code></pre>
+
+<div class="section-header">
   Server render function
 </div>
+<p><b>Don't forget to call <code>preloadQuery()</code> before rendering. Also, pass the ssr computation cache to the client-side by getting it from <code>getSSRCache</code> function</b></p>
 
-<pre><code class="language-jsx">
-<%= File.read(Rails.root.join "client/app/ror-auto-load-components/LazyApolloGraphQLApp.client.tsx") %>
+<pre><code class="language-tsx">
+<%= File.read(Rails.root.join "client/app/ror-auto-load-components/LazyApolloGraphQLApp.server.tsx") %>
 </code></pre>
 
 <div class="section-header">
   Client render-function
 </div>
-<pre><code class="language-jsx">
-<%= File.read(Rails.root.join "client/app/ror-auto-load-components/LazyApolloGraphQLApp.server.tsx") %>
+<p>It hydrates the ssr cache by calling <code>setSSRCache</code> method and pass to it the cache object embedded from server-side before hydrating the App.</p>
+<pre><code class="language-tsx">
+<%= File.read(Rails.root.join "client/app/ror-auto-load-components/LazyApolloGraphQLApp.client.tsx") %>
 </code></pre>
 
 <div class="section-header">

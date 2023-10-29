@@ -22,9 +22,17 @@
         @apply text-red-700 text-2xl mt-5 mb-2;
     }
 
+    .section-subheader {
+        @apply text-red-700 text-xl mt-5 mb-2;
+    }
+
     code {
         @apply text-red-700;
         background-color: #f5f2f0;
+    }
+
+    a {
+        @apply text-blue-700;
     }
 
     .menu {
