@@ -4,11 +4,13 @@ import { initilizeApolloClient } from "../utils/lazyApollo";
 import { isSSR } from '../utils/dom';
 
 const UPDATE_USER_MUTATION = gql`
-  mutation updateUser($user_id: ID!, $newName: String!) {
-    update_user(user_id: $user_id, newName: $newName) {
-      id
-      name
-      email
+  mutation updateUser($userId: ID!, $newName: String!) {
+    updateUser(input: {userId: $userId, newName: $newName}) {
+      user {
+        id
+        name
+        email
+      }
     }
   }
 `;
@@ -32,7 +34,7 @@ export const subscribe = (
 
   apolloClient.mutate({
     mutation: UPDATE_USER_MUTATION,
-    variables: { id: userId, newName },
+    variables: { userId, newName },
   }).then((result) => {
     if (!isUnsubscribed) {
       next({ loading: false });
@@ -43,7 +45,9 @@ export const subscribe = (
     }
   });
 
-  return () => {
-    isUnsubscribed = true;
+  return {
+    unsubscribe: () => {
+      isUnsubscribed = true;
+    },
   };
 }
