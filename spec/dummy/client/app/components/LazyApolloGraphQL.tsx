@@ -6,7 +6,7 @@ setErrorHandler((error) => {
   console.error('SSR Error', error);
 });
 
-const ApolloGraphQL = () => {
+const UserPanel = () => {
   const [userId, setUserId] = useState(1);
   const [newName, setNewName] = useState<string>();
   const newNameInputRef = useRef<HTMLInputElement>(null);
@@ -57,4 +57,13 @@ const ApolloGraphQL = () => {
   );
 };
 
-export default ApolloGraphQL;
+const UserPanels = () => {
+  return (
+    <div style={{ display: 'flex', justifyContent: 'space-evenly' }}>
+      <UserPanel />
+      <UserPanel />
+    </div>
+  );
+}
+
+export default UserPanels;
