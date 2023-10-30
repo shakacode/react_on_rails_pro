@@ -1,9 +1,9 @@
 import React, { useState, useRef } from 'react';
 import { useSSRComputation } from '@shakacode/use-ssr-computation.macro';
-import {setErrorHandler} from "@shakacode/use-ssr-computation.runtime";
+import { setErrorHandler } from "@shakacode/use-ssr-computation.runtime";
 
 setErrorHandler((error) => {
-  console.error('SSR Error', error);
+  throw error;
 });
 
 const UserPanel = () => {

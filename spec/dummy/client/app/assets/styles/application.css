@@ -44,6 +44,11 @@
         @apply hover:text-red-700
     }
 
+    .list {
+        @apply ml-4;
+        list-style-type: disc;
+    }
+
     .log-section {
         @apply pt-5 pb-5;
         background-color: #f5f2f0;

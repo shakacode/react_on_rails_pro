@@ -21,9 +21,7 @@ export default async (props, _railsContext) => {
     cache: new InMemoryCache(),
   });
   setApolloClient(client);
-  const App = (
-      <ApolloGraphQL />
-  );
+  const App = <ApolloGraphQL />;
 
   // `ssr-computation` doesn't support async code on server side, so needs to preload the query before rendering
   await preloadQuery(1);

@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { fetchSubscriptions } from '@shakacode/use-ssr-computation.runtime';
-import { initilizeApolloClient } from "../utils/lazyApollo";
+import { initializeApolloClient } from "../utils/lazyApollo";
 import { isSSR } from '../utils/dom';
 
 const UPDATE_USER_MUTATION = gql`
@@ -30,7 +30,7 @@ export const subscribe = (
   newName: string,
 ) => {
   let isUnsubscribed = false;
-  const apolloClient = initilizeApolloClient();
+  const apolloClient = initializeApolloClient();
 
   apolloClient.mutate({
     mutation: UPDATE_USER_MUTATION,

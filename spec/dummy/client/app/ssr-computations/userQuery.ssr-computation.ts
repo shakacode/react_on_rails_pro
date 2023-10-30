@@ -1,6 +1,6 @@
 import { gql } from "@apollo/client";
 import { NoResult } from '@shakacode/use-ssr-computation.runtime';
-import { getApolloClient, initilizeApolloClient } from "../utils/lazyApollo";
+import { getApolloClient, initializeApolloClient } from "../utils/lazyApollo";
 import { isSSR } from '../utils/dom';
 
 const USER_QUERY = gql`
@@ -30,7 +30,7 @@ export const compute = (userId: number) => {
     console.log('Apollo Client is not initialized on server-side before calling useSSRComputation');
   }
 
-  const apolloClient = initializedApolloClient ?? initilizeApolloClient();
+  const apolloClient = initializedApolloClient ?? initializeApolloClient();
   const data = apolloClient.cache.readQuery({
     query: USER_QUERY,
     variables: { id: userId },

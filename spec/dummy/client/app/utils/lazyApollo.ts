@@ -12,7 +12,7 @@ export const setApolloClient = (client: AppApolloClient): void => {
   apolloClient = client;
 }
 
-export const initilizeApolloClient = () => {
+export const initializeApolloClient = () => {
   if (getApolloClient()) {
     return getApolloClient();
   }
