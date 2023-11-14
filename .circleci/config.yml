@@ -26,7 +26,7 @@ aliases:
 
   - &typescript-check
     name: Check TypeScript of the dummy app
-    command: cd spec/dummy && yarn run tsc -p spec/dummy/client/tsconfig.json  --noEmit
+    command: cd spec/dummy && yarn run tsc -p client/tsconfig.json  --noEmit
 
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-node-modules
@@ -110,6 +110,7 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - restore_cache: *restore-package-gem-cache
+      - restore_cache: *restore-dummy-app-node-modules-cache
       - run: *install-package-ruby-gems
       - run: *lint-ruby
       - run: *lint-js
@@ -292,6 +293,7 @@ workflows:
           requires:
             - install-package-node-packages
             - install-package-ruby-gems
+            - install-dummy-app-node-packages
       - build-dummy-app-webpack-test-bundles:
           requires:
             - install-package-node-packages
