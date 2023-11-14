@@ -79,11 +79,13 @@
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/typography": "^0.5.9",
+    "@tsconfig/create-react-app": "^2.0.1",
     "@types/react-dom": "^18.2.14",
     "body-parser": "^1.19.0",
     "jsdom": "^16.4.0",
     "preload-webpack-plugin": "^3.0.0-alpha.1",
     "tape": "^4.7.0",
+    "typescript": "^5.2.2",
     "webpack-dev-server": "^4.7.3"
   },
   "browser": {
@@ -108,7 +110,12 @@
     "type": "git",
     "url": "https://github.com/shakacode/react_on_rails.git"
   },
-  "keywords": ["react", "rails", "server", "rendering"],
+  "keywords": [
+    "react",
+    "rails",
+    "server",
+    "rendering"
+  ],
   "author": "justin808",
   "bugs": {
     "url": "https://github.com/shakacode/react_on_rails_pro/issues"

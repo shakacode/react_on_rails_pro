@@ -13,15 +13,16 @@ export const setApolloClient = (client: AppApolloClient): void => {
 }
 
 export const initializeApolloClient = () => {
-  if (getApolloClient()) {
-    return getApolloClient();
+  let client = getApolloClient();
+  if (client) {
+    return client;
   }
 
-  const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
   // fulfill the store with the server data
   const initialState = window.__APOLLO_STATE__;
 
-  const client = new ApolloClient({
+  client = new ApolloClient({
     cache: new InMemoryCache().restore(initialState),
     link: createHttpLink({
       uri: `${window.location.origin}/graphql`,

@@ -7,7 +7,14 @@ import { preloadQuery } from "../ssr-computations/userQuery.ssr-computation";
 import { setApolloClient } from "../utils/lazyApollo";
 import { getSSRCache } from "@shakacode/use-ssr-computation.runtime/lib/ssrCache";
 
-export default async (props, _railsContext) => {
+type Props = {
+  ssrOnlyProps: {
+    csrf: string;
+    sessionCookie: string;
+  };
+};
+
+export default async (props: Props) => {
   const { csrf, sessionCookie } = props.ssrOnlyProps;
   const client = new ApolloClient({
     ssrMode: true,
