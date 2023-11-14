@@ -24,6 +24,10 @@ aliases:
     name: Check formatting
     command: yarn start format.listDifferent
 
+  - &typescript-check
+    name: Check TypeScript of the dummy app
+    command: cd spec/dummy && yarn run tsc -p spec/dummy/client/tsconfig.json  --noEmit
+
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-node-modules
     name: Install Node modules with Yarn for renderer package
@@ -110,6 +114,7 @@ jobs:
       - run: *lint-ruby
       - run: *lint-js
       - run: *format
+      - run: *typescript-check
 
   # Install Node modules for Renderer package with Yarn and save them to chache.
   install-package-node-packages:
