@@ -1,16 +1,16 @@
-import type { NormalizedCacheObject } from "@apollo/client";
-import { ApolloClient, createHttpLink, InMemoryCache } from "@apollo/client";
+import type { NormalizedCacheObject } from '@apollo/client';
+import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 
 export type AppApolloClient = ApolloClient<NormalizedCacheObject>;
 
 let apolloClient: AppApolloClient | undefined;
 export const getApolloClient = () => {
   return apolloClient;
-}
+};
 
 export const setApolloClient = (client: AppApolloClient): void => {
   apolloClient = client;
-}
+};
 
 export const initializeApolloClient = () => {
   let client = getApolloClient();
@@ -36,4 +36,4 @@ export const initializeApolloClient = () => {
 
   setApolloClient(client);
   return client;
-}
+};

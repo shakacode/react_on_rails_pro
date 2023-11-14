@@ -3,9 +3,9 @@ import { renderToString } from 'react-dom/server';
 import { getMarkupFromTree } from '@apollo/client/react/ssr';
 import ApolloGraphQL from '../components/LazyApolloGraphQL';
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
-import { preloadQuery } from "../ssr-computations/userQuery.ssr-computation";
-import { setApolloClient } from "../utils/lazyApollo";
-import { getSSRCache } from "@shakacode/use-ssr-computation.runtime/lib/ssrCache";
+import { preloadQuery } from '../ssr-computations/userQuery.ssr-computation';
+import { setApolloClient } from '../utils/lazyApollo';
+import { getSSRCache } from '@shakacode/use-ssr-computation.runtime/lib/ssrCache';
 
 type Props = {
   ssrOnlyProps: {

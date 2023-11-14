@@ -1,11 +1,11 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 import { fetchSubscriptions } from '@shakacode/use-ssr-computation.runtime';
-import { initializeApolloClient } from "../utils/lazyApollo";
+import { initializeApolloClient } from '../utils/lazyApollo';
 import { isSSR } from '../utils/dom';
 
 const UPDATE_USER_MUTATION = gql`
   mutation updateUser($userId: ID!, $newName: String!) {
-    updateUser(input: {userId: $userId, newName: $newName}) {
+    updateUser(input: { userId: $userId, newName: $newName }) {
       user {
         id
         name
@@ -17,7 +17,7 @@ const UPDATE_USER_MUTATION = gql`
 
 export const compute = () => {
   if (isSSR) {
-    throw new Error("The mutation should not be called on server-side");
+    throw new Error('The mutation should not be called on server-side');
   }
   fetchSubscriptions();
   return { loading: true };
@@ -32,22 +32,25 @@ export const subscribe = (
   let isUnsubscribed = false;
   const apolloClient = initializeApolloClient();
 
-  apolloClient.mutate({
-    mutation: UPDATE_USER_MUTATION,
-    variables: { userId, newName },
-  }).then((result) => {
-    if (!isUnsubscribed) {
-      next({ loading: false });
-    }
-  }).catch((error) => {
-    if (!isUnsubscribed) {
-      next({ loading: false, error });
-    }
-  });
+  apolloClient
+    .mutate({
+      mutation: UPDATE_USER_MUTATION,
+      variables: { userId, newName },
+    })
+    .then((result) => {
+      if (!isUnsubscribed) {
+        next({ loading: false });
+      }
+    })
+    .catch((error) => {
+      if (!isUnsubscribed) {
+        next({ loading: false, error });
+      }
+    });
 
   return {
     unsubscribe: () => {
       isUnsubscribed = true;
     },
   };
-}
+};

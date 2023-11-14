@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react';
 import { useSSRComputation } from '@shakacode/use-ssr-computation.macro';
-import { setErrorHandler } from "@shakacode/use-ssr-computation.runtime";
+import { setErrorHandler } from '@shakacode/use-ssr-computation.runtime';
 
 setErrorHandler((error) => {
   throw error;
@@ -12,9 +12,10 @@ const UserPanel = () => {
   const newNameInputRef = useRef<HTMLInputElement>(null);
 
   const data = useSSRComputation('../ssr-computations/userQuery.ssr-computation', [userId], {});
-  const { loading: updating, error: updateError } = useSSRComputation('../ssr-computations/updateUser.ssr-computation', [userId, newName || ''], {
-    skip: (newName === undefined),
-  }) || {};
+  const { loading: updating, error: updateError } =
+    useSSRComputation('../ssr-computations/updateUser.ssr-computation', [userId, newName || ''], {
+      skip: newName === undefined,
+    }) || {};
 
   const renderUserInfo = () => {
     if (!data) {
@@ -30,7 +31,7 @@ const UserPanel = () => {
   };
 
   const changeUser = () => {
-    setUserId(prevState => prevState === 1 ? 2 : 1);
+    setUserId((prevState) => (prevState === 1 ? 2 : 1));
     setNewName(undefined);
   };
 
@@ -40,25 +41,31 @@ const UserPanel = () => {
 
   const { name, email } = data || {};
   const buttonStyle = {
-    background: "rgba(51, 51, 51, 0.05)",
-    border: "1px solid rgba(51, 51, 51, 0.1)",
-    borderRadius: "4px",
-    padding: "4px 8px",
-  }
+    background: 'rgba(51, 51, 51, 0.05)',
+    border: '1px solid rgba(51, 51, 51, 0.1)',
+    borderRadius: '4px',
+    padding: '4px 8px',
+  };
   return (
     <div>
-      { renderUserInfo() }
-      <button style={buttonStyle} onClick={changeUser}>Change User</button>
+      {renderUserInfo()}
+      <button style={buttonStyle} onClick={changeUser}>
+        Change User
+      </button>
       <br />
       <br />
-      <div><b>Update User</b></div>
+      <div>
+        <b>Update User</b>
+      </div>
       <label>New User Name: </label>
       <input type="text" ref={newNameInputRef} />
       <br />
-      <button style={buttonStyle} className="bg-blue-500 hover:bg-blue-700" onClick={updateUser}>Update User</button>
+      <button style={buttonStyle} className="bg-blue-500 hover:bg-blue-700" onClick={updateUser}>
+        Update User
+      </button>
 
-      { updating && <div>Updating...</div> }
-      { updateError && <div style={{ color: 'red' }}>Error while updating User: {updateError.message}</div> }
+      {updating && <div>Updating...</div>}
+      {updateError && <div style={{ color: 'red' }}>Error while updating User: {updateError.message}</div>}
     </div>
   );
 };
@@ -70,6 +77,6 @@ const UserPanels = () => {
       <UserPanel />
     </div>
   );
-}
+};
 
 export default UserPanels;
