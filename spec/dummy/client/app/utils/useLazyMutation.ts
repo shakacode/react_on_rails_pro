@@ -38,10 +38,10 @@ export const useLazyMutation = <TData, TVariables extends OperationVariables>(
       const result = await (apolloClient as ApolloClient<NormalizedCacheObject>).mutate<TData, TVariables>({
         mutation,
         ...currentOptions.current,
-        variables: ({
+        variables: {
           ...currentOptions.current?.variables,
           ...variables,
-        } as TVariables),
+        } as TVariables,
       });
       if (!isMounted.current) return;
       setResult({ ...result, loading: false });

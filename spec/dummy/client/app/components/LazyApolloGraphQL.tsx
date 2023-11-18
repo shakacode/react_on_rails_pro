@@ -9,7 +9,7 @@ setErrorHandler((error) => {
 
 const UserPanel = () => {
   const [userId, setUserId] = useState(1);
-  const newNameInputRef = useRef<HTMLInputElement>(null);
+  const newNameInputRef = useRef<HTMLInputElement | null>(null);
 
   const data = useSSRComputation('../ssr-computations/userQuery.ssr-computation', [userId], {});
   const [updateUserMutation, { errors: updateError, loading: updating }] = useLazyMutation(() =>
