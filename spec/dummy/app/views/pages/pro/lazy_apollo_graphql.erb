@@ -44,19 +44,20 @@
 </code></pre>
 
 <div class="section-header">
-  Mutation SSR Computation file
+  Lazy load Apollo mutations
 </div>
 <ul class="list">
-  <li>Have the <code>compute</code> and <code>subscribe</code> functions. The <code>Promise</code> returned by the <code>apolloClient.mutate</code> function is converted into a <code>Subscription</code> that can be understood by ssr-computation.</li>
-  <li><b>It also calls the <code>fetchSubscriptions()</code> method to make other ssr-computations listen to changes that may happen in their queries, this will make the `userQuery` ssr-computation start listening to changes that may happen in the user object and pass the changes to the component using it.</b></li>
+  <li>The <code>useLazyMutation</code> custom hook is used to execute the mutations.</li>
+  <li>The hook accepts a function that lazy load the mutation module when needed. It will avoid adding the mutation module to the main bundle.</li>
+  <li>When the mutation is executed, it calls <code>fetchSubscriptions</code> function to make all queries listen to changes that may happen in Apollo cache.</li>
+  <li>Hence, any change that will happen to the <code>User</code> object will be pushed to the components that are listening to it.</li>
+  <li>It dynamically loads mutation module and the function that creates and initialize Apollo client.</li>
+  <li>Finally, the mutation is executed.</li>
   <li>We can test this behavior by updating user name in one component and we will see that it changes in the other component as well.</li>
 </ul>
 
-<h2 class="section-subheader">Notes</h2>
-<p>The <code>preloadQuery</code> is called in <code>LazyApolloGraphQLApp.server.tsx</code> before rendering the tree.</p>
-
 <pre><code class="language-ts">
-<%= File.read(Rails.root.join "client/app/ssr-computations/updateUser.ssr-computation.ts") %>
+<%= File.read(Rails.root.join "client/app/utils/useLazyMutation.ts") %>
 </code></pre>
 
 <div class="section-header">
@@ -83,7 +84,7 @@
 <pre><code class="language-ruby">
 <%%=
 result = react_component_hash(
-  "ApolloGraphQLApp",
+  "LazyApolloGraphQLApp",
   prerender: true,
   trace: true,
   # since _dummy_session is a http only cookie, it shouldn't be passed to the FE javascript code

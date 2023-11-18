@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useSSRComputation } from '@shakacode/use-ssr-computation.macro';
 import { setErrorHandler } from '@shakacode/use-ssr-computation.runtime';
+import { useLazyMutation } from '../utils/useLazyMutation';
 
 setErrorHandler((error) => {
   throw error;
@@ -8,14 +9,12 @@ setErrorHandler((error) => {
 
 const UserPanel = () => {
   const [userId, setUserId] = useState(1);
-  const [newName, setNewName] = useState<string>();
-  const newNameInputRef = useRef<HTMLInputElement>(null);
+  const newNameInputRef = useRef<HTMLInputElement>();
 
   const data = useSSRComputation('../ssr-computations/userQuery.ssr-computation', [userId], {});
-  const { loading: updating, error: updateError } =
-    useSSRComputation('../ssr-computations/updateUser.ssr-computation', [userId, newName || ''], {
-      skip: newName === undefined,
-    }) || {};
+  const [updateUserMutation, { errors: updateError, loading: updating }] = useLazyMutation(
+    () => import('../utils/lazyApolloOperations').then((lazyApolloOperations) => lazyApolloOperations.UPDATE_USER_MUTATION),
+  );
 
   const renderUserInfo = () => {
     if (!data) {
@@ -32,14 +31,14 @@ const UserPanel = () => {
 
   const changeUser = () => {
     setUserId((prevState) => (prevState === 1 ? 2 : 1));
-    setNewName(undefined);
   };
 
   const updateUser = () => {
-    setNewName(newNameInputRef.current?.value);
+    const newName = newNameInputRef.current?.value;
+    if (!newName) return;
+    void updateUserMutation({ newName: newName, userId: userId });
   };
 
-  const { name, email } = data || {};
   const buttonStyle = {
     background: 'rgba(51, 51, 51, 0.05)',
     border: '1px solid rgba(51, 51, 51, 0.1)',

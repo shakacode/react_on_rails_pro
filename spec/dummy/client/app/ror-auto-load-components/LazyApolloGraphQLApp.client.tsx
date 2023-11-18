@@ -5,10 +5,10 @@ import { setSSRCache } from '@shakacode/use-ssr-computation.runtime';
 import { RailsContext } from 'react-on-rails/node_package/lib/types';
 
 export default (props: {}, _railsContext: RailsContext, domNodeId: string) => {
-  const el = document.getElementById(domNodeId);
   if (!window.__SSR_COMPUTATION_CACHE) {
     throw new Error('Missing window.__SSR_COMPUTATION_CACHE');
   }
+  const el = document.getElementById(domNodeId);
   if (!el) {
     throw new Error(`Missing DOM element with id: ${domNodeId}`);
   }
