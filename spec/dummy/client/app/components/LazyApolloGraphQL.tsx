@@ -9,11 +9,13 @@ setErrorHandler((error) => {
 
 const UserPanel = () => {
   const [userId, setUserId] = useState(1);
-  const newNameInputRef = useRef<HTMLInputElement>();
+  const newNameInputRef = useRef<HTMLInputElement>(null);
 
   const data = useSSRComputation('../ssr-computations/userQuery.ssr-computation', [userId], {});
-  const [updateUserMutation, { errors: updateError, loading: updating }] = useLazyMutation(
-    () => import('../utils/lazyApolloOperations').then((lazyApolloOperations) => lazyApolloOperations.UPDATE_USER_MUTATION),
+  const [updateUserMutation, { errors: updateError, loading: updating }] = useLazyMutation(() =>
+    import('../utils/lazyApolloOperations').then(
+      (lazyApolloOperations) => lazyApolloOperations.UPDATE_USER_MUTATION,
+    ),
   );
 
   const renderUserInfo = () => {
@@ -64,7 +66,7 @@ const UserPanel = () => {
       </button>
 
       {updating && <div>Updating...</div>}
-      {updateError && <div style={{ color: 'red' }}>Error while updating User: {updateError.message}</div>}
+      {updateError && <div style={{ color: 'red' }}>Error while updating User: {updateError.toString()}</div>}
     </div>
   );
 };
