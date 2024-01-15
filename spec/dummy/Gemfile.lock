@@ -175,7 +175,7 @@ GEM
     minitest (5.18.0)
     msgpack (1.6.0)
     multipart-post (2.3.0)
-    net-http (0.3.2)
+    net-http (0.4.1)
       uri
     net-imap (0.3.4)
       date
@@ -189,8 +189,6 @@ GEM
     nio4r (2.5.9)
     nokogiri (1.15.1)
       mini_portile2 (~> 2.8.2)
-      racc (~> 1.4)
-    nokogiri (1.15.1-x86_64-linux)
       racc (~> 1.4)
     parallel (1.22.1)
     parser (3.1.2.1)
@@ -344,7 +342,6 @@ GEM
       sprockets (>= 3.0.0)
     sqlite3 (1.5.3)
       mini_portile2 (~> 2.8.0)
-    sqlite3 (1.5.3-x86_64-linux)
     sync (0.5.0)
     term-ansicolor (1.7.1)
       tins (~> 1.0)
@@ -361,7 +358,7 @@ GEM
     uglifier (4.2.0)
       execjs (>= 0.3.0, < 3)
     unicode-display_width (2.3.0)
-    uri (0.10.0)
+    uri (0.13.0)
     web-console (4.2.0)
       actionview (>= 6.0.0)
       activemodel (>= 6.0.0)
@@ -387,13 +384,12 @@ GEM
     zeitwerk (2.6.8)
 
 PLATFORMS
-  ruby
   x86_64-linux
 
 DEPENDENCIES
   amazing_print
   bootsnap
-  bundler (= 2.3.3)
+  bundler (= 2.5.4)
   capybara
   capybara-screenshot
   coveralls
@@ -437,13 +433,12 @@ DEPENDENCIES
   sqlite3
   turbolinks
   uglifier
-  uri (= 0.10.0)
   web-console
   webdrivers
   webmock
 
 RUBY VERSION
-   ruby 2.7.5
+   ruby 3.3.0p0
 
 BUNDLED WITH
-   2.3.3
+   2.5.4
