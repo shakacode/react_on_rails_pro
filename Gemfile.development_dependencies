@@ -72,5 +72,4 @@ group :test do
   gem "rspec-retry"
   gem "selenium-webdriver"
   gem "webmock"
-  gem "webdrivers"
 end
