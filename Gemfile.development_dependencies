@@ -70,6 +70,7 @@ group :test do
   gem "rspec_junit_formatter"
   gem "rspec-rails"
   gem "rspec-retry"
-  gem "selenium-webdriver"
+  gem "selenium-webdriver", "4.9.0"
   gem "webmock"
+  gem "webdrivers", "5.3.0"
 end
