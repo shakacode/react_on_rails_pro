@@ -100,7 +100,7 @@ jobs:
   # Lint all
   lint-js-and-ruby:
     docker:
-      - image: &docker_image cimg/ruby:3.3.0-browsers
+      - image: &docker_image cimg/ruby:3.0-browsers
     steps:
       - checkout
       - run: *print-system-info
