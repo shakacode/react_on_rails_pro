@@ -13,7 +13,7 @@ PATH
       addressable
       connection_pool
       execjs (~> 2.9)
-      multipart-post (~> 2)
+      multipart-post (~> 2.3)
       persistent_http (~> 2)
       rainbow
       react_on_rails (>= 13.4)
