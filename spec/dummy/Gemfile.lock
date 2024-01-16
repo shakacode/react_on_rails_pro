@@ -12,7 +12,7 @@ PATH
     react_on_rails_pro (3.1.0)
       addressable
       connection_pool
-      execjs (~> 2.5)
+      execjs (~> 2.9)
       multipart-post (~> 2)
       persistent_http (~> 2)
       rainbow
@@ -127,7 +127,7 @@ GEM
     equivalent-xml (0.6.0)
       nokogiri (>= 1.4.3)
     erubi (1.12.0)
-    execjs (2.8.1)
+    execjs (2.9.1)
     faker (2.23.0)
       i18n (>= 1.8.11, < 2)
     ffi (1.15.5)

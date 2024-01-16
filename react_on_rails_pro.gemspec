@@ -27,7 +27,7 @@ Gem::Specification.new do |s|
 
   s.add_runtime_dependency "addressable"
   s.add_runtime_dependency "connection_pool"
-  s.add_runtime_dependency "execjs", "~> 2.5"
+  s.add_runtime_dependency "execjs", "~> 2.9"
   s.add_runtime_dependency "multipart-post", "~> 2"
   s.add_runtime_dependency "persistent_http", "~> 2"
   s.add_runtime_dependency "rainbow"
