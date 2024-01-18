@@ -160,11 +160,14 @@ Notice the 2 "debug" settings of LOCKFILE and ROR.
 See https://nodejs.org/api/util.html#util_util_debuglog_section for details on `debuglog`.
 
 ### Local Node Package
-Because the example and dummy apps rely on the `react_on_rails_pro` node package, they should link directly to your local version to pick up any changes you may have made to that package. To achieve this, switch to the dummy app's root directory and run this command below which runs something like [this script](spec/dummy/package.json#L14)
+Because the example and dummy apps rely on the `react_on_rails_pro` node package, they should link directly to your local version to pick up any changes you may have made to that package. To achieve this, switch to the dummy app's root directory and run this command below.
+For more information chekc script section of the
+[package.json](spec/dummy/package.json)
+in `spec/dummy` app directory.
 
 ```sh
-cd react_on_rails/spec/dummy
-yarn run install-pro-package
+cd spec/dummy
+yarn run preinstall
 ```
 _Note: this runs npm under the hood as explained in **Test NPM for react_on_rails_pro** section above_
 
