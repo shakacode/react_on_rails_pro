@@ -263,10 +263,10 @@ jobs:
           name: Run rspec tests
           command: |
             cd spec/dummy && RAILS_ENV=test bundle exec rspec \
-                                              --out ~/rspec/rspec.xml \
+                                              --out ../../rspec_reports/rspec.xml \
                                               --format documentation
       - store_test_results:
-          path: ~/rspec
+          path: ./rspec_reports
       - store_artifacts:
           path: spec/dummy/tmp/screenshots
       - store_artifacts:
