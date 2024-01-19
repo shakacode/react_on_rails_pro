@@ -263,7 +263,6 @@ jobs:
           name: Run rspec tests
           command: |
             cd spec/dummy && RAILS_ENV=test bundle exec rspec \
-                                              --format RspecJunitFormatter \
                                               --out ~/rspec/rspec.xml \
                                               --format documentation
       - store_test_results:
