@@ -31,7 +31,7 @@ Example: { URL, URLSearchParams, Crypto }
 
 ### Testing example:
 
-[spec/dummy/client/node-renderer.js](../../spec/dummy/client/node-renderer.js)
+[spec/dummy/client/node-renderer.js](https://github.com/shakacode/react_on_rails_pro/blob/master/spec/dummy/client/node-renderer.js)
 
 ### Simple example:
 
