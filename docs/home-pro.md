@@ -12,7 +12,7 @@ Performance enhancements and priority support for React on Rails.
 > The price we paid for the consultation + the React on Rails pro license has already been made back a couple of times from hosting fees alone. The entire process was super hands-off, and our core team was able to focus on shipping new features during that sprint.
 
 
-See [[Egghead React on Rails Pro Deployment Highlights]] for a case study of React on Rails Pro usage at [egghead.io](https://egghead.io).
+See [Egghead React on Rails Pro Deployment Highlights](https://github.com/shakacode/react_on_rails/wiki/Egghead-React-on-Rails-Pro-Deployment-Highlights/) for a case study of React on Rails Pro usage at [egghead.io](https://egghead.io).
 
 # Features
 ## Code Splitting
@@ -76,7 +76,7 @@ See the [Ruby API](https://www.shakacode.com/react-on-rails-pro/docs/ruby-api/).
 "Do you want your app to randomly crash sometimes in hard to predict ways? Then ExecJS is perfect for you"
 Anybody who regularly hits six-digit request numbers a day is going to be in for a bad time." Pete Keen, https://egghead.io
 
-For details, see [[Egghead React on Rails Pro Deployment Highlights]].
+For details, see [Egghead React on Rails Pro Deployment Highlights](https://github.com/shakacode/react_on_rails/wiki/Egghead-React-on-Rails-Pro-Deployment-Highlights/).
 
 # FAQ
 
