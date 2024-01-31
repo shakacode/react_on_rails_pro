@@ -91,13 +91,13 @@ If you're already familiar with Rails fragment caching, the React on Rails imple
 
 The reasons "why" and "why not" are the same as for basic Rails fragment caching:
 
-### Why?
+### Why use Fragment Caching?
 1. Next to caching at the controller or HTTP level, this is the fastest type of caching.
 2. The additional complexity to add this with React on Rails Pro is minimal.
 3. The performance gains can be huge.
 4. The load on your Rails server can be far lessened.
 
-### Why Not?
+### Why Not use Fragment Caching?
 1. It's tricky to get all the right cache keys. You have to consider any values that can change and cause the rendering to change. See the [Rails docs for cache keys](http://guides.rubyonrails.org/caching_with_rails.html#cache-keys)
 2. Testing is a bit tricky or just not done for fragment caching.
 3. Some deployments require you to clear caches.
