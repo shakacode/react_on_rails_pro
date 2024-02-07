@@ -1,6 +1,6 @@
 # Ruby API
 
-Note: you will need access to our **private** React on Rails Pro repository to open the following links
+Note: you will need access to our **private** React on Rails Pro repository to open the following links.
 
 ## View Helpers
 
