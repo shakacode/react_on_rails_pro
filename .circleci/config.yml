@@ -70,7 +70,7 @@ aliases:
   - &restore-dummy-app-node-modules-cache
     name: Restore cached spec/dummy/node_modules directory
     keys:
-      - v4-dummy-app-node-modules-cache-{{ .Revision }}
+      - v4-dummy-app-node-modules-cache-{{ checksum "spec/dummy/yarn.lock" }}
 
   # Restore vendor/bundle dir from cache using Gemfile.lock checksum as a key.
   - &restore-dummy-app-gem-cache
@@ -144,7 +144,7 @@ jobs:
       - run: *install-dummy-app-node-modules
       - save_cache:
           name: Save spec/dummy/node_modules to cache
-          key: v4-dummy-app-node-modules-cache-{{ .Revision }}
+          key: v4-dummy-app-node-modules-cache-{{ checksum "spec/dummy/yarn.lock" }}
           paths:
             - spec/dummy/node_modules
 
