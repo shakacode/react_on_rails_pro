@@ -138,7 +138,7 @@ configBuilder.logSanitizedConfig = function logSanitizedConfig() {
  */
 configBuilder.buildConfig = function buildConfig(providedUserConfig) {
   userConfig = providedUserConfig || {};
-  config = { ...defaultConfig, ...userConfig};
+  config = { ...defaultConfig, ...userConfig };
 
   config.supportModules = truthy(config.supportModules);
   config.sentryTracing = truthy(config.sentryTracing);

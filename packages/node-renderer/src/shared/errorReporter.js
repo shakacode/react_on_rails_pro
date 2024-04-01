@@ -1,4 +1,4 @@
-const requireOptional = require("./requireOptional");
+const requireOptional = require('./requireOptional');
 const log = require('./log');
 
 const Honeybadger = requireOptional('@honeybadger-io/js');
