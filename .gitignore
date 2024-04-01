@@ -29,6 +29,8 @@ tmp
 
 # NVM
 .nvmrc
+# nodenv
+.node-version
 
 # Direnv
 .envrc

@@ -1,12 +1,16 @@
 ---
 extends:
+  - eslint:recommended
   - eslint-config-shakacode
   - prettier
-  - prettier/react
 
 globals:
   __DEBUG_SERVER_ERRORS__: true
   __SERVER_ERRORS__: true
+
+parserOptions:
+  # We have @babel/eslint-parser from eslint-config-shakacode, but don't use Babel in the main project
+  requireConfigFile: false
 
 plugins:
   - jest
@@ -14,7 +18,7 @@ plugins:
 env:
   browser: true
   node: true
-  jest/globals: true
+  jest: true
 
 rules:
   no-console: 0

@@ -2,13 +2,13 @@ const sleep = require('sleep-promise');
 const lockfile = require('lockfile');
 const { promisify } = require('util');
 
-const debug = require('../shared/debug');
-const log = require('../shared/log');
+const debug = require("./debug");
+const log = require("./log");
 
 const lockfileLockAsync = promisify(lockfile.lock);
 const lockfileUnlockAsync = promisify(lockfile.unlock);
 
-const { workerIdLabel } = require('../shared/utils');
+const { workerIdLabel } = require("./utils");
 
 const TEST_LOCKFILE_THREADING = false;
 

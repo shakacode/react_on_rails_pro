@@ -111,11 +111,12 @@ function envValuesUsed() {
 }
 
 function sanitizedSettings(aConfig, defaultValue) {
-  return Object.assign({}, aConfig, {
+  return {
+    ...aConfig,
     password: (aConfig.password && '<MASKED>') || defaultValue,
     allWorkersRestartInterval: aConfig.allWorkersRestartInterval || defaultValue,
     delayBetweenIndividualWorkerRestarts: aConfig.delayBetweenIndividualWorkerRestarts || defaultValue,
-  });
+  };
 }
 
 configBuilder.logSanitizedConfig = function logSanitizedConfig() {
@@ -137,7 +138,7 @@ configBuilder.logSanitizedConfig = function logSanitizedConfig() {
  */
 configBuilder.buildConfig = function buildConfig(providedUserConfig) {
   userConfig = providedUserConfig || {};
-  config = Object.assign({}, defaultConfig, userConfig);
+  config = { ...defaultConfig, ...userConfig};
 
   config.supportModules = truthy(config.supportModules);
   config.sentryTracing = truthy(config.sentryTracing);
