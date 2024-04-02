@@ -79,6 +79,7 @@
     "tap-spec": "^5.0.0",
     "tape-async": "^2.3.0",
     "touch": "^3.1.0",
+    "ts-jest": "^26.5.6",
     "typescript": "^5.4.3",
     "typescript-eslint": "^7.4.0",
     "yalc": "^1.0.0-pre.27"
@@ -132,7 +133,8 @@
     ],
     "testEnvironment": "node",
     "transform": {
-      "^.+\\.jsx?$": "babel-jest"
+      "^.+\\.jsx?$": "babel-jest",
+      "^.+\\.tsx?$": "ts-jest"
     },
     "moduleDirectories": [
       "node_modules",

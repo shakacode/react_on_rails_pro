@@ -4,8 +4,10 @@
     // This copies JS files to the output directory. Make false once all code is converted.
     "allowJs": true,
     "declaration": true,
+    "declarationMap": true,
     "incremental": true,
-    "outDir": "../dist",
     "noUncheckedIndexedAccess": true,
+    "outDir": "../dist",
+    "sourceMap": true,
   },
 }
