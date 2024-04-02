@@ -1,4 +1,6 @@
 ---
+root: true
+
 extends:
   - eslint:recommended
   - eslint-config-shakacode
@@ -35,3 +37,14 @@ rules:
 
   # incompatible with prettier
   no-mixed-operators: 0
+
+overrides:
+  - files: "*.ts{x,}"
+    parser: "@typescript-eslint/parser"
+    parserOptions:
+      project: true
+    plugins:
+      - "@typescript-eslint"
+    extends:
+      - plugin:@typescript-eslint/strict-type-checked
+#    rules:
