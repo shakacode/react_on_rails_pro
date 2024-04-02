@@ -3,9 +3,10 @@
   "version": "4.0.0-rc.1",
   "protocolVersion": "1.0.0",
   "description": "react-on-rails-pro JavaScript for react_on_rails_pro Ruby gem",
-  "main": "packages/node-renderer/src/ReactOnRailsProNodeRenderer.js",
+  "main": "packages/node-renderer/dist/ReactOnRailsProNodeRenderer.js",
+  "types": "packages/node-renderer/dist/ReactOnRailsProNodeRenderer.d.ts",
   "bin": {
-    "react-on-rails-pro-node-renderer": "packages/node-renderer/src/default-node-renderer.js"
+    "react-on-rails-pro-node-renderer": "packages/node-renderer/dist/default-node-renderer.js"
   },
   "publishConfig": {
     "registry": "https://npm.pkg.github.com"
@@ -54,6 +55,7 @@
     "@honeybadger-io/js": "^4.3.1",
     "@sentry/node": "^6.2.3",
     "@sentry/tracing": "^6.2.3",
+    "@tsconfig/node14": "^14.1.2",
     "babel-jest": "^26.6.3",
     "concurrently": "^4.0.1",
     "eslint": "^8.57.0",
@@ -87,13 +89,13 @@
     "@sentry/tracing": "^5.27.3"
   },
   "files": [
-    "packages/node-renderer/src"
+    "packages/node-renderer/dist"
   ],
   "scripts": {
     "test": "nps test",
     "prerelease": "nps check",
     "start": "nps",
-    "developing": "rm -rf /tmp/react-on-rails-pro-node-renderer-bundles && RENDERER_LOG_LEVEL=info NODE_DEBUG=ROR node -r source-map-support/register packages/node-renderer/src/default-node-renderer.js",
+    "developing": "nps node-renderer.debug",
     "eslint": "eslint .",
     "check": "nps lint && nps format && nps test"
   },
@@ -118,7 +120,7 @@
   "jest": {
     "clearMocks": true,
     "collectCoverageFrom": [
-      "packages/node-renderer/tests/**/*.{js,jsx}"
+      "packages/node-renderer/tests/**/*.{js,jsx,ts,tsx}"
     ],
     "coverageReporters": [
       "lcov"

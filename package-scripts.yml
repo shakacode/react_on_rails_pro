@@ -2,26 +2,34 @@ scripts:
   test:
     default:
       description: Run all JS tests
-      script: jest packages/node-renderer/**/*.test.js jest packages/node-renderer/**/**/*.test.js
+      script: jest packages/node-renderer/**/*.test.[jt]s jest packages/node-renderer/**/**/*.test.[jt]s
     debug:
       description: Debug all JS tests
-      script: ndb jest --runInBand packages/node-renderer/**/*.test.js packages/node-renderer/**/**/*.test.js
+      script: ndb jest --runInBand packages/node-renderer/**/*.test.[jt]s packages/node-renderer/**/**/*.test.[jt]s
   check:
     description: Run all checks
-    script: nps lint && nps format.listDifferent && nps test
+    script: nps lint && nps format.listDifferent && nps test && nps build --noEmit && tsc --project packages/node-renderer/tests
   fix:
     description: Run all code fixes before committing
     script: nps eslint.fix && nps format
   node-renderer:
     default:
       description:
-      script: jest packages/node-renderer/**/*.test.js packages/node-renderer/**/**/*.test.js
+      script: jest packages/node-renderer/**/*.test.[jt]s packages/node-renderer/**/**/*.test.[jt]s
     debug:
       description: Debug Node Renderer
-      script: rm -rf /tmp/react-on-rails-pro-node-renderer-bundles && RENDERER_LOG_LEVEL=info NODE_DEBUG=ROR node -r source-map-support/register packages/node-renderer/src/default-node-renderer.js
+      script: rm -rf /tmp/react-on-rails-pro-node-renderer-bundles && nps build && RENDERER_LOG_LEVEL=info NODE_DEBUG=ROR node -r source-map-support/register packages/node-renderer/dist/default-node-renderer.js
   lint:
     description: Run all linters
     script: concurrently --prefix "[{name}]" --names "ESLINT, RUBOCOP, PRETTIER" -c "blue,yellow,magenta,orange" "nps eslint" "bundle exec rubocop" "nps format.listDifferent"
+
+  build:
+    description: Build the project
+    script: tsc --project packages/node-renderer/src
+
+  clean:
+    description: Clean the project
+    script: rm -rf packages/node-renderer/dist
 
   eslint:
     default:
@@ -73,7 +81,7 @@ scripts:
   renderer:
     default:
       description: Starts the node renderer.
-      script: RENDERER_PORT=3800 RENDERER_SUPPORT_MODULES=TRUE node ./packages/node-renderer/src/default-node-renderer.js
+      script: nps build && RENDERER_PORT=3800 RENDERER_SUPPORT_MODULES=TRUE node ./packages/node-renderer/dist/default-node-renderer.js
     debug:
       description: Starts the node renderer with debugging enabled. See Node.js V8 --inspector Manager (NiM)
-      script: RENDERER_WORKERS_COUNT=1 RENDERER_PORT=3800 RENDERER_SUPPORT_MODULES=TRUE ndb ./packages/node-renderer/src/default-node-renderer.js
+      script: nps build && RENDERER_WORKERS_COUNT=1 RENDERER_PORT=3800 RENDERER_SUPPORT_MODULES=TRUE ndb ./packages/node-renderer/dist/default-node-renderer.js

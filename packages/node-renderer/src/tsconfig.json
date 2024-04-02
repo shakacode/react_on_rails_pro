@@ -1,0 +1,11 @@
+{
+  "extends": "@tsconfig/node14/tsconfig.json",
+  "compilerOptions": {
+    // This copies JS files to the output directory. Make false once all code is converted.
+    "allowJs": true,
+    "declaration": true,
+    "incremental": true,
+    "outDir": "../dist",
+    "noUncheckedIndexedAccess": true,
+  },
+}

@@ -35,6 +35,10 @@ tmp
 # Direnv
 .envrc
 
+# TypeScript
+dist/
+*.tsbuildinfo
+
 node_modules
 
 /packages/node-renderer/tests/tmp
