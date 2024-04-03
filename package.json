@@ -127,6 +127,11 @@
     "coverageReporters": [
       "lcov"
     ],
+    "globals": {
+      "ts-jest": {
+        "tsconfig": "./packages/node-renderer/tests/tsconfig.json"
+      }
+    },
     "resetModules": true,
     "resetMocks": true,
     "setupFiles": [
