@@ -4,7 +4,7 @@
  */
 
 const cluster = require('cluster');
-const log = require('../shared/log');
+const log = require('../shared/log').default;
 
 const MILLISECONDS_IN_MINUTE = 60000;
 

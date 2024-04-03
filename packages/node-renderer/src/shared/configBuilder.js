@@ -4,7 +4,7 @@
  * @module worker/configBuilder
  */
 const os = require('os');
-const log = require('./log');
+const log = require('./log').default;
 const requireOptional = require('./requireOptional');
 const { configureLogger } = require('./log');
 const errorReporter = require('./errorReporter');

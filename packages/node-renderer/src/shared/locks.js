@@ -3,7 +3,7 @@ const lockfile = require('lockfile');
 const { promisify } = require('util');
 
 const debug = require('./debug');
-const log = require('./log');
+const log = require('./log').default;
 
 const lockfileLockAsync = promisify(lockfile.lock);
 const lockfileUnlockAsync = promisify(lockfile.unlock);

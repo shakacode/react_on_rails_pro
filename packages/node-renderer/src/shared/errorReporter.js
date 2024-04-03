@@ -1,5 +1,5 @@
 const requireOptional = require('./requireOptional');
-const log = require('./log');
+const log = require('./log').default;
 
 const Honeybadger = requireOptional('@honeybadger-io/js');
 const Sentry = requireOptional('@sentry/node');

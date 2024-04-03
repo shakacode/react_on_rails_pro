@@ -1,5 +1,5 @@
 const requireOptional = require('./requireOptional');
-const log = require('./log');
+const log = require('./log').default;
 
 const sentryTracing = requireOptional('@sentry/tracing');
 class Tracing {

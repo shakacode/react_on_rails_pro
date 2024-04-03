@@ -11,7 +11,7 @@ const cluster = require('cluster');
 const express = require('express');
 const busBoy = require('express-busboy');
 
-const log = require('./shared/log');
+const log = require('./shared/log').default;
 const packageJson = require('./shared/packageJson');
 const { buildConfig, getConfig } = require('./shared/configBuilder');
 const asyncHandler = require('./shared/expressAsyncHandler');

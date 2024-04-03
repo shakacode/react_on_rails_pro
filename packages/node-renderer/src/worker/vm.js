@@ -10,7 +10,7 @@ const m = require('module');
 const cluster = require('cluster');
 const { promisify } = require('util');
 
-const log = require('../shared/log');
+const log = require('../shared/log').default;
 const { getConfig } = require('../shared/configBuilder');
 const { formatExceptionMessage, smartTrim } = require('../shared/utils');
 const errorReporter = require('../shared/errorReporter');

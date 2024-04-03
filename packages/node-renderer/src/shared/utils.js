@@ -3,7 +3,7 @@ const path = require('path');
 const fsExtra = require('fs-extra');
 const errorReporter = require('./errorReporter');
 const { getConfig } = require('./configBuilder');
-const log = require('./log');
+const log = require('./log').default;
 
 const utils = exports;
 

@@ -11,7 +11,7 @@ const fsExtra = require('fs-extra');
 
 const { lock, unlock } = require('../shared/locks');
 const fileExistsAsync = require('../shared/fileExistsAsync');
-const log = require('../shared/log');
+const log = require('../shared/log').default;
 const {
   formatExceptionMessage,
   errorResponseResult,

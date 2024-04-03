@@ -3,7 +3,7 @@
  * @module master
  */
 const cluster = require('cluster');
-const log = require('./shared/log');
+const log = require('./shared/log').default;
 const { buildConfig, logSanitizedConfig } = require('./shared/configBuilder');
 const restartWorkers = require('./master/restartWorkers');
 const errorReporter = require('./shared/errorReporter');
