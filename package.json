@@ -98,7 +98,7 @@
   ],
   "scripts": {
     "test": "nps test",
-    "prerelease": "nps check",
+    "prerelease": "nps check && nps build",
     "start": "nps",
     "developing": "nps node-renderer.debug",
     "eslint": "eslint .",
