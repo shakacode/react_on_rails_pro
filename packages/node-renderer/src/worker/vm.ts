@@ -34,7 +34,6 @@ export function getVmBundleFilePath() {
 
 function replayVmConsole() {
   if (log.level !== 'debug') return;
-  // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
   const consoleHistoryFromVM = vm.runInContext('console.history', context!) as { arguments: unknown[] }[];
 
   consoleHistoryFromVM.forEach((msg) => {

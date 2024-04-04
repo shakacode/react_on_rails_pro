@@ -64,7 +64,7 @@ STACK:
 ${error.stack}`;
 }
 
-interface Asset {
+export interface Asset {
   file: string;
   filename: string;
 }

@@ -1817,10 +1817,26 @@
     "@types/connect" "*"
     "@types/node" "*"
 
+"@types/busboy@*":
+  version "1.5.3"
+  resolved "https://registry.yarnpkg.com/@types/busboy/-/busboy-1.5.3.tgz#016c68692c767f0cf9d23c90a85a9c322f92cbc5"
+  integrity sha512-YMBLFN/xBD8bnqywIlGyYqsNFXu6bsiY7h3Ae0kO17qEuTjsqeyYMRPSUDacIKIquws2Y6KjmxAyNx8xB3xQbw==
+  dependencies:
+    "@types/node" "*"
+
 "@types/color-name@^1.1.1":
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/@types/color-name/-/color-name-1.1.1.tgz#1c1261bbeaa10a8055bbc5d8ab84b7b2afc846a0"
   integrity "sha1-HBJhu+qhCoBVu8XYq4S3sq/IRqA= sha512-rr+OQyAjxze7GgWrSaJwydHStIhHq2lvY3BOC2Mj7KnzI7XK0Uw1TOOdI9lDoajEbSWLiYgoo4f1R51erQfhPQ=="
+
+"@types/connect-busboy@*":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@types/connect-busboy/-/connect-busboy-1.0.3.tgz#23c84d620691fa72b316487e3ec85242d7d419e3"
+  integrity sha512-FLLWzsEgRBPSkeLE2Ab+GvuV1RuSN5oZvXbhpPyCv/QSKujTeOXTIJ/cuiE0++bZ9jMomP3vduXI3mUrS6XWcA==
+  dependencies:
+    "@types/busboy" "*"
+    "@types/express" "*"
+    "@types/node" "*"
 
 "@types/connect@*":
   version "3.4.38"
@@ -1828,6 +1844,14 @@
   integrity sha512-K6uROf1LD88uDQqJCktA4yzL1YYAK6NgfsI0v/mTgyPKWsX1CnJ0XPSDhViejru1GcRkLWb8RlzFYJRqGUbaug==
   dependencies:
     "@types/node" "*"
+
+"@types/express-busboy@^8.0.3":
+  version "8.0.3"
+  resolved "https://registry.yarnpkg.com/@types/express-busboy/-/express-busboy-8.0.3.tgz#67ba6040bc037a002bed9e42c279e93b84b16524"
+  integrity sha512-AafRv/zfAVr9aCMw5TMJGBbI1bULseV5UAPIcbCFS7YDLXYGb1c9F2M/rERn4ev+PFZLe8HhCK8rTLEJwcfzgQ==
+  dependencies:
+    "@types/connect-busboy" "*"
+    "@types/express" "*"
 
 "@types/express-serve-static-core@^4.17.33":
   version "4.17.43"
@@ -1839,7 +1863,7 @@
     "@types/range-parser" "*"
     "@types/send" "*"
 
-"@types/express@^4.17.21":
+"@types/express@*", "@types/express@^4.17.21":
   version "4.17.21"
   resolved "https://registry.yarnpkg.com/@types/express/-/express-4.17.21.tgz#c26d4a151e60efe0084b23dc3369ebc631ed192d"
   integrity sha512-ejlPM315qwLpaQlQDTjPdsUFSc6ZsP4AN6AlWnogPjQ7CVi7PYF3YVz+CY3jE2pwYf7E/7HlDAN0rV2GxTG0HQ==

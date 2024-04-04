@@ -75,7 +75,7 @@ export async function lock(filename: string) {
     debug('After acquired lock in pid', lockfileName);
   } catch (error) {
     log.info('Worker %s: Failed to acquire lock %s, error %s', workerId, lockfileName, error);
-    return { lockfileName, wasLockAcquired, errorMessage: error };
+    return { lockfileName, wasLockAcquired, errorMessage: error as Error };
   }
   return { lockfileName, wasLockAcquired, errorMessage: null };
 }

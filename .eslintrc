@@ -50,7 +50,7 @@ rules:
   no-mixed-operators: 0
 
 overrides:
-  - files: "*.ts{x,}"
+  - files: "**/*.ts{x,}"
     parser: "@typescript-eslint/parser"
     parserOptions:
       project: true
@@ -60,6 +60,7 @@ overrides:
       - plugin:@typescript-eslint/strict-type-checked
     rules:
       "@typescript-eslint/restrict-template-expressions": off
+      "@typescript-eslint/no-non-null-assertion": off
   - files: "packages/node-renderer/tests/**"
     rules:
       # Allows Jest mocks before import
