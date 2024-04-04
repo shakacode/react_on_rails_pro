@@ -1,14 +1,13 @@
-const sleep = require('sleep-promise');
-const lockfile = require('lockfile');
-const { promisify } = require('util');
+import sleep from 'sleep-promise';
+import lockfile, { Options } from 'lockfile';
+import { promisify } from 'util';
 
-const debug = require('./debug');
-const log = require('./log').default;
+import debug from './debug';
+import log from './log';
+import { workerIdLabel } from './utils';
 
-const lockfileLockAsync = promisify(lockfile.lock);
+const lockfileLockAsync = promisify<string, Options>(lockfile.lock);
 const lockfileUnlockAsync = promisify(lockfile.unlock);
-
-const { workerIdLabel } = require('./utils');
 
 const TEST_LOCKFILE_THREADING = false;
 
@@ -49,22 +48,14 @@ const lockfileOptions = {
   pollPeriod: LOCKFILE_POLL_PERIOD,
 };
 
-/**
- *
- * @param lockfileName
- * @returns {Promise<void>}
- */
-exports.unlock = async function unlock(lockfileName) {
+export async function unlock(lockfileName: string) {
   debug('Worker %s: About to unlock %s', workerIdLabel(), lockfileName);
   log.info('Worker %s: About to unlock %s', workerIdLabel(), lockfileName);
 
   await lockfileUnlockAsync(lockfileName);
-};
+}
 
-/**
- * @returns { lockfileName, wasLockAcquired, errorMessage }
- */
-exports.lock = async function lock(filename) {
+export async function lock(filename: string) {
   const lockfileName = `${filename}.lock`;
   const workerId = workerIdLabel();
   let wasLockAcquired = false;
@@ -86,4 +77,4 @@ exports.lock = async function lock(filename) {
     return { lockfileName, wasLockAcquired, errorMessage: error };
   }
   return { lockfileName, wasLockAcquired, errorMessage: null };
-};
+}
