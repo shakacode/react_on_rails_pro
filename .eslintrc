@@ -46,6 +46,7 @@ rules:
   import/prefer-default-export: "off"
 
   # incompatible with prettier
+  lines-between-class-members: off
   no-mixed-operators: 0
 
 overrides:
