@@ -57,4 +57,7 @@ overrides:
       - "@typescript-eslint"
     extends:
       - plugin:@typescript-eslint/strict-type-checked
-#    rules:
+  - files: "packages/node-renderer/tests/**"
+    rules:
+      # Allows Jest mocks before import
+      import/first: off
