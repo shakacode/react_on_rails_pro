@@ -8,17 +8,20 @@ import log from './log';
 export const TRUNCATION_FILLER = '\n... TRUNCATED ...\n';
 
 export function workerIdLabel() {
-  const workerId = (cluster && cluster.worker && cluster.worker.id) || 'NO WORKER ID';
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  const workerId = cluster?.worker?.id || 'NO WORKER ID';
   return workerId;
 }
 
 // From https://stackoverflow.com/a/831583/1009332
 export function smartTrim(value: unknown, maxLength = getConfig().maxDebugSnippetLength) {
   let string;
-  if (!value) return value;
+  if (value == null) return null;
 
-  if (typeof value === 'string' || value instanceof String) {
+  if (typeof value === 'string') {
     string = value;
+  } else if (value instanceof String) {
+    string = value.toString();
   } else {
     string = JSON.stringify(value);
   }

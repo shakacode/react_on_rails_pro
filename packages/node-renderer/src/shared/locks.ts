@@ -66,6 +66,7 @@ export async function lock(filename: string) {
     await lockfileLockAsync(lockfileName, lockfileOptions);
     wasLockAcquired = true;
 
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (TEST_LOCKFILE_THREADING) {
       debug('Worker %i: handleNewBundleProvided sleeping 5s', workerId);
       await sleep(5000);

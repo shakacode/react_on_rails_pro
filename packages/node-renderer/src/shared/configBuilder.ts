@@ -21,21 +21,6 @@ const { env } = process;
 const MAX_DEBUG_SNIPPET_LENGTH = 1000;
 const DEFAULT_SAMPLE_RATE = 0.1;
 
-let config: Config;
-let userConfig: Partial<Config>;
-
-export function getConfig() {
-  if (!config) {
-    throw Error('Call buildConfig before calling getConfig');
-  }
-
-  return config;
-}
-
-function defaultWorkersCount() {
-  return os.cpus().length - 1 || 1;
-}
-
 export interface Config {
   port: number;
   // One of https://github.com/winstonjs/winston#logging-levels
@@ -65,6 +50,22 @@ export interface Config {
   sentryTracing: boolean;
   sentryTracesSampleRate: string | number;
   includeTimerPolyfills: boolean;
+}
+
+let config: Config;
+let userConfig: Partial<Config>;
+
+export function getConfig() {
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
+  if (!config) {
+    throw Error('Call buildConfig before calling getConfig');
+  }
+
+  return config;
+}
+
+function defaultWorkersCount() {
+  return os.cpus().length - 1 || 1;
 }
 
 const defaultConfig: Config = {
@@ -129,7 +130,7 @@ function envValuesUsed() {
 function sanitizedSettings(aConfig: Config, defaultValue?: string) {
   return {
     ...aConfig,
-    password: (aConfig.password && '<MASKED>') || defaultValue,
+    password: aConfig.password != null ? '<MASKED>' : defaultValue,
     allWorkersRestartInterval: aConfig.allWorkersRestartInterval || defaultValue,
     delayBetweenIndividualWorkerRestarts: aConfig.delayBetweenIndividualWorkerRestarts || defaultValue,
   };
@@ -150,7 +151,7 @@ export function logSanitizedConfig() {
 /**
  * Lazily create the config
  */
-export function buildConfig(providedUserConfig: Partial<Config>) {
+export function buildConfig(providedUserConfig?: Partial<Config>): Config {
   userConfig = providedUserConfig || {};
   config = { ...defaultConfig, ...userConfig };
 
