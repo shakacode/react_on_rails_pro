@@ -57,6 +57,7 @@
     "@sentry/node": "^6.2.3",
     "@sentry/tracing": "^6.2.3",
     "@tsconfig/node14": "^14.1.2",
+    "@types/express": "^4.17.21",
     "@types/fs-extra": "~8.0.1",
     "@types/jest": "^26.0.14",
     "@types/lockfile": "^1.0.4",
