@@ -1,8 +1,3 @@
-import path from 'path';
-
-const packageJsonPath = path.join(__dirname, '../../../../package.json');
-
-// eslint-disable-next-line import/no-dynamic-require, @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-var-requires
-const packageJson: Record<string, unknown> = require(packageJsonPath);
+import packageJson from '../../../../package.json';
 
 export = packageJson;

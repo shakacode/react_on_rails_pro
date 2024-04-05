@@ -8,6 +8,8 @@
     "incremental": true,
     "noUncheckedIndexedAccess": true,
     "outDir": "../dist",
+    "resolveJsonModule": true,
+    "rootDir": "./",
     "sourceMap": true
   },
   "include": ["**/*.ts", "**/*.js"]
