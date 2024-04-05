@@ -180,7 +180,7 @@ export async function buildVM(filePath: string) {
  */
 export async function runInVM(
   renderingRequest: string,
-  vmCluster: typeof cluster,
+  vmCluster?: typeof cluster,
 ): Promise<string | { exceptionMessage: string }> {
   const { bundlePath } = getConfig();
 
