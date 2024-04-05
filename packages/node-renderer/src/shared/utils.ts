@@ -37,7 +37,13 @@ export function smartTrim(value: unknown, maxLength = getConfig().maxDebugSnippe
   return string.substring(0, midpoint - lstrip) + TRUNCATION_FILLER + string.substring(midpoint + rstrip);
 }
 
-export function errorResponseResult(msg: string) {
+export interface ResponseResult {
+  headers: { 'Cache-Control'?: string };
+  status: number;
+  data?: unknown;
+}
+
+export function errorResponseResult(msg: string): ResponseResult {
   errorReporter.notify(msg);
   return {
     headers: { 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate' },

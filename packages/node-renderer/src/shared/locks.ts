@@ -55,16 +55,27 @@ export async function unlock(lockfileName: string) {
   await lockfileUnlockAsync(lockfileName);
 }
 
-export async function lock(filename: string) {
+type LockResult = {
+  lockfileName: string;
+} & (
+  | {
+      wasLockAcquired: true;
+      errorMessage: null;
+    }
+  | {
+      wasLockAcquired: false;
+      errorMessage: Error;
+    }
+);
+
+export async function lock(filename: string): Promise<LockResult> {
   const lockfileName = `${filename}.lock`;
   const workerId = workerIdLabel();
-  let wasLockAcquired = false;
 
   try {
     debug('Worker %s: About to request lock %s', workerId, lockfileName);
     log.info('Worker %s: About to request lock %s', workerId, lockfileName);
     await lockfileLockAsync(lockfileName, lockfileOptions);
-    wasLockAcquired = true;
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (TEST_LOCKFILE_THREADING) {
@@ -75,7 +86,7 @@ export async function lock(filename: string) {
     debug('After acquired lock in pid', lockfileName);
   } catch (error) {
     log.info('Worker %s: Failed to acquire lock %s, error %s', workerId, lockfileName, error);
-    return { lockfileName, wasLockAcquired, errorMessage: error as Error };
+    return { lockfileName, wasLockAcquired: false, errorMessage: error as Error };
   }
-  return { lockfileName, wasLockAcquired, errorMessage: null };
+  return { lockfileName, wasLockAcquired: true, errorMessage: null };
 }

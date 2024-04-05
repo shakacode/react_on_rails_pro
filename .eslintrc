@@ -33,6 +33,10 @@ settings:
 
 rules:
   no-console: 0
+  no-void:
+    - error
+    # Allow using void to suppress errors about misused promises
+    - { allowAsStatement: true }
 
   # https://github.com/benmosher/eslint-plugin-import/issues/340
   import/no-extraneous-dependencies: 0
@@ -61,6 +65,9 @@ overrides:
     rules:
       "@typescript-eslint/restrict-template-expressions": off
       "@typescript-eslint/no-non-null-assertion": off
+      "@typescript-eslint/no-unused-vars":
+        - error
+        - { argsIgnorePattern: "^_" }
   - files: "packages/node-renderer/tests/**"
     rules:
       # Allows Jest mocks before import
