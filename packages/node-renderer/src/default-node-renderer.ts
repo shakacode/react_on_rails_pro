@@ -1,3 +1,4 @@
+/* eslint-disable */
 // This is a the default vm-render from running `yarn start`
 const { reactOnRailsProNodeRenderer } = require('./ReactOnRailsProNodeRenderer');
 
