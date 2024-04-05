@@ -142,11 +142,7 @@
     "testEnvironment": "node",
     "transform": {
       "^.+\\.[jt]sx?$": "babel-jest"
-    },
-    "moduleDirectories": [
-      "node_modules",
-      "./packages/vm-renderer/src"
-    ]
+    }
   },
   "husky": {
     "hooks": {
