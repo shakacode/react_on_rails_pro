@@ -2001,6 +2001,13 @@
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
   integrity "sha1-cDZkC04hzC8lmugmzoQ9J32tjP8= sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw=="
 
+"@types/touch@^3.1.5":
+  version "3.1.5"
+  resolved "https://registry.yarnpkg.com/@types/touch/-/touch-3.1.5.tgz#f6555a30b543138decabe25efd03ed0187d1630a"
+  integrity sha512-tnu5L7yEvstLAJCjEQRYTtFIqMgJ4fvlDlgJwemY0V6UbeJ8NQCUuj85tPcCm54q/hAlLXFStIEClNlp8mSlMA==
+  dependencies:
+    "@types/node" "*"
+
 "@types/yargs-parser@*":
   version "15.0.0"
   resolved "https://registry.yarnpkg.com/@types/yargs-parser/-/yargs-parser-15.0.0.tgz#cb3f9f741869e20cce330ffbeb9271590483882d"

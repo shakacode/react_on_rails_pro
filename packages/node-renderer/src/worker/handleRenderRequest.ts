@@ -55,10 +55,12 @@ async function prepareResult(renderingRequest: string) {
   }
 }
 
-function getRequestBundleFilePath(bundleTimestamp: string) {
+function getRequestBundleFilePath(bundleTimestamp: string | number) {
   const { bundlePath } = getConfig();
   return path.join(bundlePath, `${bundleTimestamp}.js`);
 }
+
+type Bundle = Pick<Asset, 'file'>;
 
 /**
  *
@@ -70,9 +72,9 @@ function getRequestBundleFilePath(bundleTimestamp: string) {
  */
 async function handleNewBundleProvided(
   bundleFilePathPerTimestamp: string,
-  providedNewBundle: Asset,
+  providedNewBundle: Bundle,
   renderingRequest: string,
-  assetsToCopy: Asset[] | null,
+  assetsToCopy: Asset[] | null | undefined,
 ) {
   log.info('Worker received new bundle: %s', bundleFilePathPerTimestamp);
 
@@ -162,9 +164,9 @@ export = async function handleRenderRequest({
   assetsToCopy,
 }: {
   renderingRequest: string;
-  bundleTimestamp: string;
-  providedNewBundle?: Asset | null;
-  assetsToCopy: Asset[] | null;
+  bundleTimestamp: string | number;
+  providedNewBundle?: Bundle | null;
+  assetsToCopy?: Asset[] | null;
 }) {
   try {
     const bundleFilePathPerTimestamp = getRequestBundleFilePath(bundleTimestamp);
