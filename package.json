@@ -135,7 +135,7 @@
     "resetModules": true,
     "resetMocks": true,
     "setupFiles": [
-      "./packages/node-renderer/tests/helper.js"
+      "./packages/node-renderer/tests/helper.ts"
     ],
     "testEnvironment": "node",
     "transform": {
