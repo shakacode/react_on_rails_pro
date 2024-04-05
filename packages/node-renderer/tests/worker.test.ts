@@ -1,10 +1,10 @@
-const request = require('supertest');
-const fs = require('fs');
-const path = require('path');
-const querystring = require('querystring');
-
-const worker = require('../src/worker');
-const {
+/* eslint-disable @typescript-eslint/no-floating-promises, @typescript-eslint/require-await -- update supertest use later */
+import request from 'supertest';
+import fs from 'fs';
+import querystring from 'querystring';
+import worker from '../src/worker';
+import packageJson from '../../../package.json';
+import {
   BUNDLE_TIMESTAMP,
   createVmBundle,
   resetForTest,
@@ -16,14 +16,11 @@ const {
   bundlePath,
   assetPath,
   assetPathOther,
-} = require('./helper');
+} from './helper';
 
 const testName = 'worker';
 const createVmBundleForTest = () => createVmBundle(testName);
 const bundlePathForTest = () => bundlePath(testName);
-
-// eslint-disable-next-line import/no-dynamic-require
-const packageJson = require(path.join(__dirname, '/../../../package.json'));
 
 const gemVersion = packageJson.version;
 const { protocolVersion } = packageJson;
