@@ -9,7 +9,7 @@
     "noUncheckedIndexedAccess": true,
     "outDir": "../dist",
     "resolveJsonModule": true,
-    "rootDir": "./",
+    "rootDir": ".",
     "sourceMap": true
   },
   "include": ["**/*.ts", "**/*.js"]

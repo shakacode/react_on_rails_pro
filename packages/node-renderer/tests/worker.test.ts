@@ -83,8 +83,12 @@ describe('express worker', () => {
           protocolVersion,
         })
         .end((_err, res) => {
-          expect(res.error.status).toBe(401);
-          expect(res.error.text).toBe('Wrong password');
+          if (res.error) {
+            expect(res.error.status).toBe(401);
+            expect(res.error.text).toBe('Wrong password');
+          } else {
+            fail('Expected error');
+          }
           done();
         });
     },
@@ -114,8 +118,12 @@ describe('express worker', () => {
         })
         .end((_err, res) => {
           console.log('res', JSON.stringify(res));
-          expect(res.error.status).toBe(401);
-          expect(res.error.text).toBe('Wrong password');
+          if (res.error) {
+            expect(res.error.status).toBe(401);
+            expect(res.error.text).toBe('Wrong password');
+          } else {
+            fail('Expected error');
+          }
           done();
         });
     },
@@ -132,8 +140,6 @@ describe('express worker', () => {
       const app = worker({
         bundlePath: bundlePathForTest(),
         password: 'my_password',
-        gemVersion,
-        protocolVersion,
       });
 
       request(app)

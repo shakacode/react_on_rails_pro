@@ -8,7 +8,10 @@ scripts:
       script: ndb jest --runInBand packages/node-renderer/**/*.test.[jt]s packages/node-renderer/**/**/*.test.[jt]s
   check:
     description: Run all checks
-    script: nps lint && nps format.listDifferent && nps test && nps build --noEmit && tsc --project packages/node-renderer/tests
+    script: nps lint && nps format.listDifferent && nps test && nps check-typescript
+  check-typescript:
+    description: Check for TypeScript errors
+    script: nps "build --noEmit" && tsc --project packages/node-renderer/tests && cd spec/dummy && yarn run tsc -p client/tsconfig.json --noEmit
   fix:
     description: Run all code fixes before committing
     script: nps eslint.fix && nps format
