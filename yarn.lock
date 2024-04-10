@@ -9507,9 +9507,9 @@ table@^6.0.4:
     slice-ansi "^4.0.0"
     string-width "^4.2.0"
 
-"tap-diff@https://github.com/vaguilera/tap-diff":
+"tap-diff@git+https://github.com/vaguilera/tap-diff.git":
   version "0.1.1"
-  resolved "https://github.com/vaguilera/tap-diff#0e7e74352d7ee56ea26405ad0c9a57ed08943e05"
+  resolved "git+https://github.com/vaguilera/tap-diff.git#0e7e74352d7ee56ea26405ad0c9a57ed08943e05"
   dependencies:
     chalk "^1.1.1"
     diff "^5.0.0"
