@@ -1,9 +1,8 @@
-import cluster from 'cluster';
-import master from './master';
-import worker from './worker';
-import { Config } from './shared/configBuilder';
+const cluster = require('cluster');
+const master = require('./master');
+const worker = require('./worker');
 
-export function reactOnRailsProNodeRenderer(config: Partial<Config> = {}) {
+export function reactOnRailsProNodeRenderer(config = {}) {
   if (cluster.isMaster) {
     master(config);
   } else {

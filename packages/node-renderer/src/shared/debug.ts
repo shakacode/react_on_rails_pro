@@ -1,3 +1,3 @@
-import { debuglog } from 'util';
+const { debuglog } = require('util');
 
 export = debuglog('ROR');
