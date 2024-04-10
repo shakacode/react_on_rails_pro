@@ -54,20 +54,20 @@ export function errorResponseResult(msg: string): ResponseResult {
 
 /**
  *
- * @param renderingRequest JavaScript code to execute
- * @param error
- * @returns {string}
+ * @param renderingRequest The JavaScript code which threw an error
+ * @param error The error that was thrown (typed as `unknown` to minimize casts in `catch`)
+ * @param context Optional context to include in the error message
  */
-export function formatExceptionMessage(renderingRequest: string, error: any, context?: string) {
+export function formatExceptionMessage(renderingRequest: string, error: unknown, context?: string) {
   return `${context ? `\nContext:\n${context}\n` : ''}
 JS code for rendering request was:
 ${smartTrim(renderingRequest)}
     
 EXCEPTION MESSAGE:
-${error.message || error}
+${(error as Error).message || error}
 
 STACK:
-${error.stack}`;
+${(error as Error).stack}`;
 }
 
 export interface Asset {

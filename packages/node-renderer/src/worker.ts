@@ -5,7 +5,7 @@
 
 import path from 'path';
 import cluster from 'cluster';
-import express, { NextFunction, Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import busBoy from 'express-busboy';
 import log from './shared/log';
 import packageJson from './shared/packageJson';
@@ -123,7 +123,7 @@ export = function run(config: Partial<Config>) {
   // server logs might show it to distinguish different requests.
   app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post(
     // eslint-disable-next-line @typescript-eslint/no-misused-promises,@typescript-eslint/require-await -- Express types don't expect async handler
-    asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+    asyncHandler(async (req, res, _next) => {
       if (!requestPrechecks(req, res)) {
         return;
       }
@@ -188,7 +188,7 @@ export = function run(config: Partial<Config>) {
   // any assets, they must be uploaded manually.
   app.route('/upload-assets').post(
     // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Express types don't expect async handler
-    asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+    asyncHandler(async (req, res, _next) => {
       if (!requestPrechecks(req, res)) {
         return;
       }
@@ -248,7 +248,7 @@ export = function run(config: Partial<Config>) {
   // Checks if file exist
   app.route('/asset-exists').post(
     // eslint-disable-next-line @typescript-eslint/no-misused-promises -- Express types don't expect async handler
-    asyncHandler(async (req: Request, res: Response, _next: NextFunction) => {
+    asyncHandler(async (req, res, _next) => {
       if (!isAuthenticated(req, res)) {
         return;
       }
