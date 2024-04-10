@@ -30,6 +30,9 @@ tmp
 # NVM
 .nvmrc
 
+# Direnv
+.envrc
+
 node_modules
 
 /packages/node-renderer/tests/tmp
