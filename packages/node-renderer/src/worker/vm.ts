@@ -1,5 +1,5 @@
 /**
- * Holds virtual machine for rendering code in isolated context.
+ * Manages the virtual machine for rendering code in isolated context.
  * @module worker/vm
  */
 
@@ -176,7 +176,6 @@ export async function buildVM(filePath: string) {
  *
  * @param renderingRequest JS Code to execute for SSR
  * @param vmCluster
- * @returns {{exceptionMessage: string}}
  */
 export async function runInVM(
   renderingRequest: string,

@@ -52,7 +52,6 @@ export function errorResponseResult(msg: string): ResponseResult {
 }
 
 /**
- *
  * @param renderingRequest The JavaScript code which threw an error
  * @param error The error that was thrown (typed as `unknown` to minimize casts in `catch`)
  * @param context Optional context to include in the error message
@@ -75,9 +74,7 @@ export interface Asset {
 }
 
 /**
- *
  * @param uploadedAssets array of objects with values { file, filename }
- * @returns {Promise<void>}
  */
 export async function moveUploadedAssets(uploadedAssets: Asset[]): Promise<void> {
   const { bundlePath } = getConfig();
