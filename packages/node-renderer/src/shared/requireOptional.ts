@@ -3,7 +3,7 @@
 // An exception is `@sentry/tracing` where we usually just check the module exists.
 export = function requireOptional(path: string): unknown {
   try {
-    // eslint-disable-next-line import/no-dynamic-require, global-require
+    // eslint-disable-next-line import/no-dynamic-require, global-require -- unavoidable dynamic require
     return require(path);
   } catch (e) {
     if ((e as { code?: string }).code === 'MODULE_NOT_FOUND') {

@@ -8,9 +8,8 @@ import log from './log';
 export const TRUNCATION_FILLER = '\n... TRUNCATED ...\n';
 
 export function workerIdLabel() {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-  const workerId = cluster?.worker?.id || 'NO WORKER ID';
-  return workerId;
+  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- worker is nullable in the primary process
+  return cluster?.worker?.id || 'NO WORKER ID';
 }
 
 // From https://stackoverflow.com/a/831583/1009332

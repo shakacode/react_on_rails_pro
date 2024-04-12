@@ -53,7 +53,7 @@ function replayVmConsole() {
 }
 
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace
+  // eslint-disable-next-line @typescript-eslint/no-namespace -- needed to augment
   namespace NodeJS {
     interface Global {
       ReactOnRails?: unknown;
@@ -190,9 +190,9 @@ export async function runInVM(
     }
 
     if (log.level === 'debug') {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-      const clusterWorkerId = vmCluster?.worker?.id ? `worker ${vmCluster.worker.id} ` : '';
-      log.debug(`worker ${clusterWorkerId}received render request with code
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- worker is nullable in the primary process
+      const workerId = vmCluster?.worker?.id;
+      log.debug(`worker ${workerId ? `${workerId} ` : ''}received render request with code
 ${smartTrim(renderingRequest)}`);
       const debugOutputPathCode = path.join(bundlePath, 'code.js');
       log.debug(`Full code executed written to: ${debugOutputPathCode}`);

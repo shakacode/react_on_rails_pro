@@ -6,7 +6,7 @@ type AsyncHandler = (req: Request, res: Response, next: NextFunction) => Promise
 const asyncUtil = (fn: AsyncHandler): AsyncHandler =>
   function asyncUtilWrap(req, res, next) {
     const fnReturn = fn(req, res, next);
-    // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable
+    // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable -- unavoidable due to Express types
     return Promise.resolve(fnReturn).catch(next);
   };
 
