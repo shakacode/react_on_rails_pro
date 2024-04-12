@@ -4,7 +4,7 @@ import { promisify } from 'util';
 
 import debug from './debug';
 import log from './log';
-import { workerIdLabel } from './utils';
+import { formatExceptionMessage, workerIdLabel } from './utils';
 
 const lockfileLockAsync = promisify<string, Options>(lockfile.lock);
 const lockfileUnlockAsync = promisify(lockfile.unlock);
@@ -89,4 +89,55 @@ export async function lock(filename: string): Promise<LockResult> {
     return { lockfileName, wasLockAcquired: false, errorMessage: error as Error };
   }
   return { lockfileName, wasLockAcquired: true, errorMessage: null };
+}
+
+interface UnderLockArgs<T> {
+  action: () => Promise<T>;
+  actionDescription: string;
+  filename: string;
+  onError: (message: string) => Promise<T>;
+  taskDescription: string;
+}
+
+export async function underLock<T>({
+  action,
+  actionDescription,
+  filename,
+  onError,
+  taskDescription,
+}: UnderLockArgs<T>): Promise<T> {
+  // Doing this outside try is safe because lock catches any errors and returns them in the result
+  const { lockfileName, wasLockAcquired, errorMessage } = await lock(filename);
+  try {
+    if (!wasLockAcquired) {
+      const msg = formatExceptionMessage(
+        taskDescription,
+        errorMessage,
+        `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
+      );
+      return onError(msg);
+    }
+    log.info(taskDescription);
+    try {
+      return action();
+    } catch (err) {
+      const message = `ERROR during ${actionDescription}: ${err}`;
+      log.info(message);
+      return onError(message);
+    }
+  } finally {
+    log.debug('About to unlock %s from worker %i', lockfileName, workerIdLabel());
+    if (wasLockAcquired) {
+      try {
+        await unlock(lockfileName);
+      } catch (error) {
+        const msg = formatExceptionMessage(
+          taskDescription,
+          error,
+          `Error unlocking ${lockfileName} from worker ${workerIdLabel()}.`,
+        );
+        log.warn(msg);
+      }
+    }
+  }
 }

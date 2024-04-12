@@ -21,11 +21,10 @@ import {
   formatExceptionMessage,
   moveUploadedAssets,
   ResponseResult,
-  workerIdLabel,
 } from './shared/utils';
 import errorReporter from './shared/errorReporter';
 import tracing from './shared/tracing';
-import { lock, unlock } from './shared/locks';
+import { underLock } from './shared/locks';
 
 // Uncomment next 2 functions for testing timeouts
 // function sleep(ms) {
@@ -193,56 +192,27 @@ export = function run(config: Partial<Config>) {
       if (!requestPrechecks(req, res)) {
         return;
       }
-      let lockAcquired = false;
-      let lockfileName: string | undefined;
       const assets = Object.values(req.files ?? {});
       const assetsDescription = JSON.stringify(assets.map((asset) => asset.filename));
-      const taskDescription = `Uploading files ${assetsDescription} to ${bundlePath}`;
-      try {
-        const { lockfileName: name, wasLockAcquired, errorMessage } = await lock('transferring-assets');
-        lockfileName = name;
-        lockAcquired = wasLockAcquired;
-
-        if (!wasLockAcquired) {
-          const msg = formatExceptionMessage(
-            taskDescription,
-            errorMessage,
-            `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
+      await underLock({
+        action: async () => {
+          await moveUploadedAssets(assets);
+          setResponse(
+            {
+              status: 200,
+              headers: {},
+            },
+            res,
           );
+        },
+        actionDescription: 'trying to copy assets',
+        filename: 'transferring-assets',
+        onError: (msg) => {
           setResponse(errorResponseResult(msg), res);
-        } else {
-          log.info(taskDescription);
-          try {
-            await moveUploadedAssets(assets);
-            setResponse(
-              {
-                status: 200,
-                headers: {},
-              },
-              res,
-            );
-          } catch (err) {
-            const message = `ERROR when trying to copy assets. ${err}. Task: ${taskDescription}`;
-            log.info(message);
-            setResponse(errorResponseResult(message), res);
-          }
-        }
-      } finally {
-        if (lockAcquired) {
-          try {
-            if (lockfileName) {
-              await unlock(lockfileName);
-            }
-          } catch (error) {
-            const msg = formatExceptionMessage(
-              taskDescription,
-              error,
-              `Error unlocking ${lockfileName} from worker ${workerIdLabel()}.`,
-            );
-            log.warn(msg);
-          }
-        }
-      }
+          return Promise.resolve();
+        },
+        taskDescription: `Uploading files ${assetsDescription} to ${bundlePath}`,
+      });
     }),
   );
 

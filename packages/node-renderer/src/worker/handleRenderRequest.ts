@@ -9,7 +9,7 @@ import cluster from 'cluster';
 import path from 'path';
 import fsExtra from 'fs-extra';
 
-import { lock, unlock } from '../shared/locks';
+import { underLock } from '../shared/locks';
 import fileExistsAsync from '../shared/fileExistsAsync';
 import log from '../shared/log';
 import {
@@ -64,7 +64,7 @@ type Bundle = Pick<Asset, 'file'>;
  * @param renderingRequest
  * @param assetsToCopy might be null
  */
-async function handleNewBundleProvided(
+function handleNewBundleProvided(
   bundleFilePathPerTimestamp: string,
   providedNewBundle: Bundle,
   renderingRequest: string,
@@ -72,79 +72,46 @@ async function handleNewBundleProvided(
 ): Promise<ResponseResult> {
   log.info('Worker received new bundle: %s', bundleFilePathPerTimestamp);
 
-  let lockAcquired = false;
-  let lockfileName: string | undefined;
-  try {
-    const { lockfileName: name, wasLockAcquired, errorMessage } = await lock(bundleFilePathPerTimestamp);
-    lockfileName = name;
-    lockAcquired = wasLockAcquired;
+  const onError = (msg: string) => Promise.resolve(errorResponseResult(msg));
+  return underLock({
+    action: async () => {
+      try {
+        log.info(`Moving uploaded file ${providedNewBundle.file} to ${bundleFilePathPerTimestamp}`);
+        await fsExtra.move(providedNewBundle.file, bundleFilePathPerTimestamp);
+        if (assetsToCopy) {
+          await moveUploadedAssets(assetsToCopy);
+        }
 
-    if (!wasLockAcquired) {
-      const msg = formatExceptionMessage(
-        renderingRequest,
-        errorMessage,
-        `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
-      );
-      return Promise.resolve(errorResponseResult(msg));
-    }
-
-    try {
-      log.info(`Moving uploaded file ${providedNewBundle.file} to ${bundleFilePathPerTimestamp}`);
-      await fsExtra.move(providedNewBundle.file, bundleFilePathPerTimestamp);
-      if (assetsToCopy) {
-        await moveUploadedAssets(assetsToCopy);
-      }
-
-      log.info(`Completed moving uploaded file ${providedNewBundle.file} to ${bundleFilePathPerTimestamp}`);
-    } catch (error) {
-      const fileExists = await fileExistsAsync(bundleFilePathPerTimestamp);
-      if (!fileExists) {
-        const msg = formatExceptionMessage(
-          renderingRequest,
-          error,
-          `Unexpected error when moving the bundle from ${providedNewBundle.file} \
+        log.info(`Completed moving uploaded file ${providedNewBundle.file} to ${bundleFilePathPerTimestamp}`);
+      } catch (error) {
+        const fileExists = await fileExistsAsync(bundleFilePathPerTimestamp);
+        if (!fileExists) {
+          const msg = formatExceptionMessage(
+            renderingRequest,
+            error,
+            `Unexpected error when moving the bundle from ${providedNewBundle.file} \
 to ${bundleFilePathPerTimestamp})`,
+          );
+          log.error(msg);
+          return onError(msg);
+        }
+        log.info(
+          'File exists when trying to overwrite bundle %s. Assuming bundle written by other thread',
+          bundleFilePathPerTimestamp,
         );
-        log.error(msg);
-        return Promise.resolve(errorResponseResult(msg));
       }
-      log.info(
-        'File exists when trying to overwrite bundle %s. Assuming bundle written by other thread',
-        bundleFilePathPerTimestamp,
-      );
-    }
 
-    try {
       // Either this process or another process placed the file. Because the lock is acquired, the
       // file must be fully written
       log.info('buildVM, bundleFilePathPerTimestamp', bundleFilePathPerTimestamp);
       await buildVM(bundleFilePathPerTimestamp);
       return prepareResult(renderingRequest);
-    } catch (error) {
-      const msg = formatExceptionMessage(
-        renderingRequest,
-        error,
-        `Unexpected error when building the VM ${bundleFilePathPerTimestamp}`,
-      );
-      return Promise.resolve(errorResponseResult(msg));
-    }
-  } finally {
-    if (lockAcquired) {
-      log.info('About to unlock %s from worker %i', lockfileName, workerIdLabel());
-      try {
-        if (lockfileName) {
-          await unlock(lockfileName);
-        }
-      } catch (error) {
-        const msg = formatExceptionMessage(
-          renderingRequest,
-          error,
-          `Error unlocking ${lockfileName} from worker ${workerIdLabel()}.`,
-        );
-        log.warn(msg);
-      }
-    }
-  }
+    },
+    actionDescription: 'building the VM',
+    filename: bundleFilePathPerTimestamp,
+    onError,
+    taskDescription: renderingRequest,
+  });
 }
 
 /**
