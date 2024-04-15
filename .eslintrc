@@ -64,7 +64,6 @@ overrides:
       - plugin:@typescript-eslint/strict-type-checked
     rules:
       "@typescript-eslint/restrict-template-expressions": off
-      "@typescript-eslint/no-non-null-assertion": off
       "@typescript-eslint/no-unused-vars":
         - error
         - { argsIgnorePattern: "^_" }

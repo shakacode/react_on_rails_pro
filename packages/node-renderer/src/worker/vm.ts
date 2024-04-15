@@ -33,8 +33,8 @@ export function getVmBundleFilePath() {
 }
 
 function replayVmConsole() {
-  if (log.level !== 'debug') return;
-  const consoleHistoryFromVM = vm.runInContext('console.history', context!) as { arguments: unknown[] }[];
+  if (log.level !== 'debug' || !context) return;
+  const consoleHistoryFromVM = vm.runInContext('console.history', context) as { arguments: unknown[] }[];
 
   consoleHistoryFromVM.forEach((msg) => {
     const stringifiedList = msg.arguments.map((arg) => {

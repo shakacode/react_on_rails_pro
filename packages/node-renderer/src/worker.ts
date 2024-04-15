@@ -121,9 +121,10 @@ export = function run(config: Partial<Config>) {
   // See https://github.com/shakacode/react_on_rails_pro/issues/119 for why
   // the digest is part of the request URL. Yes, it's not used here, but the
   // server logs might show it to distinguish different requests.
-  app.route('/bundles/:bundleTimestamp/render/:renderRequestDigest').post(
+  const bundleRoute = '/bundles/:bundleTimestamp/render/:renderRequestDigest';
+  app.route(bundleRoute).post(
     // eslint-disable-next-line @typescript-eslint/no-misused-promises,@typescript-eslint/require-await -- Express types don't expect async handler
-    asyncHandler(async (req, res, _next) => {
+    asyncHandler<typeof bundleRoute>(async (req, res, _next) => {
       if (!requestPrechecks(req, res)) {
         return;
       }
@@ -150,7 +151,7 @@ export = function run(config: Partial<Config>) {
             try {
               const result = await handleRenderRequest({
                 renderingRequest,
-                bundleTimestamp: bundleTimestamp!,
+                bundleTimestamp,
                 providedNewBundle,
                 assetsToCopy,
               });

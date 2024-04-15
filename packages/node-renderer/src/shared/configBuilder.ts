@@ -168,7 +168,7 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
     }
 
     if (currentArg === 'p') {
-      // config is still guaranteed to be defined here
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion -- config is still guaranteed to be defined here
       config!.port = parseInt(val, 10);
     }
   });
