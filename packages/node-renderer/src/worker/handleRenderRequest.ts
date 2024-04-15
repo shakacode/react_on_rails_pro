@@ -85,10 +85,10 @@ async function handleNewBundleProvided(
     lockfileName = name;
     lockAcquired = wasLockAcquired;
 
-    if (!lockAcquired) {
+    if (!wasLockAcquired) {
       const msg = formatExceptionMessage(
         renderingRequest,
-        errorMessage!,
+        errorMessage,
         `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
       );
       return Promise.resolve(errorResponseResult(msg));

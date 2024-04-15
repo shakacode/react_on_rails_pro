@@ -141,7 +141,7 @@ export = function run(config: Partial<Config>) {
 
       const { renderingRequest } = req.body;
       const { bundleTimestamp } = req.params;
-      const { bundle: providedNewBundle, ...assetsToCopyObj } = req.files!;
+      const { bundle: providedNewBundle, ...assetsToCopyObj } = req.files ?? {};
 
       try {
         const assetsToCopy = Object.values(assetsToCopyObj);
@@ -194,7 +194,7 @@ export = function run(config: Partial<Config>) {
       }
       let lockAcquired;
       let lockfileName;
-      const assets = Object.values(req.files!);
+      const assets = Object.values(req.files ?? {});
       const assetsDescription = JSON.stringify(assets.map((asset) => asset.filename));
       const taskDescription = `Uploading files ${assetsDescription} to ${bundlePath}`;
       try {
