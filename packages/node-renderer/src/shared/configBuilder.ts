@@ -127,7 +127,7 @@ function envValuesUsed() {
 }
 
 function sanitizedSettings(aConfig: Partial<Config> | undefined, defaultValue?: string) {
-  return aConfig
+  return aConfig && Object.keys(aConfig).length > 0
     ? {
         ...aConfig,
         password: aConfig.password != null ? '<MASKED>' : defaultValue,
