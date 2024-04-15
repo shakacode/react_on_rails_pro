@@ -78,8 +78,8 @@ async function handleNewBundleProvided(
 ) {
   log.info('Worker received new bundle: %s', bundleFilePathPerTimestamp);
 
-  let lockAcquired;
-  let lockfileName;
+  let lockAcquired = false;
+  let lockfileName: string | undefined;
   try {
     const { lockfileName: name, wasLockAcquired, errorMessage } = await lock(bundleFilePathPerTimestamp);
     lockfileName = name;
@@ -138,8 +138,9 @@ to ${bundleFilePathPerTimestamp})`,
     if (lockAcquired) {
       log.info('About to unlock %s from worker %i', lockfileName, workerIdLabel());
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion -- ESLint is wrong about the type
-        await unlock(lockfileName!);
+        if (lockfileName) {
+          await unlock(lockfileName);
+        }
       } catch (error) {
         const msg = formatExceptionMessage(
           renderingRequest,

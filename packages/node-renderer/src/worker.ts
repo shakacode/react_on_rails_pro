@@ -192,8 +192,8 @@ export = function run(config: Partial<Config>) {
       if (!requestPrechecks(req, res)) {
         return;
       }
-      let lockAcquired;
-      let lockfileName;
+      let lockAcquired = false;
+      let lockfileName: string | undefined;
       const assets = Object.values(req.files ?? {});
       const assetsDescription = JSON.stringify(assets.map((asset) => asset.filename));
       const taskDescription = `Uploading files ${assetsDescription} to ${bundlePath}`;
@@ -229,8 +229,9 @@ export = function run(config: Partial<Config>) {
       } finally {
         if (lockAcquired) {
           try {
-            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            await unlock(lockfileName!);
+            if (lockfileName) {
+              await unlock(lockfileName);
+            }
           } catch (error) {
             const msg = formatExceptionMessage(
               taskDescription,
