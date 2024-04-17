@@ -15,7 +15,7 @@ You can find the **package** version numbers from this repo's tags and below in 
 *Add changes in master not yet tagged.*
 
 ### Changed
-- Converted JS code to TS [PR 386](https://github.com/shakacode/react_on_rails_pro/pull/386) by [alexeyr-ci](https://github.com/alexeyr-ci).
+- Converted JS code to TS [PR 386](https://github.com/shakacode/react_on_rails_pro/pull/386) and [PR 389](https://github.com/shakacode/react_on_rails_pro/pull/389) by [alexeyr-ci](https://github.com/alexeyr-ci).
 
 ## [3.1.2] - 2023-02-24
 
