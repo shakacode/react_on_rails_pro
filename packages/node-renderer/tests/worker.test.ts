@@ -1,6 +1,7 @@
 import request from 'supertest';
 import fs from 'fs';
 import querystring from 'querystring';
+import { Config } from '../src/shared/configBuilder';
 import worker from '../src/worker';
 import packageJson from '../../../package.json';
 import {
@@ -24,7 +25,13 @@ const bundlePathForTest = () => bundlePath(testName);
 const gemVersion = packageJson.version;
 const { protocolVersion } = packageJson;
 
-describe('express worker', () => {
+const makeApp = async (config: Partial<Config>) => {
+  const app = worker(config);
+  await app.ready();
+  return app.server;
+};
+
+describe('worker', () => {
   beforeEach(async () => {
     await resetForTest(testName);
   });
@@ -36,7 +43,7 @@ describe('express worker', () => {
   test('POST /bundles/:bundleTimestamp/render/:renderRequestDigest when bundle is provided and did not yet exist', async () => {
     expect.assertions(6);
 
-    const app = worker({
+    const app = await makeApp({
       bundlePath: bundlePathForTest(),
     });
 
@@ -66,7 +73,7 @@ describe('express worker', () => {
       expect.assertions(2);
       await createVmBundleForTest();
 
-      const app = worker({
+      const app = await makeApp({
         bundlePath: bundlePathForTest(),
         password: 'password',
       });
@@ -99,7 +106,7 @@ describe('express worker', () => {
 
       await createVmBundleForTest();
 
-      const app = worker({
+      const app = await makeApp({
         bundlePath: bundlePathForTest(),
         password: 'password',
       });
@@ -132,7 +139,7 @@ describe('express worker', () => {
       expect.assertions(3);
       await createVmBundleForTest();
 
-      const app = worker({
+      const app = await makeApp({
         bundlePath: bundlePathForTest(),
         password: 'my_password',
       });
@@ -162,7 +169,7 @@ describe('express worker', () => {
 
       await createVmBundleForTest();
 
-      const app = worker({
+      const app = await makeApp({
         bundlePath: bundlePathForTest(),
       });
 
@@ -186,7 +193,7 @@ describe('express worker', () => {
   test('post /asset-exists when asset exists', async () => {
     expect.assertions(2);
     await createAsset(testName);
-    const app = worker({
+    const app = await makeApp({
       bundlePath: bundlePathForTest(),
       password: 'my_password',
     });
@@ -208,7 +215,7 @@ describe('express worker', () => {
   test('post /asset-exists when asset not exists', async () => {
     expect.assertions(2);
     await createAsset(testName);
-    const app = worker({
+    const app = await makeApp({
       bundlePath: bundlePathForTest(),
       password: 'my_password',
     });
@@ -229,7 +236,7 @@ describe('express worker', () => {
 
   test('post /upload-assets', async () => {
     expect.assertions(3);
-    const app = worker({
+    const app = await makeApp({
       bundlePath: bundlePathForTest(),
       password: 'my_password',
     });
