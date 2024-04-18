@@ -1,7 +1,7 @@
 import cluster from 'cluster';
 import path from 'path';
 import { MultipartFile } from '@fastify/multipart';
-import { createWriteStream, ensureDir, move } from 'fs-extra';
+import { createWriteStream, ensureDir, move, MoveOptions } from 'fs-extra';
 import { pipeline } from 'stream';
 import { promisify } from 'util';
 import errorReporter from './errorReporter';
@@ -88,8 +88,12 @@ export interface Asset {
   filename: string;
 }
 
-export function moveUploadedAsset(asset: Asset, destinationPath: string): Promise<void> {
-  return move(asset.savedFilePath, destinationPath);
+export function moveUploadedAsset(
+  asset: Asset,
+  destinationPath: string,
+  options: MoveOptions = {},
+): Promise<void> {
+  return move(asset.savedFilePath, destinationPath, options);
 }
 
 export async function moveUploadedAssets(uploadedAssets: Asset[]): Promise<void> {
@@ -97,7 +101,7 @@ export async function moveUploadedAssets(uploadedAssets: Asset[]): Promise<void>
 
   const moveMultipleAssets = uploadedAssets.map((asset) => {
     const destinationAssetFilePath = path.join(bundlePath, asset.filename);
-    return moveUploadedAsset(asset, destinationAssetFilePath);
+    return moveUploadedAsset(asset, destinationAssetFilePath, { overwrite: true });
   });
   await Promise.all(moveMultipleAssets);
   log.info(`Moved assets ${JSON.stringify(uploadedAssets.map((fileDescriptor) => fileDescriptor.filename))}`);
