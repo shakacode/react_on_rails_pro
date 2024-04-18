@@ -67,9 +67,9 @@ export = function run(config: Partial<Config>) {
   // getConfig():
   buildConfig(config);
 
-  const { bundlePath, port } = getConfig();
+  const { bundlePath, logLevel, port } = getConfig();
 
-  const app = fastify();
+  const app = fastify({ logger: logLevel === 'debug' });
 
   // 10 MB limit for code including props
   const fieldSizeLimit = 1024 * 1024 * 10;
