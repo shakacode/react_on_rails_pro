@@ -5,9 +5,10 @@
 
 import path from 'path';
 import cluster from 'cluster';
-import fastify, { FastifyReply, FastifyRequest } from 'fastify';
+import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
+import { readFileSync } from 'fs';
 import log from './shared/log';
 import packageJson from './shared/packageJson';
 import { buildConfig, Config, getConfig } from './shared/configBuilder';
@@ -72,9 +73,25 @@ export = function run(config: Partial<Config>) {
   // getConfig():
   buildConfig(config);
 
-  const { bundlePath, logLevel, port } = getConfig();
+  const { bundlePath, certDir, logLevel, port, protocol } = getConfig();
 
-  const app = fastify({ logger: logLevel === 'debug' });
+  const app = (() => {
+    const logger = logLevel === 'debug';
+    if (protocol === 'http2') {
+      return certDir
+        ? fastify({
+            http2: true,
+            https: {
+              allowHTTP1: true,
+              cert: readFileSync(path.join(certDir, 'node-renderer.crt')),
+              key: readFileSync(path.join(certDir, 'node-renderer.key')),
+            },
+            logger,
+          })
+        : fastify({ http2: true, logger });
+    }
+    return fastify({ logger });
+  })() as FastifyInstance;
 
   // 10 MB limit for code including props
   const fieldSizeLimit = 1024 * 1024 * 10;

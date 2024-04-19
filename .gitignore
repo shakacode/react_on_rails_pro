@@ -8,6 +8,8 @@
 *.gem
 /vendor/
 tmp
+# Self-signed certificates for local development
+cert/
 
 **/spec/examples.txt
 /spec/dummy/client/node_modules

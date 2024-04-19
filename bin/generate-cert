@@ -1,0 +1,6 @@
+#!/bin/bash
+mkdir -p /tmp/react-on-rails-pro/node-renderer-certs
+openssl req -nodes -new -x509 \
+  -keyout /tmp/react-on-rails-pro/node-renderer-certs/node-renderer.key \
+  -out /tmp/react-on-rails-pro/node-renderer-certs/node-renderer.crt \
+  -subj "/C=US/ST=State/L=City/O=company/OU=Com/CN=www.testserver.local"
