@@ -89,7 +89,7 @@
     "touch": "^3.1.0",
     "typescript": "^5.4.3",
     "typescript-eslint": "^7.4.0",
-    "yalc": "^1.0.0-pre.27"
+    "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
     "@honeybadger-io/js": "^4.3.1",
