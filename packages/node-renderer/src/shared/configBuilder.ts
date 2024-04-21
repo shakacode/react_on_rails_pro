@@ -15,7 +15,6 @@ import truthy from './truthy';
 
 const Sentry = requireOptional('@sentry/node') as typeof import('@sentry/node') | null;
 
-const DEFAULT_CERT_DIR = '/tmp/react-on-rails-pro/node-renderer-certs';
 // usually remote renderers are on staging or production, so, use production folder always
 const DEFAULT_PORT = 3800;
 const DEFAULT_LOG_LEVEL = 'info';
@@ -112,7 +111,7 @@ const defaultConfig: Config = {
 
   protocol: env.RENDERER_PROTOCOL as Config['protocol'],
 
-  certDir: env.RENDERER_CERT_DIR || DEFAULT_CERT_DIR,
+  certDir: env.RENDERER_CERT_DIR,
 
   // Show only important messages by default
   logLevel: env.RENDERER_LOG_LEVEL || DEFAULT_LOG_LEVEL,
