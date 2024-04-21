@@ -19,6 +19,8 @@
 #
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
 require "pry-byebug"
+require "webmock"
+require "httpx/adapters/webmock"
 require "webmock/rspec"
 WebMock.allow_net_connect!
 
@@ -47,6 +49,10 @@ RSpec.configure do |config|
     # a real object. This is generally recommended, and will default to
     # `true` in RSpec 4.
     mocks.verify_partial_doubles = true
+  end
+
+  config.before(:suite) do
+    ReactOnRailsPro::Request.reset_connection
   end
 
   # The settings below are suggested to provide a good initial experience
