@@ -37,7 +37,7 @@ describe "Upload asset" do
       expect(asset_exist_on_renderer?(asset_filename)).to be(false)
       expect(asset_exist_on_renderer?(asset_filename2)).to be(false)
       response = ReactOnRailsPro::Request.upload_assets
-      expect(response.code).to eq("200")
+      expect(response.status).to eq(200)
       expect(asset_exist_on_renderer?(asset_filename)).to be(true)
       expect(asset_exist_on_renderer?(asset_filename2)).to be(true)
     end
