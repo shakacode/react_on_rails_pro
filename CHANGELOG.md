@@ -14,6 +14,10 @@ You can find the **package** version numbers from this repo's tags and below in 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+## [3.2.1] - 2023-06-07
+Fixed release, supports Ruby 2.7.5
+
+
 ## [3.1.2] - 2023-02-24
 
 ### Fixed
@@ -292,8 +296,7 @@ Above changes in [PR 52](https://github.com/shakacode/react_on_rails_pro/pull/52
 - advanced error handling
 
 [Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.2...HEAD
-[3.1.2]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.1...3.1.2
-[3.1.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.0...3.1.1
+[3.2.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.2.1...3.1.0
 [3.1.0]: https://github.com/shakacode/react_on_rails_pro/compare/3.0.1...3.1.0
 [3.0.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/shakacode/react_on_rails_pro/compare/2.3.0...3.0.0
