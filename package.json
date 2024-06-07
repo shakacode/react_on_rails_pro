@@ -1,6 +1,6 @@
 {
   "name": "@shakacode-tools/react-on-rails-pro-node-renderer",
-  "version": "3.1.0",
+  "version": "3.1.2",
   "protocolVersion": "1.0.0",
   "description": "react-on-rails-pro JavaScript for react_on_rails_pro Ruby gem",
   "main": "packages/node-renderer/src/ReactOnRailsProNodeRenderer.js",
@@ -137,5 +137,6 @@
     "hooks": {
       "pre-commit": "yalc check"
     }
-  }
+  },
+  "packageManager": "yarn@1.22.19+sha1.4ba7fc5c6e704fce2066ecbfb0b0d8976fe62447"
 }
