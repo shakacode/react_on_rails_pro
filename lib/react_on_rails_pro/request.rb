@@ -4,6 +4,7 @@ require "net/http"
 require "net/http/post/multipart"
 require "uri"
 require "persistent_http"
+require_relative "stream_request"
 
 module ReactOnRailsPro
   class Request
@@ -15,6 +16,13 @@ module ReactOnRailsPro
       def render_code(path, js_code, send_bundle)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request #{path}" }
         perform_request(path, form_with_code(js_code, send_bundle))
+      end
+
+      def render_code_as_stream(path, js_code)
+        Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
+        ReactOnRailsPro::StreamRequest.create do |send_bundle, &block|
+          perform_request(path, form_with_code(js_code, send_bundle), &block)
+        end
       end
 
       def upload_assets
@@ -34,12 +42,12 @@ module ReactOnRailsPro
         @connection ||= create_connection
       end
 
-      def perform_request(path, form)
+      def perform_request(path, form, &block)
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
           begin
-            response = connection.request(Net::HTTP::Post::Multipart.new(path, form))
+            response = connection.request(Net::HTTP::Post::Multipart.new(path, form), &block)
             retry_request = false
           rescue Timeout::Error => e
             # Testing timeout catching:

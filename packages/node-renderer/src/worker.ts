@@ -51,13 +51,17 @@ function setHeaders(headers: ResponseResult['headers'], res: FastifyReply) {
 }
 
 const setResponse = (result: ResponseResult, res: FastifyReply) => {
-  const { status, data, headers } = result;
+  const { status, data, headers, stream } = result;
   if (status !== 200 && status !== 410) {
     log.info(`Sending non-200, non-410 data back: ${typeof data === 'string' ? data : JSON.stringify(data)}`);
   }
   setHeaders(headers, res);
   res.status(status);
-  res.send(data);
+  if (stream) {
+    stream.pipe(res.raw);
+  } else {
+    res.send(data);
+  }
 };
 
 const isAsset = (value: unknown): value is Asset => (value as { type?: string }).type === 'asset';

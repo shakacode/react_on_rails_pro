@@ -41,6 +41,28 @@ module ReactOnRailsPro
             .exec_server_render_js(js_code, render_options, self)
         end
 
+        def exec_server_render_streaming_js(js_code, render_options)
+          # The secret sauce is passing self as the 3rd param, the js_evaluator
+          render_options.set_option(:throw_js_errors, ReactOnRailsPro.configuration.throw_js_errors)
+          ReactOnRails::ServerRenderingPool::RubyEmbeddedJavaScript
+            .exec_server_render_streaming_js(js_code, render_options, self)
+        end
+
+        def eval_streaming_js(js_code, render_options)
+          ReactOnRailsPro::ServerRenderingPool::ProRendering
+            .set_request_digest_on_render_options(js_code, render_options)
+
+          # In case this method is called with simple, raw JS, not depending on the bundle, next line
+          # is needed.
+          @bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
+
+          # TODO: Remove the request_digest. See https://github.com/shakacode/react_on_rails_pro/issues/119
+          # From the request path
+          # path = "/bundles/#{@bundle_hash}/render"
+          path = "/bundles/#{@bundle_hash}/render/#{render_options.request_digest}"
+          ReactOnRailsPro::Request.render_code_as_stream(path, js_code)
+        end
+
         def eval_js(js_code, render_options, send_bundle: false)
           ReactOnRailsPro::ServerRenderingPool::ProRendering
             .set_request_digest_on_render_options(js_code, render_options)

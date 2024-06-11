@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class PagesController < ApplicationController
+  include ActionController::Live
+
   XSS_PAYLOAD = { "<script>window.alert('xss1');</script>" => '<script>window.alert("xss2");</script>' }.freeze
   PROPS_NAME = "Mr. Server Side Rendering"
   APP_PROPS_SERVER_RENDER = {
@@ -10,6 +12,7 @@ class PagesController < ApplicationController
   }.freeze
 
   include ReactOnRails::Controller
+  include ReactOnRailsPro::Stream
 
   before_action do
     session[:something_useful] = "REALLY USEFUL"
@@ -22,6 +25,10 @@ class PagesController < ApplicationController
 
   def cached_react_helmet
     render "/pages/pro/cached_react_helmet"
+  end
+
+  def stream_async_components
+    stream_view_containing_react_components(template: "/pages/stream_async_components")
   end
 
   def loadable_component

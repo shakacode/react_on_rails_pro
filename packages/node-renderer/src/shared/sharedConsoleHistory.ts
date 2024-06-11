@@ -1,3 +1,4 @@
+import type { Readable } from 'stream';
 import { AsyncLocalStorage } from 'async_hooks';
 import { getConfig } from './configBuilder';
 import log from './log';
@@ -72,10 +73,10 @@ class SharedConsoleHistory {
   }
 
   trackConsoleHistoryInRenderRequest(
-    renderRequestFunction: () => string | Promise<string>,
-  ): string | Promise<string> {
+    renderRequestFunction: () => string | Promise<string> | Readable,
+  ): string | Promise<string> | Readable {
     this.isRunningSyncOperation = true;
-    let result: string | Promise<string>;
+    let result: string | Promise<string> | Readable;
 
     try {
       if (this.asyncLocalStorageIfEnabled) {
