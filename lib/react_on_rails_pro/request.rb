@@ -155,7 +155,7 @@ module ReactOnRailsPro
 
           # https://docs.ruby-lang.org/en/2.0.0/Net/HTTP.html#attribute-i-read_timeout
           # https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http/connection.rb#L168
-          read_timeout: ReactOnRailsPro.configuration.ssr_timeout,
+          read_timeout: ENV['DEBUGGER'] === 'true' ? 3600 : ReactOnRailsPro.configuration.ssr_timeout,
           force_retry: true,
           url: ReactOnRailsPro.configuration.renderer_url
         )

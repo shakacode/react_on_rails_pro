@@ -7,6 +7,16 @@ GIT
       pry (>= 0.13, < 0.15)
 
 PATH
+  remote: ../../../react_on_rails
+  specs:
+    react_on_rails (15.0.0.alpha.1)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
+
+PATH
   remote: ../..
   specs:
     react_on_rails_pro (4.0.0.rc.5)
@@ -17,16 +27,6 @@ PATH
       persistent_http (~> 2)
       rainbow
       react_on_rails (>= 15.0.0.alpha.1)
-
-PATH
-  remote: ../../../react_on_rails
-  specs:
-    react_on_rails (15.0.0.alpha.1)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
 
 GEM
   remote: https://rubygems.org/
