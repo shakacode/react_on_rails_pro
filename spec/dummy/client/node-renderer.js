@@ -70,6 +70,8 @@ const config = {
 // only 1-2 of them really needed.
 if (env.CI) {
   config.workersCount = 2;
+} else if (env.DEBUGGER) {
+  config.workersCount = 1;
 }
 
 reactOnRailsProNodeRenderer(config);
