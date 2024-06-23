@@ -14,12 +14,14 @@ module ReactOnRailsPro
         end
 
         def reset_pool_if_server_bundle_was_modified
-          # Resetting the pool for server bundle modifications is accomplished by changing the mtime
-          # of the server bundle in the request to the remote rendering server.
-          # In non-development mode, we don't need to re-read this value.
-          return @bundle_hash if @bundle_hash.present? && !ReactOnRails.configuration.development_mode
+          render_options.profiler.profile("reset_pool_if_server_bundle_was_modified") do
+            # Resetting the pool for server bundle modifications is accomplished by changing the mtime
+            # of the server bundle in the request to the remote rendering server.
+            # In non-development mode, we don't need to re-read this value.
+            return @bundle_hash if @bundle_hash.present? && !ReactOnRails.configuration.development_mode
 
-          @bundle_hash = ReactOnRailsPro::Utils.bundle_hash
+            @bundle_hash = ReactOnRailsPro::Utils.bundle_hash
+          end
         end
 
         def renderer_bundle_file_name

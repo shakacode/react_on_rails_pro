@@ -26,9 +26,11 @@ module ReactOnRailsPro
                render_options.internal_option(:skip_prerender_cache).nil?
               prerender_cache_key = cache_key(js_code, render_options)
               prerender_cache_hit = true
-              result = Rails.cache.fetch(prerender_cache_key) do
-                prerender_cache_hit = false
-                render_on_pool(js_code, render_options)
+              result = render_options.profiler.profile("getting from cache or render on cache miss") do
+                Rails.cache.fetch(prerender_cache_key) do
+                  prerender_cache_hit = false
+                  render_on_pool(js_code, render_options)
+                end
               end
               # Pass back the cache key in the results only if the result is a Hash
               if result.is_a?(Hash)
