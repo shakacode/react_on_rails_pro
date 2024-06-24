@@ -504,7 +504,7 @@ DEPENDENCIES
   sass-rails
   scss_lint
   selenium-webdriver (= 4.9.0)
-  shakapacker (= 6.5.6)
+  shakapacker (= 6.6.0)
   spring
   spring-watcher-listen
   sprockets
