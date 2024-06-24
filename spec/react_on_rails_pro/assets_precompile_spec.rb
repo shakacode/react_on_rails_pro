@@ -33,7 +33,7 @@ describe ReactOnRailsPro::AssetsPrecompile do
 
   describe ".bundles_cache_key" do
     it "calls ReactOnRailsPro::Utils.digest_of_globs with the union of " \
-       "Webpacker.config.source_path & ReactOnRailsPro.configuration.dependency_globs" do
+       "Shakapacker.config.source_path & ReactOnRailsPro.configuration.dependency_globs" do
       expected_parameters = %w[source_path dependency_globs]
 
       source_path = instance_double(Pathname)
@@ -42,7 +42,7 @@ describe ReactOnRailsPro::AssetsPrecompile do
       webpacker_config = instance_double(Shakapacker::Configuration)
       allow(webpacker_config).to receive(:source_path).and_return(source_path)
 
-      allow(Webpacker).to receive(:config).and_return(webpacker_config)
+      allow(Shakapacker).to receive(:config).and_return(webpacker_config)
 
       ror_pro_config = instance_double(ReactOnRailsPro::Configuration)
 
@@ -235,7 +235,7 @@ describe ReactOnRailsPro::AssetsPrecompile do
           self
         end
       end
-      stub_const("Webpacker", webpacker_stub)
+      stub_const("Shakapacker", webpacker_stub)
 
       rake_stub = Module.new do
         def self.sh(_string)
