@@ -39,7 +39,7 @@ describe ReactOnRailsPro::AssetsPrecompile do
       source_path = instance_double(Pathname)
       allow(source_path).to receive(:join).and_return(expected_parameters.first)
 
-      webpacker_config = instance_double(Webpacker::Configuration)
+      webpacker_config = instance_double(Shakapacker::Configuration)
       allow(webpacker_config).to receive(:source_path).and_return(source_path)
 
       allow(Webpacker).to receive(:config).and_return(webpacker_config)

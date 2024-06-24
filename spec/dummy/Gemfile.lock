@@ -210,6 +210,7 @@ GEM
       racc (~> 1.4)
     nokogiri (1.16.0-x86_64-linux)
       racc (~> 1.4)
+    package_json (0.1.0)
     parallel (1.24.0)
     parser (3.3.0.4)
       ast (~> 2.4.1)
@@ -354,8 +355,9 @@ GEM
       rubyzip (>= 1.2.2, < 3.0)
       websocket (~> 1.0)
     semantic_range (3.0.0)
-    shakapacker (6.6.0)
+    shakapacker (7.2.3)
       activesupport (>= 5.2)
+      package_json
       rack-proxy (>= 0.6.1)
       railties (>= 5.2)
       semantic_range (>= 2.3.0)
@@ -462,7 +464,7 @@ DEPENDENCIES
   sass-rails
   scss_lint
   selenium-webdriver (= 4.9.0)
-  shakapacker (= 6.6.0)
+  shakapacker (= 7.2.3)
   spring
   spring-watcher-listen
   sprockets
