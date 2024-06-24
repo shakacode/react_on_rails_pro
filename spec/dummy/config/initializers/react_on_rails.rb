@@ -28,6 +28,7 @@ end
 ReactOnRails.configure do |config|
   config.server_bundle_js_file = "server-bundle.js"
   config.random_dom_id = false # default is true
+  config.trace = true
 
   # Next 2 lines are commented out because we've set test.compile to true
   # config.build_test_command = "yarn run build:test"

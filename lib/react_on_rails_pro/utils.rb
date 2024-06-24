@@ -100,22 +100,6 @@ module ReactOnRailsPro
       ReactOnRails.configuration.server_bundle_js_file != server_bundle_basename
     end
 
-    def self.with_trace(message = nil)
-      return yield unless ReactOnRailsPro.configuration.tracing
-
-      start = Time.current
-      result = yield
-      finish = Time.current
-
-      caller_method = caller(1..1).first
-      Rails.logger.info do
-        timing = "#{((finish - start) * 1_000).round(1)}ms"
-        "[ReactOnRailsPro] PID:#{Process.pid} #{caller_method[/`.*'/][1..-2]}: #{[message, timing].compact.join(', ')}"
-      end
-
-      result
-    end
-
     def self.common_form_data
       {
         "gemVersion" => ReactOnRailsPro::VERSION,

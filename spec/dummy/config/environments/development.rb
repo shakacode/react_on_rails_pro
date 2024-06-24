@@ -11,6 +11,9 @@ Rails.application.configure do
   # Do not eager load code on boot.
   config.eager_load = false
 
+  # Prepend all log lines with the following tags.
+  config.log_tags = [:request_id]
+
   # Show full error reports.
   config.consider_all_requests_local = true
 

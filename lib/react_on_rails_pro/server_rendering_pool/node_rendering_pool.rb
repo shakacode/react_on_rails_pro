@@ -13,8 +13,8 @@ module ReactOnRailsPro
           ReactOnRailsPro::Request.reset_connection
         end
 
-        def reset_pool_if_server_bundle_was_modified
-          render_options.profiler.profile("reset_pool_if_server_bundle_was_modified") do
+        def reset_pool_if_server_bundle_was_modified(react_component_name)
+          ReactOnRails::Utils.with_trace(react_component_name) do
             # Resetting the pool for server bundle modifications is accomplished by changing the mtime
             # of the server bundle in the request to the remote rendering server.
             # In non-development mode, we don't need to re-read this value.
@@ -44,31 +44,33 @@ module ReactOnRailsPro
         end
 
         def eval_js(js_code, render_options, send_bundle: false)
-          ReactOnRailsPro::ServerRenderingPool::ProRendering
-            .set_request_digest_on_render_options(js_code, render_options)
+          ReactOnRails::Utils.with_trace do
+            ReactOnRailsPro::ServerRenderingPool::ProRendering
+              .set_request_digest_on_render_options(js_code, render_options)
 
-          # In case this method is called with simple, raw JS, not depending on the bundle, next line
-          # is needed.
-          @bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
+            # In case this method is called with simple, raw JS, not depending on the bundle, next line
+            # is needed.
+            @bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
 
-          # TODO: Remove the request_digest. See https://github.com/shakacode/react_on_rails_pro/issues/119
-          # From the request path
-          # path = "/bundles/#{@bundle_hash}/render"
-          path = "/bundles/#{@bundle_hash}/render/#{render_options.request_digest}"
+            # TODO: Remove the request_digest. See https://github.com/shakacode/react_on_rails_pro/issues/119
+            # From the request path
+            # path = "/bundles/#{@bundle_hash}/render"
+            path = "/bundles/#{@bundle_hash}/render/#{render_options.request_digest}"
 
-          response = ReactOnRailsPro::Request.render_code(path, js_code, send_bundle)
+            response = ReactOnRailsPro::Request.render_code(path, js_code, send_bundle)
 
-          case response.code
-          when "200"
-            response.body
-          when "410"
-            # 410 is a special value meaning send the updated bundle with the next request.
-            eval_js(js_code, render_options, send_bundle: true)
-          when "400"
-            raise ReactOnRailsPro::Error,
-                  "Renderer unhandled error at the VM level: #{response.code}:\n#{response.body}"
-          else
-            raise ReactOnRailsPro::Error, "Unknown response code from renderer: #{response.code}:\n#{response.body}"
+            case response.code
+            when "200"
+              response.body
+            when "410"
+              # 410 is a special value meaning send the updated bundle with the next request.
+              ReactOnRails::Utils.with_trace("updating the bundle") { eval_js(js_code, render_options, send_bundle: true) }
+            when "400"
+              raise ReactOnRailsPro::Error,
+                    "Renderer unhandled error at the VM level: #{response.code}:\n#{response.body}"
+            else
+              raise ReactOnRailsPro::Error, "Unknown response code from renderer: #{response.code}:\n#{response.body}"
+            end
           end
         rescue StandardError => e
           raise e unless ReactOnRailsPro.configuration.renderer_use_fallback_exec_js

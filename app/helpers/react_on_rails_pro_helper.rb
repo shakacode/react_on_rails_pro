@@ -48,7 +48,7 @@ module ReactOnRailsProHelper
   #    :compress, :expires_in, :race_condition_ttl as documented in the Rails Guides
   # 4. Provide boolean values for `:if` or `:unless` to conditionally use caching.
   def cached_react_component(component_name, raw_options = {}, &block)
-    ReactOnRailsPro::Utils.with_trace(component_name) do
+    ReactOnRails::Utils.with_trace(component_name) do
       check_caching_options!(raw_options, block)
 
       fetch_react_component(component_name, raw_options) do
@@ -77,7 +77,7 @@ module ReactOnRailsProHelper
   def cached_react_component_hash(component_name, raw_options = {}, &block)
     raw_options[:prerender] = true
 
-    ReactOnRailsPro::Utils.with_trace(component_name) do
+    ReactOnRails::Utils.with_trace(component_name) do
       check_caching_options!(raw_options, block)
 
       fetch_react_component(component_name, raw_options) do

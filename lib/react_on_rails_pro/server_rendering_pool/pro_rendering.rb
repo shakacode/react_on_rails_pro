@@ -17,7 +17,7 @@ module ReactOnRailsPro
         delegate :reset_pool_if_server_bundle_was_modified, :reset_pool, to: :pool
 
         def exec_server_render_js(js_code, render_options)
-          ::ReactOnRailsPro::Utils.with_trace(render_options.react_component_name) do
+          ::ReactOnRails::Utils.with_trace(render_options.react_component_name) do
             # See https://github.com/shakacode/react_on_rails_pro/issues/119 for why
             # the digest is on the render options.
             # TODO: the request digest should be removed unless prerender caching is used
@@ -26,7 +26,7 @@ module ReactOnRailsPro
                render_options.internal_option(:skip_prerender_cache).nil?
               prerender_cache_key = cache_key(js_code, render_options)
               prerender_cache_hit = true
-              result = render_options.profiler.profile("getting from cache or render on cache miss") do
+              result = ReactOnRails::Utils.with_trace("#{render_options.react_component_name}: getting component from cache or rendering it") do
                 Rails.cache.fetch(prerender_cache_key) do
                   prerender_cache_hit = false
                   render_on_pool(js_code, render_options)
@@ -81,7 +81,7 @@ module ReactOnRailsPro
         end
 
         def render_on_pool(js_code, render_options)
-          pool.exec_server_render_js(js_code, render_options)
+          ReactOnRails::Utils.with_trace { pool.exec_server_render_js(js_code, render_options) }
         end
       end
     end
