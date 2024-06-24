@@ -51,6 +51,10 @@ To toggle caching in development, as explained in [this article](http://guides.r
 
 This sample app includes both Honeybadger and Sentry integration, including Sentry tracing integration.
 
+## Other needed steps
+
+please check [CONTRIBUTING.md](../../CONTRIBUTING.md) it has other needed steps before you are able to run the demo app.
+
 ## Starting the Sample App
                              
 ### Using HMR and no loadable-components
