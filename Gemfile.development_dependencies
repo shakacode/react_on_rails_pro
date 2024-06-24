@@ -10,7 +10,7 @@ gem "react_on_rails", "13.4.0" # keep in sync with package.json files
 # For local development
 # gem "react_on_rails", path: "../react_on_rails"
 
-gem "shakapacker", "6.5.6"
+gem "shakapacker", "6.6.0"
 gem "bootsnap", require: false
 gem "rails", ">= 7.1"
 gem "puma", ">= 6"
