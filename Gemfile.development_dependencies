@@ -12,6 +12,7 @@ gem "react_on_rails", "13.4.0" # keep in sync with package.json files
 
 gem "shakapacker", "6.5.6"
 gem "bootsnap", require: false
+gem "rack", ">= 3.1.4"
 gem "rails", ">= 7.1"
 gem "puma", ">= 6"
 
