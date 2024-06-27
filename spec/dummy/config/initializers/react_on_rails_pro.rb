@@ -7,7 +7,7 @@ ReactOnRailsPro.configure do |config|
 
   config.rendering_returns_promises = true
 
-  config.server_renderer = "NodeRenderer"
+  config.server_renderer = "ExecJS"
   # If you want Honeybadger or Sentry on the Node renderer side to report rendering errors
   config.throw_js_errors = false
 

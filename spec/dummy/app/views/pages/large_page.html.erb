@@ -1,0 +1,22 @@
+<h2>Large Page</h2>
+<%
+  def render_component(num_of_children)
+    @profiler.profile("render LargeComponent(#{num_of_children})") do
+      react_component("LargeComponent", props: { numOfChildren: num_of_children }, prerender: true)
+    end
+  end
+%>
+
+<%= render_component 1000 %>
+<hr>
+<%= render_component 1000 %>
+<hr>
+<%= render_component 2000 %>
+<hr>
+
+<%= render_component 5000 %>
+<hr>
+<%= render_component 10000 %>
+<hr>
+<%= render_component 30000 %>
+<hr>

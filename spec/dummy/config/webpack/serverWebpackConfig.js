@@ -58,9 +58,9 @@ const configureServer = () => {
   // config/initializers/react_on_rails.rb
   serverWebpackConfig.output = {
     filename: 'server-bundle.js',
-    globalObject: 'this',
+    globalObject: 'global',
     // If using the React on Rails Pro node server renderer, uncomment the next line
-    libraryTarget: 'commonjs2',
+    // libraryTarget: 'commonjs2',
     path: config.outputPath,
     publicPath: config.publicPath,
     // https://webpack.js.org/configuration/output/#outputglobalobject
@@ -115,7 +115,7 @@ const configureServer = () => {
   // If using the default 'web', then libraries like Emotion and loadable-components
   // break with SSR. The fix is to use a node renderer and change the target.
   // If using the React on Rails Pro node server renderer, uncomment the next line
-  serverWebpackConfig.target = 'node';
+  // serverWebpackConfig.target = 'node';
 
   serverWebpackConfig.node = false;
 

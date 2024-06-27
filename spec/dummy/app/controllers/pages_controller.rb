@@ -1,5 +1,19 @@
 # frozen_string_literal: true
 
+class Profiler
+  def initialize
+    Dir.mkdir("profile_logs") unless File.exist?("profile_logs")
+    @logger = Logger.new("profile_logs/log#{Time.now.to_i}.log")
+  end
+
+  def profile(message)
+    start = Time.now
+    result = yield
+    @logger.info "Time taken: #{(Time.now - start) * 1000} ms for #{message}"
+    return result
+  end
+end
+
 class PagesController < ApplicationController
   XSS_PAYLOAD = { "<script>window.alert('xss1');</script>" => '<script>window.alert("xss2");</script>' }.freeze
   PROPS_NAME = "Mr. Server Side Rendering"
@@ -80,5 +94,7 @@ class PagesController < ApplicationController
         name: "Mrs. Client Side Hello Again"
       }.merge(XSS_PAYLOAD)
     }
+
+    @profiler = Profiler.new
   end
 end
