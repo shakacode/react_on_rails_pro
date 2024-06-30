@@ -7,7 +7,7 @@ GIT
       pry (>= 0.13, < 0.15)
 
 PATH
-  remote: ../..
+  remote: .
   specs:
     react_on_rails_pro (4.0.0.rc.1)
       addressable
@@ -120,6 +120,10 @@ GEM
       launchy
     childprocess (5.0.0)
     coderay (1.1.3)
+    commonmarker (1.1.4-aarch64-linux)
+    commonmarker (1.1.4-arm64-darwin)
+    commonmarker (1.1.4-x86_64-darwin)
+    commonmarker (1.1.4-x86_64-linux)
     concurrent-ruby (1.3.3)
     connection_pool (2.4.1)
     coveralls (0.8.23)
@@ -132,8 +136,6 @@ GEM
       bigdecimal
       rexml
     crass (1.0.6)
-    csso-rails (1.0.0)
-      execjs (>= 1)
     date (3.3.4)
     diff-lcs (1.5.1)
     docile (1.4.0)
@@ -146,14 +148,11 @@ GEM
       i18n (>= 1.8.11, < 2)
     ffi (1.17.0-aarch64-linux-gnu)
     ffi (1.17.0-aarch64-linux-musl)
-    ffi (1.17.0-arm-linux-gnu)
-    ffi (1.17.0-arm-linux-musl)
     ffi (1.17.0-arm64-darwin)
-    ffi (1.17.0-x86-linux-gnu)
-    ffi (1.17.0-x86-linux-musl)
     ffi (1.17.0-x86_64-darwin)
     ffi (1.17.0-x86_64-linux-gnu)
     ffi (1.17.0-x86_64-linux-musl)
+    gem-release (2.2.2)
     gene_pool (1.5.0)
       concurrent-ruby (>= 1.0)
     generator_spec (0.10.0)
@@ -163,8 +162,6 @@ GEM
       activesupport (>= 6.1)
     graphiql-rails (1.10.0)
       railties
-    graphql (2.3.7)
-      base64
     hashdiff (1.1.0)
     i18n (1.14.5)
       concurrent-ruby (~> 1.0)
@@ -198,7 +195,7 @@ GEM
     matrix (0.4.2)
     method_source (1.1.0)
     mini_mime (1.1.5)
-    minitest (5.24.1)
+    minitest (5.24.0)
     mize (0.4.1)
       protocol (~> 2.0)
     msgpack (1.7.2)
@@ -218,16 +215,13 @@ GEM
     nio4r (2.7.3)
     nokogiri (1.16.6-aarch64-linux)
       racc (~> 1.4)
-    nokogiri (1.16.6-arm-linux)
-      racc (~> 1.4)
     nokogiri (1.16.6-arm64-darwin)
-      racc (~> 1.4)
-    nokogiri (1.16.6-x86-linux)
       racc (~> 1.4)
     nokogiri (1.16.6-x86_64-darwin)
       racc (~> 1.4)
     nokogiri (1.16.6-x86_64-linux)
       racc (~> 1.4)
+    package_json (0.1.0)
     parallel (1.25.1)
     parser (3.3.3.0)
       ast (~> 2.4.1)
@@ -235,8 +229,6 @@ GEM
     persistent_http (2.0.3)
       gene_pool (>= 1.3)
     pg (1.5.6)
-    prism-rails (1.5.0)
-      railties
     protocol (2.0.0)
       ruby_parser (~> 3.0)
     pry (0.14.2)
@@ -310,7 +302,7 @@ GEM
     regexp_parser (2.9.2)
     reline (0.5.9)
       io-console (~> 0.5)
-    rexml (3.3.1)
+    rexml (3.3.0)
       strscan
     rspec-core (3.13.0)
       rspec-support (~> 3.13.0)
@@ -378,8 +370,9 @@ GEM
       websocket (~> 1.0)
     semantic_range (3.0.0)
     sexp_processor (4.17.1)
-    shakapacker (6.5.6)
+    shakapacker (7.2.3)
       activesupport (>= 5.2)
+      package_json
       rack-proxy (>= 0.6.1)
       railties (>= 5.2)
       semantic_range (>= 2.3.0)
@@ -401,11 +394,7 @@ GEM
       sprockets (>= 3.0.0)
     sqlite3 (2.0.2-aarch64-linux-gnu)
     sqlite3 (2.0.2-aarch64-linux-musl)
-    sqlite3 (2.0.2-arm-linux-gnu)
-    sqlite3 (2.0.2-arm-linux-musl)
     sqlite3 (2.0.2-arm64-darwin)
-    sqlite3 (2.0.2-x86-linux-gnu)
-    sqlite3 (2.0.2-x86-linux-musl)
     sqlite3 (2.0.2-x86_64-darwin)
     sqlite3 (2.0.2-x86_64-linux-gnu)
     sqlite3 (2.0.2-x86_64-linux-musl)
@@ -416,7 +405,7 @@ GEM
       mize
       tins (~> 1.0)
     thor (1.3.1)
-    tilt (2.4.0)
+    tilt (2.3.0)
     timeout (0.4.1)
     tins (1.33.0)
       bigdecimal
@@ -457,13 +446,7 @@ PLATFORMS
   aarch64-linux
   aarch64-linux-gnu
   aarch64-linux-musl
-  arm-linux
-  arm-linux-gnu
-  arm-linux-musl
   arm64-darwin
-  x86-linux
-  x86-linux-gnu
-  x86-linux-musl
   x86_64-darwin
   x86_64-linux
   x86_64-linux-gnu
@@ -472,15 +455,16 @@ PLATFORMS
 DEPENDENCIES
   amazing_print
   bootsnap
+  bundler
   capybara (>= 3.38.0)
   capybara-screenshot
+  commonmarker
   coveralls
-  csso-rails (~> 1.0)
   equivalent-xml
   faker
+  gem-release
   generator_spec
   graphiql-rails
-  graphql
   jbuilder
   jquery-rails
   launchy
@@ -489,7 +473,6 @@ DEPENDENCIES
   net-imap
   net-smtp
   pg
-  prism-rails
   pry (>= 0.14.1)
   pry-byebug!
   pry-doc
@@ -509,7 +492,7 @@ DEPENDENCIES
   sass-rails
   scss_lint
   selenium-webdriver (= 4.9.0)
-  shakapacker (= 6.5.6)
+  shakapacker (= 7.2.3)
   spring
   spring-watcher-listen
   sprockets
@@ -519,9 +502,10 @@ DEPENDENCIES
   web-console
   webdrivers (= 5.3.0)
   webmock
+  yard
 
 RUBY VERSION
    ruby 3.3.0p0
 
 BUNDLED WITH
-   2.5.4
+   2.5.3
