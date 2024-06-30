@@ -496,7 +496,6 @@ DEPENDENCIES
   pry-rails
   pry-theme
   puma (>= 6)
-  rack (>= 3.1.4)
   rails (>= 7.1)
   react_on_rails (= 13.4.0)
   react_on_rails_pro!
