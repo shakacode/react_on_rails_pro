@@ -97,22 +97,28 @@ module ReactOnRailsPro
     def setup_execjs_profiler_if_needed
       return unless profile_server_rendering_js_code && server_renderer == "ExecJS"
 
-      module ::ExecJS
-        module Runtimes
-          Node = ExecJS::ExternalRuntime.new(
-            name: "Node.js (V8)",
-            command: ["node --prof"],
-            runner_path: ExecJS.root + "/support/v8_runner.js",
-            encoding: "UTF-8"
-          )
-
-          V8 = ExecJS::ExternalRuntime.new(
-            name: "V8",
-            command: ["d8 --prof"],
-            runner_path: ExecJS.root + "/support/v8_runner.js",
-            encoding: "UTF-8"
-          )
-        end
+      if ExecJS.runtime == ExecJS::Runtimes::Node
+        ExecJS.runtime = ExecJS::ExternalRuntime.new(
+          name: "Node.js (V8)",
+          command: ["node --prof"],
+          runner_path: ExecJS.root + "/support/node_runner.js",
+          encoding: "UTF-8"
+        )
+      elsif ExecJS.runtime == ExecJS::Runtimes::V8
+        ExecJS.runtime = ExecJS::ExternalRuntime.new(
+          name: "V8",
+          command: ["d8 --prof"],
+          runner_path: ExecJS.root + "/support/v8_runner.js",
+          encoding: "UTF-8"
+        )
+      else
+        current_runtime = ExecJS.runtime.name
+        message = <<~MSG
+          You have set `profile_server_rendering_js_code` to true, but the current execjs runtime is #{current_runtime}.
+          ExecJS profiler only supports Node.js (V8) or V8 runtimes.
+          You can set the runtime by setting the `EXECJS_RUNTIME` environment variable to either `Node` or `V8`.
+        MSG
+        raise ReactOnRailsPro::Error, message
       end
     end
 
