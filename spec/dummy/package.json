@@ -50,7 +50,7 @@
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-helmet": "^6.0.0-beta.2",
-    "react-on-rails": "14.0.3",
+    "react-on-rails": "14.0.4",
     "react-proptypes": "^1.0.0",
     "react-redux": "^5.0.5",
     "react-refresh": "^0.11.0",
