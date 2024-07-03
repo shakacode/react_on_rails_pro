@@ -18,7 +18,7 @@ export const initializeApolloClient = () => {
     return client;
   }
 
-  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+  const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
   // fulfill the store with the server data
   const initialState = window.__APOLLO_STATE__;
 
