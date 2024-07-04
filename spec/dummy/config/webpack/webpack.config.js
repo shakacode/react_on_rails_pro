@@ -9,7 +9,7 @@ const envSpecificConfig = () => {
     return require(path);
   } else {
     throw new Error(
-      `Invalid NODE_ENV = ${env.nodeEnv}. Please use one of the following 'test', 'development' or 'production'.`
+      `Invalid NODE_ENV = ${env.nodeEnv}. Please use one of the following 'test', 'development' or 'production'.`,
     );
   }
 };
