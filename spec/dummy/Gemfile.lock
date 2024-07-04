@@ -16,7 +16,7 @@ PATH
       multipart-post (~> 2.3)
       persistent_http (~> 2)
       rainbow
-      react_on_rails (>= 13.4)
+      react_on_rails (>= 14.0.4)
 
 GEM
   remote: https://rubygems.org/
