@@ -8,7 +8,9 @@ const envSpecificConfig = () => {
     console.log(`Loading ENV specific webpack configuration file ${path}`);
     return require(path);
   } else {
-    return generateWebpackConfig();
+    throw new Error(
+      `Invalid NODE_ENV = ${env.nodeEnv}. Please use one of the following 'test', 'development' or 'production'.`
+    );
   }
 };
 
