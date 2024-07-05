@@ -195,7 +195,7 @@ export async function runInVM(
     }
 
     if (log.level === 'debug') {
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- worker is nullable in the primary process
+      // worker is nullable in the primary process
       const workerId = vmCluster?.worker?.id;
       log.debug(`worker ${workerId ? `${workerId} ` : ''}received render request with code
 ${smartTrim(renderingRequest)}`);
