@@ -1,4 +1,4 @@
-const { env, generateWebpackConfig } = require('shakapacker');
+const { env } = require('shakapacker');
 const { existsSync } = require('fs');
 const { resolve } = require('path');
 
