@@ -101,14 +101,14 @@ module ReactOnRailsPro
         ExecJS.runtime = ExecJS::ExternalRuntime.new(
           name: "Node.js (V8)",
           command: ["node --prof"],
-          runner_path: ExecJS.root + "/support/node_runner.js",
+          runner_path: "#{ExecJS.root}/support/node_runner.js",
           encoding: "UTF-8"
         )
       elsif ExecJS.runtime == ExecJS::Runtimes::V8
         ExecJS.runtime = ExecJS::ExternalRuntime.new(
           name: "V8",
           command: ["d8 --prof"],
-          runner_path: ExecJS.root + "/support/v8_runner.js",
+          runner_path: "#{ExecJS.root}/support/v8_runner.js",
           encoding: "UTF-8"
         )
       else
