@@ -8,8 +8,6 @@ This guide uses the RORP dummy app in profiling the server-side code.
 
 1. Run node-renderer using the `--inspect` node option.
 
-**A PR will be merged that will let you debug the renderer without having to change any file**
-
 Open the `spec/dummy/Procfile.dev` file and update the `node-renderer` process to run the renderer using `node --inspect` command. Change the following line
 
 ```bash
@@ -109,6 +107,40 @@ ab -n 100 -c 10 http://localhost:3000/
 1. Then, you can analyze the renderer behavior of each request as stated in `Profile Analysis` section.
 
 ### ExecJS
+React on Rails Pro support profiling with ExecJS starting from version **4.0.0-rc.1**. You will need to do more work to profile exec js if you are using an older version.
+
+If you are using **v4.0.0-rc.1** or later, you can enable profiler by setting the `profile_server_rendering_js_code` config by adding the following line to ReactOnRails initializer.
+
+```ruby
+config.profile_server_rendering_js_code = true
+```
+
+Then, run the app you are profiling and open some pages in it.
+You will find many log files with the name `isloate-0x*.log` in the root of your app. You can use the following command to analyze the log files.
+
+```bash
+rake react_on_rails_pro:process_v8_logs
+```
+
+You will find all log files are converted to `profile.v8log.json` file and moved to the **v8_profiles** directory.
+
+You can use `speedscope` to analyze the `profile.v8log.json` file. You can install `speedscope` by running the following command
+
+```bash
+npm install -g speedscope
+```
+
+Then, you can analyze the profile by running the following command
+
+```bash
+speedscope /path/to/profile.v8log.json
+```
+
+### Profiling ExecJS with Older Versions of React on Rails Pro
+
+If you are using an older version of React on Rails Pro, you need to do more work to profile the server-side code running in the ExecJS.
+
+If you are using `node` as the runtime for ExecJS, you can enable the profiler by adding the following code on top of the `ReactOnRailsPro` initializer.
 
 ```ruby
 class CustomRuntime < ExecJS::ExternalRuntime
@@ -124,12 +156,24 @@ end
 ExecJS.runtime = CustomRuntime.new
 ```
 
+If you are using V8 as the runtime for ExecJS, you can enable the profiler by adding the following code on top of the `ReactOnRailsPro` initializer.
+
+```ruby
+class CustomRuntime < ExecJS::ExternalRuntime
+  def initialize
+    super(
+      name: 'Custom V8 (with --prof)',
+      command: ['d8 --prof'],
+      runner_path: ExecJS.root + '/support/v8_runner.js'
+    )
+  end
+end
+```
+
+After adding the code, you can run the app and open some pages in it. You will find many log files with the name `isloate-0x*.log` in the root of your app. You can use the following command to analyze any log file.
+
 ```bash
 node --prof-process --preprocess -j isolate*.log > profile.v8log.json
 npm install -g speedscope
 speedscope /path/to/profile.v8log.json
 ```
-
-You can also pipe the output of `node --prof-process` directly to speedscope with a trailing `-` like so:
-
-`node --prof-process --preprocess -j isolate*.log | speedscope -`

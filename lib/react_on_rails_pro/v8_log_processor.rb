@@ -22,7 +22,7 @@ module ReactOnRailsPro
       total_files = log_files.length
       log_files.each_with_index do |file, index|
         filename = File.basename(file, '.log')
-        json_filename = "#{filename}.profile.json"
+        json_filename = "#{filename}.profile.v8log.json"
         Dir.chdir(log_dir) do
           system("node --prof-process --preprocess -j #{File.basename(file)} > #{json_filename}")
         end
@@ -32,7 +32,7 @@ module ReactOnRailsPro
     end
 
     def self.delete_files(log_files, log_dir)
-      FileUtils.rm_f(Dir.glob(File.join(log_dir, 'isolate-*.log')))
+      log_files.each { |file| FileUtils.rm(File.join(log_dir, File.basename(file))) }
     end
 
     # Warns if many files and asks for user confirmation to proceed.
