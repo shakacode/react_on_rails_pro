@@ -286,6 +286,7 @@ export = function run(config: Partial<Config>) {
 
   // In tests we will run worker in master thread, so we need to ensure server
   // will not listen:
+  // we are extracting worker from cluster to avoid false TS error
   const { worker } = cluster;
   if (cluster.isWorker && worker !== undefined) {
     app.listen(port, () => {
