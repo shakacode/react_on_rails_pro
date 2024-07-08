@@ -56,7 +56,7 @@ function replayVmConsole() {
 declare global {
   // This works on node 16+
   // https://stackoverflow.com/questions/35074713/extending-typescript-global-object-in-node-js/68328575#68328575
-  // eslint-disable-next-line vars-on-top, no-var, @typescript-eslint/no-redundant-type-constituents
+  // eslint-disable-next-line vars-on-top, no-var
   var ReactOnRails: ROR | undefined;
 }
 
