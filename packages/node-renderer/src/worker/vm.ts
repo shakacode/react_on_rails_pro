@@ -52,17 +52,9 @@ function replayVmConsole() {
   });
 }
 
-// This works before node 16
 declare global {
-  // eslint-disable-next-line @typescript-eslint/no-namespace -- needed to augment
-  namespace NodeJS {
-    interface Global {
-      ReactOnRails?: unknown;
-    }
-  }
-}
-// This works on node 16+
-declare global {
+  // This works on node 16+
+  // https://stackoverflow.com/questions/35074713/extending-typescript-global-object-in-node-js/68328575#68328575
   // eslint-disable-next-line vars-on-top, no-var
   var ReactOnRails: unknown;
 }
