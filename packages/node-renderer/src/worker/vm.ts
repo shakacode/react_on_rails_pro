@@ -9,7 +9,7 @@ import vm from 'vm';
 import m from 'module';
 import cluster from 'cluster';
 import { promisify } from 'util';
-import { ReactOnRails as ROR } from 'react-on-rails';
+import type { ReactOnRails as ROR } from 'react-on-rails';
 import log from '../shared/log';
 import { getConfig } from '../shared/configBuilder';
 import { formatExceptionMessage, smartTrim } from '../shared/utils';
