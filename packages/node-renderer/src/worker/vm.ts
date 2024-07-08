@@ -9,6 +9,7 @@ import vm from 'vm';
 import m from 'module';
 import cluster from 'cluster';
 import { promisify } from 'util';
+import { ReactOnRails as ROR } from 'react-on-rails';
 import log from '../shared/log';
 import { getConfig } from '../shared/configBuilder';
 import { formatExceptionMessage, smartTrim } from '../shared/utils';
@@ -56,7 +57,7 @@ declare global {
   // This works on node 16+
   // https://stackoverflow.com/questions/35074713/extending-typescript-global-object-in-node-js/68328575#68328575
   // eslint-disable-next-line vars-on-top, no-var
-  var ReactOnRails: unknown;
+  var ReactOnRails: ROR;
 }
 
 export async function buildVM(filePath: string) {
