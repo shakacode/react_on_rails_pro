@@ -1,5 +1,9 @@
-# Procfile for development using HMR
-# You can run these commands in separate shells
-rails: bundle exec rails s -p 3000
-wp-client: bin/shakapacker-dev-server
-wp-server: SERVER_BUNDLE_ONLY=yes bin/shakapacker --watch
+# Procfile for development with hot reloading of JavaScript and CSS
+
+rails: rails s -p 3000
+
+# Run the hot reload server for client development
+webpack-dev-server: HMR=true bin/shakapacker-dev-server
+
+# Keep the JS fresh for server rendering. Remove if not server rendering
+rails-server-assets: HMR=true SERVER_BUNDLE_ONLY=yes bin/shakapacker --watch
