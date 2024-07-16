@@ -154,5 +154,49 @@ module ReactOnRailsPro
         expect(ReactOnRailsPro.configuration.renderer_password).to be_nil
       end
     end
+
+    describe ".profile_server_rendering_js_code", :i do
+      before(:each) do
+        # mock the ExecJS runtime to be Node
+        allow(ExecJS).to receive(:runtime).and_return(ExecJS::Runtimes::Node)
+      end
+
+      it "is the profile_server_rendering_js_code if provided" do
+        ReactOnRailsPro.configure do |config|
+          config.profile_server_rendering_js_code = true
+        end
+
+        expect(ReactOnRailsPro.configuration.profile_server_rendering_js_code).to eq(true)
+      end
+
+      it "is false if not provided" do
+        ReactOnRailsPro.configure do |_|
+        end
+
+        expect(ReactOnRailsPro.configuration.profile_server_rendering_js_code).to eq(false)
+      end
+
+      it "configures the ExecJS runtime if profile_server_rendering_js_code is true and server_renderer is ExecJS" do
+        ReactOnRailsPro.configure do |config|
+          config.profile_server_rendering_js_code = true
+          config.server_renderer = "ExecJS"
+        end
+
+        expect(ExecJS.runtime).to be_a(ExecJS::ExternalRuntime)
+      end
+
+      it "raises an error if profile_server_rendering_js_code is true and used ExecJS runtime is not Node or V8" do
+        allow(ExecJS).to receive(:runtime).and_return(ExecJS::Runtimes::Bun)
+
+        expect do
+          ReactOnRailsPro.configure do |config|
+            config.profile_server_rendering_js_code = true
+            config.server_renderer = "ExecJS"
+          end
+        end.to raise_error(ReactOnRailsPro::Error,
+                           /You have set `profile_server_rendering_js_code` to true, but the current execjs runtime is Bun./)
+
+      end
+    end
   end
 end
