@@ -155,8 +155,8 @@ module ReactOnRailsPro
       end
     end
 
-    describe ".profile_server_rendering_js_code", :i do
-      before(:each) do
+    describe ".profile_server_rendering_js_code" do
+      before do
         # mock the ExecJS runtime to be Node
         allow(ExecJS).to receive(:runtime).and_return(ExecJS::Runtimes::Node)
       end
@@ -166,14 +166,15 @@ module ReactOnRailsPro
           config.profile_server_rendering_js_code = true
         end
 
-        expect(ReactOnRailsPro.configuration.profile_server_rendering_js_code).to eq(true)
+        expect(ReactOnRailsPro.configuration.profile_server_rendering_js_code).to be(true)
       end
 
       it "is false if not provided" do
-        ReactOnRailsPro.configure do |_|
+        ReactOnRailsPro.configure do |_config|
+          # Do nothing
         end
 
-        expect(ReactOnRailsPro.configuration.profile_server_rendering_js_code).to eq(false)
+        expect(ReactOnRailsPro.configuration.profile_server_rendering_js_code).to be(false)
       end
 
       it "configures the ExecJS runtime if profile_server_rendering_js_code is true and server_renderer is ExecJS" do
@@ -194,8 +195,7 @@ module ReactOnRailsPro
             config.server_renderer = "ExecJS"
           end
         end.to raise_error(ReactOnRailsPro::Error,
-                           /You have set `profile_server_rendering_js_code` to true, but the current execjs runtime is Bun./)
-
+                           /ExecJS profiler only supports Node.js \(V8\) or V8 runtimes./)
       end
     end
   end
