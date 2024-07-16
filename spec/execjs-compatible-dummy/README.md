@@ -1,4 +1,4 @@
-# Example of React on Rails Pro Using Default @rails/webpacker Configuration And ExecJS as The JS Renderer
+# Example of React on Rails Pro Using Default @rails/webpacker Configuration and ExecJS as the JS Renderer
 
 ## Installation
 

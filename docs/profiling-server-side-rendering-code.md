@@ -53,8 +53,8 @@ This guide uses the RORP dummy app in profiling the server-side code.
     ![Running profiler at the performance tab](https://github.com/shakacode/react_on_rails_pro/assets/7099193/bc02bbd6-3358-4edf-ba3a-36e11620a096)
 
 1. You should see something like this
-
-![Recorded Node JS profile](https://github.com/shakacode/react_on_rails_pro/assets/7099193/6dc098bb-9f07-49be-9a1f-2149f6712631)
+   
+   ![Recorded Node JS profile](https://github.com/shakacode/react_on_rails_pro/assets/7099193/6dc098bb-9f07-49be-9a1f-2149f6712631)
 
 ## Profile Analysis
 
