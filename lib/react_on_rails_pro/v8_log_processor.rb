@@ -9,7 +9,7 @@ module ReactOnRailsPro
 
       move_files(log_files, output_dir)
       processed_count = process_each_file(log_files, output_dir)
-      delete_files(log_files, output_dir) unless keep_files == "true"
+      delete_files(log_files, output_dir) unless keep_files
       puts "#{processed_count} files have been processed."
     end
 

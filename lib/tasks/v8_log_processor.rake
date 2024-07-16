@@ -14,6 +14,7 @@ namespace :react_on_rails_pro do
   DESC
   task :process_v8_logs, %i[keep_files output_dir] => [:environment] do |_, args|
     args.with_defaults(keep_files: "false", output_dir: "v8_profiles")
-    ReactOnRailsPro::V8LogProcessor.process_v8_logs(args.keep_files, args.output_dir)
+    keep_files = args.keep_files == "true"
+    ReactOnRailsPro::V8LogProcessor.process_v8_logs(keep_files, args.output_dir)
   end
 end

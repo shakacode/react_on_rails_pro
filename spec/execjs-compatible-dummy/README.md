@@ -1,24 +1,17 @@
-# README
+# Example of React on Rails Pro Using Default @rails/webpacker Configuration And ExecJS as The JS Renderer
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+## Installation
 
-Things you may want to cover:
+```sh
+cd react_on_rails_pro
+bundle && yarn && cd spec/execjs-compatible-dummy && bundle && yarn
+```
 
-* Ruby version
+## Running
+Run one of these Procfiles:
 
-* System dependencies
+1. [Procfile.dev](./Procfile.dev): Development setup with HMR and with loadable-components.
+2. [Procfile.static](./Procfile.static): Development setup using `webpack --watch`. No HMR, but loadable-components is used.
 
-* Configuration
-
-* Database creation
-
-* Database initialization
-
-* How to run the test suite
-
-* Services (job queues, cache servers, search engines, etc.)
-
-* Deployment instructions
-
-* ...
+## Profiling Server-Side Code Running On ExecJS Renderer
+Read the profiling guide [here](../../docs/profiling-server-side-rendering-code.md).
