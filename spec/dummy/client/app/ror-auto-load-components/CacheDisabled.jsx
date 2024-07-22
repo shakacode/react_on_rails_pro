@@ -1,17 +1,19 @@
+"use client";
+
 import React from 'react';
 
-export default class CacheDisabled extends React.Component {
-  componentWillUnmount() {
-    // eslint-disable-next-line no-console
-    console.log('CacheDisabled#componentWillUnmount');
-  }
+const CacheDisabled = () => {
+  React.useEffect(() => {
+    // This will be called on component unmount
+    return () => console.log('CacheDisabled#componentWillUnmount');
+  }, []);
 
-  render() {
-    return (
-      <div className="container">
-        <h2>Turbolinks cache is disabled</h2>
-        <p>Must call componentWillUnmount.</p>
-      </div>
-    );
-  }
-}
+  return (
+    <div className="container">
+      <h2>Turbolinks cache is disabled</h2>
+      <p>Must call componentWillUnmount.</p>
+    </div>
+  );
+};
+
+export default CacheDisabled;

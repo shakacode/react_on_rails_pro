@@ -1,3 +1,5 @@
+"use client";
+
 // Super simple example of the simplest possible React component
 import React, { useState } from 'react';
 import css from '../components/HelloWorld.module.scss';
