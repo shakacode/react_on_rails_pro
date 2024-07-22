@@ -1,3 +1,5 @@
+"use client";
+
 /* eslint-disable react/prefer-es6-class */
 
 import PropTypes from 'prop-types';
