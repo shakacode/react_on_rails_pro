@@ -11,6 +11,7 @@ module ReactOnRailsPro
       prerender_caching: Configuration::DEFAULT_PRERENDER_CACHING,
       server_renderer: Configuration::DEFAULT_RENDERER_METHOD,
       renderer_url: Configuration::DEFAULT_RENDERER_URL,
+      rsc_renderer_url: Configuration::DEFAULT_RSC_RENDERER_URL,
       renderer_use_fallback_exec_js: Configuration::DEFAULT_RENDERER_FALLBACK_EXEC_JS,
       renderer_http_pool_size: Configuration::DEFAULT_RENDERER_HTTP_POOL_SIZE,
       renderer_http_pool_timeout: Configuration::DEFAULT_RENDERER_HTTP_POOL_TIMEOUT,
@@ -33,6 +34,7 @@ module ReactOnRailsPro
 
   class Configuration
     DEFAULT_RENDERER_URL = "http://localhost:3800"
+    DEFAULT_RSC_RENDERER_URL = "http://localhost:3900"
     DEFAULT_RENDERER_METHOD = "ExecJS"
     DEFAULT_RENDERER_FALLBACK_EXEC_JS = true
     DEFAULT_RENDERER_HTTP_POOL_SIZE = 10
@@ -50,7 +52,7 @@ module ReactOnRailsPro
     DEFAULT_PROFILE_SERVER_RENDERING_JS_CODE = false
     DEFAULT_RAISE_NON_SHELL_SERVER_RENDERING_ERRORS = false
 
-    attr_accessor :renderer_url, :renderer_password, :tracing,
+    attr_accessor :renderer_url, :rsc_renderer_url, :renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
                   :dependency_globs, :excluded_dependency_globs, :rendering_returns_promises,
@@ -58,8 +60,7 @@ module ReactOnRailsPro
                   :renderer_request_retry_limit, :throw_js_errors, :ssr_timeout,
                   :profile_server_rendering_js_code, :raise_non_shell_server_rendering_errors
 
-    # rubocop:disable Metrics/AbcSize
-    def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil,
+    def initialize(renderer_url: nil, rsc_renderer_url: nil, renderer_password: nil, server_renderer: nil,
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
                    renderer_http_pool_warn_timeout: nil, tracing: nil,
@@ -68,6 +69,7 @@ module ReactOnRailsPro
                    renderer_request_retry_limit: nil, throw_js_errors: nil, ssr_timeout: nil,
                    profile_server_rendering_js_code: nil, raise_non_shell_server_rendering_errors: nil)
       self.renderer_url = renderer_url
+      self.rsc_renderer_url = rsc_renderer_url
       self.renderer_password = renderer_password
       self.server_renderer = server_renderer
       self.renderer_use_fallback_exec_js = renderer_use_fallback_exec_js
@@ -139,12 +141,14 @@ module ReactOnRailsPro
 
     def configure_default_url_if_not_provided
       self.renderer_url = renderer_url.presence || DEFAULT_RENDERER_URL
+      self.rsc_renderer_url = rsc_renderer_url.presence || DEFAULT_RSC_RENDERER_URL
     end
 
     def validate_url
       URI(renderer_url)
+      URI(rsc_renderer_url)
     rescue URI::InvalidURIError => e
-      message = "Unparseable ReactOnRailsPro.config.renderer_url #{renderer_url} provided.\n#{e.message}"
+      message = "Unparseable ReactOnRailsPro.config.renderer_url #{renderer_url} or ReactOnRailsPro.config.renderer_url#{rsc_renderer_url} provided.\n#{e.message}"
       raise ReactOnRailsPro::Error, message
     end
 
@@ -177,7 +181,12 @@ module ReactOnRailsPro
     def setup_renderer_password
       return if renderer_password.present?
 
+      # TODO: allow to use different password for different renderer
       uri = URI(renderer_url)
+      rsc_uri = URI(rsc_renderer_url)
+
+      raise ReactOnRailsPro::Error, "Both renderer_url and rsc_renderer_url must have the same password" unless uri.password == rsc_uri.password
+
       self.renderer_password = uri.password
     end
   end

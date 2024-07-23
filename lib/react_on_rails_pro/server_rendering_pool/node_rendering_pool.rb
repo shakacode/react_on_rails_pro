@@ -26,6 +26,10 @@ module ReactOnRailsPro
           "#{ReactOnRailsPro::Utils.bundle_hash}.js"
         end
 
+        def rsc_renderer_bundle_file_name
+          "#{ReactOnRailsPro::Utils.rsc_bundle_hash}.js"
+        end
+
         # js_code: JavaScript expression that returns a string.
         # Returns a Hash:
         #   html: string of HTML for direct insertion on the page by evaluating js_code
@@ -50,7 +54,7 @@ module ReactOnRailsPro
 
         def eval_streaming_js(js_code, render_options)
           path = prepare_render_path(js_code, render_options)
-          ReactOnRailsPro::Request.render_code_as_stream(path, js_code)
+          ReactOnRailsPro::Request.render_code_as_stream(path, js_code, render_options.rsc?)
         end
 
         def eval_js(js_code, render_options, send_bundle: false)
@@ -80,14 +84,12 @@ module ReactOnRailsPro
           ReactOnRailsPro::ServerRenderingPool::ProRendering
             .set_request_digest_on_render_options(js_code, render_options)
 
-          # In case this method is called with simple, raw JS, not depending on the bundle, next line
-          # is needed.
-          @bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
-
+          is_rendering_rsc_payload = render_options.rsc?
+          bundle_hash = is_rendering_rsc_payload ? ReactOnRailsPro::Utils.rsc_bundle_hash : ReactOnRailsPro::Utils.bundle_hash
           # TODO: Remove the request_digest. See https://github.com/shakacode/react_on_rails_pro/issues/119
           # From the request path
           # path = "/bundles/#{@bundle_hash}/render"
-          "/bundles/#{@bundle_hash}/render/#{render_options.request_digest}"
+          "/bundles/#{bundle_hash}/render/#{render_options.request_digest}"
         end
 
         def fallback_exec_js(js_code, render_options, error)

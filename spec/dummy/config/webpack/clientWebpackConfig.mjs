@@ -1,6 +1,5 @@
-const webpack = require('webpack');
-const commonWebpackConfig = require('./commonWebpackConfig');
-const LoadablePlugin = require('@loadable/webpack-plugin');
+import LoadablePlugin from '@loadable/webpack-plugin';
+import commonWebpackConfig from './commonWebpackConfig.mjs';
 
 const isHMR = process.env.HMR;
 
@@ -20,4 +19,4 @@ const configureClient = () => {
   return clientConfig;
 };
 
-module.exports = configureClient;
+export default configureClient;

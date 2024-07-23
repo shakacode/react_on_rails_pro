@@ -10,46 +10,54 @@ module ReactOnRailsPro
   class Request
     class << self
       def reset_connection
-        @connection = create_connection
+        @connection = create_connection(url: ReactOnRailsPro.configuration.renderer_url)
+        @rsc_connection = create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
       end
 
       def render_code(path, js_code, send_bundle)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request #{path}" }
-        perform_request(path, form_with_code(js_code, send_bundle))
+        perform_request(path, form_with_code(js_code, send_bundle, false), false)
       end
 
-      def render_code_as_stream(path, js_code)
+      def render_code_as_stream(path, js_code, is_rendering_rsc_payload)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
         # The block here and at perform_request is passed to connection.request,
         # which allows us to read each chunk received in the HTTP stream as soon as it's received.
         ReactOnRailsPro::StreamRequest.create do |send_bundle, &block|
-          perform_request(path, form_with_code(js_code, send_bundle), &block)
+          perform_request(path, form_with_code(js_code, send_bundle, is_rendering_rsc_payload), is_rendering_rsc_payload, &block)
         end
       end
 
+      # TODO: add support for uploading rsc assets
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
-        perform_request("/upload-assets", form_with_assets_and_bundle)
+        perform_request("/upload-assets", form_with_assets_and_bundle, false)
       end
 
+      # TODO: add support for checking if asset exists on rsc renderer
       def asset_exists_on_vm_renderer?(filename)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on node-renderer: #{filename}" }
-        response = perform_request("/asset-exists?filename=#{filename}", common_form_data)
+        response = perform_request("/asset-exists?filename=#{filename}", common_form_data, false)
         JSON.parse(response.body)["exists"] == true
       end
 
       private
 
       def connection
-        @connection ||= create_connection
+        @connection ||= create_connection(url: ReactOnRailsPro.configuration.renderer_url)
       end
 
-      def perform_request(path, form, &block)
+      def rsc_connection
+        @rsc_connection ||= create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
+      end
+
+      def perform_request(path, form, is_rendering_rsc_payload, &block)
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
           begin
-            response = connection.request(Net::HTTP::Post::Multipart.new(path, form), &block)
+            used_connection = is_rendering_rsc_payload ? rsc_connection : connection
+            response = used_connection.request(Net::HTTP::Post::Multipart.new(path, form), &block)
             retry_request = false
           rescue Timeout::Error => e
             # Testing timeout catching:
@@ -82,13 +90,16 @@ module ReactOnRailsPro
         end
       end
 
-      def form_with_code(js_code, send_bundle)
+      def form_with_code(js_code, send_bundle, is_rendering_rsc_payload)
         form = common_form_data
         form["renderingRequest"] = js_code
         if send_bundle
-          renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
+          renderer_bundle_file_name = is_rendering_rsc_payload ?
+                                        ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.rsc_renderer_bundle_file_name :
+                                        ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
+          bundle_js_file_path = is_rendering_rsc_payload ? ReactOnRails::Utils.rsc_bundle_js_file_path : ReactOnRails::Utils.server_bundle_js_file_path
           form["bundle"] = UploadIO.new(
-            File.new(ReactOnRails::Utils.server_bundle_js_file_path),
+            File.new(bundle_js_file_path),
             "text/javascript",
             renderer_bundle_file_name
           )
@@ -138,7 +149,7 @@ module ReactOnRailsPro
         }
       end
 
-      def create_connection
+      def create_connection(url:)
         Rails.logger.info do
           "[ReactOnRailsPro] Setting up Node Renderer connection to #{ReactOnRailsPro.configuration.renderer_url}"
         end
@@ -157,7 +168,7 @@ module ReactOnRailsPro
           # https://github.com/bpardee/persistent_http/blob/master/lib/persistent_http/connection.rb#L168
           read_timeout: ENV['DEBUGGER'] === 'true' ? 3600 : ReactOnRailsPro.configuration.ssr_timeout,
           force_retry: true,
-          url: ReactOnRailsPro.configuration.renderer_url
+          url: url
         )
       rescue StandardError => e
         message = <<~MSG
