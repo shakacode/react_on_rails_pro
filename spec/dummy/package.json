@@ -48,7 +48,6 @@
     "prop-types": "^15.7.2",
     "react": "18.3.0-canary-670811593-20240322",
     "react-dom": "18.3.0-canary-670811593-20240322",
-    "react-server-dom-webpack": "18.3.0-canary-670811593-20240322",
     "react-helmet": "^6.0.0-beta.2",
     "react-on-rails": "link:.yalc/react-on-rails",
     "react-proptypes": "^1.0.0",
@@ -56,6 +55,7 @@
     "react-refresh": "^0.11.0",
     "react-router-dom": "^6.15.0",
     "react-select": "^2.0.0-beta.7",
+    "react-server-dom-webpack": "18.3.0-canary-670811593-20240322",
     "redux": "^4.0.1",
     "redux-thunk": "^2.2.0",
     "sass": "^1.43.4",
@@ -102,7 +102,7 @@
     "build:server": "RAILS_ENV=production NODE_ENV=production SERVER=true bin/shakapacker",
     "build:clean": "rm -rf public/webpack || true",
     "node-renderer-debug": "RENDERER_PORT=3800 ndb client/node-renderer.js",
-    "node-renderer": "RENDERER_PORT=3800 node client/node-renderer.js"
+    "node-renderer": "node client/node-renderer.js"
   },
   "license": "UNLICENSED",
   "repository": {
