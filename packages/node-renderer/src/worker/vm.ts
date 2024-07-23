@@ -9,7 +9,7 @@ import vm from 'vm';
 import m from 'module';
 import cluster from 'cluster';
 import type { Readable } from 'stream';
-import { promisify } from 'util';
+import { promisify, TextEncoder } from 'util';
 import type { ReactOnRails as ROR } from 'react-on-rails';
 
 import SharedConsoleHistory from '../shared/sharedConsoleHistory';
@@ -78,6 +78,10 @@ export async function buildVM(filePath: string) {
     if (supportModules) {
       extendContext(contextObject, {
         Buffer,
+        TextEncoder,
+        // @ts-expect-error ReadableStream is defined. TODO: fix tsconfig
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        ReadableStream,
         process,
         setTimeout,
         setInterval,

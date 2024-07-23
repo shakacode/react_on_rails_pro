@@ -8,7 +8,9 @@ module ReactOnRailsPro
       end
 
       def render(props_string, rails_context, redux_stores, react_component_name, render_options)
-        render_function_name = if render_options.stream?
+        render_function_name = if render_options.rsc?
+                                 "serverRenderRSCReactComponent"
+                               elsif render_options.stream?
                                  "streamServerRenderedReactComponent"
                                else
                                  "serverRenderReactComponent"

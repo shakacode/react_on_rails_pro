@@ -9,45 +9,54 @@ module ReactOnRailsPro
     class << self
       def reset_connection
         @connection&.close
-        @connection = create_connection
+        @rsc_connection&.close
+        @connection = create_connection(url: ReactOnRailsPro.configuration.renderer_url)
+        @rsc_connection = create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
       end
 
       def render_code(path, js_code, send_bundle)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request #{path}" }
-        perform_request(path, form: form_with_code(js_code, send_bundle))
+        perform_request(path, false, form: form_with_code(js_code, send_bundle))
       end
 
-      def render_code_as_stream(path, js_code)
+      def render_code_as_stream(path, js_code, is_rendering_rsc_payload)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
         ReactOnRailsPro::StreamRequest.create do |send_bundle|
-          perform_request(path, form: form_with_code(js_code, send_bundle), stream: true)
+          perform_request(path, is_rendering_rsc_payload, form: form_with_code(js_code, send_bundle), stream: true)
         end
       end
 
+      # TODO: add support for uploading rsc assets
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
-        perform_request("/upload-assets", form: form_with_assets_and_bundle)
+        perform_request("/upload-assets", false, form: form_with_assets_and_bundle)
       end
 
+      # TODO: add support for checking if asset exists on rsc renderer
       def asset_exists_on_vm_renderer?(filename)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on node-renderer: #{filename}" }
-        response = perform_request("/asset-exists?filename=#{filename}", json: common_form_data)
+        response = perform_request("/asset-exists?filename=#{filename}", false, json: common_form_data)
         JSON.parse(response.body)["exists"] == true
       end
 
       private
 
       def connection
-        @connection ||= create_connection
+        @connection ||= create_connection(url: ReactOnRailsPro.configuration.renderer_url)
       end
 
-      def perform_request(path, **post_options) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+      def rsc_connection
+        @rsc_connection ||= create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
+      end
+
+      def perform_request(path, is_rendering_rsc_payload, **post_options) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
           begin
             start_time = Time.now
-            response = connection.post(path, **post_options)
+            used_connection = is_rendering_rsc_payload ? rsc_connection : connection
+            response = used_connection.post(path, **post_options)
             raise response.error if response.is_a?(HTTPX::ErrorResponse)
 
             request_time = Time.now - start_time
@@ -88,20 +97,22 @@ module ReactOnRailsPro
         response
       end
 
-      def form_with_code(js_code, send_bundle)
+      def form_with_code(js_code, send_bundle, is_rendering_rsc_payload)
         form = common_form_data
         form["renderingRequest"] = js_code
-        populate_form_with_bundle_and_assets(form, check_bundle: false) if send_bundle
+        populate_form_with_bundle_and_assets(form, is_rendering_rsc_payload, check_bundle: false) if send_bundle
         form
       end
 
-      def populate_form_with_bundle_and_assets(form, check_bundle:)
-        server_bundle_path = ReactOnRails::Utils.server_bundle_js_file_path
+      def populate_form_with_bundle_and_assets(form, is_rendering_rsc_payload, check_bundle:)
+        server_bundle_path = is_rendering_rsc_payload ? ReactOnRails::Utils.rsc_bundle_js_file_path : ReactOnRails::Utils.server_bundle_js_file_path
         if check_bundle && !File.exist?(server_bundle_path)
           raise ReactOnRailsPro::Error, "Bundle not found #{server_bundle_path}"
         end
 
-        renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
+        renderer_bundle_file_name = is_rendering_rsc_payload ?
+                                      ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.rsc_renderer_bundle_file_name :
+                                      ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
         form["bundle"] = {
           body: get_form_body_for_file(server_bundle_path),
           content_type: "text/javascript",
@@ -134,7 +145,7 @@ module ReactOnRailsPro
 
       def form_with_assets_and_bundle
         form = common_form_data
-        populate_form_with_bundle_and_assets(form, check_bundle: true)
+        populate_form_with_bundle_and_assets(form, false, check_bundle: true)
         form
       end
 
@@ -146,9 +157,9 @@ module ReactOnRailsPro
         }
       end
 
-      def create_connection
+      def create_connection(url:)
         Rails.logger.info do
-          "[ReactOnRailsPro] Setting up Node Renderer connection to #{ReactOnRailsPro.configuration.renderer_url}"
+          "[ReactOnRailsPro] Setting up Node Renderer connection to #{url}"
         end
 
         HTTPX
@@ -159,7 +170,7 @@ module ReactOnRailsPro
           .plugin(:stream)
           # See https://www.rubydoc.info/gems/httpx/1.3.3/HTTPX%2FOptions:initialize for the available options
           .with(
-            origin: ReactOnRailsPro.configuration.renderer_url,
+            origin: url,
             # Version of HTTP protocol to use by default in the absence of protocol negotiation
             fallback_protocol: "h2",
             max_concurrent_requests: ReactOnRailsPro.configuration.renderer_http_pool_size,
@@ -180,7 +191,7 @@ module ReactOnRailsPro
           renderer_http_pool_size = #{ReactOnRailsPro.configuration.renderer_http_pool_size}
           renderer_http_pool_timeout = #{ReactOnRailsPro.configuration.renderer_http_pool_timeout}
           renderer_http_pool_warn_timeout = #{ReactOnRailsPro.configuration.renderer_http_pool_warn_timeout}
-          renderer_url = #{ReactOnRailsPro.configuration.renderer_url}
+          renderer_url = #{url}
           Be sure to use a url that contains the protocol of http or https.
           Original error is
           #{e}

@@ -1,8 +1,9 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
+import shakapacker from 'shakapacker';
 
-const { devServer, inliningCss } = require('shakapacker');
+import webpackConfig from './ServerClientOrBoth.mjs';
 
-const webpackConfig = require('./ServerClientOrBoth');
+const { devServer, inliningCss } = shakapacker;
 
 const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
   if (inliningCss) {
@@ -18,4 +19,4 @@ const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
   }
 };
 
-module.exports = webpackConfig(developmentEnvOnly);
+export default webpackConfig(developmentEnvOnly);

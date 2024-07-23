@@ -1,9 +1,10 @@
-const { merge, config } = require('shakapacker');
-const commonWebpackConfig = require('./commonWebpackConfig');
+import shakapacker from 'shakapacker';
+import webpack from 'webpack';
+import commonWebpackConfig from './commonWebpackConfig.mjs';
 
-const webpack = require('webpack');
+const { config } = shakapacker;
 
-function extractLoader(rule, loaderName) {
+export function extractLoader(rule, loaderName) {
   return rule.use.find((item) => {
     let testValue;
 
@@ -122,4 +123,4 @@ const configureServer = () => {
   return serverWebpackConfig;
 };
 
-module.exports = configureServer;
+export default configureServer;
