@@ -43,6 +43,10 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/stream_async_components_for_testing")
   end
 
+  def rsc_posts_page
+    stream_view_containing_react_components(template: "/pages/rsc_posts_page")
+  end
+
   def rsc
     @component_name = params[:component_name]
     @app_props_server_render = APP_PROPS_SERVER_RENDER
