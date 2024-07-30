@@ -2,7 +2,7 @@ import shakapacker from 'shakapacker';
 import webpack from 'webpack';
 import aliasConfig from './alias.mjs';
 
-const { generateWebpackConfig, webpackConfig: baseClientWebpackConfig, merge } = shakapacker;
+const { generateWebpackConfig, merge } = shakapacker;
 
 const sassResources = ['./client/app/assets/styles/app-variables.scss'];
 
