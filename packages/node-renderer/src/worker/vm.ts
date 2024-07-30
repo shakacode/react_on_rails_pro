@@ -75,6 +75,7 @@ export async function buildVM(filePath: string) {
       Object.assign(contextObject, {
         Buffer,
         TextEncoder,
+        URLSearchParams,
         // @ts-expect-error ReadableStream is defined. TODO: fix tsconfig
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         ReadableStream,

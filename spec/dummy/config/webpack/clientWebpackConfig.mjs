@@ -1,5 +1,6 @@
 import LoadablePlugin from '@loadable/webpack-plugin';
 import commonWebpackConfig from './commonWebpackConfig.mjs';
+import RSDWPlugin from 'react-server-dom-webpack/plugin';
 
 const isHMR = process.env.HMR;
 
@@ -11,6 +12,8 @@ const configureClient = () => {
   // error shows referring to window["webpackJsonp"]. That is because the
   // client config is going to try to load chunks.
   delete clientConfig.entry['server-bundle'];
+
+  clientConfig.plugins.push(new RSDWPlugin({ isServer: false }));
 
   if (!isHMR) {
     clientConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));

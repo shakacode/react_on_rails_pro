@@ -43,6 +43,20 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/stream_async_components_for_testing")
   end
 
+  def rsc
+    @component_name = params[:component_name]
+    @app_props_server_render = APP_PROPS_SERVER_RENDER
+
+    @rendering_fibers = []
+    render_to_string "/pages/rsc", layout: false
+    @rendering_fibers.each do |fiber|
+      while (chunk = fiber.resume)
+        response.stream.write(chunk)
+      end
+    end
+    response.stream.close
+  end
+
   def loadable_component
     render "/pages/pro/loadable_component"
   end
