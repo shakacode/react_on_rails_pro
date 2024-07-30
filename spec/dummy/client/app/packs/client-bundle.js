@@ -8,8 +8,13 @@ const WrappedSimpleComponent = () => {
   return <ClientRoot componentName="SimpleComponent" />;
 };
 
+const WrappedRSCPostsPage = () => {
+  return <ClientRoot componentName="RSCPostsPage" />;
+};
+
 ReactOnRails.register({
   SimpleComponent: WrappedSimpleComponent,
+  RSCPostsPage: WrappedRSCPostsPage,
 });
 
 ReactOnRails.setOptions({
