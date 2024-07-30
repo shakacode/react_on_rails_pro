@@ -5,10 +5,10 @@ import webpackConfig from './ServerClientOrBoth.mjs';
 
 const { devServer, inliningCss } = shakapacker;
 
+import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+
 const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
   if (inliningCss) {
-    // eslint-disable-next-line global-require
-    const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
     clientWebpackConfig.plugins.push(
       new ReactRefreshWebpackPlugin({
         overlay: {

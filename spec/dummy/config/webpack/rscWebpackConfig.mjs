@@ -1,5 +1,4 @@
 import path from 'path';
-import RSDWPlugin from 'react-server-dom-webpack/plugin';
 import serverWebpackConfig, { extractLoader } from './serverWebpackConfig.mjs';
 import { fileURLToPath } from 'url';
 
@@ -19,8 +18,6 @@ const configureRsc = () => {
     );
   }
 
-  rscConfig.plugins.push(new RSDWPlugin({ isServer: false }));
-
   rscConfig.resolveLoader = {
     alias: {
       'rsc-transform': path.resolve(__dirname, './rsc-transform-loader.mjs')
@@ -33,15 +30,13 @@ const configureRsc = () => {
       if (babelLoader) {
         rule.use.push({
           loader: 'rsc-transform',
-          options: {
-            conditionNames: ['rsc-server', 'react-server'],
-          },
         });
       }
     }
   });
 
   rscConfig.resolve = {
+    ...rscConfig.resolve,
     conditionNames: ['rsc-server', 'react-server', 'workerd'],
   };
 
