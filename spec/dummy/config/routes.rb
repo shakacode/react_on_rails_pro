@@ -23,6 +23,7 @@ Rails.application.routes.draw do
   get "stream_async_components" => "pages#stream_async_components", as: :stream_async_components
   get "stream_async_components_for_testing" => "pages#stream_async_components_for_testing",
       as: :stream_async_components_for_testing
+  get "rsc/:component_name" => "pages#rsc", as: :rsc
 
   # routes copied over from react on rails
   get "client_side_hello_world" => "pages#client_side_hello_world"

@@ -41,6 +41,7 @@
     "lodash": "^4.17.4",
     "mini-css-extract-plugin": "^2.4.5",
     "moment": "^2.29.4",
+    "node-fetch": "^2.0.0",
     "node-libs-browser": "^2.2.1",
     "nps": "^5.9.3",
     "postcss": "^8.4.31",
