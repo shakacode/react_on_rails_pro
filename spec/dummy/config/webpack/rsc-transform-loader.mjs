@@ -1,7 +1,6 @@
 import * as RSDWNodeLoader from 'react-server-dom-webpack/node-loader';
 
 export default function(source) {
-  console.log(this);
   const callback = this.async();
 
   const resolve = async (specifier, { parentURL }) => {
