@@ -92,10 +92,8 @@
   "scripts": {
     "test": "yarn run build:test && yarn run lint && rspec",
     "lint": "cd ../.. && nps lint",
-    "preinstall": "yarn run link-source && yalc add --link @shakacode-tools/react-on-rails-pro-node-renderer",
-    "link-source": "cd ../.. && yarn run nps build && yalc publish",
     "preinstall": "yarn run link-source && yalc add --link @shakacode-tools/react-on-rails-pro-node-renderer && yalc add --link react-on-rails",
-    "link-source": "cd ../.. && yarn run nps build && yalc publish && cd /mnt/ssd/react_on_rails && yarn run build && yalc publish",
+    "link-source": "cd ../.. && yarn run nps build && yalc publish && cd ../react_on_rails && yarn && yarn run build && yalc publish",
     "build:test": "rm -rf public/webpack/test && RAILS_ENV=test NODE_ENV=test bin/shakapacker",
     "build:dev": "rm -rf public/webpack/development && RAILS_ENV=development NODE_ENV=development bin/shakapacker",
     "build:dev:watch": "RAILS_ENV=development NODE_ENV=development bin/shakapacker --watch",
