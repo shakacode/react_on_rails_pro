@@ -20,3 +20,13 @@ aliases:
 apps:
   ror-dummy:
     <<: *common
+    setup_app_templates:
+      # GVC template contains the identity
+      - app
+
+      # Resources
+      - postgres
+      - redis
+
+      # Workloads, like Dynos types on Heroku
+      - rails
