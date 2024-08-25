@@ -20,7 +20,7 @@ module ReactOnRailsPro
 
     # Add a transformation action
     def transform
-      @actions << ->(chunk, position) do
+      @actions << lambda { |chunk, position|
         if position == :last && chunk.empty?
           # Return the empty chunk without modification for the last chunk
           # This is related to the `handleChunk(:last, "")` call which gets all the appended content
@@ -29,7 +29,7 @@ module ReactOnRailsPro
         else
           yield(chunk)
         end
-      end
+      }
       self # Return self to allow chaining
     end
 
