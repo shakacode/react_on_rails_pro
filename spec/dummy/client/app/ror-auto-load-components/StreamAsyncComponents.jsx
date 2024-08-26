@@ -14,9 +14,9 @@ const AsyncPost = async () => {
 
   // Uncomment to test handling of errors occuring outside of the shell
   // The error occur on the server side only, so the error can be handled on server or fallback to client side rendering
-  if (typeof window === 'undefined') {
-    throw new Error('Error from AsyncPost');
-  }
+  // if (typeof window === 'undefined') {
+  //   throw new Error('Error from AsyncPost');
+  // }
 
   return (
     <div>
