@@ -36,6 +36,8 @@ ReactOnRails.configure do |config|
 
   config.rendering_props_extension = RenderingPropsExtension
 
+  # config.raise_on_prerender_error = true
+
   config.auto_load_bundle = true
   config.components_subdirectory = "ror-auto-load-components"
 end
