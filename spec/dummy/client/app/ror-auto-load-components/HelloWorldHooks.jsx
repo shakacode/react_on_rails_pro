@@ -5,7 +5,6 @@ import css from '../components/HelloWorld.module.scss';
 // TODO: make more like the HelloWorld.jsx
 function HelloWorldHooks(props) {
   const [name, setName] = useState(props.helloWorldData.name);
-  throw new Error('Hello from HelloWorldHooks');
   return (
     <div>
       <h3 className={css.brightColor}>Hello, {name}!</h3>
