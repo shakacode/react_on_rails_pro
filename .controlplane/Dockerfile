@@ -45,4 +45,4 @@ RUN bundle exec rails assets:precompile
 
 EXPOSE 3000 3800
 
-CMD node node-renderer.js & bundle exec rails s -p 3000
+CMD node client/node-renderer.js & bundle exec rails s -p 3000
