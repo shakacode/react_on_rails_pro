@@ -5,7 +5,7 @@ aliases:
     # for security.
     cpln_org: shakacode-open-source-examples-staging
     # Example apps use only location. CPLN offers the ability to use multiple locations.
-    location: aws-us-east-2
+    default_location: aws-us-east-2
     # Configure the workload name used as a template for one-off scripts, like a Heroku one-off dyno.
     one_off_workload: rails
     # Like the entries in the Heroku Procfile that get deployed when the application code changes

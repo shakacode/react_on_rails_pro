@@ -12,7 +12,7 @@ spec:
           value: debug
       # Inherit other ENV values from GVC
       inheritEnv: true
-      image: '/org/APP_ORG/image/APP_IMAGE'
+      image: {{APP_IMAGE_LINK}}
       # TODO add liveness probe
       memory: 1Gi
       ports:
@@ -27,7 +27,7 @@ spec:
         - name: LOG_LEVEL
           value: debug
       inheritEnv: true
-      image: '/org/APP_ORG/image/APP_IMAGE'
+      image: {{APP_IMAGE_LINK}}
       # TODO add liveness probe
       memory: 1Gi
       ports:
