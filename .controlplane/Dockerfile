@@ -40,8 +40,9 @@ RUN yarn install
 ENV NODE_ENV=production
 ENV RAILS_ENV=production
 
-RUN rails assets:precompile
+RUN bundle exec rake react_on_rails:generate_packs
+RUN bundle exec rails assets:precompile
 
 EXPOSE 3000 3800
 
-CMD ["rails", "s", "-p", "3000"]
+CMD node node-renderer.js & bundle exec rails s -p 3000
