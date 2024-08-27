@@ -16,6 +16,8 @@ aliases:
     additional_workloads:
       - redis
       - postgres
+    # Configure the script to run when releasing an app., either with deploy-image or promote-app-from-upstream
+    release_script: release_script.sh
 
 apps:
   ror-dummy:
