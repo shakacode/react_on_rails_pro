@@ -107,7 +107,7 @@ aliases:
   - &login-control-plane-tools-staging
     name: Setup Control Plane tools for staging
     command: |
-      cpln profile create default --org $CPLN_ORG_STAGING --gvc $APP_NAME_STAGING
+      cpln profile create default --token $CPLN_TOKEN_STAGING --org $CPLN_ORG_STAGING --gvc $APP_NAME_STAGING
       cpln image docker-login
 
 cpln-defaults: &cpln-defaults
