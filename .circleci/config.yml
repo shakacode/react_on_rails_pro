@@ -107,8 +107,25 @@ aliases:
   - &login-control-plane-tools-staging
     name: Setup Control Plane tools for staging
     command: |
-      cpln profile create default --token $CPLN_TOKEN_STAGING --org $CPLN_ORG_STAGING --gvc $APP_NAME_STAGING
+      cpln profile create default --token $CPLN_TOKEN --org $CPLN_ORG_NAME --gvc $APP_NAME
       cpln image docker-login
+  - &cpflow-setup-app
+    name: cpflow setup-app
+    command: |
+      if ! cpflow exists -a $APP_NAME ; then
+        cpflow setup-app -a $APP_NAME
+      fi
+
+  - &cpflow-build-image
+    name: Containerize and push image
+    command: |
+      BUILDKIT_PROGRESS=plain cpflow build-image -a $APP_NAME \
+        --commit ${CIRCLE_SHA1::7}
+
+  - &cpflow-deploy-image
+    name: Deploy image
+    command: |
+      cpflow deploy-image -a $APP_NAME
 
 cpln-defaults: &cpln-defaults
   docker:
@@ -123,6 +140,10 @@ cpln-defaults: &cpln-defaults
 jobs:
   controlplane-release-staging:
     <<: *cpln-defaults
+    environment:
+      CPLN_ORG_NAME: shakacode-open-source-examples-staging
+      APP_NAME: rorp-dummy-staging
+      CPLN_TOKEN: $CPLN_TOKEN_STAGING
     steps:
       - checkout
       - run: *print-system-info
@@ -130,21 +151,25 @@ jobs:
           docker_layer_caching: true
       - run: *install-control-plane-tools
       - run: *login-control-plane-tools-staging
-      - run:
-          name: cpflow setup-app
-          command: |
-            if ! cpflow exists -a $APP_NAME_STAGING ; then
-              cpflow setup-app -a $APP_NAME_STAGING
-            fi
-      - run:
-          name: Containerize and push image
-          command: |
-            BUILDKIT_PROGRESS=plain cpflow build-image -a $APP_NAME_STAGING \
-              --commit ${CIRCLE_SHA1::7}
-      - run:
-          name: Deploy image
-          command: |
-            cpflow deploy-image -a $APP_NAME_STAGING
+      - run: *cpflow-setup-app
+      - run: *cpflow-build-image
+      - run: *cpflow-deploy-image
+  controlplane-release-production:
+    <<: *cpln-defaults
+    environment:
+      CPLN_ORG_NAME: shakacode-open-source-examples
+      APP_NAME: rorp-dummy-production
+      CPLN_TOKEN: $CPLN_TOKEN_PROD
+    steps:
+      - checkout
+      - run: *print-system-info
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: *install-control-plane-tools
+      - run: *login-control-plane-tools-staging
+      - run: *cpflow-setup-app
+      - run: *cpflow-build-image
+      - run: *cpflow-deploy-image
   # Lint all
   lint-js-and-ruby:
     docker:
@@ -329,6 +354,12 @@ workflows:
   version: 2
   build-and-test:
     jobs:
+      - controlplane-release-production:
+          filters:
+            branches:
+              only:
+                - master
+                - ramezweissa/upgrade-cpflow
       - approve-staging-release:
           type: approval
       - controlplane-release-staging:
