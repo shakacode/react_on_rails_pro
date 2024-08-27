@@ -5,13 +5,13 @@ aliases:
   - &print-system-info
     name: Print system information
     command: |
-             echo "Linux release: "; cat /etc/issue
-             echo "Current user: "; whoami
-             echo "Current directory: "; pwd
-             echo "Ruby version: "; ruby -v
-             echo "Node version: "; node -v
-             echo "Yarn version: "; yarn --version
-             echo "Bundler version: "; bundle --version
+      echo "Linux release: "; cat /etc/issue
+      echo "Current user: "; whoami
+      echo "Current directory: "; pwd
+      echo "Ruby version: "; ruby -v
+      echo "Node version: "; node -v
+      echo "Yarn version: "; yarn --version
+      echo "Bundler version: "; bundle --version
   - &lint-js
     name: Linting of JS
     command: yarn start eslint
@@ -99,8 +99,52 @@ aliases:
         sudo apt-get install google-chrome-stable
         echo -e "\nInstalled $(google-chrome --version)"
       fi
+  - &install-control-plane-tools
+    name: Install Control Plane tools
+    command: |
+      sudo npm install -g @controlplane/cli@3.1.0 && cpln --version
+      gem install cpflow -v 3.0.1 && cpflow --version
+  - &login-control-plane-tools-staging
+    name: Setup Control Plane tools for staging
+    command: |
+      cpln profile create default --org $CPLN_ORG_STAGING --gvc $APP_NAME_STAGING
+      cpln image docker-login
+
+cpln-defaults: &cpln-defaults
+  docker:
+    - image: cimg/ruby:3.3.0-node
+  environment:
+    CPLN_ORG_STAGING: shakacode-open-source-examples-staging
+    CPLN_ORG_PRODUCTION: shakacode-open-source-examples
+    REVIEW_APP_NAME_PREFIX: qa-rorp-dummy
+    APP_NAME_STAGING: rorp-dummy-staging
+    APP_NAME_PRODUCTION: rorp-dummy-production
 
 jobs:
+  controlplane-release-staging:
+    <<: *cpln-defaults
+    steps:
+      - checkout
+      - run: *print-system-info
+      - setup_remote_docker:
+          docker_layer_caching: true
+      - run: *install-control-plane-tools
+      - run: *login-control-plane-tools-staging
+      - run:
+          name: cpflow setup-app
+          command: |
+            if ! cpflow exists -a $APP_NAME_STAGING ; then
+              cpflow setup-app -a $APP_NAME_STAGING
+            file
+      - run:
+          name: Containerize and push image
+          command: |
+            BUILDKIT_PROGRESS=plain cpflow build-image -a $APP_NAME_STAGING \
+              --commit ${CIRCLE_SHA1::7}
+      - run:
+          name: Deploy image
+          command: |
+            cpflow deploy-image -a $APP_NAME_STAGING
   # Lint all
   lint-js-and-ruby:
     docker:
@@ -285,6 +329,11 @@ workflows:
   version: 2
   build-and-test:
     jobs:
+      - approve-staging-release:
+          type: approval
+      - controlplane-release-staging:
+          requires:
+            - approve-staging-release
       - install-package-node-packages
       - install-package-ruby-gems
       - install-dummy-app-node-packages:
