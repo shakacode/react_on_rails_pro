@@ -20,7 +20,7 @@ aliases:
     release_script: release_script.sh
 
 apps:
-  ror-dummy:
+  rorp-dummy-staging:
     <<: *common
     setup_app_templates:
       # GVC template contains the identity
@@ -31,4 +31,12 @@ apps:
       - redis
 
       # Workloads, like Dynos types on Heroku
+      - rails
+  rorp-dummy-production:
+    <<: *common
+    cpln_org: shakacode-open-source-examples
+    setup_app_templates:
+      - app
+      - postgres
+      - redis
       - rails
