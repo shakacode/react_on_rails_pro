@@ -135,7 +135,7 @@ jobs:
           command: |
             if ! cpflow exists -a $APP_NAME_STAGING ; then
               cpflow setup-app -a $APP_NAME_STAGING
-            file
+            fi
       - run:
           name: Containerize and push image
           command: |
