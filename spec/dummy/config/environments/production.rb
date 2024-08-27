@@ -19,7 +19,9 @@ Rails.application.configure do
   config.public_file_server.enabled = true
 
   # Compress JavaScripts and CSS.
-  config.assets.js_compressor = Uglifier.new(harmony: true)
+  # uglifier does not work well with ES6
+  # https://github.com/lautis/uglifier/issues/185 https://stackoverflow.com/questions/65580629/rails-wont-precompile-assets-due-to-uglifier-error-uglifiererror
+  config.assets.js_compressor = :terser
   config.assets.css_compressor = :csso
 
   # Do not fallback to assets pipeline if a precompiled asset is missed.
