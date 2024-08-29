@@ -58,6 +58,7 @@ module ReactOnRailsPro
                   :renderer_request_retry_limit, :throw_js_errors, :ssr_timeout,
                   :profile_server_rendering_js_code, :raise_non_shell_server_rendering_errors
 
+    # rubocop:disable Metrics/AbcSize
     def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil,
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
@@ -87,6 +88,7 @@ module ReactOnRailsPro
       self.profile_server_rendering_js_code = profile_server_rendering_js_code
       self.raise_non_shell_server_rendering_errors = raise_non_shell_server_rendering_errors
     end
+    # rubocop:enable Metrics/AbcSize
 
     def setup_config_values
       configure_default_url_if_not_provided
