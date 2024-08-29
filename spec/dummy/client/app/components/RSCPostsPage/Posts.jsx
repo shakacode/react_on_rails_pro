@@ -10,9 +10,7 @@ const Posts = async () => {
   return (
     <div>
       {topFivePosts.map(post => (
-        <Suspense key={post.id} fallback={<div>Loading Post...</div>}>
-          <Post post={post} />
-        </Suspense>
+        <Post key={post.id} post={post} />
       ))}
     </div>
   );
