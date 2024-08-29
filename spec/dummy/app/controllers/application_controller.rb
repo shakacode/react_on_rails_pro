@@ -9,10 +9,6 @@ class ApplicationController < ActionController::Base
     Rails.logger.error("Caught ReactOnRails::PrerenderError in ApplicationController error handler.")
     Rails.logger.error(err.message)
     Rails.logger.error(err.backtrace.join("\n"))
-    msg = <<-MSG.strip_heredoc
-      Error prerendering in react_on_rails.
-      See server logs for output.
-    MSG
 
     if response.committed?
       Rails.logger.error("Error occurred after part of the response already sent, " \
@@ -42,6 +38,11 @@ class ApplicationController < ActionController::Base
 
       response.stream.close
     else
+      msg = <<-MSG.strip_heredoc
+        Error prerendering in react_on_rails.
+        Redirected back to '/server_side_log_throw_raise_invoker'.
+        See server logs for output.
+      MSG
       redirect_to server_side_log_throw_raise_invoker_path,
                   flash: { error: msg }
     end
