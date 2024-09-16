@@ -62,5 +62,6 @@ const config = {
 if (env.CI) {
   config.workersCount = 2;
 }
+config.workersCount = 1;
 
 reactOnRailsProNodeRenderer(config);

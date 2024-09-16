@@ -4,8 +4,13 @@ import css from '../components/HelloWorld.module.scss';
 const delayPromise = (promise, ms) => new Promise((resolve) => setTimeout(() => resolve(promise), ms));
 
 const cachedFetches = {};
+let isWaited = false;
 
 const AsyncPost = async () => {
+  if (!isWaited) {
+    await new Promise(resolve => setTimeout(resolve, 2000));
+    isWaited = true;
+  }
   console.log('Hello from AsyncPost');
   const post = (cachedFetches['post'] ??= await delayPromise(
     fetch('https://jsonplaceholder.org/posts/1'),
@@ -35,6 +40,8 @@ const AsyncComment = async ({ commentId }) => {
 
 function StreamAsyncComponents(props) {
   const [name, setName] = useState(props.helloWorldData.name);
+  const requestId = props.request_id;
+  console.log('StreamAsyncComponents', requestId);
   return (
     <div>
       <h2>Stream React Server Components</h2>
@@ -46,13 +53,13 @@ function StreamAsyncComponents(props) {
       <br />
       <br />
       <Suspense fallback={<div>Loading...</div>}>
-        <AsyncPost />
+        <AsyncPost requestId={requestId} />
       </Suspense>
       <br />
       <h1 style={{ fontSize: '30px', fontWeight: 'bold' }}>Comments Fetched Asynchronously on Server</h1>
       {[1, 2, 3, 4].map((commentId) => (
         <Suspense key={commentId} fallback={<div>Loading Comment {commentId}...</div>}>
-          <AsyncComment commentId={commentId} />
+          <AsyncComment commentId={commentId} requestId={requestId} />
         </Suspense>
       ))}
     </div>
