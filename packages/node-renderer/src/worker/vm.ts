@@ -10,6 +10,8 @@ import m from 'module';
 import cluster from 'cluster';
 import { promisify } from 'util';
 import type { ReactOnRails as ROR } from 'react-on-rails';
+import { AsyncLocalStorage } from 'async_hooks';
+
 import log from '../shared/log';
 import { getConfig } from '../shared/configBuilder';
 import { formatExceptionMessage, smartTrim } from '../shared/utils';
@@ -25,6 +27,8 @@ let context: vm.Context | undefined;
 // context is properly created.
 let vmBundleFilePath: string | undefined;
 
+const asyncLocalStorage = new AsyncLocalStorage();
+
 /**
  * Value is set after VM created from the bundleFilePath. This value is undefined if the context is
  * not ready.
@@ -33,11 +37,10 @@ export function getVmBundleFilePath() {
   return vmBundleFilePath;
 }
 
-function replayVmConsole() {
-  if (log.level !== 'debug' || !context) return;
-  const consoleHistoryFromVM = vm.runInContext('console.history', context) as { arguments: unknown[] }[];
+function replayVmConsole(consoleHistory: { arguments: unknown[] }[]) {
+  if (log.level !== 'debug') return;
 
-  consoleHistoryFromVM.forEach((msg) => {
+  consoleHistory.forEach((msg) => {
     const stringifiedList = msg.arguments.map((arg) => {
       let val;
       try {
@@ -74,7 +77,7 @@ export async function buildVM(filePath: string) {
       log.debug(
         'Adding Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval to context object.',
       );
-      Object.assign(contextObject, { Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval });
+      Object.assign(contextObject, { asyncLocalStorage, Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval });
     }
     if (additionalContextIsObject) {
       const keysString = Object.keys(additionalContext).join(', ');
@@ -89,7 +92,22 @@ export async function buildVM(filePath: string) {
     // Reimplement console methods for replaying on the client:
     vm.runInContext(
       `
-    console = { history: [] };
+    console = {
+      get history() {
+        const asyncLocalStorageStore = typeof asyncLocalStorage !== 'undefined' && asyncLocalStorage.getStore();
+        if (asyncLocalStorageStore) {
+          return asyncLocalStorageStore.consoleHistory;
+        }
+        return this._history;
+      },
+      set history(value) {
+        const asyncLocalStorageStore = typeof asyncLocalStorage !== 'undefined' && asyncLocalStorage.getStore();
+        if (asyncLocalStorageStore) {
+          asyncLocalStorageStore.consoleHistory = value;
+        }
+        this._history = value;
+      }
+    };
     ['error', 'log', 'info', 'warn'].forEach(function (level) {
       console[level] = function () {
         var argArray = Array.prototype.slice.call(arguments);
@@ -197,9 +215,12 @@ ${smartTrim(renderingRequest)}`);
       await writeFileAsync(debugOutputPathCode, renderingRequest);
     }
 
-    vm.runInContext('console.history = []', context);
+    const asyncLocalStorageStore = { consoleHistory: [] };
+    const localContext = context;
+    let result = asyncLocalStorage.run(asyncLocalStorageStore, () =>
+      vm.runInContext(renderingRequest, localContext) as string | Promise<string>
+    );
 
-    let result = vm.runInContext(renderingRequest, context) as string | Promise<string>;
     if (typeof result !== 'string') {
       const objectResult = await result;
       result = JSON.stringify(objectResult);
@@ -212,7 +233,7 @@ ${smartTrim(result)}`);
       await writeFileAsync(debugOutputPathResult, result);
     }
 
-    replayVmConsole();
+    replayVmConsole(asyncLocalStorageStore.consoleHistory);
     return Promise.resolve(result);
   } catch (exception) {
     const exceptionMessage = formatExceptionMessage(renderingRequest, exception);
