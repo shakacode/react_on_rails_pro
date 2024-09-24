@@ -77,7 +77,15 @@ export async function buildVM(filePath: string) {
       log.debug(
         'Adding Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval to context object.',
       );
-      Object.assign(contextObject, { asyncLocalStorage, Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval });
+      Object.assign(contextObject, {
+        asyncLocalStorage,
+        Buffer,
+        process,
+        setTimeout,
+        setInterval,
+        clearTimeout,
+        clearInterval,
+      });
     }
     if (additionalContextIsObject) {
       const keysString = Object.keys(additionalContext).join(', ');
@@ -217,8 +225,9 @@ ${smartTrim(renderingRequest)}`);
 
     const asyncLocalStorageStore = { consoleHistory: [] };
     const localContext = context;
-    let result = asyncLocalStorage.run(asyncLocalStorageStore, () =>
-      vm.runInContext(renderingRequest, localContext) as string | Promise<string>
+    let result = asyncLocalStorage.run(
+      asyncLocalStorageStore,
+      () => vm.runInContext(renderingRequest, localContext) as string | Promise<string>,
     );
 
     if (typeof result !== 'string') {
