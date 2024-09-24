@@ -7,6 +7,16 @@ GIT
       pry (>= 0.13, < 0.15)
 
 PATH
+  remote: ../../../react_on_rails
+  specs:
+    react_on_rails (14.0.5)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
+
+PATH
   remote: ../..
   specs:
     react_on_rails_pro (4.0.0.rc.5)
@@ -307,12 +317,6 @@ GEM
       ffi (~> 1.0)
     rdoc (6.7.0)
       psych (>= 4.0.0)
-    react_on_rails (14.0.4)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
     regexp_parser (2.9.2)
     reline (0.5.9)
       io-console (~> 0.5)
@@ -503,7 +507,7 @@ DEPENDENCIES
   pry-theme
   puma (>= 6)
   rails (>= 7.1)
-  react_on_rails (= 14.0.4)
+  react_on_rails!
   react_on_rails_pro!
   rspec-rails
   rspec-retry
