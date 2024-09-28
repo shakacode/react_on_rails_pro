@@ -116,6 +116,7 @@ export async function buildVM(filePath: string) {
         this._history = value;
       }
     };
+    console.history = [];
     ['error', 'log', 'info', 'warn'].forEach(function (level) {
       console[level] = function () {
         var argArray = Array.prototype.slice.call(arguments);
