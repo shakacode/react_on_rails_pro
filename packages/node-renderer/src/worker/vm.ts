@@ -10,8 +10,8 @@ import m from 'module';
 import cluster from 'cluster';
 import { promisify } from 'util';
 import type { ReactOnRails as ROR } from 'react-on-rails';
-import { AsyncLocalStorage } from 'async_hooks';
 
+import SharedConsoleHistory from '../shared/sharedConsoleHistory';
 import log from '../shared/log';
 import { getConfig } from '../shared/configBuilder';
 import { formatExceptionMessage, smartTrim } from '../shared/utils';
@@ -27,7 +27,7 @@ let context: vm.Context | undefined;
 // context is properly created.
 let vmBundleFilePath: string | undefined;
 
-const asyncLocalStorage = new AsyncLocalStorage();
+const sharedConsoleHistory = new SharedConsoleHistory();
 
 /**
  * Value is set after VM created from the bundleFilePath. This value is undefined if the context is
@@ -35,25 +35,6 @@ const asyncLocalStorage = new AsyncLocalStorage();
  */
 export function getVmBundleFilePath() {
   return vmBundleFilePath;
-}
-
-function replayVmConsole(consoleHistory: { arguments: unknown[] }[]) {
-  if (log.level !== 'debug') return;
-
-  consoleHistory.forEach((msg) => {
-    const stringifiedList = msg.arguments.map((arg) => {
-      let val;
-      try {
-        val = typeof arg === 'string' || arg instanceof String ? arg : JSON.stringify(arg);
-      } catch (e) {
-        val = `${(e as Error).message}: ${arg}`;
-      }
-
-      return val;
-    });
-
-    log.debug(stringifiedList.join(' '));
-  });
 }
 
 declare global {
@@ -72,13 +53,12 @@ export async function buildVM(filePath: string) {
     const { supportModules, includeTimerPolyfills, additionalContext } = getConfig();
     const additionalContextIsObject = additionalContext !== null && additionalContext.constructor === Object;
     vmBundleFilePath = undefined;
-    const contextObject = {};
+    const contextObject = { sharedConsoleHistory };
     if (supportModules) {
       log.debug(
         'Adding Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval to context object.',
       );
       Object.assign(contextObject, {
-        asyncLocalStorage,
         Buffer,
         process,
         setTimeout,
@@ -102,28 +82,19 @@ export async function buildVM(filePath: string) {
       `
     console = {
       get history() {
-        const asyncLocalStorageStore = typeof asyncLocalStorage !== 'undefined' && asyncLocalStorage.getStore();
-        if (asyncLocalStorageStore) {
-          return asyncLocalStorageStore.consoleHistory;
-        }
-        return this._history;
+        return sharedConsoleHistory.getConsoleHistory();
       },
-      set history(value) {
-        const asyncLocalStorageStore = typeof asyncLocalStorage !== 'undefined' && asyncLocalStorage.getStore();
-        if (asyncLocalStorageStore) {
-          asyncLocalStorageStore.consoleHistory = value;
-        }
-        this._history = value;
-      }
+      set history(consoleHistory) {
+        sharedConsoleHistory.setConsoleHistory(consoleHistory);
+      },
     };
-    console.history = [];
     ['error', 'log', 'info', 'warn'].forEach(function (level) {
       console[level] = function () {
         var argArray = Array.prototype.slice.call(arguments);
         if (argArray.length > 0) {
           argArray[0] = '[SERVER] ' + argArray[0];
         }
-        console.history.push({level: level, arguments: argArray});
+        sharedConsoleHistory.addToConsoleHistory({level: level, arguments: argArray});
       };
     });`,
       context,
@@ -224,10 +195,9 @@ ${smartTrim(renderingRequest)}`);
       await writeFileAsync(debugOutputPathCode, renderingRequest);
     }
 
-    const asyncLocalStorageStore = { consoleHistory: [] };
+    let result: string | Promise<string>;
     const localContext = context;
-    let result = asyncLocalStorage.run(
-      asyncLocalStorageStore,
+    result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
       () => vm.runInContext(renderingRequest, localContext) as string | Promise<string>,
     );
 
@@ -243,7 +213,6 @@ ${smartTrim(result)}`);
       await writeFileAsync(debugOutputPathResult, result);
     }
 
-    replayVmConsole(asyncLocalStorageStore.consoleHistory);
     return Promise.resolve(result);
   } catch (exception) {
     const exceptionMessage = formatExceptionMessage(renderingRequest, exception);

@@ -374,17 +374,19 @@ describe('buildVM and runInVM', () => {
 
     const requestId = '6ce0caf9-2691-472a-b59b-5de390bcffdf';
 
-    beforeEach(async () => {
+    const prepareVM = async (replayServerAsyncOperationLogs: boolean) => {
       const config = getConfig();
       config.supportModules = true;
       config.includeTimerPolyfills = false;
+      config.replayServerAsyncOperationLogs = replayServerAsyncOperationLogs;
 
       await buildVM(
         path.resolve(__dirname, './fixtures/projects/spec-dummy/e5e10d1/server-bundle-node-target.js'),
       );
-    });
+    }
 
     test('console logs in sync and async server operations', async () => {
+      await prepareVM(true);
       const consoleLogsInAsyncServerRequestResult = await runInVM(consoleLogsInAsyncServerRequest);
 
       expect(consoleLogsInAsyncServerRequestResult as string).toContain(
@@ -402,6 +404,7 @@ describe('buildVM and runInVM', () => {
     });
 
     test('console logs are not leaked to other requests', async () => {
+      await prepareVM(true);
       const otherRequestId = '9f3b7e12-5a8d-4c6f-b1e3-2d7f8a6c9e0b';
       const otherconsoleLogsInAsyncServerRequest = consoleLogsInAsyncServerRequest.replace(requestId, otherRequestId);
       const [firstRequestResult, otherRequestResult] = await Promise.all([
@@ -425,6 +428,56 @@ describe('buildVM and runInVM', () => {
         `console.log.apply(console, [\\"[SERVER] [${otherRequestId}] Console log from Simple Async Function at iteration 7\\"]);`
       );
       expect(otherRequestResult as string).toContain(
+        `console.log.apply(console, [\\"[SERVER] [${otherRequestId}] Console log from Async Server after calling async functions\\"]);`
+      );
+    });
+
+    test('if replayServerAsyncOperationLogs is false, only sync console logs are replayed', async () => {
+      await prepareVM(false);
+      const consoleLogsInAsyncServerRequestResult = await runInVM(consoleLogsInAsyncServerRequest);
+
+      expect(consoleLogsInAsyncServerRequestResult as string).toContain(
+        `console.log.apply(console, [\\"[SERVER] [${requestId}] Console log from Sync Server\\"]);`
+      );
+      expect(consoleLogsInAsyncServerRequestResult as string).not.toContain(
+        `console.log.apply(console, [\\"[SERVER] [${requestId}] Console log from Simple Async Function at iteration 7\\"]);`
+      );
+      expect(consoleLogsInAsyncServerRequestResult as string).not.toContain(
+        `console.log.apply(console, [\\"[SERVER] [${requestId}] Console log from Recursive Async Function at level 8\\"]);`
+      );
+      expect(consoleLogsInAsyncServerRequestResult as string).not.toContain(
+        `console.log.apply(console, [\\"[SERVER] [${requestId}] Console log from Async Server after calling async functions\\"]);`
+      );
+    });
+
+    test('console logs are not leaked to other requests when replayServerAsyncOperationLogs is false', async () => {
+      await prepareVM(false);
+      const otherRequestId = '9f3b7e12-5a8d-4c6f-b1e3-2d7f8a6c9e0b';
+      const otherconsoleLogsInAsyncServerRequest = consoleLogsInAsyncServerRequest.replace(requestId, otherRequestId);
+      const [firstRequestResult, otherRequestResult] = await Promise.all([
+        runInVM(consoleLogsInAsyncServerRequest),
+        runInVM(otherconsoleLogsInAsyncServerRequest),
+      ]);
+
+      expect(firstRequestResult as string).toContain(requestId);
+      expect(firstRequestResult as string).not.toContain(otherRequestId);
+
+      expect(otherRequestResult as string).not.toContain(requestId);
+      expect(otherRequestResult as string).toContain(otherRequestId);
+
+      expect(firstRequestResult as string).toContain(
+        `console.log.apply(console, [\\"[SERVER] [${requestId}] Console log from Sync Server\\"]);`
+      );
+      expect(otherRequestResult as string).toContain(
+        `console.log.apply(console, [\\"[SERVER] [${otherRequestId}] Console log from Sync Server\\"]);`
+      );
+      expect(otherRequestResult as string).not.toContain(
+        `console.log.apply(console, [\\"[SERVER] [${otherRequestId}] Console log from Recursive Async Function at level 8\\"]);`
+      );
+      expect(otherRequestResult as string).not.toContain(
+        `console.log.apply(console, [\\"[SERVER] [${otherRequestId}] Console log from Simple Async Function at iteration 7\\"]);`
+      );
+      expect(otherRequestResult as string).not.toContain(
         `console.log.apply(console, [\\"[SERVER] [${otherRequestId}] Console log from Async Server after calling async functions\\"]);`
       );
     });

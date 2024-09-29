@@ -51,6 +51,9 @@ export interface Config {
   sentryTracing: boolean;
   sentryTracesSampleRate: string | number;
   includeTimerPolyfills: boolean;
+  // If true, replay console logs from async server operations.
+  // If false, replay only logs happen on server before any awaited async operations.
+  replayServerAsyncOperationLogs: boolean;
 }
 
 let config: Config | undefined;
@@ -128,6 +131,8 @@ const defaultConfig: Config = {
 
   // default to true if empty, otherwise it is set to false
   includeTimerPolyfills: env.INCLUDE_TIMER_POLYFILLS === 'true' || !env.INCLUDE_TIMER_POLYFILLS,
+
+  replayServerAsyncOperationLogs: truthy(env.REPLAY_SERVER_ASYNC_OPERATION_LOGS ?? true),
 };
 
 function envValuesUsed() {
