@@ -23,8 +23,10 @@ function replayConsoleOnRenderer(consoleHistory: ConsoleMessage[]) {
   });
 }
 
-const supportsAsyncLocalStorage = (): boolean => typeof AsyncLocalStorage !== undefined;
-const canUseAsyncLocalStorage = (): boolean => supportsAsyncLocalStorage() && getConfig().replayServerAsyncOperationLogs;
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition AsyncLocalStorage is not defined in Node.js 10
+const supportsAsyncLocalStorage = (): boolean => typeof AsyncLocalStorage !== 'undefined';
+const canUseAsyncLocalStorage = (): boolean =>
+  supportsAsyncLocalStorage() && getConfig().replayServerAsyncOperationLogs;
 
 class SharedConsoleHistory {
   private asyncLocalStorageIfEnabled: AsyncLocalStorage<{ consoleHistory: ConsoleMessage[] }> | undefined;

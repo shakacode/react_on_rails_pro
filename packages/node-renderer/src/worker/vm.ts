@@ -22,6 +22,7 @@ const writeFileAsync = promisify(fs.writeFile);
 
 // Both context and vmBundleFilePath are set when the VM is ready.
 let context: vm.Context | undefined;
+let sharedConsoleHistory: SharedConsoleHistory | undefined;
 
 // vmBundleFilePath is cleared at the beginning of creating the context and set only when the
 // context is properly created.
@@ -51,7 +52,7 @@ export async function buildVM(filePath: string) {
     const { supportModules, includeTimerPolyfills, additionalContext } = getConfig();
     const additionalContextIsObject = additionalContext !== null && additionalContext.constructor === Object;
     vmBundleFilePath = undefined;
-    const sharedConsoleHistory = new SharedConsoleHistory();
+    sharedConsoleHistory = new SharedConsoleHistory();
     const contextObject = { sharedConsoleHistory };
     if (supportModules) {
       log.debug(
@@ -180,7 +181,7 @@ export async function runInVM(
   const { bundlePath } = getConfig();
 
   try {
-    if (context == null) {
+    if (context == null || sharedConsoleHistory == null) {
       throw new Error('runInVM called before buildVM');
     }
 
@@ -196,7 +197,7 @@ ${smartTrim(renderingRequest)}`);
 
     let result: string | Promise<string>;
     const localContext = context;
-    result = context.sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
+    result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
       () => vm.runInContext(renderingRequest, localContext) as string | Promise<string>,
     );
 
