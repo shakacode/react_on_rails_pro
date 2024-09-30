@@ -24,9 +24,9 @@ function replayConsoleOnRenderer(consoleHistory: ConsoleMessage[]) {
   });
 }
 
-const supportsAsyncLocalStorage = (): boolean => typeof AsyncLocalStorage !== 'undefined';
+// AsyncLocalStorage is available in Node.js 12.17.0 and later versions
 const canUseAsyncLocalStorage = (): boolean =>
-  supportsAsyncLocalStorage() && getConfig().replayServerAsyncOperationLogs;
+  typeof AsyncLocalStorage !== 'undefined' && getConfig().replayServerAsyncOperationLogs;
 
 class SharedConsoleHistory {
   private asyncLocalStorageIfEnabled: AsyncLocalStorage<{ consoleHistory: ConsoleMessage[] }> | undefined;
