@@ -23,29 +23,32 @@ function replayConsoleOnRenderer(consoleHistory: ConsoleMessage[]) {
   });
 }
 
+const supportsAsyncLocalStorage = (): boolean => typeof AsyncLocalStorage !== undefined;
+const canUseAsyncLocalStorage = (): boolean => supportsAsyncLocalStorage() && getConfig().replayServerAsyncOperationLogs;
+
 class SharedConsoleHistory {
-  private asyncLocalStorage: AsyncLocalStorage<{ consoleHistory: ConsoleMessage[] }>;
+  private asyncLocalStorageIfEnabled: AsyncLocalStorage<{ consoleHistory: ConsoleMessage[] }> | undefined;
   private isRunningSyncOperation: boolean;
   private syncHistory: ConsoleMessage[];
 
   constructor() {
-    this.asyncLocalStorage = new AsyncLocalStorage();
+    if (canUseAsyncLocalStorage()) {
+      this.asyncLocalStorageIfEnabled = new AsyncLocalStorage();
+    }
     this.isRunningSyncOperation = false;
     this.syncHistory = [];
   }
 
-  isAsyncLocalStorageUsed = () => getConfig().replayServerAsyncOperationLogs
-
   getConsoleHistory(): ConsoleMessage[] {
-    if (this.isAsyncLocalStorageUsed()) {
-      return this.asyncLocalStorage.getStore()?.consoleHistory ?? [];
+    if (this.asyncLocalStorageIfEnabled) {
+      return this.asyncLocalStorageIfEnabled.getStore()?.consoleHistory ?? [];
     }
     return this.isRunningSyncOperation ? this.syncHistory : [];
   }
 
   addToConsoleHistory(message: ConsoleMessage): void {
-    if (this.isAsyncLocalStorageUsed()) {
-      const store = this.asyncLocalStorage.getStore();
+    if (this.asyncLocalStorageIfEnabled) {
+      const store = this.asyncLocalStorageIfEnabled.getStore();
       if (store) {
         store.consoleHistory.push(message);
       }
@@ -55,8 +58,8 @@ class SharedConsoleHistory {
   }
 
   setConsoleHistory(consoleHistory: ConsoleMessage[]): void {
-    if (this.isAsyncLocalStorageUsed()) {
-      const store = this.asyncLocalStorage.getStore();
+    if (this.asyncLocalStorageIfEnabled) {
+      const store = this.asyncLocalStorageIfEnabled.getStore();
       if (store) {
         store.consoleHistory = consoleHistory;
       }
@@ -72,9 +75,9 @@ class SharedConsoleHistory {
     let result: string | Promise<string>;
 
     try {
-      if (this.isAsyncLocalStorageUsed()) {
+      if (this.asyncLocalStorageIfEnabled) {
         const storage = { consoleHistory: [] };
-        result = this.asyncLocalStorage.run(storage, renderRequestFunction);
+        result = this.asyncLocalStorageIfEnabled.run(storage, renderRequestFunction);
         if (result && typeof result === 'object' && 'then' in result) {
           result = result.then((value) => {
             replayConsoleOnRenderer(storage.consoleHistory);

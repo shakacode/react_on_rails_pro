@@ -27,8 +27,6 @@ let context: vm.Context | undefined;
 // context is properly created.
 let vmBundleFilePath: string | undefined;
 
-const sharedConsoleHistory = new SharedConsoleHistory();
-
 /**
  * Value is set after VM created from the bundleFilePath. This value is undefined if the context is
  * not ready.
@@ -53,6 +51,7 @@ export async function buildVM(filePath: string) {
     const { supportModules, includeTimerPolyfills, additionalContext } = getConfig();
     const additionalContextIsObject = additionalContext !== null && additionalContext.constructor === Object;
     vmBundleFilePath = undefined;
+    const sharedConsoleHistory = new SharedConsoleHistory();
     const contextObject = { sharedConsoleHistory };
     if (supportModules) {
       log.debug(
@@ -197,7 +196,7 @@ ${smartTrim(renderingRequest)}`);
 
     let result: string | Promise<string>;
     const localContext = context;
-    result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
+    result = context.sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
       () => vm.runInContext(renderingRequest, localContext) as string | Promise<string>,
     );
 

@@ -51,8 +51,9 @@ export interface Config {
   sentryTracing: boolean;
   sentryTracesSampleRate: string | number;
   includeTimerPolyfills: boolean;
-  // If true, replay console logs from async server operations.
-  // If false, replay only logs happen on server before any awaited async operations.
+  // If set to true, this option enables the replay of console logs from asynchronous server operations.
+  // If set to false, only logs that occur on the server prior to any awaited asynchronous operations will be replayed.
+  // Please note that this feature is only supported in Node.js versions 12 and above.
   replayServerAsyncOperationLogs: boolean;
 }
 
