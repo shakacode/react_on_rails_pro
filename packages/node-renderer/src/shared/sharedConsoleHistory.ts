@@ -1,6 +1,7 @@
 import { AsyncLocalStorage } from 'async_hooks';
 import { getConfig } from './configBuilder';
 import log from './log';
+import { isPromise } from './utils';
 
 type ConsoleMessage = { level: 'error' | 'log' | 'info' | 'warn'; arguments: unknown[] };
 
@@ -48,14 +49,9 @@ class SharedConsoleHistory {
   }
 
   addToConsoleHistory(message: ConsoleMessage): void {
-    if (this.asyncLocalStorageIfEnabled) {
-      const store = this.asyncLocalStorageIfEnabled.getStore();
-      if (store) {
-        store.consoleHistory.push(message);
-      }
-    } else if (this.isRunningSyncOperation) {
-      this.syncHistory.push(message);
-    }
+    // the log message will be ignored if AsyncLocalStorage is not enabled and it's not running a sync operation
+    // the returned console history will be an inline empty array in that case
+    this.getConsoleHistory().push(message);
   }
 
   setConsoleHistory(consoleHistory: ConsoleMessage[]): void {
@@ -79,7 +75,7 @@ class SharedConsoleHistory {
       if (this.asyncLocalStorageIfEnabled) {
         const storage = { consoleHistory: [] };
         result = this.asyncLocalStorageIfEnabled.run(storage, renderRequestFunction);
-        if (result && typeof result === 'object' && 'then' in result) {
+        if (isPromise(result)) {
           result = result.then((value) => {
             replayConsoleOnRenderer(storage.consoleHistory);
             return value;

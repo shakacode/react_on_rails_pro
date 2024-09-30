@@ -58,14 +58,7 @@ export async function buildVM(filePath: string) {
       log.debug(
         'Adding Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval to context object.',
       );
-      Object.assign(contextObject, {
-        Buffer,
-        process,
-        setTimeout,
-        setInterval,
-        clearTimeout,
-        clearInterval,
-      });
+      Object.assign(contextObject, { Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval });
     }
     if (additionalContextIsObject) {
       const keysString = Object.keys(additionalContext).join(', ');
@@ -195,9 +188,9 @@ ${smartTrim(renderingRequest)}`);
       await writeFileAsync(debugOutputPathCode, renderingRequest);
     }
 
-    let result: string | Promise<string>;
+    // Capture context to ensure TypeScript sees it as defined within the callback
     const localContext = context;
-    result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
+    let result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
       () => vm.runInContext(renderingRequest, localContext) as string | Promise<string>,
     );
 
