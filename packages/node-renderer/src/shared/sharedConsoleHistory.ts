@@ -23,7 +23,6 @@ function replayConsoleOnRenderer(consoleHistory: ConsoleMessage[]) {
   });
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
 const supportsAsyncLocalStorage = (): boolean => typeof AsyncLocalStorage !== 'undefined';
 const canUseAsyncLocalStorage = (): boolean =>
   supportsAsyncLocalStorage() && getConfig().replayServerAsyncOperationLogs;
