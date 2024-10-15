@@ -8,7 +8,7 @@ import {
 } from './helper';
 import { buildVM, getVmBundleFilePath, resetVM, runInVM } from '../src/worker/vm';
 import { getConfig } from '../src/shared/configBuilder';
-import { isReadableStream } from '../src/shared/utils';
+import { isVMErrorResult } from '../src/shared/utils';
 
 const testName = 'vm';
 const uploadedBundlePathForTest = () => uploadedBundlePath(testName);
@@ -130,11 +130,7 @@ describe('buildVM and runInVM', () => {
     await buildVM(uploadedBundlePathForTest());
     // Adopted form https://github.com/patriksimek/vm2/blob/master/test/tests.js:
     const result = await runInVM('process.exit()');
-    expect(
-      typeof result === 'object' &&
-        !isReadableStream(result) &&
-        result.exceptionMessage.match(/process is not defined/),
-    ).toBeTruthy();
+    expect(isVMErrorResult(result) && result.exceptionMessage.match(/process is not defined/)).toBeTruthy();
   });
 
   test('Captured exceptions for a long message', async () => {
@@ -146,8 +142,7 @@ describe('buildVM and runInVM', () => {
       50,
     )}\n// Finishing Comment`;
     const result = await runInVM(code);
-    const exceptionMessage =
-      typeof result === 'object' && !isReadableStream(result) ? result.exceptionMessage : '';
+    const exceptionMessage = isVMErrorResult(result) ? result.exceptionMessage : '';
     expect(exceptionMessage.match(/process is not defined/)).toBeTruthy();
     expect(exceptionMessage.match(/process.exit/)).toBeTruthy();
     expect(exceptionMessage.match(/Finishing Comment/)).toBeTruthy();

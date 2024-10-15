@@ -88,7 +88,7 @@ module ReactOnRailsPro
             raise ReactOnRailsPro::Error,
                   "Renderer unhandled error at the VM level: #{response.code}:\n#{response.body}"
           else
-            raise ReactOnRailsPro::Error, "Unknown response code from renderer: #{response.code}:\n#{response.body}"
+            raise ReactOnRailsPro::Error, "Unexpected response code from renderer: #{response.code}:\n#{response.body}"
           end
         rescue StandardError => e
           raise e unless ReactOnRailsPro.configuration.renderer_use_fallback_exec_js

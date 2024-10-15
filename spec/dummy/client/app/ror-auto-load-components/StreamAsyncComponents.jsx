@@ -1,4 +1,3 @@
-// Super simple example of the simplest possible React component
 import React, { useState, Suspense } from 'react';
 import css from '../components/HelloWorld.module.scss';
 
@@ -7,12 +6,10 @@ const delayPromise = (promise, ms) => new Promise((resolve) => setTimeout(() => 
 const cachedFetches = {};
 
 const AsyncPost = async () => {
-  const post =
-    cachedFetches['post'] ??
-    (await delayPromise(fetch('https://jsonplaceholder.org/posts/1'), 2000).then((response) =>
-      response.json(),
-    ));
-  cachedFetches['post'] = post;
+  const post = (cachedFetches['post'] ??= await delayPromise(
+    fetch('https://jsonplaceholder.org/posts/1'),
+    2000,
+  ).then((response) => response.json()));
   return (
     <div>
       <h1 style={{ fontSize: '30px', fontWeight: 'bold' }}>Post Fetched Asynchronously on Server</h1>
@@ -22,13 +19,10 @@ const AsyncPost = async () => {
 };
 
 const AsyncComment = async ({ commentId }) => {
-  const comment =
-    cachedFetches[commentId] ??
-    (await delayPromise(
-      fetch(`https://jsonplaceholder.org/comments/${commentId}`),
-      2000 + commentId * 1000,
-    ).then((response) => response.json()));
-  cachedFetches[commentId] = comment;
+  const comment = (cachedFetches[commentId] ??= await delayPromise(
+    fetch(`https://jsonplaceholder.org/comments/${commentId}`),
+    2000 + commentId * 1000,
+  ).then((response) => response.json()));
   return (
     <div>
       <h1 style={{ fontSize: '22px', fontWeight: 'bold' }}>Comment {commentId}</h1>

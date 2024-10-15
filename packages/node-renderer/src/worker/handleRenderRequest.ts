@@ -20,6 +20,7 @@ import {
   ResponseResult,
   moveUploadedAsset,
   isReadableStream,
+  isVMErrorResult,
 } from '../shared/utils';
 import { getConfig } from '../shared/configBuilder';
 import errorReporter from '../shared/errorReporter';
@@ -33,7 +34,7 @@ async function prepareResult(renderingRequest: string): Promise<ResponseResult> 
     if (!result) {
       const error = new Error('INVALID NIL or NULL result for rendering');
       exceptionMessage = formatExceptionMessage(renderingRequest, error, 'INVALID result for prepareResult');
-    } else if (typeof result === 'object' && !isReadableStream(result) && result.exceptionMessage) {
+    } else if (isVMErrorResult(result)) {
       ({ exceptionMessage } = result);
     }
 

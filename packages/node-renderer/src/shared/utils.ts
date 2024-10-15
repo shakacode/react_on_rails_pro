@@ -115,3 +115,8 @@ export const isReadableStream = (stream: unknown): stream is Readable =>
   stream !== null &&
   typeof (stream as Readable).pipe === 'function' &&
   typeof (stream as Readable).read === 'function';
+
+export const isVMErrorResult = (
+  result: string | Readable | { exceptionMessage: string },
+): result is { exceptionMessage: string } =>
+  typeof result === 'object' && !isReadableStream(result) && 'exceptionMessage' in result;
