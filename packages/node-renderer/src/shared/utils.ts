@@ -2,9 +2,8 @@ import cluster from 'cluster';
 import path from 'path';
 import { MultipartFile } from '@fastify/multipart';
 import { createWriteStream, ensureDir, move, MoveOptions } from 'fs-extra';
-import { pipeline } from 'stream';
+import { Readable, pipeline } from 'stream';
 import { promisify } from 'util';
-import { Readable } from 'stream';
 import errorReporter from './errorReporter';
 import { getConfig } from './configBuilder';
 import log from './log';
@@ -65,9 +64,7 @@ export function formatExceptionMessage(renderingRequest: string, error: unknown,
   return `${context ? `\nContext:\n${context}\n` : ''}
 JS code for rendering request was:
 ${smartTrim(renderingRequest)}
-    
-EXCEPTION MESSAGE:
-${(error as Error).message || error}
+    renderer/src/shared/utils.ts
 
 STACK:
 ${(error as Error).stack}`;
