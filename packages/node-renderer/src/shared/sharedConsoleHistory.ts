@@ -45,24 +45,27 @@ class SharedConsoleHistory {
     if (this.asyncLocalStorageIfEnabled) {
       return this.asyncLocalStorageIfEnabled.getStore()?.consoleHistory ?? [];
     }
+    // If console history is not safely stored in AsyncLocalStorage,
+    // then return it only in sync operations (to avoid data leakage)
     return this.isRunningSyncOperation ? this.syncHistory : [];
   }
 
   addToConsoleHistory(message: ConsoleMessage): void {
-    // the log message will be ignored if AsyncLocalStorage is not enabled and it's not running a sync operation
-    // the returned console history will be an inline empty array in that case
-    this.getConsoleHistory().push(message);
+    if (this.asyncLocalStorageIfEnabled) {
+      this.asyncLocalStorageIfEnabled.getStore()?.consoleHistory?.push(message);
+    } else {
+      this.syncHistory.push(message);
+    }
   }
 
-  setConsoleHistory(consoleHistory: ConsoleMessage[]): void {
-    if (this.asyncLocalStorageIfEnabled) {
-      const store = this.asyncLocalStorageIfEnabled.getStore();
-      if (store) {
-        store.consoleHistory = consoleHistory;
-      }
-    } else {
-      this.syncHistory = consoleHistory;
-    }
+  replayConsoleLogsAfterRender(result: string | Promise<string>, customConsoleHistory?: ConsoleMessage[]): string | Promise<string> {
+    const replayLogs = (value: string) => {
+      const consoleHistory = customConsoleHistory ?? this.syncHistory;
+      replayConsoleOnRenderer(consoleHistory);
+      return value;
+    };
+
+    return isPromise(result) ? result.then(replayLogs) : replayLogs(result);
   }
 
   trackConsoleHistoryInRenderRequest(
@@ -75,24 +78,16 @@ class SharedConsoleHistory {
       if (this.asyncLocalStorageIfEnabled) {
         const storage = { consoleHistory: [] };
         result = this.asyncLocalStorageIfEnabled.run(storage, renderRequestFunction);
-        if (isPromise(result)) {
-          result = result.then((value) => {
-            replayConsoleOnRenderer(storage.consoleHistory);
-            return value;
-          });
-        } else {
-          replayConsoleOnRenderer(storage.consoleHistory);
-        }
+        return this.replayConsoleLogsAfterRender(result, storage.consoleHistory);
       } else {
         this.syncHistory = [];
         result = renderRequestFunction();
-        replayConsoleOnRenderer(this.syncHistory);
+        return this.replayConsoleLogsAfterRender(result);
       }
     } finally {
       this.isRunningSyncOperation = false;
       this.syncHistory = [];
     }
-    return result;
   }
 }
 

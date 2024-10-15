@@ -77,9 +77,6 @@ export async function buildVM(filePath: string) {
       get history() {
         return sharedConsoleHistory.getConsoleHistory();
       },
-      set history(consoleHistory) {
-        sharedConsoleHistory.setConsoleHistory(consoleHistory);
-      },
     };
     ['error', 'log', 'info', 'warn'].forEach(function (level) {
       console[level] = function () {

@@ -8,12 +8,16 @@ module ReactOnRailsPro
       end
 
       def render(props_string, rails_context, redux_stores, react_component_name, render_options)
+        # Node renderer does not need to clear the console history
+        # It already clears the console history after each render
+        clear_console_history_if_needed_js = ReactOnRailsPro.configuration.node_renderer? ? "" : "console.history = [];"
         <<-JS
         (function() {
           var railsContext = #{rails_context};
         #{ssr_pre_hook_js}
         #{redux_stores}
           var props = #{props_string};
+          #{clear_console_history_if_needed_js}
           return ReactOnRails.serverRenderReactComponent({
             name: '#{react_component_name}',
             domNodeId: '#{render_options.dom_id}',
