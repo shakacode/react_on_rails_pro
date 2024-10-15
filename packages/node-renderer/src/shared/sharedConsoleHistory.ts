@@ -52,13 +52,16 @@ class SharedConsoleHistory {
 
   addToConsoleHistory(message: ConsoleMessage): void {
     if (this.asyncLocalStorageIfEnabled) {
-      this.asyncLocalStorageIfEnabled.getStore()?.consoleHistory?.push(message);
+      this.asyncLocalStorageIfEnabled.getStore()?.consoleHistory.push(message);
     } else {
       this.syncHistory.push(message);
     }
   }
 
-  replayConsoleLogsAfterRender(result: string | Promise<string>, customConsoleHistory?: ConsoleMessage[]): string | Promise<string> {
+  replayConsoleLogsAfterRender(
+    result: string | Promise<string>,
+    customConsoleHistory?: ConsoleMessage[],
+  ): string | Promise<string> {
     const replayLogs = (value: string) => {
       const consoleHistory = customConsoleHistory ?? this.syncHistory;
       replayConsoleOnRenderer(consoleHistory);
@@ -79,11 +82,10 @@ class SharedConsoleHistory {
         const storage = { consoleHistory: [] };
         result = this.asyncLocalStorageIfEnabled.run(storage, renderRequestFunction);
         return this.replayConsoleLogsAfterRender(result, storage.consoleHistory);
-      } else {
-        this.syncHistory = [];
-        result = renderRequestFunction();
-        return this.replayConsoleLogsAfterRender(result);
       }
+      this.syncHistory = [];
+      result = renderRequestFunction();
+      return this.replayConsoleLogsAfterRender(result);
     } finally {
       this.isRunningSyncOperation = false;
       this.syncHistory = [];

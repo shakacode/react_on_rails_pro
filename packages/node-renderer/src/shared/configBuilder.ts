@@ -140,7 +140,9 @@ const defaultConfig: Config = {
   includeTimerPolyfills: env.INCLUDE_TIMER_POLYFILLS === 'true' || !env.INCLUDE_TIMER_POLYFILLS,
 
   // default to true in development, otherwise it is set to false
-  replayServerAsyncOperationLogs: truthy(env.REPLAY_SERVER_ASYNC_OPERATION_LOGS ?? NODE_ENV === 'development'),
+  replayServerAsyncOperationLogs: truthy(
+    env.REPLAY_SERVER_ASYNC_OPERATION_LOGS ?? NODE_ENV === 'development',
+  ),
 };
 
 function envValuesUsed() {
