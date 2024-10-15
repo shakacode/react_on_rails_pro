@@ -6198,12 +6198,12 @@ raw-body@2.5.2:
     iconv-lite "0.4.24"
     unpipe "1.0.0"
 
-react-dom@19.0.0-beta-26f2496093-20240514:
-  version "19.0.0-beta-26f2496093-20240514"
-  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-19.0.0-beta-26f2496093-20240514.tgz#5fe4e829db8d379303057f539900a61ed6ca2615"
-  integrity sha512-UvQ+K1l3DFQ34LDgfFSNuUGi9EC+yfE9tS6MdpNTd5fx7qC7KLfepfC/KpxWMQZ7JfE3axD4ZO6H4cBSpAZpqw==
+react-dom@18.3.0-canary-670811593-20240322:
+  version "18.3.0-canary-670811593-20240322"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-18.3.0-canary-670811593-20240322.tgz#ac677b164fd83050272bf985e740ed4ca65337be"
+  integrity sha512-AHxCnyDzZueXIHY4WA2Uba1yaL7/vbjhO3D3TWPQeruKD5MwgD0/xExZi0T104gBr6Thv6MEsLSxFjBAHhHKKg==
   dependencies:
-    scheduler "0.25.0-beta-26f2496093-20240514"
+    scheduler "0.24.0-canary-670811593-20240322"
 
 react-fast-compare@^3.1.1:
   version "3.2.2"
@@ -6312,10 +6312,10 @@ react-transition-group@^2.2.1:
     prop-types "^15.6.2"
     react-lifecycles-compat "^3.0.4"
 
-react@19.0.0-beta-26f2496093-20240514:
-  version "19.0.0-beta-26f2496093-20240514"
-  resolved "https://registry.yarnpkg.com/react/-/react-19.0.0-beta-26f2496093-20240514.tgz#3a0d63746b3f9ebd461a0731191bd08047fb1dbb"
-  integrity sha512-ZsU/WjNZ6GfzMWsq2DcGjElpV9it8JmETHm9mAJuOJNhuJcWJxt8ltCJabONFRpDFq1A/DP0d0KFj9CTJVM4VA==
+react@18.3.0-canary-670811593-20240322:
+  version "18.3.0-canary-670811593-20240322"
+  resolved "https://registry.yarnpkg.com/react/-/react-18.3.0-canary-670811593-20240322.tgz#3735250b45468d313ed36121324452bb5a732e9b"
+  integrity sha512-EI6+q3tOT+0z4OkB2sz842Ra/n/yz7b3jOJhSK1HQwi4Ng29VJzLGngWmSuxQ94YfdE3EBhpUKDfgNgzoKM9Vg==
 
 read-cache@^1.0.0:
   version "1.0.0"
@@ -6721,10 +6721,10 @@ saxes@^5.0.1:
   dependencies:
     xmlchars "^2.2.0"
 
-scheduler@0.25.0-beta-26f2496093-20240514:
-  version "0.25.0-beta-26f2496093-20240514"
-  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.25.0-beta-26f2496093-20240514.tgz#a3bc0ff694ec6de7a78c1e48e1f8f4a8555bd77d"
-  integrity sha512-vDwOytLHFnA3SW2B1lNcbO+/qKVyLCX+KLpm+tRGNDsXpyxzRgkIaYGWmX+S70AJGchUHCtuqQ50GFeFgDbXUw==
+scheduler@0.24.0-canary-670811593-20240322:
+  version "0.24.0-canary-670811593-20240322"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.24.0-canary-670811593-20240322.tgz#45c5c45f18a127ab4e3c805dd466bc231b20adf3"
+  integrity sha512-IGX6Fq969h1L0X7jV0sJ/EdI4fr+mRetbBNJl55nn+/RsCuQSVwgKnZG6Q3NByixDNbkRI8nRmWuhOm8NQowGQ==
 
 schema-utils@^2.6.5:
   version "2.7.1"
