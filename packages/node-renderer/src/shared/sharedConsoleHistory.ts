@@ -2,7 +2,7 @@ import type { Readable } from 'stream';
 import { AsyncLocalStorage } from 'async_hooks';
 import { getConfig } from './configBuilder';
 import log from './log';
-import { isPromise } from './utils';
+import { isPromise, isReadableStream } from './utils';
 
 type ConsoleMessage = { level: 'error' | 'log' | 'info' | 'warn'; arguments: unknown[] };
 
@@ -60,14 +60,19 @@ class SharedConsoleHistory {
   }
 
   replayConsoleLogsAfterRender(
-    result: string | Promise<string>,
+    result: string | Promise<string> | Readable,
     customConsoleHistory?: ConsoleMessage[],
-  ): string | Promise<string> {
+  ): string | Promise<string> | Readable {
     const replayLogs = (value: string) => {
       const consoleHistory = customConsoleHistory ?? this.syncHistory;
       replayConsoleOnRenderer(consoleHistory);
       return value;
     };
+
+    // TODO: replay console logs for readable streams
+    if (isReadableStream(result)) {
+      return result;
+    }
 
     return isPromise(result) ? result.then(replayLogs) : replayLogs(result);
   }
