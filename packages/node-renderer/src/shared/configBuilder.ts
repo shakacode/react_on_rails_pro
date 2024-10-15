@@ -54,12 +54,7 @@ export interface Config {
   includeTimerPolyfills: boolean;
   // If set to true, this option enables the replay of console logs from asynchronous server operations.
   // If set to false, only logs that occur on the server prior to any awaited asynchronous operations will be replayed.
-  // The default value is true.
-  // Please note that this feature is only supported in Node.js versions 12 and above.
-  //
-  // Warning: This feature may negatively impact performance if the app creates a large number of promises
-  // that don't perform significant work, especially on Node.js 12. The performance impact is less
-  // pronounced on Node.js versions 14 and above.
+  // The default value is true in development, otherwise it is set to false.
   replayServerAsyncOperationLogs: boolean;
 }
 
