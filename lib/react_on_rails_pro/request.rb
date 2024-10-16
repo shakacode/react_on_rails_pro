@@ -83,20 +83,23 @@ module ReactOnRailsPro
       def form_with_code(js_code, send_bundle)
         form = common_form_data
         form["renderingRequest"] = js_code
-        if send_bundle
-          renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
-          form["bundle"] = {
-            body: Pathname.new(ReactOnRails::Utils.server_bundle_js_file_path),
-            content_type: "text/javascript",
-            filename: renderer_bundle_file_name
-          }
-
-          populate_form_with_assets_to_copy(form)
-        end
+        populate_form_with_bundle_and_assets(form, check_bundle: false) if send_bundle
         form
       end
 
-      def populate_form_with_assets_to_copy(form)
+      def populate_form_with_bundle_and_assets(form, check_bundle:)
+        server_bundle_path = ReactOnRails::Utils.server_bundle_js_file_path
+        if check_bundle && !File.exist?(server_bundle_path)
+          raise ReactOnRailsPro::Error, "Bundle not found #{server_bundle_path}"
+        end
+
+        renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
+        form["bundle"] = {
+          body: Pathname.new(server_bundle_path),
+          content_type: "text/javascript",
+          filename: renderer_bundle_file_name
+        }
+
         if ReactOnRailsPro.configuration.assets_to_copy.present?
           ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset_path, idx|
             Rails.logger.info { "[ReactOnRailsPro] Uploading asset #{asset_path}" }
@@ -119,17 +122,7 @@ module ReactOnRailsPro
 
       def form_with_assets_and_bundle
         form = common_form_data
-        populate_form_with_assets_to_copy(form)
-
-        src_bundle_path = ReactOnRails::Utils.server_bundle_js_file_path
-        raise ReactOnRails::Error, "Bundle not found #{src_bundle_path}" unless File.exist?(src_bundle_path)
-
-        renderer_bundle_file_name = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
-        form["bundle"] = {
-          body: Pathname.new(src_bundle_path),
-          content_type: "text/javascript",
-          filename: renderer_bundle_file_name
-        }
+        populate_form_with_bundle_and_assets(form, check_bundle: true)
         form
       end
 
