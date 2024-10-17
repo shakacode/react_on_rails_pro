@@ -140,12 +140,8 @@ module ReactOnRailsPro
         end
 
         HTTPX
-          # https://honeyryderchuck.gitlab.io/httpx/wiki/Retries
-          # TODO: do we want a custom retry_on condition?
-          # TODO: It seems like perform_request already has the retry logic, we want to avoid duplicating it,
-          # but it may go inside retry_on.
-          # .plugin(:retries, retry_change_requests: true)
           # https://honeyryderchuck.gitlab.io/httpx/wiki/Persistent
+          # The implementation implies retries as well in case something closes the connection
           .plugin(:persistent)
           .with(
             origin: ReactOnRailsPro.configuration.renderer_url,
