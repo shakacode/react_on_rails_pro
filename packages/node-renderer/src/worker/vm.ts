@@ -77,6 +77,9 @@ export async function buildVM(filePath: string) {
       get history() {
         return sharedConsoleHistory.getConsoleHistory();
       },
+      set history(value) {
+        // Do nothing. It's just for the backward compatibility.
+      },
     };
     ['error', 'log', 'info', 'warn'].forEach(function (level) {
       console[level] = function () {
