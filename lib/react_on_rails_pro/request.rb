@@ -8,6 +8,7 @@ module ReactOnRailsPro
   class Request
     class << self
       def reset_connection
+        @connection&.close
         @connection = create_connection
       end
 
