@@ -89,21 +89,4 @@ module ReactOnRailsPro
       StreamDecorator.new(new(&request_block))
     end
   end
-
-  # TODO: remove this code before merge
-  # url = 'http://localhost:3001/'
-  # uri = URI.parse(url)
-  # stream = StreamRequest.create do |&block|
-  #   Net::HTTP.start(uri.host, uri.port) do |http|
-  #     request = Net::HTTP::Get.new(uri)
-  #     http.request(request, &block)
-  #   end
-  # end
-  # stream.prepend { "<html><head>Custom Header</head><body>" }
-  #       .transform { |chunk| chunk.gsub("ell", "eoo") }
-  #       .append { "</body></html>" }
-  #
-  # stream.each_chunk do |chunk|
-  #   puts "Chunk: #{chunk}"
-  # end
 end

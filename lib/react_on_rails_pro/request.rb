@@ -20,6 +20,8 @@ module ReactOnRailsPro
 
       def render_code_as_stream(path, js_code)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
+        # The block here and at perform_request is passed to connection.request,
+        # which allows us to read each chunk received in the HTTP stream as soon as it's received.
         ReactOnRailsPro::StreamRequest.create do |send_bundle, &block|
           perform_request(path, form_with_code(js_code, send_bundle), &block)
         end
