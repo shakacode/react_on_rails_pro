@@ -77,9 +77,7 @@ class SharedConsoleHistory {
     return isPromise(result) ? result.then(replayLogs) : replayLogs(result);
   }
 
-  trackConsoleHistoryInRenderRequest(
-    renderRequestFunction: () => RenderCodeResult,
-  ): RenderCodeResult {
+  trackConsoleHistoryInRenderRequest(renderRequestFunction: () => RenderCodeResult): RenderCodeResult {
     this.isRunningSyncOperation = true;
     let result: RenderCodeResult;
 

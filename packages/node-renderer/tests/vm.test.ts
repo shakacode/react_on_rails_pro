@@ -130,7 +130,9 @@ describe('buildVM and runInVM', () => {
     await buildVM(uploadedBundlePathForTest());
     // Adopted form https://github.com/patriksimek/vm2/blob/master/test/tests.js:
     const result = await runInVM('process.exit()');
-    expect(isErrorRenderResult(result) && result.exceptionMessage.match(/process is not defined/)).toBeTruthy();
+    expect(
+      isErrorRenderResult(result) && result.exceptionMessage.match(/process is not defined/),
+    ).toBeTruthy();
   });
 
   test('Captured exceptions for a long message', async () => {

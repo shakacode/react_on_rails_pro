@@ -195,10 +195,7 @@ export async function buildVM(filePath: string) {
  * @param renderingRequest JS Code to execute for SSR
  * @param vmCluster
  */
-export async function runInVM(
-  renderingRequest: string,
-  vmCluster?: typeof cluster,
-): Promise<RenderResult> {
+export async function runInVM(renderingRequest: string, vmCluster?: typeof cluster): Promise<RenderResult> {
   const { bundlePath } = getConfig();
 
   try {

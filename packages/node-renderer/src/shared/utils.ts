@@ -119,7 +119,5 @@ export const isReadableStream = (stream: unknown): stream is Readable =>
   typeof (stream as Readable).pipe === 'function' &&
   typeof (stream as Readable).read === 'function';
 
-export const isErrorRenderResult = (
-  result: RenderResult,
-): result is { exceptionMessage: string } =>
+export const isErrorRenderResult = (result: RenderResult): result is { exceptionMessage: string } =>
   typeof result === 'object' && !isReadableStream(result) && 'exceptionMessage' in result;
