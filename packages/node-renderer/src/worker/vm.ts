@@ -47,8 +47,8 @@ export type RenderCodeResult = string | Promise<string> | Readable;
  * The type of the result of a render request.
  * It's the type of the result returned by the `runInVM` function.
  *
- * It contains the same result returned by executing the code payload sent in the rendering request.
- * But after awaiting the promise if present and handling exceptions if any.
+ * Similar to {@link RenderCodeResult} returned by executing the code payload sent in the rendering request,
+ * but after awaiting the promise if present and handling exceptions if any.
  */
 export type RenderResult = string | Readable | { exceptionMessage: string };
 
