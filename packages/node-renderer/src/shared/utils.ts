@@ -7,6 +7,7 @@ import { promisify } from 'util';
 import errorReporter from './errorReporter';
 import { getConfig } from './configBuilder';
 import log from './log';
+import type { RenderResult } from '../worker/vm';
 
 export const TRUNCATION_FILLER = '\n... TRUNCATED ...\n';
 
@@ -64,7 +65,9 @@ export function formatExceptionMessage(renderingRequest: string, error: unknown,
   return `${context ? `\nContext:\n${context}\n` : ''}
 JS code for rendering request was:
 ${smartTrim(renderingRequest)}
-    renderer/src/shared/utils.ts
+    
+EXCEPTION MESSAGE:
+${(error as Error).message || error}
 
 STACK:
 ${(error as Error).stack}`;
@@ -116,7 +119,7 @@ export const isReadableStream = (stream: unknown): stream is Readable =>
   typeof (stream as Readable).pipe === 'function' &&
   typeof (stream as Readable).read === 'function';
 
-export const isVMErrorResult = (
-  result: string | Readable | { exceptionMessage: string },
+export const isErrorRenderResult = (
+  result: RenderResult,
 ): result is { exceptionMessage: string } =>
   typeof result === 'object' && !isReadableStream(result) && 'exceptionMessage' in result;

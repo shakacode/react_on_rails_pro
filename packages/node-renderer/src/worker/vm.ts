@@ -37,6 +37,21 @@ export function getVmBundleFilePath() {
   return vmBundleFilePath;
 }
 
+/**
+ * The type of the result of a render request.
+ * It's the type of the result returned by executing the code payload sent in the rendering request.
+ */
+export type RenderCodeResult = string | Promise<string> | Readable;
+
+/**
+ * The type of the result of a render request.
+ * It's the type of the result returned by the `runInVM` function.
+ *
+ * It contains the same result returned by executing the code payload sent in the rendering request.
+ * But after awaiting the promise if present and handling exceptions if any.
+ */
+export type RenderResult = string | Readable | { exceptionMessage: string };
+
 declare global {
   // This works on node 16+
   // https://stackoverflow.com/questions/35074713/extending-typescript-global-object-in-node-js/68328575#68328575
@@ -183,7 +198,7 @@ export async function buildVM(filePath: string) {
 export async function runInVM(
   renderingRequest: string,
   vmCluster?: typeof cluster,
-): Promise<string | Readable | { exceptionMessage: string }> {
+): Promise<RenderResult> {
   const { bundlePath } = getConfig();
 
   try {
@@ -204,7 +219,7 @@ ${smartTrim(renderingRequest)}`);
     // Capture context to ensure TypeScript sees it as defined within the callback
     const localContext = context;
     let result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
-      () => vm.runInContext(renderingRequest, localContext) as string | Promise<string> | Readable,
+      () => vm.runInContext(renderingRequest, localContext) as RenderCodeResult,
     );
 
     if (isReadableStream(result)) {
