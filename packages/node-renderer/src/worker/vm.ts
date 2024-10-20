@@ -38,14 +38,12 @@ export function getVmBundleFilePath() {
 }
 
 /**
- * The type of the result of a render request.
- * It's the type of the result returned by executing the code payload sent in the rendering request.
+ * The type of the result returned by executing the code payload sent in the rendering request.
  */
 export type RenderCodeResult = string | Promise<string> | Readable;
 
 /**
- * The type of the result of a render request.
- * It's the type of the result returned by the `runInVM` function.
+ * The type of the result returned by the `runInVM` function.
  *
  * Similar to {@link RenderCodeResult} returned by executing the code payload sent in the rendering request,
  * but after awaiting the promise if present and handling exceptions if any.
