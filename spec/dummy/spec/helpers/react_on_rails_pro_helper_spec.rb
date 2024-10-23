@@ -179,7 +179,7 @@ describe ReactOnRailsProHelper, type: :helper do
     end
   end
 
-  describe "html_streaming_react_component", :focus do
+  describe "html_streaming_react_component" do
     include StreamingTestHelpers
 
     let(:component_name) { "StreamAsyncComponents" }
@@ -211,8 +211,8 @@ describe ReactOnRailsProHelper, type: :helper do
 
     def mock_request_and_response
       readed_chunks.clear
-      allow(ReactOnRailsPro::Request).to receive(:perform_request) do |path, form_data, &block|
-        response = double('response', code: '200')
+      allow(ReactOnRailsPro::Request).to receive(:perform_request) do |_path, _form_data, &block|
+        response = instance_double(Net::HTTPResponse, code: "200")
         allow(response).to receive(:read_body) do |&read_body_block|
           chunks.each do |chunk|
             readed_chunks << chunk
@@ -244,8 +244,8 @@ describe ReactOnRailsProHelper, type: :helper do
 
       it "creates a fiber to read subsequent chunks" do
         stream_react_component(component_name, props: props, **component_options)
-        expect(@rorp_rendering_fibers.count).to eq(1)
-        fiber = @rorp_rendering_fibers.first
+        expect(@rorp_rendering_fibers.count).to eq(1) # rubocop:disable RSpec/InstanceVariable
+        fiber = @rorp_rendering_fibers.first # rubocop:disable RSpec/InstanceVariable
         expect(fiber).to be_alive
 
         second_result = fiber.resume
@@ -264,8 +264,8 @@ describe ReactOnRailsProHelper, type: :helper do
       end
     end
 
-    describe "stream_view_containing_react_components" do
-      let(:mocked_stream) { double('stream') }
+    describe "stream_view_containing_react_components" do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      let(:mocked_stream) { instance_double(ActionController::Live::Buffer) }
       let(:written_chunks) { [] }
 
       before do
@@ -285,10 +285,10 @@ describe ReactOnRailsProHelper, type: :helper do
         allow(mocked_stream).to receive(:write) do |chunk|
           written_chunks << chunk
           # Ensures that any chunk received is written immediately to the stream
-          expect(written_chunks.count).to eq(readed_chunks.count)
+          expect(written_chunks.count).to eq(readed_chunks.count) # rubocop:disable RSpec/ExpectInHook
         end
         allow(mocked_stream).to receive(:close)
-        mocked_response = double('response')
+        mocked_response = instance_double(ActionDispatch::Response)
         allow(mocked_response).to receive(:stream).and_return(mocked_stream)
         allow(self).to receive(:response).and_return(mocked_response)
         mock_request_and_response
@@ -307,14 +307,14 @@ describe ReactOnRailsProHelper, type: :helper do
         stream_view_containing_react_components(template: "path/to/your/template")
         initial_result = written_chunks.first
         expect(initial_result).to script_tag_be_included(rails_context_tag)
-  
+
         # Check that the rails context is before the first chunk
         rails_context_index = initial_result.index('id="js-react-on-rails-context"')
         first_chunk_index = initial_result.index(chunks.first)
         expect(rails_context_index).to be < first_chunk_index
 
         # The following chunks should not include the rails context
-        written_chunks[1..-1].each do |chunk|
+        written_chunks[1..].each do |chunk|
           expect(chunk).not_to include('id="js-react-on-rails-context"')
         end
       end
@@ -325,7 +325,7 @@ describe ReactOnRailsProHelper, type: :helper do
         expect(initial_result).to script_tag_be_included(react_component_specification_tag)
 
         # The following chunks should not include the component specification tag
-        written_chunks[1..-1].each do |chunk|
+        written_chunks[1..].each do |chunk|
           expect(chunk).not_to include('class="js-react-on-rails-component"')
         end
       end
@@ -334,7 +334,7 @@ describe ReactOnRailsProHelper, type: :helper do
         stream_view_containing_react_components(template: "path/to/your/template")
         initial_result = written_chunks.first
         expect(initial_result).to include("<h1>Header Rendered In View</h1>")
-        written_chunks[1..-1].each do |chunk|
+        written_chunks[1..].each do |chunk|
           expect(chunk).not_to include("<h1>Header Rendered In View</h1>")
         end
       end
