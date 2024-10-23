@@ -72,11 +72,11 @@ class SharedConsoleHistory {
     // TODO: replay console logs for readable streams
     if (isReadableStream(result)) {
       return result;
-    } else if (isPromise(result)) {
-      return result.then(replayLogs);
-    } else {
-      return replayLogs(result);
     }
+    if (isPromise(result)) {
+      return result.then(replayLogs);
+    }
+    return replayLogs(result);
   }
 
   trackConsoleHistoryInRenderRequest(renderRequestFunction: () => RenderCodeResult): RenderCodeResult {
