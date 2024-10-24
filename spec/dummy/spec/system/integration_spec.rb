@@ -144,11 +144,11 @@ describe "Pages/stream_async_components_for_testing", :js do
 
     expect(page).not_to have_text "Loading branch1"
     expect(page).not_to have_text "Loading branch2"
-    (0..4).each do |i|
+    5.times do |i|
       expect(page).not_to have_text "Loading branch1 at level #{i}"
     end
 
-    (0..4).each do |i|
+    5.times do |i|
       expect(page).to have_text "branch1 (level #{i})"
     end
   end
