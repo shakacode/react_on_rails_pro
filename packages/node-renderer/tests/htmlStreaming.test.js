@@ -94,8 +94,8 @@ describe('html streaming', () => {
 
     const firstChunk = chunks[0];
 
-    expect(firstChunk).toContain('<p>Header</p>');
-    expect(firstChunk).toContain('<p>Footer</p>');
+    expect(firstChunk).toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
+    expect(firstChunk).toContain('<p>Footer for AsyncComponentsTreeForTesting</p>');
     expect(firstChunk).toContain('Loading HelloWorldHooks...');
     expect(firstChunk).toContain('Loading branch1...');
     expect(firstChunk).toContain('Loading branch2...');
@@ -106,11 +106,11 @@ describe('html streaming', () => {
     expect(response.status).toBe(200);
 
     const secondChunk = chunks[1];
-    expect(secondChunk).not.toContain('<p>Header</p>');
-    expect(secondChunk).not.toContain('<p>Footer</p>');
+    expect(secondChunk).not.toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
+    expect(secondChunk).not.toContain('<p>Footer for AsyncComponentsTreeForTesting</p>');
     expect(secondChunk).not.toContain('Loading branch1...');
     expect(secondChunk).not.toContain('Loading branch2...');
-    expect(secondChunk).not.toContain('Branch1 (level 0)');
+    expect(secondChunk).not.toContain('branch1 (level 0)');
   }, 10000);
 
   it('should contains all components', async () => {

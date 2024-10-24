@@ -31,6 +31,10 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/stream_async_components")
   end
 
+  def stream_async_components_for_testing
+    stream_view_containing_react_components(template: "/pages/stream_async_components_for_testing")
+  end
+
   def loadable_component
     render "/pages/pro/loadable_component"
   end

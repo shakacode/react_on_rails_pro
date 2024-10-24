@@ -120,36 +120,36 @@ describe "Pages/client_side_log_throw", :js do
   end
 end
 
-describe "Pages/stream_async_components", :js do
+describe "Pages/stream_async_components_for_testing", :js do
   subject { page }
 
   it "renders the component" do
-    visit "/stream_async_components"
-    expect(page).to have_text "Post Fetched Asynchronously on Server"
+    visit "/stream_async_components_for_testing"
+    expect(page).to have_text "Header for AsyncComponentsTreeForTesting"
+    expect(page).to have_text "Footer for AsyncComponentsTreeForTesting"
   end
 
   it "hydrates the component" do
-    visit "/stream_async_components"
+    visit "/stream_async_components_for_testing"
     expect(page.html).to include("client-bundle.js")
-    change_text_expect_dom_selector("#StreamAsyncComponents-react-component-0")
+    change_text_expect_dom_selector("#AsyncComponentsTreeForTesting-react-component-0")
   end
 
   it "renders the page completely on server and displays content on client even without JavaScript" do
     # Don't add the client-bundle.js to the page to ensure that the app is not hydrated
-    visit "/stream_async_components?skip_js_packs=true"
+    visit "/stream_async_components_for_testing?skip_js_packs=true"
     expect(page.html).not_to include("client-bundle.js")
     # Ensure that the component state is not updated
-    change_text_expect_dom_selector("#StreamAsyncComponents-react-component-0", expect_no_change: true)
+    change_text_expect_dom_selector("#AsyncComponentsTreeForTesting-react-component-0", expect_no_change: true)
 
-    expect(page).not_to have_text "Loading..."
-    (1..4).each do |i|
-      expect(page).not_to have_text "Loading Comment #{i}..."
+    expect(page).not_to have_text "Loading branch1"
+    expect(page).not_to have_text "Loading branch2"
+    (0..4).each do |i|
+      expect(page).not_to have_text "Loading branch1 at level #{i}"
     end
 
-    expect(page).to have_text "Post Fetched Asynchronously on Server"
-    expect(page).to have_text "Comments Fetched Asynchronously on Server"
-    (1..4).each do |i|
-      expect(page).to have_text "Comment #{i}"
+    (0..4).each do |i|
+      expect(page).to have_text "branch1 (level #{i})"
     end
   end
 end

@@ -2,7 +2,7 @@ import path from 'path';
 import fs from 'fs';
 import { env } from 'process';
 
-const BUNDLE_PATH = path.resolve('tmp/node-renderer-bundles-test');
+const BUNDLE_PATH = './tmp/node-renderer-bundles-test';
 if (fs.existsSync(BUNDLE_PATH)) {
   fs.rmSync(BUNDLE_PATH, { recursive: true, force: true });
 }
