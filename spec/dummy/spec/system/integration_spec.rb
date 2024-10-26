@@ -151,7 +151,8 @@ describe "Pages/stream_async_components_for_testing", :js do
   end
 
   shared_examples "shows loading fallback while rendering async components" do |skip_js_packs|
-    it "shows the loading fallback while rendering async components #{skip_js_packs ? 'when the page is not hydrated' : ''}" do
+    it "shows the loading fallback while rendering async components" \
+       "#{skip_js_packs ? ' when the page is not hydrated' : ''}" do
       url = "/stream_async_components_for_testing#{skip_js_packs ? '?skip_js_packs=true' : ''}"
       chunks_count = 0
       navigate_with_streaming(url) do |_content|
