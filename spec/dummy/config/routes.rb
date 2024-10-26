@@ -10,6 +10,8 @@ Rails.application.routes.draw do
   # You can have the root of your site routed with "root"
   root "pages#index"
 
+  get "empty" => "pages#empty"
+
   # react on rails pro specific routes
   get "server_side_redux_app_cached" => "pages#server_side_redux_app_cached"
   get "cached_react_helmet" => "pages#cached_react_helmet"
