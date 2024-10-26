@@ -23,6 +23,14 @@ class PagesController < ApplicationController
   before_action :initialize_shared_store, only: %i[client_side_hello_world_shared_store_controller
                                                    server_side_hello_world_shared_store_controller]
 
+  # Used for testing streamed html pages
+  # Capybara doesn't support streaming, so we need to navigate to an empty page first
+  # and then make an XHR request to the desired page
+  # We need to navigate to an empty page first to avoid CORS issues and to update the page host
+  def empty
+    render plain: ""
+  end
+
   def cached_react_helmet
     render "/pages/pro/cached_react_helmet"
   end
