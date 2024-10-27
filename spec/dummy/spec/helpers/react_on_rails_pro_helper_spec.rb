@@ -192,7 +192,7 @@ describe ReactOnRailsProHelper, type: :helper do
         "<div>Chunk 3: Final content</div>"
       ]
     end
-    let(:readed_chunks) { [] }
+    let(:chunks_read) { [] }
     let(:react_component_specification_tag) do
       <<-SCRIPT.strip_heredoc
         <script type="application/json" class="js-react-on-rails-component" data-component-name="StreamAsyncComponents" data-trace="true" data-dom-id="StreamAsyncComponents-react-component-0">{"helloWorldData":{"name":"Mr. Server Side Rendering"}}</script>
@@ -210,12 +210,12 @@ describe ReactOnRailsProHelper, type: :helper do
     end
 
     def mock_request_and_response
-      readed_chunks.clear
+      chunks_read.clear
       allow(ReactOnRailsPro::Request).to receive(:perform_request) do |_path, _form_data, &block|
         response = instance_double(Net::HTTPResponse, code: "200")
         allow(response).to receive(:read_body) do |&read_body_block|
           chunks.each do |chunk|
-            readed_chunks << chunk
+            chunks_read << chunk
             read_body_block.call(chunk)
           end
         end
@@ -239,7 +239,7 @@ describe ReactOnRailsProHelper, type: :helper do
         initial_result = stream_react_component(component_name, props: props, **component_options)
         expect(initial_result).to include(react_component_div_with_initial_chunk)
         expect(initial_result).not_to include("More content", "Final content")
-        expect(readed_chunks.count).to eq(1)
+        expect(chunks_read.count).to eq(1)
       end
 
       it "creates a fiber to read subsequent chunks" do
@@ -251,16 +251,16 @@ describe ReactOnRailsProHelper, type: :helper do
         second_result = fiber.resume
         expect(second_result).to eq(chunks[1])
         expect(second_result).not_to include("Stream React Server Components", "Final content")
-        expect(readed_chunks.count).to eq(2)
+        expect(chunks_read.count).to eq(2)
 
         third_result = fiber.resume
         expect(third_result).to eq(chunks[2])
         expect(third_result).not_to include("Stream React Server Components", "More content")
-        expect(readed_chunks.count).to eq(3)
+        expect(chunks_read.count).to eq(3)
 
         expect(fiber.resume).to be_nil
         expect(fiber).not_to be_alive
-        expect(readed_chunks.count).to eq(chunks.count)
+        expect(chunks_read.count).to eq(chunks.count)
       end
     end
 
@@ -285,7 +285,7 @@ describe ReactOnRailsProHelper, type: :helper do
         allow(mocked_stream).to receive(:write) do |chunk|
           written_chunks << chunk
           # Ensures that any chunk received is written immediately to the stream
-          expect(written_chunks.count).to eq(readed_chunks.count) # rubocop:disable RSpec/ExpectInHook
+          expect(written_chunks.count).to eq(chunks_read.count) # rubocop:disable RSpec/ExpectInHook
         end
         allow(mocked_stream).to receive(:close)
         mocked_response = instance_double(ActionDispatch::Response)
@@ -297,7 +297,7 @@ describe ReactOnRailsProHelper, type: :helper do
       it "writes the chunk to stream as soon as it is received" do
         stream_view_containing_react_components(template: "path/to/your/template")
         expect(self).to have_received(:render_to_string).once.with(template: "path/to/your/template")
-        expect(readed_chunks.count).to eq(chunks.count)
+        expect(chunks_read.count).to eq(chunks.count)
         expect(written_chunks.count).to eq(chunks.count)
         expect(mocked_stream).to have_received(:write).exactly(chunks.count).times
         expect(mocked_stream).to have_received(:close)
