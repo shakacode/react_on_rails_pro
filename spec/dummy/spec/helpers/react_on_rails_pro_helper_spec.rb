@@ -226,11 +226,11 @@ describe ReactOnRailsProHelper, type: :helper do
 
     describe "#stream_react_component" do
       before do
-        # Initialize @rorp_rendering_fibers to mock the behavior of stream_view_containing_react_components
-        # This instance variable is normally set by stream_view_containing_react_components method
-        # By setting it here, we simulate that the view is being rendered using that method
+        # Initialize @rorp_rendering_fibers to mock the behavior of stream_view_containing_react_components.
+        # This instance variable is normally set by stream_view_containing_react_components method.
+        # By setting it here, we simulate that the view is being rendered using that method.
         # This setup is necessary because stream_react_component relies on @rorp_rendering_fibers
-        # to function correctly within the streaming context
+        # to function correctly within the streaming context.
         @rorp_rendering_fibers = []
         mock_request_and_response
       end
