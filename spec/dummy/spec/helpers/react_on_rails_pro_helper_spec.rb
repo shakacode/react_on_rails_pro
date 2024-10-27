@@ -308,7 +308,7 @@ describe ReactOnRailsProHelper, type: :helper do
         initial_result = written_chunks.first
         expect(initial_result).to script_tag_be_included(rails_context_tag)
 
-        # Check that the rails context is before the first chunk
+        # Check that the Rails context is before the first chunk
         rails_context_index = initial_result.index('id="js-react-on-rails-context"')
         first_chunk_index = initial_result.index(chunks.first)
         expect(rails_context_index).to be < first_chunk_index
