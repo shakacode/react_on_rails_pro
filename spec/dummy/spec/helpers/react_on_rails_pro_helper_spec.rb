@@ -330,7 +330,7 @@ describe ReactOnRailsProHelper, type: :helper do
         end
       end
 
-      it "render the rails view content in the first chunk" do
+      it "renders the rails view content in the first chunk" do
         stream_view_containing_react_components(template: "path/to/your/template")
         initial_result = written_chunks.first
         expect(initial_result).to include("<h1>Header Rendered In View</h1>")
