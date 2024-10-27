@@ -313,7 +313,7 @@ describe ReactOnRailsProHelper, type: :helper do
         first_chunk_index = initial_result.index(chunks.first)
         expect(rails_context_index).to be < first_chunk_index
 
-        # The following chunks should not include the rails context
+        # The following chunks should not include the Rails context
         written_chunks[1..].each do |chunk|
           expect(chunk).not_to include('id="js-react-on-rails-context"')
         end
