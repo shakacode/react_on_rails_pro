@@ -18,9 +18,7 @@ afterAll(async () => {
   await app.close();
 });
 
-
 jest.spyOn(errorReporter, 'notify').mockImplementation(jest.fn());
-
 
 const createForm = async ({
   project = 'spec-dummy',
@@ -46,10 +44,7 @@ const createForm = async ({
       .join(', ')}} },`,
   );
   if (throwJsErrors) {
-    renderingRequestCode = renderingRequestCode.replace(
-      'throwJsErrors: false',
-      'throwJsErrors: true',
-    );
+    renderingRequestCode = renderingRequestCode.replace('throwJsErrors: false', 'throwJsErrors: true');
   }
   form.append('renderingRequest', renderingRequestCode);
 
@@ -91,7 +86,10 @@ const makeRequest = async (options = {}) => {
       // sometimes, multiple chunks are merged together
       // So, Json object is wrapped into an array. It avoids parsing error.
       const decodedValue = decoder.decode(value, { stream: false });
-      const decodedValuesIfMultipleMerged = decodedValue.split('\n').map((chunk) => chunk.trim()).filter((chunk) => chunk.length > 0);
+      const decodedValuesIfMultipleMerged = decodedValue
+        .split('\n')
+        .map((chunk) => chunk.trim())
+        .filter((chunk) => chunk.length > 0);
       chunks.push(...decodedValuesIfMultipleMerged);
       jsonChunks.push(...decodedValuesIfMultipleMerged.map((chunk) => JSON.parse(chunk)));
       if (!firstByteTime) {
@@ -155,18 +153,22 @@ describe('html streaming', () => {
     expect(fullBody).toContain('branch2 (level 0)');
   }, 10000);
 
-  it.each([true, false])('should stop rendering when an error happen in the shell and renders the error (throwJsErrors: %s)', async (throwJsErrors) => {
-    const { response, chunks } = await makeRequest({
-      props: { throwSyncError: true },
-      useTestBundle: true,
-      throwJsErrors,
-    });
-    expect(chunks).toHaveLength(1);
-    expect(chunks[0]).toMatch(
-      /<pre>Exception in rendering[\s\S.]*Sync error from AsyncComponentsTreeForTesting[\s\S.]*<\/pre>/,
-    );
-    expect(response.status).toBe(200);
-  }, 10000);
+  it.each([true, false])(
+    'should stop rendering when an error happen in the shell and renders the error (throwJsErrors: %s)',
+    async (throwJsErrors) => {
+      const { response, chunks } = await makeRequest({
+        props: { throwSyncError: true },
+        useTestBundle: true,
+        throwJsErrors,
+      });
+      expect(chunks).toHaveLength(1);
+      expect(chunks[0]).toMatch(
+        /<pre>Exception in rendering[\s\S.]*Sync error from AsyncComponentsTreeForTesting[\s\S.]*<\/pre>/,
+      );
+      expect(response.status).toBe(200);
+    },
+    10000,
+  );
 
   it("shouldn't notify error reporter when throwJsErrors is false and shell error happens", async () => {
     await makeRequest({
@@ -185,32 +187,38 @@ describe('html streaming', () => {
     });
     expect(errorReporter.notify).toHaveBeenCalledTimes(1);
     expect(errorReporter.notify).toHaveBeenCalledWith(
-      expect.stringMatching(/Error in a rendering stream[\s\S.]*Sync error from AsyncComponentsTreeForTesting/),
+      expect.stringMatching(
+        /Error in a rendering stream[\s\S.]*Sync error from AsyncComponentsTreeForTesting/,
+      ),
     );
   }, 10000);
 
-  it.each([true, false])('should keep rendering other suspense boundaries if error happen in one of them (throwJsErrors: %s)', async (throwJsErrors) => {
-    const { response, chunks, fullBody, jsonChunks } = await makeRequest({
-      props: { throwAsyncError: true },
-      useTestBundle: true,
-      throwJsErrors,
-    });
-    expect(chunks.length).toBeGreaterThan(5);
-    expect(response.status).toBe(200);
+  it.each([true, false])(
+    'should keep rendering other suspense boundaries if error happen in one of them (throwJsErrors: %s)',
+    async (throwJsErrors) => {
+      const { response, chunks, fullBody, jsonChunks } = await makeRequest({
+        props: { throwAsyncError: true },
+        useTestBundle: true,
+        throwJsErrors,
+      });
+      expect(chunks.length).toBeGreaterThan(5);
+      expect(response.status).toBe(200);
 
-    expect(chunks[0]).toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
-    expect(fullBody).toContain('branch1 (level 4)');
-    expect(fullBody).toContain('branch1 (level 3)');
-    expect(fullBody).toContain('branch1 (level 2)');
-    expect(fullBody).toContain('branch1 (level 1)');
-    expect(fullBody).toContain('branch1 (level 0)');
-    expect(fullBody).toContain('branch2 (level 1)');
-    expect(fullBody).toContain('branch2 (level 0)');
+      expect(chunks[0]).toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
+      expect(fullBody).toContain('branch1 (level 4)');
+      expect(fullBody).toContain('branch1 (level 3)');
+      expect(fullBody).toContain('branch1 (level 2)');
+      expect(fullBody).toContain('branch1 (level 1)');
+      expect(fullBody).toContain('branch1 (level 0)');
+      expect(fullBody).toContain('branch2 (level 1)');
+      expect(fullBody).toContain('branch2 (level 0)');
 
-    expect(jsonChunks[0].hasErrors).toBeFalsy();
-    // All chunks after the first one should have errors
-    expect(jsonChunks.slice(1).every((chunk) => chunk.hasErrors)).toBeTruthy();
-  }, 10000);
+      expect(jsonChunks[0].hasErrors).toBeFalsy();
+      // All chunks after the first one should have errors
+      expect(jsonChunks.slice(1).every((chunk) => chunk.hasErrors)).toBeTruthy();
+    },
+    10000,
+  );
 
   it('should not notify error reporter when throwJsErrors is false and async error happens', async () => {
     await makeRequest({

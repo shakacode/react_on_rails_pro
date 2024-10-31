@@ -78,10 +78,13 @@ module ReactOnRailsPro
         response = @request_executor.call(send_bundle) do |request_response|
           next unless request_response.code == "200"
 
-          request_response.read_body do |chunk|
+          request_response.read_body do |chunk_or_more|
             # Split chunks if multiple chunks are merged together
-            chunk.split("\n").each do |chunk|
-              yield chunk
+            chunk_or_more.split("\n").each do |chunk|
+              stripped_chunk = chunk.strip
+              next if stripped_chunk.empty?
+
+              yield stripped_chunk
             end
           end
         end
