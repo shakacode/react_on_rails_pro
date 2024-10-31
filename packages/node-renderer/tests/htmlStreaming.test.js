@@ -91,7 +91,7 @@ const makeRequest = async (options = {}) => {
         .map((chunk) => chunk.trim())
         .filter((chunk) => chunk.length > 0);
       chunks.push(...decodedValuesIfMultipleMerged);
-      jsonChunks.push(...decodedValuesIfMultipleMerged.map(chunk => JSON.parse(chunk)));
+      jsonChunks.push(...decodedValuesIfMultipleMerged.map((chunk) => JSON.parse(chunk)));
       if (!firstByteTime) {
         firstByteTime = Date.now();
       }
