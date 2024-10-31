@@ -83,8 +83,8 @@ const makeRequest = async (options = {}) => {
     // eslint-disable-next-line no-await-in-loop
     ({ done, value } = await reader.read());
     if (value) {
-      // sometimes, multiple chunks are merged together
-      // So, Json object is wrapped into an array. It avoids parsing error.
+      // Sometimes, multiple chunks are merged together.
+      // So, the server use \n as a delimiter between chunks.
       const decodedValue = decoder.decode(value, { stream: false });
       const decodedValuesIfMultipleMerged = decodedValue
         .split('\n')
