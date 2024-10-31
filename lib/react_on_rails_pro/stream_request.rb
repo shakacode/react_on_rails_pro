@@ -70,15 +70,20 @@ module ReactOnRailsPro
 
     private_class_method :new
 
-    def each_chunk(&block)
-      return enum_for(:each_chunk) unless block
+    def each_chunk
+      return enum_for(:each_chunk) unless block_given?
 
       send_bundle = false
       loop do
         response = @request_executor.call(send_bundle) do |request_response|
           next unless request_response.code == "200"
 
-          request_response.read_body(&block)
+          request_response.read_body do |chunk|
+            # Split chunks if multiple chunks are merged together
+            chunk.split("\n").each do |chunk|
+              yield chunk
+            end
+          end
         end
 
         case response.code
