@@ -19,10 +19,8 @@ module ReactOnRailsPro
 
       def render_code_as_stream(path, js_code)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
-        # The block here and at perform_request is passed to connection.request,
-        # which allows us to read each chunk received in the HTTP stream as soon as it's received.
-        ReactOnRailsPro::StreamRequest.create do |send_bundle, &block|
-          perform_request(path, form_with_code(js_code, send_bundle), &block)
+        ReactOnRailsPro::StreamRequest.create do |send_bundle|
+          perform_request(path, form: form_with_code(js_code, send_bundle), stream: true)
         end
       end
 
@@ -43,17 +41,12 @@ module ReactOnRailsPro
         @connection ||= create_connection
       end
 
-      def perform_request(path, form: nil, json: nil, &block)
+      def perform_request(path, **post_options)
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
           begin
-            response = form ? connection.post(path, form: form, &block) : connection.post(path, json: json, &block)
-            if response.is_a?(HTTPX::ErrorResponse)
-              e = response.error
-              raise ReactOnRailsPro::Error, "Can't connect to NodeRenderer renderer: #{path}.\n" \
-                                            "Original error:\n#{e}\n#{e.backtrace}"
-            end
+            response = connection.post(path, **post_options)
             retry_request = false
           rescue HTTPX::TimeoutError => e
             # Testing timeout catching:
@@ -63,24 +56,25 @@ module ReactOnRailsPro
                                             "Original error:\n#{e}\n#{e.backtrace}"
             end
             Rails.logger.info do
-              "[ReactOnRailsPro] Timed out trying to connect to the Node Renderer. " \
+              "[ReactOnRailsPro] Timed out trying to make a request to the Node Renderer. " \
                 "Retrying #{available_retries} more times..."
             end
             available_retries -= 1
             next
+          rescue HTTPX::Error => e # Connection errors or other unexpected errors
+            raise ReactOnRailsPro::Error,
+                  "Node renderer request failed: #{path}.\nOriginal error:\n#{e}\n#{e.backtrace}"
           end
         end
 
         Rails.logger.info { "[ReactOnRailsPro] Node Renderer responded" }
 
-        case response.status
-        when 412
-          # 412 is a protocol error, meaning the server and renderer are running incompatible versions
-          # of React on Rails.
-          raise ReactOnRailsPro::Error, response.body
-        else
-          response
-        end
+        # 412 is a protocol error, meaning the server and renderer are running incompatible versions
+        # of React on Rails.
+        # +response+ can also be an +HTTPX::ErrorResponse+ or an +HTTPX::StreamResponse+, which don't have +#status+.
+        raise ReactOnRailsPro::Error, response.body if response.is_a?(HTTPX::Response) && response.status == 412
+
+        response
       end
 
       def form_with_code(js_code, send_bundle)
@@ -146,6 +140,7 @@ module ReactOnRailsPro
           # https://honeyryderchuck.gitlab.io/httpx/wiki/Persistent
           # The implementation implies retries as well in case something closes the connection
           .plugin(:persistent)
+          .plugin(:stream)
           .with(
             origin: ReactOnRailsPro.configuration.renderer_url,
             max_concurrent_requests: ReactOnRailsPro.configuration.renderer_http_pool_size,
