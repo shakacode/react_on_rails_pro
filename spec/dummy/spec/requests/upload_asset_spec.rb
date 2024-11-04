@@ -16,12 +16,16 @@ describe "Upload asset" do
                                         server_renderer: "NodeRenderer",
                                         renderer_password: "myPassword1",
                                         renderer_url: "http://localhost:3800",
+                                        renderer_http_pool_size: 1,
+                                        renderer_http_pool_timeout: 5,
                                         renderer_request_retry_limit: 5,
+                                        ssr_timeout: 5,
                                         assets_to_copy: [
                                           Rails.root.join("public", "webpack", "production", "loadable-stats2.json"),
                                           Rails.root.join("public", "webpack", "production", "loadable-stats3.json")
                                         ])
     allow(ReactOnRailsPro).to receive(:configuration).and_return(dbl_configuration)
+    ReactOnRailsPro::Request.reset_connection
     FileUtils.mkdir_p(Rails.root.join("public", "webpack", "production"))
     FileUtils.rm_f(asset_path_expanded)
     FileUtils.rm_f(asset_path_expanded2)
@@ -45,6 +49,8 @@ describe "Upload asset" do
     it "throws error if can't connect to node-renderer" do
       WebMock.disable_net_connect!(allow_localhost: false)
       stub_request(:any, /upload-assets/).to_timeout
+      allow(ReactOnRailsPro.configuration).to receive(:ssr_timeout).and_return(0.5)
+      ReactOnRailsPro::Request.reset_connection
       expect do
         ReactOnRailsPro::Request.upload_assets
       end.to raise_exception(ReactOnRailsPro::Error)
