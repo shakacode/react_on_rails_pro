@@ -64,8 +64,9 @@ module ReactOnRailsPro
   end
 
   class StreamRequest
-    def initialize(&request_block)
+    def initialize(is_rsc = false, &request_block)
       @request_executor = request_block
+      @is_rsc = is_rsc
     end
 
     private_class_method :new
@@ -79,6 +80,7 @@ module ReactOnRailsPro
           next unless request_response.code == "200"
 
           request_response.read_body do |chunk_or_more|
+            yield chunk_or_more if @is_rsc
             # Split chunks if multiple chunks are merged together
             chunk_or_more.split("\n").each do |chunk|
               stripped_chunk = chunk.strip
@@ -102,8 +104,8 @@ module ReactOnRailsPro
     end
 
     # Method to start the decoration
-    def self.create(&request_block)
-      StreamDecorator.new(new(&request_block))
+    def self.create(is_rsc = false, &request_block)
+      StreamDecorator.new(new(is_rsc, &request_block))
     end
   end
 end
