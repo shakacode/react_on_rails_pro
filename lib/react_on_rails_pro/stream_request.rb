@@ -64,8 +64,9 @@ module ReactOnRailsPro
   end
 
   class StreamRequest
-    def initialize(&request_block)
+    def initialize(is_rsc = false, &request_block)
       @request_executor = request_block
+      @is_rsc = is_rsc
     end
 
     private_class_method :new
@@ -77,7 +78,10 @@ module ReactOnRailsPro
       loop do
         stream_response = @request_executor.call(send_bundle)
         # stream_response.each may yield merged chunks, but the real chunks are separated by newlines.
-        stream_response.each_line do |chunk|
+        # rsc chunks can be merged without causing issues
+        # also, rsc chunks can contain newlines in the middle of the chunk, so we use each instead of each_line
+        iterating_function = @is_rsc ? :each : :each_line
+        stream_response.send(iterating_function) do |chunk|
           stripped_chunk = chunk.strip
           yield stripped_chunk unless stripped_chunk.empty?
         end
@@ -97,8 +101,8 @@ module ReactOnRailsPro
     end
 
     # Method to start the decoration
-    def self.create(&request_block)
-      StreamDecorator.new(new(&request_block))
+    def self.create(is_rsc = false, &request_block)
+      StreamDecorator.new(new(is_rsc, &request_block))
     end
   end
 end
