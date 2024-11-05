@@ -55,7 +55,7 @@ class PagesController < ApplicationController
     render_to_string "/pages/rsc", layout: false
     @rendering_fibers.each do |fiber|
       while (chunk = fiber.resume)
-        response.stream.write(chunk)
+        response.stream.write(chunk[:html])
       end
     end
     response.stream.close
