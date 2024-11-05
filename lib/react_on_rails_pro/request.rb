@@ -21,7 +21,7 @@ module ReactOnRailsPro
 
       def render_code_as_stream(path, js_code, is_rendering_rsc_payload)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
-        ReactOnRailsPro::StreamRequest.create do |send_bundle|
+        ReactOnRailsPro::StreamRequest.create(is_rendering_rsc_payload) do |send_bundle|
           perform_request(path, is_rendering_rsc_payload, form: form_with_code(js_code, send_bundle), stream: true)
         end
       end

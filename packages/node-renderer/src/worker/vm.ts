@@ -74,6 +74,7 @@ export async function buildVM(filePath: string) {
       );
       Object.assign(contextObject, {
         Buffer,
+        TextDecoder,
         TextEncoder,
         URLSearchParams,
         // @ts-expect-error ReadableStream is defined. TODO: fix tsconfig
@@ -86,6 +87,7 @@ export async function buildVM(filePath: string) {
         clearTimeout,
         clearInterval,
         clearImmediate,
+        console,
       });
     }
 
@@ -102,6 +104,7 @@ export async function buildVM(filePath: string) {
     // Reimplement console methods for replaying on the client:
     vm.runInContext(
       `
+    debugConsole = console;
     console = {
       get history() {
         return sharedConsoleHistory.getConsoleHistory();
