@@ -22,7 +22,6 @@ require "pry-byebug"
 require "webmock"
 require "httpx/adapters/webmock"
 require "webmock/rspec"
-WebMock.allow_net_connect!
 
 RSpec.configure do |config|
   config.example_status_persistence_file_path = "spec/examples.txt"
@@ -51,8 +50,9 @@ RSpec.configure do |config|
     mocks.verify_partial_doubles = true
   end
 
-  config.before(:suite) do
+  config.before do
     ReactOnRailsPro::Request.reset_connection
+    WebMock.allow_net_connect!
   end
 
   # The settings below are suggested to provide a good initial experience
