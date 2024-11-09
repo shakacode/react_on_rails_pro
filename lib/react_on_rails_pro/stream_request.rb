@@ -84,9 +84,12 @@ module ReactOnRailsPro
         break
       rescue HTTPX::HTTPError => e
         response = e.response
-        if response.status == 410 # rubocop:disable Style/GuardClause
+        case response.status
+        when ReactOnRailsPro::STATUS_SEND_BUNDLE
           send_bundle = true
           next
+        when ReactOnRailsPro::STATUS_INCOMPATIBLE
+          raise ReactOnRailsPro::Error, response.body
         else
           raise ReactOnRailsPro::Error, "Unexpected response code from renderer: #{response.status}:\n#{response.body}"
         end

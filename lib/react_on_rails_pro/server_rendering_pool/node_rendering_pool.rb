@@ -54,8 +54,7 @@ module ReactOnRailsPro
           case response.status
           when 200
             response.body
-          when 410
-            # 410 is a special value meaning send the updated bundle with the next request.
+          when ReactOnRailsPro::STATUS_SEND_BUNDLE
             eval_js(js_code, render_options, send_bundle: true)
           when 400
             raise ReactOnRailsPro::Error,

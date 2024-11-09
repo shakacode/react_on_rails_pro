@@ -69,10 +69,10 @@ module ReactOnRailsPro
 
         Rails.logger.info { "[ReactOnRailsPro] Node Renderer responded" }
 
-        # 412 is a protocol error, meaning the server and renderer are running incompatible versions
-        # of React on Rails.
         # +response+ can also be an +HTTPX::ErrorResponse+ or an +HTTPX::StreamResponse+, which don't have +#status+.
-        raise ReactOnRailsPro::Error, response.body if response.is_a?(HTTPX::Response) && response.status == 412
+        if response.is_a?(HTTPX::Response) && response.status == ReactOnRailsPro::STATUS_INCOMPATIBLE
+          raise ReactOnRailsPro::Error, response.body
+        end
 
         response
       end
