@@ -41,12 +41,14 @@ module ReactOnRailsPro
         @connection ||= create_connection
       end
 
-      def perform_request(path, **post_options)
+      def perform_request(path, **post_options) # rubocop:disable Metrics/CyclomaticComplexity
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
           begin
             response = connection.post(path, **post_options)
+            raise response.error if response.is_a?(HTTPX::ErrorResponse)
+
             retry_request = false
           rescue HTTPX::TimeoutError => e
             # Testing timeout catching:
@@ -62,6 +64,9 @@ module ReactOnRailsPro
             available_retries -= 1
             next
           rescue HTTPX::Error => e # Connection errors or other unexpected errors
+            # Such errors are handled by ReactOnRailsPro::StreamRequest instead
+            raise if e.is_a?(HTTPX::HTTPError) && post_options[:stream]
+
             raise ReactOnRailsPro::Error,
                   "Node renderer request failed: #{path}.\nOriginal error:\n#{e}\n#{e.backtrace}"
           end
