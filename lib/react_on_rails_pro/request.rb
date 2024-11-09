@@ -41,14 +41,20 @@ module ReactOnRailsPro
         @connection ||= create_connection
       end
 
-      def perform_request(path, **post_options) # rubocop:disable Metrics/CyclomaticComplexity
+      def perform_request(path, **post_options) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
           begin
+            start_time = Time.now
             response = connection.post(path, **post_options)
             raise response.error if response.is_a?(HTTPX::ErrorResponse)
 
+            request_time = Time.now - start_time
+            warn_timeout = ReactOnRailsPro.configuration.renderer_http_pool_warn_timeout
+            if request_time > warn_timeout
+              Rails.logger.warn "Request to #{path} took #{request_time} seconds, expected at most #{warn_timeout}."
+            end
             retry_request = false
           rescue HTTPX::TimeoutError => e
             # Testing timeout catching:
@@ -155,7 +161,6 @@ module ReactOnRailsPro
             # :operation_timeout
             # :keep_alive_timeout
             # TODO: Do we want to add config for them?
-            # FIXME: remove warn_timeout, which is not supported
             timeout: {
               connect_timeout: ReactOnRailsPro.configuration.renderer_http_pool_timeout,
               read_timeout: ReactOnRailsPro.configuration.ssr_timeout
