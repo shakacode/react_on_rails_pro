@@ -2,7 +2,7 @@
 
 lib = File.expand_path("lib", __dir__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require "react_on_rails_pro/version"
+require "react_on_rails_pro/constants"
 
 Gem::Specification.new do |s|
   s.name          = "react_on_rails_pro"
