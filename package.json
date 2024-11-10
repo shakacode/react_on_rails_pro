@@ -58,6 +58,7 @@
     "@tsconfig/node14": "^14.1.2",
     "@types/fs-extra": "~8.0.1",
     "@types/jest": "^29.5.12",
+    "@types/k6": "^0.54.1",
     "@types/lockfile": "^1.0.4",
     "@types/touch": "^3.1.5",
     "babel-jest": "^29.7.0",

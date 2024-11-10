@@ -1818,6 +1818,11 @@
   resolved "https://registry.yarnpkg.com/@types/json5/-/json5-0.0.29.tgz#ee28707ae94e11d2b827bcbe5270bcea7f3e71ee"
   integrity sha512-dRLjCWHYg4oaA77cxO64oO+7JwCwnIzkZPdrrC71jQmQtlhM556pwKo5bUzqvZndkVbeFLIIi+9TC40JNF5hNQ==
 
+"@types/k6@^0.54.1":
+  version "0.54.1"
+  resolved "https://registry.yarnpkg.com/@types/k6/-/k6-0.54.1.tgz#8767bddd51b8bb1a451d5af14baf14c7dcd977c4"
+  integrity sha512-ezTMhuWr3TZIMOqAv51/4rD5T4FE1pSryrh5BCgxsniuqxbi5jQ3YEiOlO9C1+LvJcliC2byyd2Cw6cnUY7CLg==
+
 "@types/lockfile@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@types/lockfile/-/lockfile-1.0.4.tgz#9d6a6d1b6dbd4853cecc7f334bc53ea0ff363b8e"
