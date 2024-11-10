@@ -4,7 +4,7 @@ import http from 'k6/http';
 /* eslint-enable import/no-unresolved */
 import { defaultOptions, url } from './_util.js';
 
-export const options = defaultOptions;
+export const options = defaultOptions(false);
 
 export default () => {
   const rootUrl = url('');
