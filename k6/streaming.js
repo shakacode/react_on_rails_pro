@@ -1,30 +1,19 @@
-/* eslint-disable import/no-unresolved */
 import { check } from 'k6';
-import { browser } from 'k6/browser';
-/* eslint-enable import/no-unresolved */
+import http from 'k6/http';
 import { defaultOptions, url } from './_util.js';
 
-export const options = defaultOptions(true);
+export const options = defaultOptions(false);
 
-export default async () => {
-  const streamingUrl = url('stream_async_components?delay=0');
-  const page = await browser.newPage();
-  try {
-    await page.goto(streamingUrl);
-    await page.waitForFunction(
-      () => !document.body.textContent.includes('Loading'),
-      {
-        // in milliseconds
-        timeout: 5000,
-      },
-    );
-    check(await page.locator('html').textContent(), {
-      'has all comments': (text) => {
-        const commentIds = [1, 2, 3, 4];
-        return commentIds.every((id) => text.includes(`Comment ${id}`));
-      },
-    });
-  } finally {
-    await page.close();
-  }
+export default () => {
+  const streamingUrl = url('stream_async_components?delay=5');
+  check(http.get(streamingUrl), {
+    'status was 200': (res) => res.status === 200,
+    'has all comments': (res) => {
+      const body = res.html().text();
+      const commentIds = [1, 2, 3, 4];
+      const hasAllComments = commentIds.every((commentId) => body.includes(`Comment ${commentId}`));
+      const hasFailedRequests = !!body.match(/Request to .+ failed/i);
+      return hasAllComments && !hasFailedRequests;
+    },
+  });
 };
