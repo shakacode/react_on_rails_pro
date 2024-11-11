@@ -2,7 +2,6 @@ export const url = (path) => `${__ENV.BASE_URL ?? "http://localhost:3000"}/${pat
 
 /** @type {(envVar: string) => boolean} */
 const envToBoolean = (envVar) => {
-// eslint-disable-next-line no-undef -- __ENV is provided by k6
   const value = __ENV[envVar];
   return !!value && ['true', '1', 'yes'].includes(value.toLowerCase());
 };
