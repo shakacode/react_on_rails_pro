@@ -1,8 +1,8 @@
 import { check } from 'k6';
 import http from 'k6/http';
-import { defaultOptions, url } from './_util.js';
+import { defaultOptions, url } from './lib/util.js';
 
-export const options = defaultOptions(false);
+export const options = defaultOptions();
 
 export default () => {
   const rootUrl = url('');
