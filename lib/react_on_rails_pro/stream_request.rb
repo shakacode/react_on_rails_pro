@@ -80,13 +80,16 @@ module ReactOnRailsPro
           next unless request_response.code == "200"
 
           request_response.read_body do |chunk_or_more|
-            yield chunk_or_more if @is_rsc
-            # Split chunks if multiple chunks are merged together
-            chunk_or_more.split("\n").each do |chunk|
-              stripped_chunk = chunk.strip
-              next if stripped_chunk.empty?
+            if @is_rsc
+              yield chunk_or_more
+            else
+              # Split chunks if multiple chunks are merged together
+              chunk_or_more.split("\n").each do |chunk|
+                stripped_chunk = chunk.strip
+                next if stripped_chunk.empty?
 
-              yield stripped_chunk
+                yield stripped_chunk
+              end
             end
           end
         end
