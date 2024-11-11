@@ -1,7 +1,5 @@
-/* eslint-disable import/no-unresolved */
 import { check } from 'k6';
 import http from 'k6/http';
-/* eslint-enable import/no-unresolved */
 import { defaultOptions, url } from './_util.js';
 
 export const options = defaultOptions(false);

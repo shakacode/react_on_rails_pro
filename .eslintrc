@@ -8,8 +8,8 @@ extends:
   - prettier
 
 globals:
-  __DEBUG_SERVER_ERRORS__: true
-  __SERVER_ERRORS__: true
+  __DEBUG_SERVER_ERRORS__: writable
+  __SERVER_ERRORS__: writable
 
 parserOptions:
   # We have @babel/eslint-parser from eslint-config-shakacode, but don't use Babel in the main project
@@ -89,3 +89,24 @@ overrides:
         - error
         - patterns:
           - "../*"
+  - files: "k6/**/*.{js,ts}"
+    globals:
+      # See https://github.com/grafana/k6-docs/blob/65d9f8a9a53f57a4f416763f8020d0c7f40eb976/docs/sources/.eslintrc.js
+      __ENV: readonly
+      __VU: readonly
+      __ITER: readonly
+      console: readonly
+      open: readonly
+      window: readonly
+      setInterval: readonly
+      clearInterval: readonly
+      setTimeout: readonly
+      clearTimeout: readonly
+    rules:
+      "import/extensions":
+        - error
+        - ignorePackages
+      "import/no-unresolved":
+        - error
+        # k6 and k6/... have to be installed globally and can't be resolved by ESLint
+        - { ignore: ["k6.*"] }
