@@ -26,8 +26,6 @@ const NODE_ENV = env.NODE_ENV || 'production';
 export interface Config {
   port: number;
   protocol: 'http' | 'http2';
-  // Certificate directory for HTTP2, should contain node-renderer.crt and node-renderer.key files
-  certDir?: string;
   // One of https://github.com/winstonjs/winston#logging-levels
   logLevel: string;
   bundlePath: string;
@@ -111,8 +109,6 @@ const defaultConfig: Config = {
 
   protocol: env.RENDERER_PROTOCOL as Config['protocol'],
 
-  certDir: env.RENDERER_CERT_DIR,
-
   // Show only important messages by default
   logLevel: env.RENDERER_LOG_LEVEL || DEFAULT_LOG_LEVEL,
 
@@ -160,7 +156,6 @@ function envValuesUsed() {
   return {
     RENDERER_PORT: !userConfig.port && env.RENDERER_PORT,
     RENDERER_PROTOCOL: !userConfig.protocol && env.RENDERER_PROTOCOL,
-    RENDERER_CERT_DIR: !userConfig.certDir && env.RENDERER_CERT_DIR,
     RENDERER_LOG_LEVEL: !userConfig.logLevel && env.RENDERER_LOG_LEVEL,
     RENDERER_BUNDLE_PATH: !userConfig.bundlePath && env.RENDERER_BUNDLE_PATH,
     RENDERER_WORKERS_COUNT: !userConfig.workersCount && env.RENDERER_WORKERS_COUNT,
