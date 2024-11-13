@@ -30,6 +30,7 @@ You can find the **package** version numbers from this repo's tags and below in 
   - New `replayServerAsyncOperationLogs` configuration option to enable/disable this feature
   - When enabled, captures and replays console output from async operations during server-side rendering
   - [PR 440](https://github.com/shakacode/react_on_rails_pro/pull/440) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- Added support for HTTP/2 Cleartext communication between the Rails server and the Node renderer. Note it needs to be configured on both sides.
 
 ### Removed
 - Drop support for EOL'd Ruby 2.7 [PR 365](https://github.com/shakacode/react_on_rails_pro/pull/365) by [ahangarha](https://github.com/ahangarha).
