@@ -15,6 +15,7 @@ describe "Upload asset" do
     dbl_configuration = instance_double(ReactOnRailsPro::Configuration,
                                         server_renderer: "NodeRenderer",
                                         renderer_password: "myPassword1",
+                                        renderer_protocol: "http",
                                         renderer_url: "http://localhost:3800",
                                         renderer_http_pool_size: 1,
                                         renderer_http_pool_timeout: 5,
