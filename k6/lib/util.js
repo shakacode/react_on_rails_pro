@@ -6,23 +6,36 @@ const envToBoolean = (envVar) => {
   return !!value && ['true', '1', 'yes'].includes(value.toLowerCase());
 };
 
-/** @type {(env?: { isBrowser?: boolean, isDebug?: boolean }) => import('k6/options').Options} */
-export const defaultOptions = ({ isBrowser = false, isDebug = envToBoolean('DEBUG_K6') } = {}) => {
+/**
+ * @param {boolean} [inScenario=isBrowser] Is this used as `scenarios: { <scenarioName>: defaultOptions(...) }`?
+ * @param {boolean} [isBrowser=false] Is this a browser test?
+ * @param {boolean} [isDebug=env.DEBUG_K6] Are we running in debug mode?
+ * @return {import('k6/options').Options}
+ * */
+export const defaultOptions = ({
+  isBrowser = false,
+  isDebug = envToBoolean('DEBUG_K6'),
+  // Browser tests options can only be set inside `scenarios`
+  // https://grafana.com/docs/k6/latest/using-k6-browser/
+  inScenario = isBrowser,
+} = {}) => {
   const baseOptions = isDebug
     ? {
         vus: 1,
         iterations: 1,
-        httpDebug: isBrowser ? undefined : 'full',
+        httpDebug: inScenario ? undefined : 'full',
       }
     : {
         vus: 10,
         duration: '30s',
       };
+  if (inScenario) {
+    // See https://github.com/grafana/k6-learn/blob/main/Modules/III-k6-Intermediate/08-Setting-load-profiles-with-executors.md
+    baseOptions.executor = isDebug ? 'shared-iterations' : 'constant-vus';
+  }
   return isBrowser
     ? {
         ...baseOptions,
-        // See https://github.com/grafana/k6-learn/blob/main/Modules/III-k6-Intermediate/08-Setting-load-profiles-with-executors.md
-        executor: isDebug ? 'shared-iterations' : 'constant-vus',
         options: {
           browser: {
             type: 'chromium',
