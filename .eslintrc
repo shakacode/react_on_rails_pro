@@ -7,10 +7,6 @@ extends:
   - eslint-config-shakacode
   - prettier
 
-globals:
-  __DEBUG_SERVER_ERRORS__: writable
-  __SERVER_ERRORS__: writable
-
 parserOptions:
   # We have @babel/eslint-parser from eslint-config-shakacode, but don't use Babel in the main project
   requireConfigFile: false

@@ -21,7 +21,8 @@ export const defaultOptions = ({ isBrowser = false, isDebug = envToBoolean('DEBU
   return isBrowser
     ? {
         ...baseOptions,
-        executor: 'shared-iterations',
+        // See https://github.com/grafana/k6-learn/blob/main/Modules/III-k6-Intermediate/08-Setting-load-profiles-with-executors.md
+        executor: isDebug ? 'shared-iterations' : 'constant-vus',
         options: {
           browser: {
             type: 'chromium',
