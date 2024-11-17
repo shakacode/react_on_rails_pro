@@ -5,13 +5,14 @@
 
 import path from 'path';
 import cluster from 'cluster';
-import fastify, { FastifyInstance, FastifyReply, FastifyRequest } from 'fastify';
+import fastify from 'fastify';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
 import log from './shared/log';
 import packageJson from './shared/packageJson';
 import { buildConfig, Config, getConfig } from './shared/configBuilder';
 import fileExistsAsync from './shared/fileExistsAsync';
+import type { FastifyReply, FastifyRequest } from './worker/types';
 import checkProtocolVersion from './worker/checkProtocolVersionHandler';
 import authenticate from './worker/authHandler';
 import handleRenderRequest from './worker/handleRenderRequest';
@@ -72,12 +73,9 @@ export = function run(config: Partial<Config>) {
   // getConfig():
   buildConfig(config);
 
-  const { bundlePath, logLevel, port, protocol } = getConfig();
+  const { bundlePath, logLevel, port } = getConfig();
 
-  const app = (() => {
-    const logger = logLevel === 'debug';
-    return protocol === 'http2' ? fastify({ http2: true, logger }) : fastify({ logger });
-  })() as FastifyInstance;
+  const app = fastify({ http2: true, logger: logLevel === 'debug' });
 
   // 10 MB limit for code including props
   const fieldSizeLimit = 1024 * 1024 * 10;

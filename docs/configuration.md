@@ -72,11 +72,6 @@ ReactOnRailsPro.configure do |config|
   # Default for `renderer_url` is "http://localhost:3800".
   config.renderer_url = ENV["RENDERER_URL"]
 
-  # Specifies the protocol to use to communicate with the renderer.
-  # Valid values are "http" for HTTP/1.1 and "http2" for HTTP/2.
-  # Defaults to `RENDERER_PROTOCOL` environment variable if present and to "http" otherwise.
-  config.renderer_protocol = ENV["RENDERER_PROTOCOL"]
-
   # If you don't want to worry about special characters in your password within the url, use this config value
   # Default for `renderer_password` is ""
   # config.renderer_password = ENV["RENDERER_PASSWORD"]

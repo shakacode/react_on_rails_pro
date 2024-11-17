@@ -11,7 +11,6 @@ module ReactOnRailsPro
       prerender_caching: Configuration::DEFAULT_PRERENDER_CACHING,
       server_renderer: Configuration::DEFAULT_RENDERER_METHOD,
       renderer_url: Configuration::DEFAULT_RENDERER_URL,
-      renderer_protocol: Configuration::DEFAULT_RENDERER_PROTOCOL,
       renderer_use_fallback_exec_js: Configuration::DEFAULT_RENDERER_FALLBACK_EXEC_JS,
       renderer_http_pool_size: Configuration::DEFAULT_RENDERER_HTTP_POOL_SIZE,
       renderer_http_pool_timeout: Configuration::DEFAULT_RENDERER_HTTP_POOL_TIMEOUT,
@@ -34,8 +33,6 @@ module ReactOnRailsPro
 
   class Configuration
     DEFAULT_RENDERER_URL = "http://localhost:3800"
-    # The env var is also used in the Node renderer
-    DEFAULT_RENDERER_PROTOCOL = ENV["RENDERER_PROTOCOL"] || "http"
     DEFAULT_RENDERER_METHOD = "ExecJS"
     DEFAULT_RENDERER_FALLBACK_EXEC_JS = true
     DEFAULT_RENDERER_HTTP_POOL_SIZE = 10
@@ -53,7 +50,7 @@ module ReactOnRailsPro
     DEFAULT_PROFILE_SERVER_RENDERING_JS_CODE = false
     DEFAULT_RAISE_NON_SHELL_SERVER_RENDERING_ERRORS = false
 
-    attr_accessor :renderer_url, :renderer_protocol, :renderer_password, :tracing,
+    attr_accessor :renderer_url, :renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
                   :dependency_globs, :excluded_dependency_globs, :rendering_returns_promises,
@@ -62,38 +59,15 @@ module ReactOnRailsPro
                   :profile_server_rendering_js_code, :raise_non_shell_server_rendering_errors
 
     # rubocop:disable Metrics/AbcSize
-    def initialize(
-      renderer_url: nil,
-      renderer_protocol: nil,
-      renderer_password: nil,
-      server_renderer: nil,
-      renderer_use_fallback_exec_js: nil,
-      prerender_caching: nil,
-      renderer_http_pool_size: nil,
-      renderer_http_pool_timeout: nil,
-      renderer_http_pool_warn_timeout: nil,
-      tracing: nil,
-      dependency_globs: nil,
-      excluded_dependency_globs: nil,
-      rendering_returns_promises: nil,
-      remote_bundle_cache_adapter: nil,
-      ssr_pre_hook_js: nil,
-      assets_to_copy: nil,
-      renderer_request_retry_limit: nil,
-      throw_js_errors: nil,
-      ssr_timeout: nil,
-      profile_server_rendering_js_code: nil,
-      raise_non_shell_server_rendering_errors: nil
-    )
+    def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil,
+                   renderer_use_fallback_exec_js: nil, prerender_caching: nil,
+                   renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
+                   renderer_http_pool_warn_timeout: nil, tracing: nil,
+                   dependency_globs: nil, excluded_dependency_globs: nil, rendering_returns_promises: nil,
+                   remote_bundle_cache_adapter: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
+                   renderer_request_retry_limit: nil, throw_js_errors: nil, ssr_timeout: nil,
+                   profile_server_rendering_js_code: nil, raise_non_shell_server_rendering_errors: nil)
       self.renderer_url = renderer_url
-      self.renderer_protocol =
-        case renderer_protocol
-        when "http", "http2"
-          renderer_protocol
-        else
-          Rails.logger.warn "Invalid renderer protocol: #{renderer_protocol}, expected 'http' or 'http2'. " \
-                            "Defaulting to http."
-        end
       self.renderer_password = renderer_password
       self.server_renderer = server_renderer
       self.renderer_use_fallback_exec_js = renderer_use_fallback_exec_js

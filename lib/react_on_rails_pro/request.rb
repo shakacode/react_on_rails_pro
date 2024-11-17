@@ -156,8 +156,8 @@ module ReactOnRailsPro
           # See https://www.rubydoc.info/gems/httpx/1.3.3/HTTPX%2FOptions:initialize for the available options
           .with(
             origin: ReactOnRailsPro.configuration.renderer_url,
-            # h2 enables HTTP/2 by default without a connection upgrade
-            fallback_protocol: ReactOnRailsPro.configuration.renderer_protocol == "http2" ? "h2" : "http/1.1",
+            # Version of HTTP protocol to use by default in the absence of protocol negotiation
+            fallback_protocol: "h2",
             max_concurrent_requests: ReactOnRailsPro.configuration.renderer_http_pool_size,
             persistent: true,
             # Other timeouts supported https://honeyryderchuck.gitlab.io/httpx/wiki/Timeouts:

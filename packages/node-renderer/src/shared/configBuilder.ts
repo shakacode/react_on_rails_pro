@@ -25,7 +25,6 @@ const NODE_ENV = env.NODE_ENV || 'production';
 
 export interface Config {
   port: number;
-  protocol: 'http' | 'http2';
   // One of https://github.com/winstonjs/winston#logging-levels
   logLevel: string;
   bundlePath: string;
@@ -94,20 +93,9 @@ function defaultBundlePath() {
   return '/tmp/react-on-rails-pro-node-renderer-bundles';
 }
 
-function protocol(input: string = 'http'): Config['protocol'] {
-  if (input === 'http' || input === 'http2') {
-    return input;
-  }
-
-  log.warn(`Invalid protocol "${input}", expected "http" or "http2". Using "http"`);
-  return 'http';
-}
-
 const defaultConfig: Config = {
   // Use env port if we run on Heroku
   port: Number(env.RENDERER_PORT) || DEFAULT_PORT,
-
-  protocol: env.RENDERER_PROTOCOL as Config['protocol'],
 
   // Show only important messages by default
   logLevel: env.RENDERER_LOG_LEVEL || DEFAULT_LOG_LEVEL,
@@ -155,7 +143,6 @@ const defaultConfig: Config = {
 function envValuesUsed() {
   return {
     RENDERER_PORT: !userConfig.port && env.RENDERER_PORT,
-    RENDERER_PROTOCOL: !userConfig.protocol && env.RENDERER_PROTOCOL,
     RENDERER_LOG_LEVEL: !userConfig.logLevel && env.RENDERER_LOG_LEVEL,
     RENDERER_BUNDLE_PATH: !userConfig.bundlePath && env.RENDERER_BUNDLE_PATH,
     RENDERER_WORKERS_COUNT: !userConfig.workersCount && env.RENDERER_WORKERS_COUNT,
@@ -201,7 +188,6 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
 
   config.supportModules = truthy(config.supportModules);
   config.sentryTracing = truthy(config.sentryTracing);
-  config.protocol = protocol(config.protocol);
 
   let currentArg: string | undefined;
 
