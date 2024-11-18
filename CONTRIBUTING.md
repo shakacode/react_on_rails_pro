@@ -300,7 +300,10 @@ The benchmarking scripts are in `k6` directory, so you can run, for example:
 ```sh
 k6 run k6/root.js
 ```
-to exercise the main page of the dummy app, or `k6/streaming.js` for the streaming page.
+to exercise the main page of the dummy app.
+
+For browser tests like `k6/streaming.js`, it's recommended to include `K6_BROWSER_LOG=fatal` for actual measurement after verifying the tests work.
+It avoids unnecessary overhead from outputting console messages.
 
 For significant changes, please make sure to run all benchmarks before and after, and include the results in the PR.
 Later they will be added to CI, if we can make sure the results there are stable enough.

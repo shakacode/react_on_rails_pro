@@ -106,3 +106,7 @@ overrides:
         - error
         # k6 and k6/... have to be installed globally and can't be resolved by ESLint
         - { ignore: ["k6.*"] }
+      no-use-before-define:
+        - error
+        # We want to allow function.name in options, and place them at the top of the file
+        - { functions: false }
