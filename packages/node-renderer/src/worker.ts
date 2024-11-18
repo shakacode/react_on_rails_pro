@@ -68,6 +68,8 @@ const setResponse = async (result: ResponseResult, res: FastifyReply) => {
 
 const isAsset = (value: unknown): value is Asset => (value as { type?: string }).type === 'asset';
 
+const isNotJest = process.env.JEST_WORKER_ID === undefined;
+
 export = function run(config: Partial<Config>) {
   // Store config in app state. From now it can be loaded by any module using
   // getConfig():
@@ -75,7 +77,11 @@ export = function run(config: Partial<Config>) {
 
   const { bundlePath, logLevel, port } = getConfig();
 
-  const app = fastify({ http2: true, logger: logLevel === 'debug' });
+  const app = fastify({
+    // `inject` tests don't work with HTTP/2
+    http2: isNotJest as true,
+    logger: logLevel === 'debug',
+  });
 
   // 10 MB limit for code including props
   const fieldSizeLimit = 1024 * 1024 * 10;
