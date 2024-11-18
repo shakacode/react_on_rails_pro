@@ -293,12 +293,33 @@ If you run `rspec` at the top level, you'll see this message: `require': cannot 
 
 After running a test, you can view the coverage results in SimpleCov reports by opening `coverage/index.html`.
 
+### Benchmarking
+You'll need to [install `k6`](https://grafana.com/docs/k6/latest/set-up/install-k6/) first.
+
+The benchmarking scripts are in `k6` directory, so you can run, for example:
+```sh
+k6 run k6/root.js
+```
+to exercise the main page of the dummy app, or `k6/streaming.js` for the streaming page.
+
+For significant changes, please make sure to run all benchmarks before and after, and include the results in the PR.
+Later they will be added to CI, if we can make sure the results there are stable enough.
+
+If you add significant new functionality and add a page in the dummy app showing it, consider adding the corresponding benchmark as well.
+
+#### Debugging the benchmark scripts
+You can add `-e DEBUG_K6=true` to run only a single iteration while showing HTTP requests and responses. See
+[How to debug k6 load testing scripts](https://github.com/grafana/k6-learn/blob/main/Modules/III-k6-Intermediate/01-How-to-debug-k6-load-testing-scripts.md) for more suggestions if needed.
+
 ### Debugging
 Start the sample app like this for some debug printing:
 
 ```sh
-TRACE_REACT_ON_RAILS=true && foreman start -f Procfile.dev
+TRACE_REACT_ON_RAILS=true overmind start -f Procfile.dev
 ```
+Using `overmind` instead of `foreman` lets you restart separate processes, connect with them when stopped with a `debugger` call, and so on.
+See https://railsnotes.xyz/blog/overmind-better-bin-dev-for-your-procfile-dev for more details.
+If you don't need that, you can use `bin/dev` or `foreman` as well.
 
 # Releasing
 Contact Justin Gordon, justin@shakacode.com
