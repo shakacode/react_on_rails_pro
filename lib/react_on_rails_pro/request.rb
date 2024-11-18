@@ -148,19 +148,21 @@ module ReactOnRailsPro
         end
 
         HTTPX
+          # For persistent connections we want retries,
+          # so the requests don't just fail if the other side closes the connection
           # https://honeyryderchuck.gitlab.io/httpx/wiki/Persistent
-          # The implementation implies retries as well in case something closes the connection
-          .plugin(:persistent)
+          .plugin(:retries, max_retries: 1, retry_change_requests: true)
           .plugin(:stream)
+          # See https://www.rubydoc.info/gems/httpx/1.3.3/HTTPX%2FOptions:initialize for the available options
           .with(
             origin: ReactOnRailsPro.configuration.renderer_url,
             max_concurrent_requests: ReactOnRailsPro.configuration.renderer_http_pool_size,
+            persistent: true,
             # Other timeouts supported https://honeyryderchuck.gitlab.io/httpx/wiki/Timeouts:
             # :write_timeout
             # :request_timeout
             # :operation_timeout
             # :keep_alive_timeout
-            # TODO: Do we want to add config for them?
             timeout: {
               connect_timeout: ReactOnRailsPro.configuration.renderer_http_pool_timeout,
               read_timeout: ReactOnRailsPro.configuration.ssr_timeout
