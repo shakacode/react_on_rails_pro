@@ -68,12 +68,15 @@ const setResponse = async (result: ResponseResult, res: FastifyReply) => {
 
 const isAsset = (value: unknown): value is Asset => (value as { type?: string }).type === 'asset';
 
-// Jest tests using `inject()` don't work with HTTP/2 at the moment:
-// https://github.com/fastify/light-my-request/issues/315
-const useHttp2 =
-  process.env.JEST_WORKER_ID === undefined || !expect.getState().testPath?.endsWith('worker.test.ts');
+// Remove after this issue is resolved: https://github.com/fastify/light-my-request/issues/315
+let useHttp2 = true;
 
-export = function run(config: Partial<Config>) {
+// Call before any test using `app.inject()`
+export const disableHttp2 = () => {
+  useHttp2 = false;
+};
+
+export default function run(config: Partial<Config>) {
   // Store config in app state. From now it can be loaded by any module using
   // getConfig():
   buildConfig(config);
@@ -327,4 +330,4 @@ export = function run(config: Partial<Config>) {
   }
 
   return app;
-};
+}
