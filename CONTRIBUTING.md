@@ -294,7 +294,11 @@ If you run `rspec` at the top level, you'll see this message: `require': cannot 
 After running a test, you can view the coverage results in SimpleCov reports by opening `coverage/index.html`.
 
 ### Benchmarking
-You'll need to [install `k6`](https://grafana.com/docs/k6/latest/set-up/install-k6/) first.
+You'll need to [install `k6`](https://grafana.com/docs/k6/latest/set-up/install-k6/) first and start the dummy app in production mode (using [bin/prod](https://github.com/shakacode/react_on_rails_pro/blob/master/spec/dummy/bin/prod)). 
+You can remove even more overhead by using
+```sh
+bin/prod &> /dev/null
+```
 
 The benchmarking scripts are in `k6` directory, so you can run, for example:
 ```sh
