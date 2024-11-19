@@ -6,6 +6,7 @@ import Comment from "./Comment";
 
 const Comments = async ({ postId }) => {
   const comments = await ((await fetch(`https://jsonplaceholder.org/comments`)).json());
+  await new Promise(resolve => setTimeout(resolve, 2000));
   const postComments = comments.filter(comment => comment.postId === postId);
 
   const prepareComment = (comment) => {

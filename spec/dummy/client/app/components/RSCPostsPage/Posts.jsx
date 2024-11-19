@@ -4,6 +4,7 @@ import _ from "lodash";
 import Post from "./Post";
 
 const Posts = async () => {
+  await new Promise(resolve => setTimeout(resolve, 2000));
   const posts = await ((await fetch(`https://jsonplaceholder.org/posts`)).json());
   const topFivePosts = _.take(posts, 5);
 
