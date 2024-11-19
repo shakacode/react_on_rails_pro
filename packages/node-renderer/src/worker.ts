@@ -79,6 +79,7 @@ export = function run(config: Partial<Config>) {
     path: path.join(bundlePath, 'uploads'),
     limits: {
       fieldSize: fieldSizeLimit,
+      fileSize: Infinity,
     },
   });
 
