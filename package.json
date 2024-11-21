@@ -36,14 +36,6 @@
     "doc": "docs"
   },
   "resolutions": {
-    "diff": "^3.5.0",
-    "ini": "^1.3.6",
-    "is-svg": "^4.2.2",
-    "lodash": "^4.17.21",
-    "node-notifier": "^8.0.1",
-    "sockjs": "^0.3.20",
-    "url-parse": "^1.5.0",
-    "y18n": "^3.2.2 || ^4.0.1",
     "sentry-testkit/body-parser": "npm:empty-npm-package@1.0.0",
     "sentry-testkit/express": "npm:empty-npm-package@1.0.0"
   },
@@ -72,7 +64,7 @@
     "@types/lockfile": "^1.0.4",
     "@types/touch": "^3.1.5",
     "babel-jest": "^29.7.0",
-    "concurrently": "^8.2.2",
+    "concurrently": "^9.1.0",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-shakacode": "^19.0.0",
@@ -96,7 +88,6 @@
     "sentry-testkit": "^5.0.6",
     "tap-diff": "git+https://github.com/vaguilera/tap-diff.git",
     "tap-spec": "^5.0.0",
-    "tape-async": "^2.3.0",
     "touch": "^3.1.0",
     "typescript": "^5.4.3",
     "typescript-eslint": "^7.4.0",
