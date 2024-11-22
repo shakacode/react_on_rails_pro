@@ -54,8 +54,7 @@
     "@babel/preset-env": "^7.12.1",
     "@babel/preset-typescript": "^7.24.1",
     "@honeybadger-io/js": "^4.3.1",
-    "@sentry/node": "^6.2.3",
-    "@sentry/tracing": "^6.2.3",
+    "@sentry/node": "^7.120.0",
     "@tsconfig/node14": "^14.1.2",
     "@types/fs-extra": "~8.0.1",
     "@types/jest": "^29.5.12",
@@ -93,8 +92,8 @@
   },
   "peerDependencies": {
     "@honeybadger-io/js": "^4.3.1",
-    "@sentry/node": "^5.17.0",
-    "@sentry/tracing": "^5.27.3"
+    "@sentry/node": ">=5.0.0 <9.0.0",
+    "@sentry/tracing": ">=5.0.0"
   },
   "files": [
     "packages/node-renderer/dist"

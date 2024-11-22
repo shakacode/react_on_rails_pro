@@ -1,19 +1,16 @@
-import type { Transaction } from '@sentry/types';
-import requireOptional from './requireOptional';
-import log from './log';
+import type { Span } from '@sentry/types';
 
 type SentryModule = typeof import('@sentry/node');
-const sentryTracing = requireOptional('@sentry/tracing');
 
 class Tracing {
-  Sentry: null | SentryModule;
+  startSpan: null | SentryModule['startSpan'];
 
   constructor() {
-    this.Sentry = null;
+    this.startSpan = null;
   }
 
   tracingServices() {
-    if (this.Sentry) {
+    if (this.startSpan) {
       return ['sentry'];
     }
 
@@ -21,28 +18,22 @@ class Tracing {
   }
 
   setSentry(Sentry: SentryModule) {
-    if (sentryTracing === null) {
-      log.error(
-        '@sentry/tracing package is not installed. Either install it in order to use tracing with Sentry or set sentryTracing to false in your config.',
-      );
-    } else {
-      this.Sentry = Sentry;
-    }
+    this.startSpan =
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- necessary to support Sentry SDK v6
+      Sentry.startSpan ??
+      (async (context, callback) => {
+        const transaction = Sentry.startTransaction(context);
+        try {
+          // eslint-disable-next-line @typescript-eslint/await-thenable -- we expect the callback to return a promise
+          return await callback(transaction);
+        } finally {
+          transaction.finish();
+        }
+      });
   }
 
-  async withinTransaction<T>(fn: (transaction?: Transaction) => Promise<T>, op: string, name: string) {
-    if (this.Sentry === null) {
-      return fn();
-    }
-    const transaction = this.Sentry.startTransaction({
-      op,
-      name,
-    });
-    try {
-      return await fn(transaction);
-    } finally {
-      transaction.finish();
-    }
+  async withinSpan<T>(fn: (span?: Span) => Promise<T>, op: string, name: string) {
+    return this.startSpan === null ? fn() : this.startSpan({ op, name }, fn);
   }
 }
 

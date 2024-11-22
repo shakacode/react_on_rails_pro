@@ -6,14 +6,10 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
-import requireOptional from './requireOptional';
 import log, { configureLogger } from './log';
 import errorReporter from './errorReporter';
-import tracing from './tracing';
 import packageJson from './packageJson';
 import truthy from './truthy';
-
-const Sentry = requireOptional('@sentry/node') as typeof import('@sentry/node') | null;
 
 // usually remote renderers are on staging or production, so, use production folder always
 const DEFAULT_PORT = 3800;
@@ -225,10 +221,6 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
         tracing: config.sentryTracing,
         tracesSampleRate: sampleRate,
       });
-
-      if (Sentry) {
-        tracing.setSentry(Sentry);
-      }
     } else {
       errorReporter.addSentryDsn(config.sentryDsn);
     }

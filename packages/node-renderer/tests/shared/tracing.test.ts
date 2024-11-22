@@ -1,32 +1,65 @@
 import { jest } from '@jest/globals';
 
-jest.mock('@sentry/node');
+// eslint-disable-next-line @typescript-eslint/no-unsafe-return
+jest.mock('@sentry/node', () => ({
+  // @ts-expect-error requireActual returns an object
+  ...jest.requireActual('@sentry/node'),
+  startTransaction: jest.fn(),
+}));
 
 import Sentry = require('@sentry/node');
 import tracing = require('../../src/shared/tracing');
 
-test('should run function and finish transaction', async () => {
-  const finishMock = jest.fn();
-  const fn = jest.fn<Parameters<typeof tracing.withinTransaction>[0]>();
-  (Sentry.startTransaction as jest.Mock).mockReturnValue({ finish: finishMock });
+Sentry.init({
+  enableTracing: true,
+});
+
+test('should run function and finish span', async () => {
+  const fn = jest.fn<Parameters<typeof tracing.withinSpan>[0]>();
+  let savedSpan: Sentry.Span | undefined;
   tracing.setSentry(Sentry);
-  await tracing.withinTransaction(fn, 'sample', 'Sample');
-  expect(finishMock.mock.calls).toHaveLength(1);
+  await tracing.withinSpan(
+    async (span) => {
+      savedSpan = span;
+      await fn(span);
+    },
+    'sample',
+    'Sample',
+  );
+  expect(savedSpan).toBeDefined();
+  expect(Sentry.getActiveSpan()).not.toBe(savedSpan);
   expect(fn.mock.calls).toHaveLength(1);
 });
 
 test('should throw if inner function throws', async () => {
-  const finishMock = jest.fn();
-  (Sentry.startTransaction as jest.Mock).mockReturnValue({ finish: finishMock });
+  let savedSpan: Sentry.Span | undefined;
   tracing.setSentry(Sentry);
   await expect(async () => {
-    await tracing.withinTransaction(
-      () => {
+    await tracing.withinSpan(
+      (span) => {
+        savedSpan = span;
         throw new Error();
       },
       'sample',
       'Sample',
     );
   }).rejects.toThrow();
-  expect(finishMock.mock.calls).toHaveLength(1);
+  expect(Sentry.getActiveSpan()).not.toBe(savedSpan);
+});
+
+test('should run function and finish transaction in versions without startSpan', async () => {
+  const { startSpan } = Sentry;
+  try {
+    // @ts-expect-error Emulate Sentry SDK before v7
+    delete Sentry.startSpan;
+    const finishMock = jest.fn();
+    const fn = jest.fn<Parameters<typeof tracing.withinSpan>[0]>();
+    (Sentry.startTransaction as jest.Mock).mockReturnValue({ finish: finishMock });
+    tracing.setSentry(Sentry);
+    await tracing.withinSpan(fn, 'sample', 'Sample');
+    expect(finishMock.mock.calls).toHaveLength(1);
+    expect(fn.mock.calls).toHaveLength(1);
+  } finally {
+    Sentry.startSpan = startSpan;
+  }
 });

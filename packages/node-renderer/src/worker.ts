@@ -186,8 +186,8 @@ export default function run(config: Partial<Config>) {
     });
 
     try {
-      await tracing.withinTransaction(
-        async (transaction) => {
+      await tracing.withinSpan(
+        async (span) => {
           try {
             const result = await handleRenderRequest({
               renderingRequest,
@@ -203,12 +203,7 @@ export default function run(config: Partial<Config>) {
               'UNHANDLED error in handleRenderRequest',
             );
             log.error(exceptionMessage);
-            errorReporter.notify(exceptionMessage, {}, (scope) => {
-              if (transaction) {
-                scope.setSpan(transaction);
-              }
-              return scope;
-            });
+            errorReporter.notify(exceptionMessage, span);
             await setResponse(errorResponseResult(exceptionMessage), res);
           }
         },
