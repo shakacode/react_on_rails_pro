@@ -187,7 +187,7 @@ export default function run(config: Partial<Config>) {
 
     try {
       await tracing.withinSpan(
-        async (span) => {
+        async () => {
           try {
             const result = await handleRenderRequest({
               renderingRequest,
@@ -203,7 +203,7 @@ export default function run(config: Partial<Config>) {
               'UNHANDLED error in handleRenderRequest',
             );
             log.error(exceptionMessage);
-            errorReporter.notify(exceptionMessage, span);
+            errorReporter.notify(exceptionMessage);
             await setResponse(errorResponseResult(exceptionMessage), res);
           }
         },

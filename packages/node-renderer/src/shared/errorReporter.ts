@@ -1,4 +1,3 @@
-import type { CaptureContext, Span } from '@sentry/types';
 import { NodeOptions } from '@sentry/node';
 import requireOptional from './requireOptional';
 import log from './log';
@@ -10,15 +9,10 @@ const Sentry = requireOptional('@sentry/node') as typeof import('@sentry/node') 
 class ErrorReporter {
   honeybadger: boolean;
   sentry: boolean;
-  // Starting with Sentry SDK v7.93, spans on scopes are set automatically.
-  // Remove this logic if we ever require v7.93+.
-  // See https://docs.sentry.io/platforms/javascript/migration/v7-to-v8/v7-deprecations/#deprecate-scopegetspan-and-scopesetspan
-  setSpanIsNeeded: boolean;
 
   constructor() {
     this.honeybadger = false;
     this.sentry = false;
-    this.setSpanIsNeeded = false;
   }
 
   reportingServices() {
@@ -59,28 +53,11 @@ class ErrorReporter {
       };
 
       if (options.tracing) {
-        let initTracing = true;
-        const sentryVersions = Sentry.SDK_VERSION.split('.');
-        /* eslint-disable @typescript-eslint/no-non-null-assertion -- SDK_VERSION contains major and minor versions */
-        const sentryMajor = Number.parseInt(sentryVersions[0]!, 10);
-        const sentryMinor = Number.parseInt(sentryVersions[1]!, 10);
-        /* eslint-enable @typescript-eslint/no-non-null-assertion */
-        // See https://github.com/getsentry/sentry-javascript/blob/7.47.0/MIGRATION.md/#remove-requirement-for-sentrytracing-package-since-7460
-        const needsSentryTracing = sentryMajor < 7 || (sentryMajor === 7 && sentryMinor < 46);
-        let integrations: NodeOptions['integrations'];
-        // enable HTTP calls tracing; included in Sentry SDK 8 by default
-        if (needsSentryTracing) {
-          if (requireOptional('@sentry/tracing') === null) {
-            log.error(
-              '@sentry/tracing package is not installed. Either install it in order to use error reporting with Sentry or set config sentryTracing to false.',
-            );
-            initTracing = false;
-          } else {
-            integrations = [new Sentry.Integrations.Http({ tracing: true })];
-          }
-        } else if (sentryMajor === 7) {
-          integrations = Sentry.autoDiscoverNodePerformanceMonitoringIntegrations();
-        }
+        const integrations: NodeOptions['integrations'] =
+          // enable HTTP calls tracing; included in Sentry SDK 8 by default
+          Sentry.SDK_VERSION.startsWith('7.')
+            ? Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()
+            : undefined;
         sentryOptions = {
           ...sentryOptions,
           integrations,
@@ -89,37 +66,34 @@ class ErrorReporter {
           // for finer control
           tracesSampleRate: options.tracesSampleRate,
         };
-        if (initTracing) {
-          this.setSpanIsNeeded = sentryMajor < 7 || (sentryMajor === 7 && sentryMinor < 93);
-          tracing.setSentry(Sentry);
-        }
+        tracing.setSentry(Sentry);
       }
       Sentry.init(sentryOptions);
       this.sentry = true;
     }
   }
 
+  /* eslint-disable @typescript-eslint/no-non-null-assertion -- Accesses happen under `if`s ensuring non-null values */
   setContext(context: Record<string, unknown>) {
     if (this.honeybadger) {
-      Honeybadger?.setContext(context);
+      Honeybadger!.setContext(context);
     }
   }
 
-  notify(msg: string | Error, span?: Span) {
+  notify(msg: string | Error) {
     log.error(`ErrorReporter notification: ${msg}`);
     if (this.honeybadger) {
-      Honeybadger?.notify(msg);
+      Honeybadger!.notify(msg);
     }
     if (this.sentry) {
-      const scopeFn: CaptureContext | undefined =
-        span && this.setSpanIsNeeded ? (scope) => scope.setSpan(span) : undefined;
       if (typeof msg === 'string') {
-        Sentry?.captureMessage(msg, scopeFn);
+        Sentry!.captureMessage(msg);
       } else {
-        Sentry?.captureException(msg, scopeFn);
+        Sentry!.captureException(msg);
       }
     }
   }
+  /* eslint-enable @typescript-eslint/no-non-null-assertion */
 }
 
 const errorReporter = new ErrorReporter();

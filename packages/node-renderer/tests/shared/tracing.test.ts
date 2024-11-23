@@ -46,20 +46,3 @@ test('should throw if inner function throws', async () => {
   }).rejects.toThrow();
   expect(Sentry.getActiveSpan()).not.toBe(savedSpan);
 });
-
-test('should run function and finish transaction in versions without startSpan', async () => {
-  const { startSpan } = Sentry;
-  try {
-    // @ts-expect-error Emulate Sentry SDK before v7
-    delete Sentry.startSpan;
-    const finishMock = jest.fn();
-    const fn = jest.fn<Parameters<typeof tracing.withinSpan>[0]>();
-    (Sentry.startTransaction as jest.Mock).mockReturnValue({ finish: finishMock });
-    tracing.setSentry(Sentry);
-    await tracing.withinSpan(fn, 'sample', 'Sample');
-    expect(finishMock.mock.calls).toHaveLength(1);
-    expect(fn.mock.calls).toHaveLength(1);
-  } finally {
-    Sentry.startSpan = startSpan;
-  }
-});

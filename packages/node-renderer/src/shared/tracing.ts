@@ -18,18 +18,7 @@ class Tracing {
   }
 
   setSentry(Sentry: SentryModule) {
-    this.startSpan =
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- necessary to support Sentry SDK v6
-      Sentry.startSpan ??
-      (async (context, callback) => {
-        const transaction = Sentry.startTransaction(context);
-        try {
-          // eslint-disable-next-line @typescript-eslint/await-thenable -- we expect the callback to return a promise
-          return await callback(transaction);
-        } finally {
-          transaction.finish();
-        }
-      });
+    this.startSpan = Sentry.startSpan;
   }
 
   async withinSpan<T>(fn: (span?: Span) => Promise<T>, op: string, name: string) {
