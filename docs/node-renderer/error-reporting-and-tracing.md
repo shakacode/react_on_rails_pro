@@ -1,4 +1,6 @@
-# Error Reporting and Tracing for Sentry and HoneyBadger
+# Error Reporting and Tracing
+
+FIXME: update after conversion to plugins.
 
 ## Sentry
 1. Create a new Sentry Node project. After creating it, you will get directed to a [page like this](https://sentry.io/react-on-rails-pro/nodejs/getting-started/node/). You need to know your
