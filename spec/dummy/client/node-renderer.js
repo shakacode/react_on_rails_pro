@@ -1,7 +1,6 @@
 const path = require('path');
 const Honeybadger = require('@honeybadger-io/js');
 const Sentry = require('@sentry/node');
-require('@sentry/tracing');
 
 const env = process.env;
 
@@ -24,7 +23,7 @@ Sentry.init({
   // Sentry recommends adjusting this value in production, or using tracesSampler for finer control
   tracesSampleRate: 1.0,
 });
-require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/sentry6').default();
+require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/sentry6').init({ tracing: true });
 
 const config = {
   // This is the default but avoids searching for the Rails root
@@ -45,8 +44,6 @@ const config = {
 
   // time in minutes between each worker restarting when restarting all workers
   delayBetweenIndividualWorkerRestarts: env.CI ? 0.01 : 1,
-
-  sentryTracing: true,
 
   // If set to true, `supportModules` enables the server-bundle code to call a default set of NodeJS modules
   // that get added to the VM context: { Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval }.

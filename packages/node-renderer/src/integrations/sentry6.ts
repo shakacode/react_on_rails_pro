@@ -1,18 +1,52 @@
-import { captureException, captureMessage } from '@sentry/node';
-import { CaptureContext, Transaction } from '@sentry/types';
-import { addErrorNotifier, addMessageNotifier } from '../shared/errorReporter';
+import { captureException, captureMessage, startTransaction } from '@sentry/node';
+import { CaptureContext, TransactionContext } from '@sentry/types';
+import { addErrorNotifier, addMessageNotifier, message } from '../shared/errorReporter';
+import { setupTracing } from '../shared/tracing';
 
-function makeCaptureContext(integrationData?: Record<string, unknown>): CaptureContext | undefined {
-  const transaction = integrationData?.sentry6 as Transaction | undefined;
-  return transaction ? (scope) => scope.setSpan(transaction) : undefined;
+declare module '../shared/tracing' {
+  interface TracingContext {
+    sentry6?: CaptureContext;
+  }
+
+  interface UnitOfWorkOptions {
+    sentry6?: TransactionContext;
+  }
 }
 
-export default function init() {
-  addMessageNotifier((msg, integrationData) => {
-    captureMessage(msg, makeCaptureContext(integrationData));
+export function init({ tracing = false } = {}) {
+  addMessageNotifier((msg, tracingContext) => {
+    captureMessage(msg, tracingContext?.sentry6);
   });
 
-  addErrorNotifier((msg, integrationData) => {
-    captureException(msg, makeCaptureContext(integrationData));
+  addErrorNotifier((msg, tracingContext) => {
+    captureException(msg, tracingContext?.sentry6);
   });
+
+  if (tracing) {
+    try {
+      // eslint-disable-next-line global-require
+      require('@sentry/tracing');
+    } catch (e) {
+      message("Failed to load '@sentry/tracing'. Tracing is disabled.");
+      return;
+    }
+
+    setupTracing({
+      startSsrRequestOptions: {
+        sentry6: {
+          op: 'handleRenderRequest',
+          name: 'SSR Request',
+        },
+      },
+      executor: async (fn, unitOfWorkOptions) => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        const transaction = startTransaction(unitOfWorkOptions.sentry6!);
+        try {
+          return await fn({ sentry6: (scope) => scope.setSpan(transaction) });
+        } finally {
+          transaction.finish();
+        }
+      },
+    });
+  }
 }

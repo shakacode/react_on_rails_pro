@@ -6,9 +6,7 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
-import requireOptional from './requireOptional';
 import log, { configureLogger } from './log';
-import tracing from './tracing';
 import packageJson from './packageJson';
 import truthy from './truthy';
 
@@ -17,7 +15,6 @@ const DEFAULT_PORT = 3800;
 const DEFAULT_LOG_LEVEL = 'info';
 const { env } = process;
 const MAX_DEBUG_SNIPPET_LENGTH = 1000;
-const DEFAULT_SAMPLE_RATE = 0.1;
 const NODE_ENV = env.NODE_ENV || 'production';
 
 export interface Config {
@@ -124,14 +121,6 @@ const defaultConfig: Config = {
 
   maxDebugSnippetLength: MAX_DEBUG_SNIPPET_LENGTH,
 
-  honeybadgerApiKey: env.HONEYBADGER_API_KEY || null,
-
-  sentryDsn: env.SENTRY_DSN || null,
-
-  sentryTracing: truthy(env.SENTRY_TRACING),
-
-  sentryTracesSampleRate: env.SENTRY_TRACES_SAMPLE_RATE || DEFAULT_SAMPLE_RATE,
-
   // default to true if empty, otherwise it is set to false
   includeTimerPolyfills: env.INCLUDE_TIMER_POLYFILLS === 'true' || !env.INCLUDE_TIMER_POLYFILLS,
 
@@ -188,7 +177,6 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
   config = { ...defaultConfig, ...userConfig };
 
   config.supportModules = truthy(config.supportModules);
-  config.sentryTracing = truthy(config.sentryTracing);
 
   let currentArg: string | undefined;
 
@@ -214,13 +202,6 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
       'honeybadgerApiKey, sentryDsn, sentryTracing, and sentryTracesSampleRate are not used since RORP 4.0. ' +
         'See https://www.shakacode.com/react-on-rails-pro/docs/node-renderer/error-reporting-and-tracing.',
     );
-  }
-
-  if (config.sentryTracing) {
-    const Sentry = requireOptional('@sentry/node') as typeof import('@sentry/node') | null;
-    if (Sentry) {
-      tracing.setSentry(Sentry);
-    }
   }
 
   configureLogger(log, config.logLevel);

@@ -72,7 +72,9 @@ overrides:
       "@typescript-eslint/no-floating-promises":
         - error
         - allowForKnownSafePromises:
-            - { from: "package", package: "fastify", name: "FastifyReply" }
+          - { from: "package", package: "fastify", name: "FastifyReply" }
+      no-shadow: off
+      "@typescript-eslint/no-shadow": error
   - files: "packages/node-renderer/tests/**"
     rules:
       # Allows Jest mocks before import

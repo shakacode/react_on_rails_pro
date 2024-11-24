@@ -8,7 +8,6 @@ import cluster from 'cluster';
 import fastify from 'fastify';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
-import type { Scope } from '@sentry/node';
 import log from './shared/log';
 import packageJson from './shared/packageJson';
 import { buildConfig, Config, getConfig } from './shared/configBuilder';
@@ -27,8 +26,8 @@ import {
   Asset,
 } from './shared/utils';
 import * as errorReporter from './shared/errorReporter';
-import tracing from './shared/tracing';
 import { lock, unlock } from './shared/locks';
+import { ssrRequestUowOptions, trace } from './shared/tracing';
 
 // Uncomment next 2 functions for testing timeouts
 // function sleep(ms) {
@@ -187,31 +186,25 @@ export default function run(config: Partial<Config>) {
     });
 
     try {
-      await tracing.withinTransaction(
-        async (transaction) => {
-          try {
-            const result = await handleRenderRequest({
-              renderingRequest,
-              bundleTimestamp,
-              providedNewBundle,
-              assetsToCopy,
-            });
-            await setResponse(result, res);
-          } catch (err) {
-            const exceptionMessage = formatExceptionMessage(
-              renderingRequest,
-              err,
-              'UNHANDLED error in handleRenderRequest',
-            );
-            errorReporter.message(exceptionMessage, {
-              sentry6: transaction,
-            });
-            await setResponse(errorResponseResult(exceptionMessage), res);
-          }
-        },
-        'handleRenderRequest',
-        'SSR Request',
-      );
+      await trace(async (context) => {
+        try {
+          const result = await handleRenderRequest({
+            renderingRequest,
+            bundleTimestamp,
+            providedNewBundle,
+            assetsToCopy,
+          });
+          await setResponse(result, res);
+        } catch (err) {
+          const exceptionMessage = formatExceptionMessage(
+            renderingRequest,
+            err,
+            'UNHANDLED error in handleRenderRequest',
+          );
+          errorReporter.message(exceptionMessage, context);
+          await setResponse(errorResponseResult(exceptionMessage), res);
+        }
+      }, ssrRequestUowOptions);
     } catch (theErr) {
       const exceptionMessage = formatExceptionMessage(renderingRequest, theErr);
       log.error(`UNHANDLED TOP LEVEL error ${exceptionMessage}`);
