@@ -3,8 +3,17 @@
   "version": "4.0.0-rc.8",
   "protocolVersion": "1.0.0",
   "description": "react-on-rails-pro JavaScript for react_on_rails_pro Ruby gem",
-  "main": "packages/node-renderer/dist/ReactOnRailsProNodeRenderer.js",
-  "types": "packages/node-renderer/dist/ReactOnRailsProNodeRenderer.d.ts",
+  "exports": {
+    ".": {
+      "types": "./packages/node-renderer/dist/ReactOnRailsProNodeRenderer.d.ts",
+      "default": "./packages/node-renderer/dist/ReactOnRailsProNodeRenderer.js"
+    },
+    "./integrations/*": {
+      "types": "./packages/node-renderer/dist/integrations/*.d.ts",
+      "default": "./packages/node-renderer/dist/integrations/*.js"
+    },
+    "./package.json": "./package.json"
+  },
   "bin": {
     "react-on-rails-pro-node-renderer": "packages/node-renderer/dist/default-node-renderer.js"
   },
@@ -92,9 +101,20 @@
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
-    "@honeybadger-io/js": "^4.3.1",
-    "@sentry/node": "^5.17.0",
-    "@sentry/tracing": "^5.27.3"
+    "@honeybadger-io/js": ">=4.0.0",
+    "@sentry/node": ">=5.0.0 <9.0.0",
+    "@sentry/tracing": ">=5.0.0"
+  },
+  "peerDependenciesMeta": {
+    "@honeybadger-io/js": {
+      "optional": true
+    },
+    "@sentry/node": {
+      "optional": true
+    },
+    "@sentry/tracing": {
+      "optional": true
+    }
   },
   "files": [
     "packages/node-renderer/dist"

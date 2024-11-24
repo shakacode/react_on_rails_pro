@@ -8,12 +8,9 @@ import path from 'path';
 import fs from 'fs';
 import requireOptional from './requireOptional';
 import log, { configureLogger } from './log';
-import errorReporter from './errorReporter';
 import tracing from './tracing';
 import packageJson from './packageJson';
 import truthy from './truthy';
-
-const Sentry = requireOptional('@sentry/node') as typeof import('@sentry/node') | null;
 
 // usually remote renderers are on staging or production, so, use production folder always
 const DEFAULT_PORT = 3800;
@@ -47,10 +44,14 @@ export interface Config {
   // time in minutes between each worker restarting when restarting all workers
   delayBetweenIndividualWorkerRestarts: number | undefined;
   maxDebugSnippetLength: number;
-  honeybadgerApiKey: string | null;
-  sentryDsn: string | null;
-  sentryTracing: boolean;
-  sentryTracesSampleRate: string | number;
+  // @deprecated See https://www.shakacode.com/react-on-rails-pro/docs/node-renderer/error-reporting-and-tracing.
+  honeybadgerApiKey?: string | null;
+  // @deprecated See https://www.shakacode.com/react-on-rails-pro/docs/node-renderer/error-reporting-and-tracing.
+  sentryDsn?: string | null;
+  // @deprecated See https://www.shakacode.com/react-on-rails-pro/docs/node-renderer/error-reporting-and-tracing.
+  sentryTracing?: boolean;
+  // @deprecated See https://www.shakacode.com/react-on-rails-pro/docs/node-renderer/error-reporting-and-tracing.
+  sentryTracesSampleRate?: string | number;
   includeTimerPolyfills: boolean;
   // If set to true, this option enables the replay of console logs from asynchronous server operations.
   // If set to false, only logs that occur on the server prior to any awaited asynchronous operations will be replayed.
@@ -203,34 +204,22 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
     }
   });
 
-  if (config.honeybadgerApiKey) {
-    errorReporter.addHoneybadgerApiKey(config.honeybadgerApiKey);
+  if (
+    'honeybadgerApiKey' in config ||
+    'sentryDsn' in config ||
+    'sentryTracing' in config ||
+    'sentryTracesSampleRate' in config
+  ) {
+    log.error(
+      'honeybadgerApiKey, sentryDsn, sentryTracing, and sentryTracesSampleRate are not used since RORP 4.0. ' +
+        'See https://www.shakacode.com/react-on-rails-pro/docs/node-renderer/error-reporting-and-tracing.',
+    );
   }
 
-  if (config.sentryDsn) {
-    if (config.sentryTracing) {
-      let sampleRate =
-        typeof config.sentryTracesSampleRate === 'number'
-          ? config.sentryTracesSampleRate
-          : parseFloat(config.sentryTracesSampleRate);
-
-      if (Number.isNaN(sampleRate)) {
-        log.warn(
-          `SENTRY_TRACES_SAMPLE_RATE "${config.sentryTracesSampleRate}" is not a number. Using default of ${DEFAULT_SAMPLE_RATE}`,
-        );
-        sampleRate = DEFAULT_SAMPLE_RATE;
-      }
-
-      errorReporter.addSentryDsn(config.sentryDsn, {
-        tracing: config.sentryTracing,
-        tracesSampleRate: sampleRate,
-      });
-
-      if (Sentry) {
-        tracing.setSentry(Sentry);
-      }
-    } else {
-      errorReporter.addSentryDsn(config.sentryDsn);
+  if (config.sentryTracing) {
+    const Sentry = requireOptional('@sentry/node') as typeof import('@sentry/node') | null;
+    if (Sentry) {
+      tracing.setSentry(Sentry);
     }
   }
 

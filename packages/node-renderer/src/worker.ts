@@ -8,6 +8,7 @@ import cluster from 'cluster';
 import fastify from 'fastify';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
+import type { Scope } from '@sentry/node';
 import log from './shared/log';
 import packageJson from './shared/packageJson';
 import { buildConfig, Config, getConfig } from './shared/configBuilder';
@@ -25,7 +26,7 @@ import {
   saveMultipartFile,
   Asset,
 } from './shared/utils';
-import errorReporter from './shared/errorReporter';
+import * as errorReporter from './shared/errorReporter';
 import tracing from './shared/tracing';
 import { lock, unlock } from './shared/locks';
 
@@ -202,12 +203,8 @@ export default function run(config: Partial<Config>) {
               err,
               'UNHANDLED error in handleRenderRequest',
             );
-            log.error(exceptionMessage);
-            errorReporter.notify(exceptionMessage, {}, (scope) => {
-              if (transaction) {
-                scope.setSpan(transaction);
-              }
-              return scope;
+            errorReporter.message(exceptionMessage, {
+              sentry6: transaction,
             });
             await setResponse(errorResponseResult(exceptionMessage), res);
           }
@@ -218,7 +215,7 @@ export default function run(config: Partial<Config>) {
     } catch (theErr) {
       const exceptionMessage = formatExceptionMessage(renderingRequest, theErr);
       log.error(`UNHANDLED TOP LEVEL error ${exceptionMessage}`);
-      errorReporter.notify(exceptionMessage);
+      errorReporter.message(exceptionMessage);
       await setResponse(errorResponseResult(exceptionMessage), res);
     }
   });
