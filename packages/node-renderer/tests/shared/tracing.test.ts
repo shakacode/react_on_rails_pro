@@ -1,38 +1,36 @@
 import { jest } from '@jest/globals';
 
-// eslint-disable-next-line @typescript-eslint/no-unsafe-return
-jest.mock('@sentry/node', () => ({
-  // @ts-expect-error requireActual returns an object
-  ...jest.requireActual('@sentry/node'),
-  startTransaction: jest.fn(),
-}));
-
-import Sentry = require('@sentry/node');
-import tracing = require('../../src/shared/tracing');
-import tracingIntegration = require('../../src/integrations/sentry6');
+import * as Sentry from '@sentry/node';
+import { trace } from '../../src/shared/tracing';
+import * as tracingIntegration from '../../src/integrations/sentry';
 
 Sentry.init({ tracesSampleRate: 1.0 });
 tracingIntegration.init({ tracing: true });
 
-test('should run function and finish transaction', async () => {
-  const finishMock = jest.fn();
-  const fn = jest.fn<Parameters<typeof tracing.trace>[0]>();
-  (Sentry.startTransaction as jest.Mock).mockReturnValue({ finish: finishMock });
-  await tracing.trace(fn, { sentry6: { op: 'test', name: 'Test' } });
-  expect(finishMock.mock.calls).toHaveLength(1);
+const spanName = 'TestSpan';
+const testTransactionContext = { sentry: { op: 'test', name: spanName } };
+
+test('should run function and finish span', async () => {
+  const fn = jest.fn<Parameters<typeof trace>[0]>();
+  let savedSpan: Sentry.Span | undefined;
+  const message = 'test';
+  await trace(async () => {
+    savedSpan = Sentry.getActiveSpan();
+    Sentry.captureMessage(message);
+    await fn();
+  }, testTransactionContext);
+  expect(savedSpan).toBeDefined();
+  expect(Sentry.getActiveSpan()).not.toBe(savedSpan);
   expect(fn.mock.calls).toHaveLength(1);
 });
 
 test('should throw if inner function throws', async () => {
-  const finishMock = jest.fn();
-  (Sentry.startTransaction as jest.Mock).mockReturnValue({ finish: finishMock });
+  let savedSpan: Sentry.Span | undefined;
   await expect(async () => {
-    await tracing.trace(
-      () => {
-        throw new Error();
-      },
-      { sentry6: { op: 'test', name: 'Test' } },
-    );
+    await trace(() => {
+      savedSpan = Sentry.getActiveSpan();
+      throw new Error();
+    }, testTransactionContext);
   }).rejects.toThrow();
-  expect(finishMock.mock.calls).toHaveLength(1);
+  expect(Sentry.getActiveSpan()).not.toBe(savedSpan);
 });

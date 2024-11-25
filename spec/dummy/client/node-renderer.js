@@ -19,11 +19,12 @@ require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/honeybad
 // Only project contributors have access to see the test errors.
 Sentry.init({
   dsn: 'https://35ae284fec944acd89915dee2b9f3bc8@o504646.ingest.sentry.io/5591817',
-  integrations: [new Sentry.Integrations.Http({ tracing: true })],
+  // Remove for Sentry SDK v8
+  integrations: Sentry.autoDiscoverNodePerformanceMonitoringIntegrations(),
   // Sentry recommends adjusting this value in production, or using tracesSampler for finer control
   tracesSampleRate: 1.0,
 });
-require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/sentry6').init({ tracing: true });
+require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/sentry').init({ tracing: true });
 
 const config = {
   // This is the default but avoids searching for the Rails root

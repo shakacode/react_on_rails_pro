@@ -24,7 +24,7 @@ export function init({ tracing = false } = {}) {
 
   if (tracing) {
     try {
-      // eslint-disable-next-line global-require
+      // eslint-disable-next-line global-require,import/no-unresolved -- Intentionally absent in our devDependencies
       require('@sentry/tracing');
     } catch (e) {
       message("Failed to load '@sentry/tracing'. Tracing is disabled.");
