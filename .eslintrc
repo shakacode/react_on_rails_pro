@@ -79,3 +79,5 @@ overrides:
     rules:
       # Allows Jest mocks before import
       import/first: off
+      # Simplifies test code
+      "@typescript-eslint/no-non-null-assertion": off
