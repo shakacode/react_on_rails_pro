@@ -32,12 +32,12 @@ export function init({ tracing = false } = {}) {
     }
 
     setupTracing({
-      startSsrRequestOptions: {
+      startSsrRequestOptions: () => ({
         sentry6: {
           op: 'handleRenderRequest',
           name: 'SSR Request',
         },
-      },
+      }),
       executor: async (fn, unitOfWorkOptions) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         const transaction = startTransaction(unitOfWorkOptions.sentry6!);

@@ -27,7 +27,7 @@ import {
 } from './shared/utils';
 import * as errorReporter from './shared/errorReporter';
 import { lock, unlock } from './shared/locks';
-import { ssrRequestUowOptions, trace } from './shared/tracing';
+import { startSsrRequestOptions, trace } from './shared/tracing';
 
 // Uncomment next 2 functions for testing timeouts
 // function sleep(ms) {
@@ -204,7 +204,7 @@ export default function run(config: Partial<Config>) {
           errorReporter.message(exceptionMessage, context);
           await setResponse(errorResponseResult(exceptionMessage), res);
         }
-      }, ssrRequestUowOptions);
+      }, startSsrRequestOptions({ renderingRequest }));
     } catch (theErr) {
       const exceptionMessage = formatExceptionMessage(renderingRequest, theErr);
       log.error(`UNHANDLED TOP LEVEL error ${exceptionMessage}`);

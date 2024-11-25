@@ -9,21 +9,32 @@ export interface TracingContext {}
 
 let setupRun = false;
 
-// TODO: this could depend on a given request, but what arguments should it receive?
-//  renderingRequest? a name passed from Ruby?
-export const ssrRequestUowOptions: UnitOfWorkOptions = {};
-
 type UnitOfWork<T> = (tracingContext?: TracingContext) => Promise<T>;
 
 type Executor = <T>(fn: UnitOfWork<T>, unitOfWorkOptions: UnitOfWorkOptions) => Promise<T>;
 
 let executor: Executor = (fn) => fn();
 
+// Data describing an SSR request.
+// TODO: determine else to pass here. Maybe Ruby could send the component name, or
+// It will also be augmentable by integrations, to support distributed tracing
+// https://github.com/shakacode/react_on_rails_pro/issues/473
+interface SsrRequestData {
+  renderingRequest: string;
+}
+
+type StartSsrRequestOptions = (request: SsrRequestData) => UnitOfWorkOptions;
+
+let mutableStartSsrRequestOptions: StartSsrRequestOptions = () => ({});
+
+export const startSsrRequestOptions: StartSsrRequestOptions = (request) =>
+  mutableStartSsrRequestOptions(request);
+
 // TODO: maybe make UnitOfWorkOptions a generic parameter for this and for setupTracing
 //  instead of sharing between all integrations.
 export interface TracingIntegrationOptions {
   executor: Executor;
-  startSsrRequestOptions?: UnitOfWorkOptions;
+  startSsrRequestOptions?: StartSsrRequestOptions;
 }
 
 // TODO: this supports only one tracing plugin.
@@ -42,7 +53,9 @@ export function setupTracing(options: TracingIntegrationOptions) {
   }
 
   executor = options.executor;
-  Object.assign(ssrRequestUowOptions, options.startSsrRequestOptions);
+  if (options.startSsrRequestOptions) {
+    mutableStartSsrRequestOptions = options.startSsrRequestOptions;
+  }
   setupRun = true;
 }
 

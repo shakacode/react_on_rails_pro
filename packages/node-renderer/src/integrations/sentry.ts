@@ -20,12 +20,12 @@ export function init({ tracing = false } = {}) {
 
   if (tracing) {
     setupTracing({
-      startSsrRequestOptions: {
+      startSsrRequestOptions: () => ({
         sentry: {
           op: 'handleRenderRequest',
           name: 'SSR Request',
         },
-      },
+      }),
       executor: (fn, unitOfWorkOptions) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         startSpan(unitOfWorkOptions.sentry!, () => fn()),
