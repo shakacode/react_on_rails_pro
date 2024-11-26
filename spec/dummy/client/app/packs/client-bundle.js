@@ -13,7 +13,12 @@ const WrappedRSCPostsPage = () => {
   return <ClientRoot componentName="RSCPostsPage" />;
 };
 
+const WrappedHelloWorld = () => {
+  return <ClientRoot componentName="HelloWorld" />;
+}
+
 ReactOnRails.register({
+  // HelloWorld: WrappedHelloWorld,
   SimpleComponent: WrappedSimpleComponent,
   RSCPostsPage: WrappedRSCPostsPage,
 });
