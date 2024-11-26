@@ -2,6 +2,7 @@ import { jest } from '@jest/globals';
 
 import * as Sentry from '@sentry/node';
 import sentryTestkit from 'sentry-testkit';
+import * as errorReporter from '../../src/shared/errorReporter';
 import { trace } from '../../src/shared/tracing';
 import * as tracingIntegration from '../../src/integrations/sentry';
 
@@ -29,7 +30,7 @@ test('should run function and finish span', async () => {
   const message = 'test';
   await trace(async () => {
     savedSpan = Sentry.getActiveSpan();
-    Sentry.captureMessage(message);
+    errorReporter.message(message);
     await fn();
   }, testTransactionContext);
   expect(savedSpan).toBeDefined();
