@@ -1,10 +1,25 @@
 import { message } from './errorReporter';
 
-// This is the options necessary to start a unit of work (transaction/span/etc.).
-// Integrations should augment it using their name as the property.
+/**
+ * This contains the options necessary to start a unit of work (transaction/span/etc.).
+ * Integrations should augment it using their name as the property.
+ *
+ * For example, in Sentry SDK v7+ the unit of work is a `Span`, and `Sentry.startSpan` takes `StartSpanOptions`,
+ * so that integration adds `{ sentry?: StartSpanOptions }`.
+ * In v6, the unit of work is a `Transaction`, and `Sentry.startTransaction` takes `TransactionContext`,
+ * so that integration adds `{ sentry6?: TransactionContext }`.
+ */
 export interface UnitOfWorkOptions {}
 
-// Augmented by integrations that need to associate error reports with units of work manually.
+/**
+ * Passed to the callback function executed by {@link trace}.
+ * This is only used (and augmented) by integrations that need to associate error reports with units of work manually.
+ *
+ * For example, Sentry SDK v7+ stores the active span in an {@link AsyncLocalStorage} and
+ * it's automatically provided to `Sentry.capture...` methods, so it doesn't use this.
+ * But v6 needs to include the active transaction in those methods'
+ * {@link import('@sentry/types').CaptureContext} parameter, and so it adds `{ sentry6: CaptureContext }`.
+ */
 export interface TracingContext {}
 
 let setupRun = false;
@@ -15,10 +30,12 @@ type Executor = <T>(fn: UnitOfWork<T>, unitOfWorkOptions: UnitOfWorkOptions) => 
 
 let executor: Executor = (fn) => fn();
 
-// Data describing an SSR request.
-// TODO: determine else to pass here. Maybe Ruby could send the component name, or
+// TODO: determine what else to pass here. Maybe Ruby could send the component name.
 // It will also be augmentable by integrations, to support distributed tracing
 // https://github.com/shakacode/react_on_rails_pro/issues/473
+/**
+ * Data describing an SSR request.
+ */
 interface SsrRequestData {
   renderingRequest: string;
 }
@@ -32,6 +49,9 @@ export const startSsrRequestOptions: StartSsrRequestOptions = (request) =>
 
 // TODO: maybe make UnitOfWorkOptions a generic parameter for this and for setupTracing
 //  instead of sharing between all integrations.
+/**
+ * Options for {@link trace}.
+ */
 export interface TracingIntegrationOptions {
   executor: Executor;
   startSsrRequestOptions?: StartSsrRequestOptions;
@@ -41,8 +61,8 @@ export interface TracingIntegrationOptions {
 //  Replace by a function which extends the executor and transaction context instead of replacing them.
 /**
  * Sets up tracing for the given integration.
- * @param options.executor - Function that starts a trace.
- * @param options.startSsrRequestOptions - Transaction context to use for SSR requests.
+ * @param options.executor - A function that wraps an async callback in the tracing service's unit of work.
+ * @param options.startSsrRequestOptions - Options used to start a new unit of work for an SSR request.
  *   Should be an object with your integration name as the only property.
  *   It will be passed to the executor.
  */
@@ -59,6 +79,9 @@ export function setupTracing(options: TracingIntegrationOptions) {
   setupRun = true;
 }
 
+/**
+ * Reports a unit of work to the tracing service, if any.
+ */
 export function trace<T>(fn: UnitOfWork<T>, unitOfWorkOptions: UnitOfWorkOptions): Promise<T> {
   return executor(fn, unitOfWorkOptions);
 }

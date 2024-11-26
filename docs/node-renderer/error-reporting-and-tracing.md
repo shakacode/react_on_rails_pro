@@ -48,7 +48,74 @@ Import these functions from `@shakacode-tools/react-on-rails-pro-node-renderer/i
 - `addErrorNotifier` and `addMessageNotifier` tell React on Rails Pro how to report errors to your chosen service.
 - Use `addNotifier` if the service uses the same reporting function for both JavaScript `Error`s and string messages.
 
+For example, integrating with BugSnag can be as simple as
+```js
+const Bugsnag = require('@bugsnag/js');
+const { addNotifier } = require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/api');
+
+Bugsnag.start({ /* your options */ });
+
+addNotifier((msg) => { Bugsnag.notify(msg); });
+```
+
 ### Tracing services
 - `setupTracing` takes an object with two properties:
   - `executor` should wrap an async function in the service's unit of work.
   - Since the only units of work we currently track are rendering requests, the options to start them are specified in `startSsrRequestOptions`.
+
+To track requests as [sessions](https://docs.bugsnag.com/platforms/javascript/capturing-sessions/#startsession) in BugSnag 8.x+, the above example becomes
+```js
+const Bugsnag = require('@bugsnag/js');
+const { addNotifier, setupTracing } = require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/api');
+
+Bugsnag.start({ /* your options */ });
+
+addNotifier((msg) => { Bugsnag.notify(msg); });
+setupTracing({
+  executor: async (fn) => {
+    Bugsnag.startSession();
+    try {
+      return await fn();
+    } finally {
+      Bugsnag.pauseSession();
+    }
+  },
+});
+```
+
+You can optionally add `startSsrRequestOptions` property to capture the request data:
+```js
+setupTracing({
+  startSsrRequestOptions: ({ renderingRequest }) => ({ bugsnag: { renderingRequest } }),
+  executor: async (fn, { bugsnag }) => {
+    Bugsnag.startSession();
+    // bugsnag will look like { renderingRequest }
+    Bugsnag.leaveBreadcrumb('SSR request', bugsnag, 'request');
+    try {
+      return await fn();
+    } finally {
+      Bugsnag.pauseSession();
+    }
+  },
+});
+```
+
+Bugsnag v7 is a bit more complicated:
+```js
+const Bugsnag = require('@bugsnag/js');
+const { addNotifier, setupTracing } = require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/api');
+
+Bugsnag.start({ /* your options */ });
+
+addNotifier((msg, { bugsnag = Bugsnag }) => { bugsnag.notify(msg); });
+setupTracing({
+  executor: async (fn) => {
+    const bugsnag = Bugsnag.startSession();
+    try {
+      return await fn({ bugsnag });
+    } finally {
+      bugsnag.pauseSession();
+    }
+  },
+});
+```
