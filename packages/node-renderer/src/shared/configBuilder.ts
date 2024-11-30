@@ -182,15 +182,14 @@ function sanitizedSettings(aConfig: Partial<Config> | undefined, defaultValue?: 
 }
 
 export function logSanitizedConfig() {
-  log.info(`Node Renderer v${packageJson.version}, protocol v${packageJson.protocolVersion}`);
-  log.info('NOTE: renderer settings names do not have prefix "RENDERER_"');
-  log.info('Default values for settings:\n%O', defaultConfig);
-  log.info('ENV values used for settings (use "RENDERER_" prefix):\n%O', envValuesUsed());
-  log.info(
-    'Customized values for settings from config object (overides ENV):\n%O',
-    sanitizedSettings(userConfig),
-  );
-  log.info('Final renderer settings used:\n%O', sanitizedSettings(config, '<NOT PROVIDED>'));
+  log.info({
+    'Node Renderer version': packageJson.version,
+    'Protocol version': packageJson.protocolVersion,
+    'Default settings': defaultConfig,
+    'ENV values used for settings (use "RENDERER_" prefix)': envValuesUsed(),
+    'Customized values for settings from config object (overrides ENV)': sanitizedSettings(userConfig),
+    'Final renderer settings': sanitizedSettings(config, '<NOT PROVIDED>'),
+  });
 }
 
 /**
