@@ -8,7 +8,7 @@ import cluster from 'cluster';
 import fastify from 'fastify';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
-import log from './shared/log';
+import log, { sharedLoggerOptions } from './shared/log';
 import packageJson from './shared/packageJson';
 import { buildConfig, Config, getConfig } from './shared/configBuilder';
 import fileExistsAsync from './shared/fileExistsAsync';
@@ -77,11 +77,12 @@ export default function run(config: Partial<Config>) {
   // getConfig():
   buildConfig(config);
 
-  const { bundlePath, logLevel, port } = getConfig();
+  const { bundlePath, logHttpLevel, port } = getConfig();
 
   const app = fastify({
     http2: useHttp2 as true,
-    logger: logLevel === 'debug',
+    logger:
+      logHttpLevel !== 'silent' ? { name: 'RORP HTTP', level: logHttpLevel, ...sharedLoggerOptions } : false,
   });
 
   // 10 MB limit for code including props

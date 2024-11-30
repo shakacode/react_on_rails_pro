@@ -6,7 +6,8 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
-import log, { configureLogger } from './log';
+import { LevelWithSilent } from 'pino';
+import log from './log';
 import packageJson from './packageJson';
 import truthy from './truthy';
 
@@ -19,8 +20,8 @@ const NODE_ENV = env.NODE_ENV || 'production';
 
 export interface Config {
   port: number;
-  // One of https://github.com/winstonjs/winston#logging-levels
-  logLevel: string;
+  logLevel: LevelWithSilent;
+  logHttpLevel: LevelWithSilent;
   bundlePath: string;
   // If set to true, `supportModules` enables the server-bundle code to call a default set of NodeJS modules
   // that get added to the VM context: `{ Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval }`.
@@ -91,12 +92,31 @@ function defaultBundlePath() {
   return '/tmp/react-on-rails-pro-node-renderer-bundles';
 }
 
+function logLevel(level: string): LevelWithSilent {
+  switch (level) {
+    case 'fatal':
+    case 'error':
+    case 'warn':
+    case 'info':
+    case 'debug':
+    case 'trace':
+    case 'silent':
+      return level;
+    default:
+      log.error(`Unexpected log level: ${level}`);
+      return DEFAULT_LOG_LEVEL;
+  }
+}
+
 const defaultConfig: Config = {
   // Use env port if we run on Heroku
   port: Number(env.RENDERER_PORT) || DEFAULT_PORT,
 
   // Show only important messages by default
-  logLevel: env.RENDERER_LOG_LEVEL || DEFAULT_LOG_LEVEL,
+  logLevel: logLevel(env.RENDERER_LOG_LEVEL || DEFAULT_LOG_LEVEL),
+
+  // Do not log HTTP messages by default
+  logHttpLevel: logLevel(env.RENDERER_LOG_HTTP_LEVEL || 'silent'),
 
   bundlePath: env.RENDERER_BUNDLE_PATH || defaultBundlePath(),
 
@@ -134,6 +154,7 @@ function envValuesUsed() {
   return {
     RENDERER_PORT: !userConfig.port && env.RENDERER_PORT,
     RENDERER_LOG_LEVEL: !userConfig.logLevel && env.RENDERER_LOG_LEVEL,
+    RENDERER_LOG_HTTP_LEVEL: !userConfig.logHttpLevel && env.RENDERER_LOG_HTTP_LEVEL,
     RENDERER_BUNDLE_PATH: !userConfig.bundlePath && env.RENDERER_BUNDLE_PATH,
     RENDERER_WORKERS_COUNT: !userConfig.workersCount && env.RENDERER_WORKERS_COUNT,
     RENDERER_PASSWORD: !userConfig.password && env.RENDERER_PASSWORD && '<MASKED>',
@@ -207,6 +228,6 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
     );
   }
 
-  configureLogger(log, config.logLevel);
+  log.level = config.logLevel;
   return config;
 }
