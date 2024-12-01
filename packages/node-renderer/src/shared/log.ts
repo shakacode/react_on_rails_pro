@@ -37,7 +37,7 @@ export const sharedLoggerOptions: pino.LoggerOptions = {
 
 // TODO: ideally we want a way to pass arbitrary logger options or even a logger object from config like Fastify,
 //  but the current design doesn't allow this.
-export default pino(
+const log = pino(
   {
     name: 'RORP',
     // Omit pid and hostname
@@ -47,3 +47,13 @@ export default pino(
   // https://getpino.io/#/docs/help?id=best-performance-for-logging-to-stdout doesn't recommend
   // enabling async logging https://getpino.io/#/docs/asynchronous for stdout
 );
+
+export default log;
+
+process.on('uncaughtExceptionMonitor', (err, origin) => {
+  // fatal ensures the logging is flushed before exit.
+  log.fatal({
+    msg: origin === 'uncaughtException' ? 'Uncaught exception' : 'Unhandled promise rejection',
+    err,
+  });
+});

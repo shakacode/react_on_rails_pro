@@ -44,7 +44,7 @@ function notify<T>(msg: T, tracingContext: TracingContext | undefined, notifiers
  * Reports an error message.
  */
 export function message(msg: string, tracingContext?: TracingContext) {
-  log.error(`ErrorReporter notification: ${msg}`);
+  log.error({ msg, label: 'ErrorReporter notification' });
   notify(msg, tracingContext, messageNotifiers);
 }
 
@@ -52,21 +52,6 @@ export function message(msg: string, tracingContext?: TracingContext) {
  * Reports an error.
  */
 export function error(err: Error, tracingContext?: TracingContext) {
-  log.error(err, 'ErrorReporter notification');
+  log.error({ err, label: 'ErrorReporter notification' });
   notify(err, tracingContext, errorNotifiers);
 }
-
-// TODO: add explicit UncaughtExceptionError and UnhandledRejectionError?
-process.on('uncaughtException', (err) => {
-  error(err);
-  process.exit(1);
-});
-
-process.on('unhandledRejection', (reason) => {
-  if (reason instanceof Error) {
-    error(reason);
-  } else {
-    message(`Unhandled rejection: ${reason}`);
-  }
-  process.exit(1);
-});
