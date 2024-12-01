@@ -82,8 +82,6 @@
     "react-on-rails": "15.0.0-alpha.1",
     "release-it": "^17.6.0",
     "sentry-testkit": "^5.0.6",
-    "tap-diff": "git+https://github.com/vaguilera/tap-diff.git",
-    "tap-spec": "^5.0.0",
     "touch": "^3.1.0",
     "typescript": "^5.4.3",
     "typescript-eslint": "^7.4.0",
