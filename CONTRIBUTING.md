@@ -54,24 +54,10 @@ The issue is that the Shakacode site is generated only from files in [`docs`](./
 
 
 ## To run tests:
-* To run all **JS** tests for the Node package:
-```sh
-cd react_on_rails_pro
-yarn run test
-```
+See [Run NPM JS tests](#run-npm-js-tests) for the JS tests and [RSpec Testing](#rspec-testing) for the Ruby tests.
 
-* To run **RSpec** tests for the dummy app, first launch renderer server:
-```sh
-  cd react_on_rails_pro/spec/dummy
-  yarn run node-renderer
-```
-and then run **RSpec** in another console window/tab:
-```sh
-  cd react_on_rails_pro/spec/dummy
-  rspec
-```
+See [Dev Initial Setup](#dev-initial-setup) below for, well... initial setup.
 
-See [Dev Initial Setup](#dev-initial-setup), below for, well... initial setup.
 
 # IDE/Editor Setup
 It's critical to configure your IDE/editor to ignore certain directories. Otherwise your IDE might slow to a crawl!
@@ -220,20 +206,6 @@ Hit F8 and then a debugger statement within the test will get hit.
 Beware that Jest runs multiple test files synchronously, so you can't use the same temporary directory
 between tests. See the file [`packages/node-renderer/tests/helper.ts`](packages/node-renderer/tests/helper.ts) for how we handle this.
 
-### Run spec/dummy tests
-
-Run the node renderer in one console window/tab:
-```sh
-cd react_on_rails_pro/spec/dummy
-yarn run node-renderer
-```
-and RSpec tests in another:
-
-```sh
-cd react_on_rails_pro/spec/dummy
-rspec
-```
-
 ### Run most tests and linting
 
 ```sh
@@ -281,17 +253,18 @@ yarn install
 RAILS_ENV=test bin/shakapacker # to generate assets for test environment
 ```
 
-Then in a separate terminal, run the following to run the node renderer in background:
+Then in a separate terminal, run the following to run the Node renderer and the test Rails server (only needed for the streaming tests) in the background:
 
 ```sh
 # in spec/dummy directory
 yarn run node-renderer
+RAILS_ENV=test bin/dev&
 ```
 
 Get back to your main terminal and run:
 
 ```sh
-bundle exec rspec`
+bundle exec rspec
 ```
 
 If you run `rspec` at the top level, you'll see this message: `require': cannot load such file -- rails_helper (LoadError)`
