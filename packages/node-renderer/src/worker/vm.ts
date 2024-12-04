@@ -88,7 +88,6 @@ export async function buildVM(filePath: string) {
         clearInterval,
         clearImmediate,
         console,
-        queueMicrotask,
       });
     }
 
