@@ -1,5 +1,6 @@
 import PropTypes from 'prop-types';
 import React from 'react';
+import { transform } from 'lodash';
 
 function renderContextRows(railsContext) {
   // eslint-disable-next-line no-console
