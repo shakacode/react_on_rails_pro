@@ -38,4 +38,5 @@ ReactOnRails.configure do |config|
 
   config.auto_load_bundle = true
   config.components_subdirectory = "ror-auto-load-components"
+  config.defer_generated_component_packs = false
 end
