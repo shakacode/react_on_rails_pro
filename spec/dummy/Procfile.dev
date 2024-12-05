@@ -5,9 +5,6 @@
 # Run the hot reload server for client development
 webpack-dev-server: HMR=true bin/shakapacker-dev-server
 
-# Run the hot reload server for client development
-# rails-client-assets: HMR=true CLIENT_BUNDLE_ONLY=yes bin/shakapacker --watch
-
 # Keep the JS fresh for server rendering. Remove if not server rendering
 rails-server-assets: HMR=true SERVER_BUNDLE_ONLY=yes bin/shakapacker --watch
 

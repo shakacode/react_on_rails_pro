@@ -16,7 +16,9 @@ const configureClient = () => {
   clientConfig.plugins.push(new RSDWPlugin({ isServer: false }));
 
   clientConfig.devServer = {
+    ...clientConfig.devServer,
     devMiddleware: {
+      ...clientConfig.devServer?.devMiddleware,
       writeToDisk: true,
     },
   };
