@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class PagesController < ApplicationController
-  include ActionController::Live
+  include ReactOnRailsPro::RscControllerConcern
 
   XSS_PAYLOAD = { "<script>window.alert('xss1');</script>" => '<script>window.alert("xss2");</script>' }.freeze
   PROPS_NAME = "Mr. Server Side Rendering"
@@ -10,9 +10,6 @@ class PagesController < ApplicationController
       name: PROPS_NAME
     }.merge(XSS_PAYLOAD)
   }.freeze
-
-  include ReactOnRails::Controller
-  include ReactOnRailsPro::Stream
 
   before_action do
     session[:something_useful] = "REALLY USEFUL"
@@ -47,20 +44,6 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/rsc_posts_page")
   end
 
-  def rsc
-    @component_name = params[:component_name]
-    @app_props_server_render = APP_PROPS_SERVER_RENDER
-
-    @rendering_fibers = []
-    render_to_string "/pages/rsc", layout: false
-    @rendering_fibers.each do |fiber|
-      while (chunk = fiber.resume)
-        response.stream.write(chunk[:html])
-      end
-    end
-    response.stream.close
-  end
-
   def loadable_component
     render "/pages/pro/loadable_component"
   end
@@ -90,6 +73,10 @@ class PagesController < ApplicationController
   helper_method :calc_slow_app_props_server_render
 
   private
+
+  def rsc_component_props
+    APP_PROPS_SERVER_RENDER
+  end
 
   def calc_slow_app_props_server_render
     msg = <<-MSG.strip_heredoc
