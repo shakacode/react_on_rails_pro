@@ -29,7 +29,10 @@ module ReactOnRailsPro
       close_stream_at_end = render_options.delete(:close_stream_at_end) { true }
       @rorp_rendering_fibers = []
       template_string = render_to_string(template: template, **render_options)
-      response.stream.write(template_string)
+      # View may contain extra newlines, chunk already contains a newline
+      # Having multiple newlines between chunks causes hydration errors
+      # So we strip extra newlines from the template string and add a single newline
+      response.stream.write(template_string.strip + "\n")
 
       @rorp_rendering_fibers.each do |fiber|
         while (chunk = fiber.resume)
