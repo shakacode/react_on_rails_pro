@@ -80,15 +80,14 @@ module ReactOnRailsPro
         # stream_response.each may yield merged chunks, but the real chunks are separated by newlines.
         # rsc chunks can be merged without causing issues
         # also, rsc chunks can contain newlines in the middle of the chunk, so we use each instead of each_line
-        if @is_rsc
-          stream_response.each do |chunk|
-            yield chunk
-          end
-        else
-          stream_response.each_line do |chunk|
-            stripped_chunk = chunk.strip
-            yield stripped_chunk unless stripped_chunk.empty?
-          end
+        iterating_function = @is_rsc ? :each : :each_line
+        stream_response.send(iterating_function) do |chunk|
+          # HTTPX throws an error if an error status code is returned only after reading the body
+          # So, we need to read and ignore the body
+          next if stream_response.status >= 400
+
+          processed_chunk = @is_rsc ? chunk : chunk.strip
+          yield processed_chunk unless processed_chunk.empty?
         end
         break
       rescue HTTPX::HTTPError => e
