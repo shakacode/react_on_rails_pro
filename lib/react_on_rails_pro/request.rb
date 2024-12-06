@@ -16,13 +16,13 @@ module ReactOnRailsPro
 
       def render_code(path, js_code, send_bundle)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request #{path}" }
-        perform_request(path, false, form: form_with_code(js_code, send_bundle))
+        perform_request(path, false, form: form_with_code(js_code, send_bundle, false))
       end
 
       def render_code_as_stream(path, js_code, is_rendering_rsc_payload)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
         ReactOnRailsPro::StreamRequest.create(is_rendering_rsc_payload) do |send_bundle|
-          perform_request(path, is_rendering_rsc_payload, form: form_with_code(js_code, send_bundle), stream: true)
+          perform_request(path, is_rendering_rsc_payload, form: form_with_code(js_code, send_bundle, is_rendering_rsc_payload), stream: true)
         end
       end
 
