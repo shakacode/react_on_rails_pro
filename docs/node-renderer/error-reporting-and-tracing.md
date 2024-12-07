@@ -17,7 +17,8 @@ It should initialize the services according to your requirements and then enable
     require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/sentry').init();
    ```
 
-   Use `@shakacode-tools/react-on-rails-pro-node-renderer/integrations/sentry6` instead for versions of Sentry SDK older than 7.63.0.
+   - Use `@shakacode-tools/react-on-rails-pro-node-renderer/integrations/sentry6` instead of `.../sentry` for versions of Sentry SDK older than 7.63.0.
+   - For Sentry SDK v8+ you can use `.init({ fastify: true })` to capture additional Fastify-related information.
 
 ### Sentry Tracing
 
@@ -27,7 +28,7 @@ To enable Sentry Tracing:
     - if it is older than 7.63.0, install `@sentry/tracing` as well as `@sentry/node` (with the same exact version) and pass `integrations: [new Sentry.Integrations.Http({ tracing: true })]` to `Sentry.init`.
     - for newer v7.x.y, pass `integrations: Sentry.autoDiscoverNodePerformanceMonitoringIntegrations()`.
     - for v8.x.y, Node HTTP tracing is included by default.
-3. Pass `{ tracing: true }` to the `init` function of the integration.
+3. Pass `{ tracing: true }` to the `init` function of the integration. It can be combined with `fastify: true`.
 
 ### Sentry Profiling
 
@@ -41,6 +42,8 @@ To enable Sentry Tracing:
     ```js
     require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/honeybadger').init();
     ```
+
+    Use `init({ fastify: true })` to capture additional Fastify-related information.
 
 ## Other services
 You can create your own integrations in the same way as the provided ones.

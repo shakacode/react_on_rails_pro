@@ -1,7 +1,8 @@
-import { captureException, captureMessage, startSpan } from '@sentry/node';
+import * as Sentry from '@sentry/node';
 import { StartSpanOptions } from '@sentry/types';
-import { addErrorNotifier, addMessageNotifier } from '../shared/errorReporter';
+import { addErrorNotifier, addMessageNotifier, message } from '../shared/errorReporter';
 import { setupTracing } from '../shared/tracing';
+import { configureFastify, FastifySetupFunction } from '../worker';
 
 declare module '../shared/tracing' {
   interface UnitOfWorkOptions {
@@ -9,13 +10,13 @@ declare module '../shared/tracing' {
   }
 }
 
-export function init({ tracing = false } = {}) {
+export function init({ fastify = false, tracing = false } = {}) {
   addMessageNotifier((msg) => {
-    captureMessage(msg);
+    Sentry.captureMessage(msg);
   });
 
   addErrorNotifier((msg) => {
-    captureException(msg);
+    Sentry.captureException(msg);
   });
 
   if (tracing) {
@@ -28,7 +29,16 @@ export function init({ tracing = false } = {}) {
       }),
       executor: (fn, unitOfWorkOptions) =>
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-        startSpan(unitOfWorkOptions.sentry!, () => fn()),
+        Sentry.startSpan(unitOfWorkOptions.sentry!, () => fn()),
     });
+  }
+
+  if (fastify) {
+    // The check and the cast can be removed if/when we require Sentry SDK v8
+    if ('setupFastifyErrorHandler' in Sentry) {
+      configureFastify(Sentry.setupFastifyErrorHandler as FastifyConfigFunction);
+    } else {
+      message('Please upgrade to Sentry SDK v8 to use Fastify integration');
+    }
   }
 }

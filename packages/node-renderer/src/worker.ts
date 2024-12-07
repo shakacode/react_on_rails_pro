@@ -99,6 +99,13 @@ export default function run(config: Partial<Config>) {
       logHttpLevel !== 'silent' ? { name: 'RORP HTTP', level: logHttpLevel, ...sharedLoggerOptions } : false,
   });
 
+  // We shouldn't have unhandled errors here, but just in case
+  app.addHook('onError', (req, res, err, done) => {
+    // Not errorReporter.error so that integrations can decide how to log the errors.
+    app.log.error({ msg: 'Unhandled Fastify error', err, req, res });
+    done();
+  });
+
   // 10 MB limit for code including props
   const fieldSizeLimit = 1024 * 1024 * 10;
 
