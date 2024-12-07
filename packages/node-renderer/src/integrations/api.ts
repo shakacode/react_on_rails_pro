@@ -30,3 +30,4 @@ export {
   TracingIntegrationOptions,
   UnitOfWorkOptions,
 } from '../shared/tracing';
+export { configureFastify } from '../worker';
