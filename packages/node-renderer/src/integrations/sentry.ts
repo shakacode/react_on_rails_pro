@@ -1,8 +1,13 @@
 import * as Sentry from '@sentry/node';
 import { StartSpanOptions } from '@sentry/types';
-import { addErrorNotifier, addMessageNotifier, message } from '../shared/errorReporter';
-import { setupTracing } from '../shared/tracing';
-import { configureFastify, FastifySetupFunction } from '../worker';
+import {
+  addErrorNotifier,
+  addMessageNotifier,
+  message,
+  setupTracing,
+  configureFastify,
+  FastifyConfigFunction,
+} from './api';
 
 declare module '../shared/tracing' {
   interface UnitOfWorkOptions {

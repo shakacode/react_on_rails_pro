@@ -1,6 +1,5 @@
 import * as Honeybadger from '@honeybadger-io/js';
-import { addNotifier, message } from '../shared/errorReporter';
-import { configureFastify } from '../worker';
+import { addNotifier, configureFastify, message } from './api';
 
 export function init({ fastify = false } = {}) {
   addNotifier((msg) => Honeybadger.notify(msg));
