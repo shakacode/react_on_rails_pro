@@ -5,7 +5,6 @@
  * @module worker/handleRenderRequest
  */
 
-import cluster from 'cluster';
 import path from 'path';
 import { lock, unlock } from '../shared/locks';
 import fileExistsAsync from '../shared/fileExistsAsync';
@@ -14,7 +13,6 @@ import {
   Asset,
   formatExceptionMessage,
   errorResponseResult,
-  workerIdLabel,
   moveUploadedAssets,
   ResponseResult,
   moveUploadedAsset,
@@ -28,7 +26,7 @@ import { buildVM, getVmBundleFilePath, runInVM } from './vm';
 
 async function prepareResult(renderingRequest: string): Promise<ResponseResult> {
   try {
-    const result = await runInVM(renderingRequest, cluster);
+    const result = await runInVM(renderingRequest);
 
     let exceptionMessage = null;
     if (!result) {
@@ -95,7 +93,7 @@ async function handleNewBundleProvided(
       const msg = formatExceptionMessage(
         renderingRequest,
         errorMessage,
-        `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
+        `Failed to acquire lock ${lockfileName}.`,
       );
       return Promise.resolve(errorResponseResult(msg));
     }
@@ -144,17 +142,13 @@ to ${bundleFilePathPerTimestamp})`,
     }
   } finally {
     if (lockAcquired) {
-      log.info('About to unlock %s from worker %i', lockfileName, workerIdLabel());
+      log.info('About to unlock %s', lockfileName);
       try {
         if (lockfileName) {
           await unlock(lockfileName);
         }
       } catch (error) {
-        const msg = formatExceptionMessage(
-          renderingRequest,
-          error,
-          `Error unlocking ${lockfileName} from worker ${workerIdLabel()}.`,
-        );
+        const msg = formatExceptionMessage(renderingRequest, error, `Error unlocking ${lockfileName}.`);
         log.warn(msg);
       }
     }
@@ -208,7 +202,7 @@ export = async function handleRenderRequest({
 
     // The bundle exists, but the VM has not yet been created.
     // Another worker must have written it or it was saved during deployment.
-    log.info('Bundle %s exists. Building VM for worker %s.', bundleFilePathPerTimestamp, workerIdLabel());
+    log.info('Bundle %s exists. Building VM.', bundleFilePathPerTimestamp);
     await buildVM(bundleFilePathPerTimestamp);
 
     return prepareResult(renderingRequest);

@@ -23,7 +23,8 @@
  * @module
  */
 
-export { addErrorNotifier, addMessageNotifier, addNotifier } from '../shared/errorReporter';
+export { globalContext } from '../shared/log';
+export { addErrorNotifier, addMessageNotifier, addNotifier, message, error } from '../shared/errorReporter';
 export {
   setupTracing,
   TracingContext,

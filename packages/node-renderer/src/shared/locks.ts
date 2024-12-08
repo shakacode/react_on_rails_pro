@@ -1,9 +1,10 @@
 import lockfile, { Options } from 'lockfile';
 import { promisify } from 'util';
 
+import cluster from 'cluster';
 import debug from './debug';
 import log from './log';
-import { delay, workerIdLabel } from './utils';
+import { delay } from './utils';
 
 const lockfileLockAsync = promisify<string, Options>(lockfile.lock);
 const lockfileUnlockAsync = promisify(lockfile.unlock);
@@ -48,8 +49,7 @@ const lockfileOptions = {
 };
 
 export async function unlock(lockfileName: string) {
-  debug('Worker %s: About to unlock %s', workerIdLabel(), lockfileName);
-  log.info('Worker %s: About to unlock %s', workerIdLabel(), lockfileName);
+  log.info('About to unlock %s', lockfileName);
 
   await lockfileUnlockAsync(lockfileName);
 }
@@ -69,22 +69,21 @@ type LockResult = {
 
 export async function lock(filename: string): Promise<LockResult> {
   const lockfileName = `${filename}.lock`;
-  const workerId = workerIdLabel();
 
   try {
-    debug('Worker %s: About to request lock %s', workerId, lockfileName);
-    log.info('Worker %s: About to request lock %s', workerId, lockfileName);
+    log.info('About to request lock %s', lockfileName);
     await lockfileLockAsync(lockfileName, lockfileOptions);
 
+    const workerId = cluster.worker?.id ?? 'NO WORKER ID';
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- the const may be changed to test threading
     if (TEST_LOCKFILE_THREADING) {
       debug('Worker %i: handleNewBundleProvided sleeping 5s', workerId);
       await delay(5000);
       debug('Worker %i: handleNewBundleProvided done sleeping 5s', workerId);
     }
-    debug('After acquired lock in pid', lockfileName);
+    debug('Worker %i: After acquired lock %s', workerId, lockfileName);
   } catch (error) {
-    log.info('Worker %s: Failed to acquire lock %s, error %s', workerId, lockfileName, error);
+    log.info(error, 'Failed to acquire lock %s', lockfileName);
     return { lockfileName, wasLockAcquired: false, errorMessage: error as Error };
   }
   return { lockfileName, wasLockAcquired: true, errorMessage: null };

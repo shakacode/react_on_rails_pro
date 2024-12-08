@@ -1,4 +1,3 @@
-import cluster from 'cluster';
 import path from 'path';
 import { MultipartFile } from '@fastify/multipart';
 import { createWriteStream, ensureDir, move, MoveOptions } from 'fs-extra';
@@ -10,11 +9,6 @@ import log from './log';
 import type { RenderResult } from '../worker/vm';
 
 export const TRUNCATION_FILLER = '\n... TRUNCATED ...\n';
-
-export function workerIdLabel() {
-  // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- worker is nullable in the primary process
-  return cluster?.worker?.id || 'NO WORKER ID';
-}
 
 // From https://stackoverflow.com/a/831583/1009332
 export function smartTrim(value: unknown, maxLength = getConfig().maxDebugSnippetLength) {

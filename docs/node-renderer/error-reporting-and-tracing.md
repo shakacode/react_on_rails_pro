@@ -47,13 +47,17 @@ Import these functions from `@shakacode-tools/react-on-rails-pro-node-renderer/i
 ### Error reporting services
 - `addErrorNotifier` and `addMessageNotifier` tell React on Rails Pro how to report errors to your chosen service.
 - Use `addNotifier` if the service uses the same reporting function for both JavaScript `Error`s and string messages.
+- `globalContext` contains the current process's label.
 
 For example, integrating with BugSnag can be as simple as
 ```js
 const Bugsnag = require('@bugsnag/js');
-const { addNotifier } = require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/api');
+const { addNotifier, globalContext } = require('@shakacode-tools/react-on-rails-pro-node-renderer/integrations/api');
 
-Bugsnag.start({ /* your options */ });
+Bugsnag.start({
+  metadata: globalContext,  
+  /* your apiKey and other options */
+});
 
 addNotifier((msg) => { Bugsnag.notify(msg); });
 ```
