@@ -3,7 +3,7 @@ import type { PrettyOptions } from 'pino-pretty';
 
 let pretty = false;
 
-if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
+if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test' || !process.env.NODE_ENV) {
   try {
     // eslint-disable-next-line global-require
     require('pino-pretty');
