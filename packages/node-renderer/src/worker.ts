@@ -43,14 +43,14 @@ declare module '@fastify/multipart' {
   }
 }
 
-export type FastifySetupFunction = (app: FastifyInstance) => void | Promise<void>;
+export type FastifyConfigFunction = (app: FastifyInstance) => void;
 
 const fastifyConfigFunctions: FastifyConfigFunction[] = [];
 
 /**
  * Configures Fastify instance before starting the server.
- * @param setupFunction The configuring function. Normally it will be something like `(app) => app.register(...)` or
- *  `(app) => app.addHook(...)` to report data from Fastify to an external service.
+ * @param configFunction The configuring function. Normally it will be something like `(app) => { app.register(...); }`
+ *  or `(app) => { app.addHook(...); }` to report data from Fastify to an external service.
  *  Note that we call `await app.ready()` in our code, so you don't need to `await` the results.
  */
 export function configureFastify(configFunction: FastifyConfigFunction) {
@@ -341,8 +341,8 @@ export default function run(config: Partial<Config>) {
     });
   }
 
-  fastifySetupFunctions.forEach((setupFunction) => {
-    void setupFunction(app);
+  fastifyConfigFunctions.forEach((configFunction) => {
+    configFunction(app);
   });
 
   return app;
