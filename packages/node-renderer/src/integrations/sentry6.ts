@@ -1,7 +1,8 @@
-import { captureException, captureMessage, startTransaction } from '@sentry/node';
+import { captureException, captureMessage, getGlobalScope, startTransaction } from '@sentry/node';
 import { CaptureContext, TransactionContext } from '@sentry/types';
 import { addErrorNotifier, addMessageNotifier, message } from '../shared/errorReporter';
 import { setupTracing } from '../shared/tracing';
+import { globalContext } from '../shared/log';
 
 declare module '../shared/tracing' {
   interface TracingContext {
@@ -14,6 +15,8 @@ declare module '../shared/tracing' {
 }
 
 export function init({ tracing = false } = {}) {
+  getGlobalScope().setExtras(globalContext);
+
   addMessageNotifier((msg, tracingContext) => {
     captureMessage(msg, tracingContext?.sentry6);
   });

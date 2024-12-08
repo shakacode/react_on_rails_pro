@@ -21,7 +21,6 @@ import {
   formatExceptionMessage,
   moveUploadedAssets,
   ResponseResult,
-  workerIdLabel,
   saveMultipartFile,
   Asset,
 } from './shared/utils';
@@ -231,7 +230,7 @@ export default function run(config: Partial<Config>) {
         const msg = formatExceptionMessage(
           taskDescription,
           errorMessage,
-          `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
+          `Failed to acquire lock ${lockfileName}`,
         );
         await setResponse(errorResponseResult(msg), res);
       } else {
@@ -264,7 +263,7 @@ export default function run(config: Partial<Config>) {
           }
         } catch (error) {
           log.warn({
-            msg: `Error unlocking ${lockfileName} from worker ${workerIdLabel()}`,
+            msg: `Error unlocking ${lockfileName}`,
             err: error,
             task: taskDescription,
           });
@@ -312,11 +311,9 @@ export default function run(config: Partial<Config>) {
 
   // In tests we will run worker in master thread, so we need to ensure server
   // will not listen:
-  // we are extracting worker from cluster to avoid false TS error
-  const { worker } = cluster;
-  if (cluster.isWorker && worker !== undefined) {
+  if (cluster.isWorker) {
     app.listen({ port }, () => {
-      log.info(`Node renderer worker #${worker.id} listening on port ${port}!`);
+      log.info(`Listening on port ${port}!`);
     });
   }
 

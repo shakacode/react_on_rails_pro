@@ -1,5 +1,6 @@
 import pino from 'pino';
 import type { PrettyOptions } from 'pino-pretty';
+import cluster from 'cluster';
 
 let pretty = false;
 
@@ -13,7 +14,15 @@ if (process.env.NODE_ENV === 'development' || process.env.NODE_ENV === 'test') {
   }
 }
 
+/**
+ * Context that should be included in every log message (including integrations).
+ */
+export const globalContext = {
+  process: cluster.isPrimary ? 'primary' : `worker #${cluster.worker?.id}`,
+};
+
 export const sharedLoggerOptions: pino.LoggerOptions = {
+  base: globalContext,
   formatters: {
     level: (label) => ({ level: label }),
   },
@@ -40,8 +49,6 @@ export const sharedLoggerOptions: pino.LoggerOptions = {
 const log = pino(
   {
     name: 'RORP',
-    // Omit pid and hostname
-    base: undefined,
     ...sharedLoggerOptions,
   },
   // https://getpino.io/#/docs/help?id=best-performance-for-logging-to-stdout doesn't recommend

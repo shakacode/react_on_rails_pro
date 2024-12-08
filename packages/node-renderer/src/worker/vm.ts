@@ -7,7 +7,6 @@ import fs from 'fs';
 import path from 'path';
 import vm from 'vm';
 import m from 'module';
-import cluster from 'cluster';
 import type { Readable } from 'stream';
 import { promisify } from 'util';
 import type { ReactOnRails as ROR } from 'react-on-rails';
@@ -162,10 +161,7 @@ export async function buildVM(filePath: string) {
       vm.runInContext(bundleContents, context);
     }
 
-    // isWorker check is required for JS unit testing:
-    if (cluster.isWorker && cluster.worker !== undefined) {
-      log.debug(`Built VM for worker #${cluster.worker.id}`);
-    }
+    log.debug('Built VM');
 
     if (log.level === 'debug') {
       log.debug(
@@ -191,9 +187,8 @@ export async function buildVM(filePath: string) {
 /**
  *
  * @param renderingRequest JS Code to execute for SSR
- * @param vmCluster
  */
-export async function runInVM(renderingRequest: string, vmCluster?: typeof cluster): Promise<RenderResult> {
+export async function runInVM(renderingRequest: string): Promise<RenderResult> {
   const { bundlePath } = getConfig();
 
   try {
@@ -202,9 +197,7 @@ export async function runInVM(renderingRequest: string, vmCluster?: typeof clust
     }
 
     if (log.level === 'debug') {
-      // worker is nullable in the primary process
-      const workerId = vmCluster?.worker?.id;
-      log.debug(`worker ${workerId ? `${workerId} ` : ''}received render request with code
+      log.debug(`Received render request with code
 ${smartTrim(renderingRequest)}`);
       const debugOutputPathCode = path.join(bundlePath, 'code.js');
       log.debug(`Full code executed written to: ${debugOutputPathCode}`);

@@ -1,7 +1,8 @@
-import { captureException, captureMessage, startSpan } from '@sentry/node';
+import { captureException, captureMessage, getGlobalScope, startSpan } from '@sentry/node';
 import { StartSpanOptions } from '@sentry/types';
 import { addErrorNotifier, addMessageNotifier } from '../shared/errorReporter';
 import { setupTracing } from '../shared/tracing';
+import { globalContext } from '../shared/log';
 
 declare module '../shared/tracing' {
   interface UnitOfWorkOptions {
@@ -10,6 +11,8 @@ declare module '../shared/tracing' {
 }
 
 export function init({ tracing = false } = {}) {
+  getGlobalScope().setExtras(globalContext);
+
   addMessageNotifier((msg) => {
     captureMessage(msg);
   });
