@@ -121,7 +121,7 @@ jobs:
           name: Clone react-on-rails
           command: |
             cd ~
-            git clone -b abanoubghadban/pro439-add-support-for-replaying-logs-happen-on-async-server-operations https://github.com/shakacode/react_on_rails.git
+            git clone -b abanoubghadban/pro488/handle-errors-happen-in-rsc-payload https://github.com/shakacode/react_on_rails.git
       - save_cache:
           name: Save react-on-rails to cache
           key: v1-react-on-rails-{{ .Branch }}-{{ .Revision }}
