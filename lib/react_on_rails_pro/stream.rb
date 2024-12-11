@@ -32,7 +32,7 @@ module ReactOnRailsPro
       # View may contain extra newlines, chunk already contains a newline
       # Having multiple newlines between chunks causes hydration errors
       # So we strip extra newlines from the template string and add a single newline
-      response.stream.write(template_string.strip + "\n")
+      response.stream.write(template_string)
 
       @rorp_rendering_fibers.each do |fiber|
         while (chunk = fiber.resume)
