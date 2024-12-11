@@ -75,16 +75,16 @@ module ReactOnRailsPro
       return enum_for(:each_chunk) unless block_given?
 
       send_bundle = false
+      error_body = +""
       loop do
         stream_response = @request_executor.call(send_bundle)
-        # stream_response.each may yield merged chunks, but the real chunks are separated by newlines.
-        # rsc chunks can be merged without causing issues
-        # also, rsc chunks can contain newlines in the middle of the chunk, so we use each instead of each_line
-        iterating_function = @is_rsc ? :each : :each_line
-        stream_response.send(iterating_function) do |chunk|
+        # chunks can be merged during streaming, so we separate them by newlines
+        stream_response.each_line do |chunk|
           # HTTPX throws an error if an error status code is returned only after reading the body
           # So, we need to read and ignore the body
-          next if stream_response.status >= 400
+          if stream_response.status >= 400
+            error_body << chunk
+          end
 
           processed_chunk = @is_rsc ? chunk : chunk.strip
           yield processed_chunk unless processed_chunk.empty?
@@ -99,7 +99,7 @@ module ReactOnRailsPro
         when ReactOnRailsPro::STATUS_INCOMPATIBLE
           raise ReactOnRailsPro::Error, response.body
         else
-          raise ReactOnRailsPro::Error, "Unexpected response code from renderer: #{response.status}:\n#{response.body}"
+          raise ReactOnRailsPro::Error, "Unexpected response code from renderer: #{response.status}:\n#{error_body}"
         end
       end
     end
