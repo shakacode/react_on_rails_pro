@@ -20,7 +20,7 @@ const configureRsc = () => {
 
   rscConfig.resolveLoader = {
     alias: {
-      'rsc-transform': path.resolve(__dirname, './rsc-transform-loader.mjs')
+      'rsc-transform': path.resolve(__dirname, './rsc-transform-loader.mjs'),
     },
   };
   const rules = rscConfig.module.rules;

@@ -22,7 +22,8 @@ module ReactOnRailsPro
       def render_code_as_stream(path, js_code, is_rendering_rsc_payload)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
         ReactOnRailsPro::StreamRequest.create(is_rendering_rsc_payload) do |send_bundle|
-          perform_request(path, is_rendering_rsc_payload, form: form_with_code(js_code, send_bundle, is_rendering_rsc_payload), stream: true)
+          perform_request(path, is_rendering_rsc_payload,
+                          form: form_with_code(js_code, send_bundle, is_rendering_rsc_payload), stream: true)
         end
       end
 
@@ -113,9 +114,11 @@ module ReactOnRailsPro
           raise ReactOnRailsPro::Error, "Bundle not found #{server_bundle_path}"
         end
 
-        renderer_bundle_file_name = is_rendering_rsc_payload ?
-                                      ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.rsc_renderer_bundle_file_name :
+        renderer_bundle_file_name = if is_rendering_rsc_payload
+                                      ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.rsc_renderer_bundle_file_name
+                                    else
                                       ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
+                                    end
         form["bundle"] = {
           body: get_form_body_for_file(server_bundle_path),
           content_type: "text/javascript",
