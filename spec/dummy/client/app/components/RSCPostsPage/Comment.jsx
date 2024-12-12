@@ -1,5 +1,5 @@
-import React, { Suspense } from "react";
-import User from "./User";
+import React, { Suspense } from 'react';
+import User from './User';
 
 const Comment = ({ comment }) => {
   return (
@@ -10,6 +10,6 @@ const Comment = ({ comment }) => {
       </Suspense>
     </div>
   );
-}
+};
 
 export default Comment;

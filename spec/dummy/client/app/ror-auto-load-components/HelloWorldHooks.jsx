@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 // Super simple example of the simplest possible React component
 import React, { useState } from 'react';
