@@ -82,9 +82,7 @@ module ReactOnRailsPro
         stream_response.each_line do |chunk|
           # HTTPX throws an error if an error status code is returned only after reading the body
           # So, we need to read and ignore the body
-          if stream_response.status >= 400
-            error_body << chunk
-          end
+          error_body << chunk if stream_response.status >= 400
 
           processed_chunk = @is_rsc ? chunk : chunk.strip
           yield processed_chunk unless processed_chunk.empty?

@@ -90,7 +90,6 @@ module ReactOnRailsPro
       self.profile_server_rendering_js_code = profile_server_rendering_js_code
       self.raise_non_shell_server_rendering_errors = raise_non_shell_server_rendering_errors
     end
-    # rubocop:enable Metrics/AbcSize
 
     def setup_config_values
       configure_default_url_if_not_provided
@@ -185,7 +184,10 @@ module ReactOnRailsPro
       uri = URI(renderer_url)
       rsc_uri = URI(rsc_renderer_url)
 
-      raise ReactOnRailsPro::Error, "Both renderer_url and rsc_renderer_url must have the same password" unless uri.password == rsc_uri.password
+      unless uri.password == rsc_uri.password
+        raise ReactOnRailsPro::Error,
+              "Both renderer_url and rsc_renderer_url must have the same password"
+      end
 
       self.renderer_password = uri.password
     end
