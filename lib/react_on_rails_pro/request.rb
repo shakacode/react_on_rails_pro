@@ -30,12 +30,15 @@ module ReactOnRailsPro
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
         perform_request("/upload-assets", false, form: form_with_assets_and_bundle)
+
+        if ReactOnRails.configuration.rsc_bundle_js_file
+          perform_request("/upload-assets", true, form: form_with_assets_and_bundle(rsc_renderer: true))
+        end
       end
 
-      # TODO: add support for checking if asset exists on rsc renderer
-      def asset_exists_on_vm_renderer?(filename)
+      def asset_exists_on_vm_renderer?(filename, rsc_renderer: false)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on node-renderer: #{filename}" }
-        response = perform_request("/asset-exists?filename=#{filename}", false, json: common_form_data)
+        response = perform_request("/asset-exists?filename=#{filename}", rsc_renderer, json: common_form_data)
         JSON.parse(response.body)["exists"] == true
       end
 
@@ -119,8 +122,11 @@ module ReactOnRailsPro
           filename: renderer_bundle_file_name
         }
 
-        if ReactOnRailsPro.configuration.assets_to_copy.present?
-          ReactOnRailsPro.configuration.assets_to_copy.each_with_index do |asset_path, idx|
+        assets_to_copy = ReactOnRailsPro.configuration.assets_to_copy.presence || []
+        # react_client_manifest file is needed to generate react server components payload
+        assets_to_copy << ReactOnRails::Utils.react_client_manifest_file_path if is_rendering_rsc_payload
+        if assets_to_copy.present?
+          assets_to_copy.each_with_index do |asset_path, idx|
             Rails.logger.info { "[ReactOnRailsPro] Uploading asset #{asset_path}" }
             unless http_url?(asset_path) || File.exist?(asset_path)
               warn "Asset not found #{asset_path}"
@@ -143,9 +149,9 @@ module ReactOnRailsPro
         form
       end
 
-      def form_with_assets_and_bundle
+      def form_with_assets_and_bundle(rsc_renderer: false)
         form = common_form_data
-        populate_form_with_bundle_and_assets(form, false, check_bundle: true)
+        populate_form_with_bundle_and_assets(form, rsc_renderer, check_bundle: true)
         form
       end
 

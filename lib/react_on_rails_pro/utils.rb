@@ -109,7 +109,8 @@ module ReactOnRailsPro
 
     def self.contains_hash?(server_bundle_basename)
       # TODO: Need to consider if the configuration value has the ".js" on the end.
-      ReactOnRails.configuration.server_bundle_js_file != server_bundle_basename
+      ReactOnRails.configuration.server_bundle_js_file != server_bundle_basename &&
+        ReactOnRails.configuration.rsc_bundle_js_file != server_bundle_basename
     end
 
     def self.with_trace(message = nil)
