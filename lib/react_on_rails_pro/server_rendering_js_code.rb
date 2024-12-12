@@ -15,6 +15,11 @@ module ReactOnRailsPro
                                else
                                  "serverRenderReactComponent"
                                end
+        rsc_options_if_rsc_request = if render_options.rsc?
+                                      "reactClientManifestFileName: '#{ReactOnRails::configuration.react_client_manifest_file}',"
+                                    else
+                                      ""
+                                    end
         <<-JS
         (function() {
           var railsContext = #{rails_context};
@@ -28,7 +33,8 @@ module ReactOnRailsPro
             trace: #{render_options.trace},
             railsContext: railsContext,
             throwJsErrors: #{ReactOnRailsPro.configuration.throw_js_errors},
-            renderingReturnsPromises: #{ReactOnRailsPro.configuration.rendering_returns_promises}
+            renderingReturnsPromises: #{ReactOnRailsPro.configuration.rendering_returns_promises},
+            #{rsc_props_if_rsc_request}
           });
         })()
         JS
