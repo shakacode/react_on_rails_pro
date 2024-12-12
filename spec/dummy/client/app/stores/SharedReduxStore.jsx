@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import { combineReducers, applyMiddleware, createStore } from 'redux';
 import middleware from 'redux-thunk';

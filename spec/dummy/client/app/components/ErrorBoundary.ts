@@ -1,3 +1,3 @@
-"use client";
+'use client';
 
-export { ErrorBoundary } from "react-error-boundary";
+export { ErrorBoundary } from 'react-error-boundary';
