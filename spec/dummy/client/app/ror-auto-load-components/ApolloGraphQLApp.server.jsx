@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
 import React from 'react';
 import { renderToString } from 'react-dom/server';
 import { getMarkupFromTree } from '@apollo/client/react/ssr';
-import fetch from "cross-fetch";
+import fetch from 'cross-fetch';
 import ApolloGraphQL from '../components/ApolloGraphQL';
 import { ApolloProvider, ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 

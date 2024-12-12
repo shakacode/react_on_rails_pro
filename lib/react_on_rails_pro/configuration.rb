@@ -148,7 +148,7 @@ module ReactOnRailsPro
       URI(renderer_url)
       URI(rsc_renderer_url)
     rescue URI::InvalidURIError => e
-      message = "Unparseable ReactOnRailsPro.config.renderer_url #{renderer_url} or ReactOnRailsPro.config.renderer_url#{rsc_renderer_url} provided.\n#{e.message}"
+      message = "Unparseable ReactOnRailsPro.config.renderer_url #{renderer_url} or ReactOnRailsPro.config.renderer_url #{rsc_renderer_url} provided.\n#{e.message}"
       raise ReactOnRailsPro::Error, message
     end
 
