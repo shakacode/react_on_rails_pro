@@ -19,6 +19,7 @@ You can find the **package** version numbers from this repo's tags and below in 
 
 ### Fixed
 - Removed file size limit for assets and bundles. [PR 459](https://github.com/shakacode/react_on_rails_pro/pull/459) by [alexeyr-ci](https://github.com/alexeyr-ci).
+- Enable use as a `git:` dependency. [PR 490](https://github.com/shakacode/react_on_rails_pro/pull/490) by [alexeyr-ci](https://github.com/alexeyr-ci).
 
 ## [3.1.2] - 2023-02-24
 
