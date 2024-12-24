@@ -27,6 +27,11 @@ const configureClient = () => {
     clientConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
   }
 
+  clientConfig.resolve.fallback = {
+    fs: false,
+    path: false,
+  };
+
   return clientConfig;
 };
 
