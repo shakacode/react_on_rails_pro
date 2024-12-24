@@ -17,6 +17,7 @@ module ReactOnRailsPro
       renderer_http_pool_timeout: Configuration::DEFAULT_RENDERER_HTTP_POOL_TIMEOUT,
       renderer_http_pool_warn_timeout: Configuration::DEFAULT_RENDERER_HTTP_POOL_WARN_TIMEOUT,
       renderer_password: nil,
+      rsc_renderer_password: nil,
       tracing: Configuration::DEFAULT_TRACING,
       dependency_globs: Configuration::DEFAULT_DEPENDENCY_GLOBS,
       excluded_dependency_globs: Configuration::DEFAULT_EXCLUDED_DEPENDENCY_GLOBS,
@@ -52,7 +53,7 @@ module ReactOnRailsPro
     DEFAULT_PROFILE_SERVER_RENDERING_JS_CODE = false
     DEFAULT_RAISE_NON_SHELL_SERVER_RENDERING_ERRORS = false
 
-    attr_accessor :renderer_url, :rsc_renderer_url, :renderer_password, :tracing,
+    attr_accessor :renderer_url, :rsc_renderer_url, :renderer_password, :rsc_renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
                   :dependency_globs, :excluded_dependency_globs, :rendering_returns_promises,
@@ -67,10 +68,12 @@ module ReactOnRailsPro
                    dependency_globs: nil, excluded_dependency_globs: nil, rendering_returns_promises: nil,
                    remote_bundle_cache_adapter: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
                    renderer_request_retry_limit: nil, throw_js_errors: nil, ssr_timeout: nil,
-                   profile_server_rendering_js_code: nil, raise_non_shell_server_rendering_errors: nil)
+                   profile_server_rendering_js_code: nil, raise_non_shell_server_rendering_errors: nil,
+                   rsc_renderer_password: nil)
       self.renderer_url = renderer_url
       self.rsc_renderer_url = rsc_renderer_url
       self.renderer_password = renderer_password
+      self.rsc_renderer_password = rsc_renderer_password
       self.server_renderer = server_renderer
       self.renderer_use_fallback_exec_js = renderer_use_fallback_exec_js
       self.prerender_caching = prerender_caching
@@ -96,6 +99,7 @@ module ReactOnRailsPro
       validate_url
       validate_remote_bundle_cache_adapter
       setup_renderer_password
+      setup_rsc_renderer_password
       setup_assets_to_copy
       setup_execjs_profiler_if_needed
     end
@@ -180,16 +184,15 @@ module ReactOnRailsPro
     def setup_renderer_password
       return if renderer_password.present?
 
-      # TODO: allow to use different password for different renderer
       uri = URI(renderer_url)
-      rsc_uri = URI(rsc_renderer_url)
-
-      unless uri.password == rsc_uri.password
-        raise ReactOnRailsPro::Error,
-              "Both renderer_url and rsc_renderer_url must have the same password"
-      end
-
       self.renderer_password = uri.password
+    end
+
+    def setup_rsc_renderer_password
+      return if rsc_renderer_password.present?
+
+      uri = URI(rsc_renderer_url)
+      self.rsc_renderer_password = uri.password
     end
   end
 end
