@@ -39,7 +39,8 @@ module ReactOnRailsPro
 
       def asset_exists_on_vm_renderer?(filename, rsc_renderer: false)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on node-renderer: #{filename}" }
-        response = perform_request("/asset-exists?filename=#{filename}", rsc_renderer, json: common_form_data)
+        form_data = common_form_data(rsc_renderer: rsc_renderer)
+        response = perform_request("/asset-exists?filename=#{filename}", rsc_renderer, json: form_data)
         JSON.parse(response.body)["exists"] == true
       end
 
@@ -102,7 +103,7 @@ module ReactOnRailsPro
       end
 
       def form_with_code(js_code, send_bundle, is_rendering_rsc_payload)
-        form = common_form_data
+        form = common_form_data(rsc_renderer: is_rendering_rsc_payload)
         form["renderingRequest"] = js_code
         populate_form_with_bundle_and_assets(form, is_rendering_rsc_payload, check_bundle: false) if send_bundle
         form
@@ -153,16 +154,16 @@ module ReactOnRailsPro
       end
 
       def form_with_assets_and_bundle(rsc_renderer: false)
-        form = common_form_data
+        form = common_form_data(rsc_renderer: rsc_renderer)
         populate_form_with_bundle_and_assets(form, rsc_renderer, check_bundle: true)
         form
       end
 
-      def common_form_data
+      def common_form_data(rsc_renderer:)
         {
           "gemVersion" => ReactOnRailsPro::VERSION,
           "protocolVersion" => "1.0.0",
-          "password" => ReactOnRailsPro.configuration.renderer_password
+          "password" => rsc_renderer ? ReactOnRailsPro.configuration.rsc_renderer_password : ReactOnRailsPro.configuration.renderer_password
         }
       end
 

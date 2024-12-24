@@ -129,11 +129,11 @@ module ReactOnRailsPro
       result
     end
 
-    def self.common_form_data
+    def self.common_form_data(rsc_renderer:)
       {
         "gemVersion" => ReactOnRailsPro::VERSION,
         "protocolVersion" => "1.0.0",
-        "password" => ReactOnRailsPro.configuration.renderer_password
+        "password" => rsc_renderer ? ReactOnRailsPro.configuration.rsc_renderer_password : ReactOnRailsPro.configuration.renderer_password
       }
     end
 
