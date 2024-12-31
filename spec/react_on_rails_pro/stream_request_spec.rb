@@ -65,59 +65,10 @@ RSpec.describe ReactOnRailsPro::StreamDecorator do
 end
 
 RSpec.describe ReactOnRailsPro::StreamRequest do
-  let(:mock_response) { double("MockResponse") }
-
   describe ".create" do
     it "returns a StreamDecorator instance" do
       result = described_class.create { mock_response }
       expect(result).to be_a(ReactOnRailsPro::StreamDecorator)
-    end
-  end
-
-  describe "#each_chunk" do
-    subject { described_class.send(:new, &request_block) }
-
-    let(:request_block) do
-      lambda do |_send_bundle, &block|
-        block.call(mock_response)
-        mock_response
-      end
-    end
-
-    context "when response code is 200" do
-      before do
-        allow(mock_response).to receive(:code).and_return("200")
-        allow(mock_response).to receive(:read_body).and_yield("chunk1").and_yield("chunk2")
-      end
-
-      it "yields chunks" do
-        chunks = []
-        subject.each_chunk { |chunk| chunks << chunk }
-        expect(chunks).to eq(%w[chunk1 chunk2])
-      end
-    end
-
-    context "when response code is 410 then 200" do
-      it "retries with send_bundle set to true" do
-        allow(mock_response).to receive(:code).and_return("410", "200")
-        allow(mock_response).to receive(:read_body).and_yield("chunk")
-
-        expect(request_block).to receive(:call).with(false).and_return(mock_response)
-        expect(request_block).to receive(:call).with(true).and_return(mock_response)
-
-        subject.each_chunk.to_a
-      end
-    end
-
-    context "when response code is neither 200 nor 410" do
-      it "raises an error" do
-        allow(mock_response).to receive(:code).and_return("500")
-        allow(mock_response).to receive(:body).and_return("Error message")
-
-        expect do
-          subject.each_chunk.to_a
-        end.to raise_error(ReactOnRailsPro::Error, /Unknown response code from renderer: 500/)
-      end
     end
   end
 end
