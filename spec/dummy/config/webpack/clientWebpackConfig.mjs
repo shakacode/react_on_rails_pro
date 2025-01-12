@@ -15,14 +15,6 @@ const configureClient = () => {
 
   clientConfig.plugins.push(new RSDWPlugin({ isServer: false }));
 
-  clientConfig.devServer = {
-    ...clientConfig.devServer,
-    devMiddleware: {
-      ...clientConfig.devServer?.devMiddleware,
-      writeToDisk: true,
-    },
-  };
-
   if (!isHMR) {
     clientConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
   }
