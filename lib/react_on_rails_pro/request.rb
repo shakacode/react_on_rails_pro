@@ -38,6 +38,10 @@ module ReactOnRailsPro
         return unless ReactOnRailsPro.configuration.enable_rsc_support
 
         perform_request("/upload-assets", true, form: form_with_assets_and_bundle(rsc_renderer: true))
+        # Explicitly return nil to ensure consistent return value regardless of whether
+        # enable_rsc_support is true or false. Without this, the method would return nil
+        # when RSC is disabled but return the response object when RSC is enabled.
+        nil
       end
 
       def asset_exists_on_vm_renderer?(filename, rsc_renderer: false)
