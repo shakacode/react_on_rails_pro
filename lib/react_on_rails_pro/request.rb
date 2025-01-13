@@ -11,6 +11,9 @@ module ReactOnRailsPro
         @connection&.close
         @rsc_connection&.close
         @connection = create_connection(url: ReactOnRailsPro.configuration.renderer_url)
+
+        return unless ReactOnRailsPro.configuration.enable_rsc_support
+
         @rsc_connection = create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
       end
 
@@ -32,9 +35,9 @@ module ReactOnRailsPro
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
         perform_request("/upload-assets", false, form: form_with_assets_and_bundle)
 
-        if ReactOnRails.configuration.rsc_bundle_js_file
-          perform_request("/upload-assets", true, form: form_with_assets_and_bundle(rsc_renderer: true))
-        end
+        return unless ReactOnRailsPro.configuration.enable_rsc_support
+
+        perform_request("/upload-assets", true, form: form_with_assets_and_bundle(rsc_renderer: true))
       end
 
       def asset_exists_on_vm_renderer?(filename, rsc_renderer: false)
@@ -51,7 +54,16 @@ module ReactOnRailsPro
       end
 
       def rsc_connection
-        @rsc_connection ||= create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
+        @rsc_connection ||= begin
+          unless ReactOnRailsPro.configuration.enable_rsc_support
+            raise ReactOnRailsPro::Error,
+                  "RSC support is not enabled. Please set enable_rsc_support to true in your " \
+                  "config/initializers/react_on_rails_pro.rb file before " \
+                  "rendering any RSC payload."
+          end
+
+          create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
+        end
       end
 
       def perform_request(path, is_rendering_rsc_payload, **post_options) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
@@ -160,10 +172,15 @@ module ReactOnRailsPro
       end
 
       def common_form_data(rsc_renderer:)
+        password = if rsc_renderer
+                     ReactOnRailsPro.configuration.rsc_renderer_password
+                   else
+                     ReactOnRailsPro.configuration.renderer_password
+                   end
         {
           "gemVersion" => ReactOnRailsPro::VERSION,
           "protocolVersion" => "1.0.0",
-          "password" => rsc_renderer ? ReactOnRailsPro.configuration.rsc_renderer_password : ReactOnRailsPro.configuration.renderer_password
+          "password" => password
         }
       end
 
