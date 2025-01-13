@@ -182,7 +182,7 @@ describe ReactOnRailsProHelper, type: :helper do
   describe "html_streaming_react_component" do
     include StreamingTestHelpers
 
-    let(:component_name) { "StreamAsyncComponents" }
+    let(:component_name) { "TestingStreamableComponent" }
     let(:props) { { helloWorldData: { name: "Mr. Server Side Rendering" } } }
     let(:component_options) { { prerender: true, trace: true, id: "#{component_name}-react-component-0" } }
     let(:chunks) do
@@ -201,7 +201,15 @@ describe ReactOnRailsProHelper, type: :helper do
     let(:chunks_read) { [] }
     let(:react_component_specification_tag) do
       <<-SCRIPT.strip_heredoc
-        <script type="application/json" class="js-react-on-rails-component" data-component-name="StreamAsyncComponents" data-trace="true" data-dom-id="StreamAsyncComponents-react-component-0">{"helloWorldData":{"name":"Mr. Server Side Rendering"}}</script>
+        <script type="application/json"
+          id="js-react-on-rails-component-TestingStreamableComponent-react-component-0"
+          class="js-react-on-rails-component"
+          data-component-name="TestingStreamableComponent"
+          data-trace="true"
+          data-dom-id="TestingStreamableComponent-react-component-0"
+          data-store-dependencies="[]"
+          data-force-load="true"
+        >{"helloWorldData":{"name":"Mr. Server Side Rendering"}}</script>
       SCRIPT
     end
     let(:rails_context_tag) do
@@ -211,21 +219,26 @@ describe ReactOnRailsProHelper, type: :helper do
     end
     let(:react_component_div_with_initial_chunk) do
       <<-HTML.strip
-        <div id="StreamAsyncComponents-react-component-0">#{chunks.first[:html]}</div>
+        <div id="TestingStreamableComponent-react-component-0">#{chunks.first[:html]}</div>
       HTML
     end
 
     def mock_request_and_response
+      # Reset connection instance variables to ensure clean state for tests
+      ReactOnRailsPro::Request.instance_variable_set(:@connection, nil)
+      ReactOnRailsPro::Request.instance_variable_set(:@rsc_connection, nil)
+      original_httpx_plugin = HTTPX.method(:plugin)
+      allow(HTTPX).to receive(:plugin) do |*args|
+        original_httpx_plugin.call(:mock_stream).plugin(*args)
+      end
+      clear_stream_mocks
+
       chunks_read.clear
-      allow(ReactOnRailsPro::Request).to receive(:perform_request) do |_path, _form_data|
-        stream_response = instance_double(HTTPX::StreamResponse)
-        allow(stream_response).to receive(:each_line) do |&chunk_block|
-          chunks.each do |chunk|
-            chunks_read << chunk
-            chunk_block.call(chunk.to_json)
-          end
+      mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}/render/[a-f0-9]{32}}, 200) do |yielder|
+        chunks.each do |chunk|
+          chunks_read << chunk
+          yielder.call("#{chunk.to_json}\n")
         end
-        stream_response
       end
     end
 
