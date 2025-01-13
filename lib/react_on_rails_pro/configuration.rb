@@ -52,6 +52,8 @@ module ReactOnRailsPro
     DEFAULT_RENDERING_RETURNS_PROMISES = false
     DEFAULT_PROFILE_SERVER_RENDERING_JS_CODE = false
     DEFAULT_RAISE_NON_SHELL_SERVER_RENDERING_ERRORS = false
+    DEFAULT_ENABLE_RSC_SUPPORT = false
+    DEFAULT_RSC_RENDERING_URL_PATH = "rsc/"
 
     attr_accessor :renderer_url, :rsc_renderer_url, :renderer_password, :rsc_renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
@@ -59,7 +61,8 @@ module ReactOnRailsPro
                   :dependency_globs, :excluded_dependency_globs, :rendering_returns_promises,
                   :remote_bundle_cache_adapter, :ssr_pre_hook_js, :assets_to_copy,
                   :renderer_request_retry_limit, :throw_js_errors, :ssr_timeout,
-                  :profile_server_rendering_js_code, :raise_non_shell_server_rendering_errors
+                  :profile_server_rendering_js_code, :raise_non_shell_server_rendering_errors, :enable_rsc_support,
+                  :rsc_rendering_url_path
 
     def initialize(renderer_url: nil, rsc_renderer_url: nil, renderer_password: nil, server_renderer: nil,
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
@@ -69,7 +72,7 @@ module ReactOnRailsPro
                    remote_bundle_cache_adapter: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
                    renderer_request_retry_limit: nil, throw_js_errors: nil, ssr_timeout: nil,
                    profile_server_rendering_js_code: nil, raise_non_shell_server_rendering_errors: nil,
-                   rsc_renderer_password: nil)
+                   rsc_renderer_password: nil, enable_rsc_support: nil, rsc_rendering_url_path: nil)
       self.renderer_url = renderer_url
       self.rsc_renderer_url = rsc_renderer_url
       self.renderer_password = renderer_password
@@ -92,6 +95,8 @@ module ReactOnRailsPro
       self.ssr_timeout = ssr_timeout
       self.profile_server_rendering_js_code = profile_server_rendering_js_code
       self.raise_non_shell_server_rendering_errors = raise_non_shell_server_rendering_errors
+      self.enable_rsc_support = enable_rsc_support
+      self.rsc_rendering_url_path = rsc_rendering_url_path
     end
 
     def setup_config_values
@@ -151,7 +156,9 @@ module ReactOnRailsPro
       URI(renderer_url)
       URI(rsc_renderer_url)
     rescue URI::InvalidURIError => e
-      message = "Unparseable ReactOnRailsPro.config.renderer_url #{renderer_url} or ReactOnRailsPro.config.renderer_url #{rsc_renderer_url} provided.\n#{e.message}"
+      message = "Unparseable ReactOnRailsPro.config.renderer_url #{renderer_url} or " \
+                "ReactOnRailsPro.config.renderer_url #{rsc_renderer_url} provided.\n" \
+                "#{e.message}"
       raise ReactOnRailsPro::Error, message
     end
 
