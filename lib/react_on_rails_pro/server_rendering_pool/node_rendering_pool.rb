@@ -17,9 +17,13 @@ module ReactOnRailsPro
           # Resetting the pool for server bundle modifications is accomplished by changing the mtime
           # of the server bundle in the request to the remote rendering server.
           # In non-development mode, we don't need to re-read this value.
-          return @bundle_hash if @bundle_hash.present? && !ReactOnRails.configuration.development_mode
+          if @server_bundle_hash.blank? || ReactOnRails.configuration.development_mode
+            @server_bundle_hash = ReactOnRailsPro::Utils.bundle_hash
+          end
 
-          @bundle_hash = ReactOnRailsPro::Utils.bundle_hash
+          return unless @rsc_bundle_hash.blank? || ReactOnRails.configuration.development_mode
+
+          @rsc_bundle_hash = ReactOnRailsPro::Utils.rsc_bundle_hash
         end
 
         def renderer_bundle_file_name
@@ -73,12 +77,20 @@ module ReactOnRailsPro
           fallback_exec_js(js_code, render_options, e)
         end
 
+        def server_bundle_hash
+          @server_bundle_hash ||= ReactOnRailsPro::Utils.bundle_hash
+        end
+
+        def rsc_bundle_hash
+          @rsc_bundle_hash ||= ReactOnRailsPro::Utils.rsc_bundle_hash
+        end
+
         def prepare_render_path(js_code, render_options)
           ReactOnRailsPro::ServerRenderingPool::ProRendering
             .set_request_digest_on_render_options(js_code, render_options)
 
           is_rendering_rsc_payload = render_options.rsc?
-          bundle_hash = is_rendering_rsc_payload ? ReactOnRailsPro::Utils.rsc_bundle_hash : ReactOnRailsPro::Utils.bundle_hash
+          bundle_hash = is_rendering_rsc_payload ? rsc_bundle_hash : server_bundle_hash
           # TODO: Remove the request_digest. See https://github.com/shakacode/react_on_rails_pro/issues/119
           # From the request path
           # path = "/bundles/#{@bundle_hash}/render"
