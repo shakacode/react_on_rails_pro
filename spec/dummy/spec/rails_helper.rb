@@ -41,6 +41,8 @@ require "capybara-screenshot/rspec"
 Dir[Rails.root.join("spec", "support", "**", "*.rb")].each { |f| require f }
 
 require_relative "../../react_on_rails_pro/support/caching"
+require_relative "../../react_on_rails_pro/support/mock_stream_helper"
+require_relative "../../react_on_rails_pro/support/httpx/plugins/mock_stream"
 RSpec.configure do |config|
   # Ensure that if we are running js tests, we are using latest webpack assets
   # This is false since we're using rails/webpacker shakapacker.yml test.compile == true
@@ -77,6 +79,7 @@ RSpec.configure do |config|
   # Capybara config
   config.include Capybara::DSL
   config.include CustomNavigation
+  config.include MockStreamHelper
   #
   # selenium_firefox webdriver only works for Travis-CI builds.
   default_driver = :selenium_chrome_headless
