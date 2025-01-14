@@ -33,7 +33,7 @@ module ReactOnRailsPro
     )
   end
 
-  class Configuration
+  class Configuration # rubocop:disable Metrics/ClassLength
     DEFAULT_RENDERER_URL = "http://localhost:3800"
     DEFAULT_RSC_RENDERER_URL = "http://localhost:3900"
     DEFAULT_RENDERER_METHOD = "ExecJS"
@@ -64,7 +64,7 @@ module ReactOnRailsPro
                   :profile_server_rendering_js_code, :raise_non_shell_server_rendering_errors, :enable_rsc_support,
                   :rsc_rendering_url_path
 
-    def initialize(renderer_url: nil, rsc_renderer_url: nil, renderer_password: nil, server_renderer: nil,
+    def initialize(renderer_url: nil, rsc_renderer_url: nil, renderer_password: nil, server_renderer: nil, # rubocop:disable Metrics/AbcSize
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
                    renderer_http_pool_warn_timeout: nil, tracing: nil,

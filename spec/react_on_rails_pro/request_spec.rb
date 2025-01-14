@@ -31,8 +31,10 @@ describe ReactOnRailsPro::Request do
     end
     allow(Rails).to receive(:logger).and_return(logger_mock)
 
-    allow(ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool).to receive(:renderer_bundle_file_name).and_return(renderer_bundle_file_name)
-    allow(ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool).to receive(:rsc_renderer_bundle_file_name).and_return(rsc_renderer_bundle_file_name)
+    allow(ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool).to receive(:renderer_bundle_file_name)
+      .and_return(renderer_bundle_file_name)
+    allow(ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool).to receive(:rsc_renderer_bundle_file_name)
+      .and_return(rsc_renderer_bundle_file_name)
     allow(ReactOnRails::Utils).to receive(:server_bundle_js_file_path).and_return(server_bundle_path)
 
     allow(ReactOnRails::Utils).to receive(:rsc_bundle_js_file_path).and_return(rsc_server_bundle_path)

@@ -34,35 +34,44 @@ module HTTPX
 
         def send(request)
           request_uri = request.uri.to_s
-          mock = MockStream.mock_responses.find do |pattern, _responses|
-            case pattern
-            when String
-              pattern == request_uri
-            when Regexp
-              pattern.match?(request_uri)
-            end
-          end
-
-          raise "Unmocked request detected! URI: #{request_uri}, Method: #{request.verb}" unless mock
+          mock = find_mock(request_uri)
+          validate_mock!(request_uri, request.verb, mock)
 
           pattern, responses = mock
+          handle_mock_response(request, pattern, responses)
+        end
+
+        def validate_mock!(request_uri, verb, mock)
+          raise "Unmocked request detected! URI: #{request_uri}, Method: #{verb}" unless mock
+        end
+
+        def create_response(request, status)
+          request.options.response_class.new(request, status, "2.0", {}).tap do |res|
+            res.mocked = true
+          end
+        end
+
+        def setup_response(request, status)
+          response = create_response(request, status)
+          request.response = response
+          request.emit(:response, response)
+          response
+        end
+
+        def handle_mock_response(request, pattern, responses)
           current_mock = responses.first
           status, mock_block, count, request_data = current_mock
 
           request_data[:request] = request
-          response = request.options.response_class.new(request, status, "2.0", {}).tap do |res|
-            res.mocked = true
-          end
-          request.response = response
-          request.emit(:response, response)
+          response = setup_response(request, status)
 
-          yielder = lambda { |value|
-            response << value
-          }
-
+          yielder = ->(value) { response << value }
           mock_block.call(yielder, request)
 
-          # Decrease count and remove mock if count reaches 0
+          update_mock_count(pattern, responses, current_mock, count)
+        end
+
+        def update_mock_count(pattern, responses, current_mock, count)
           return if count == Float::INFINITY
 
           count -= 1
@@ -71,6 +80,17 @@ module HTTPX
             MockStream.mock_responses.delete(pattern) if responses.empty?
           else
             current_mock[2] = count
+          end
+        end
+
+        def find_mock(request_uri)
+          MockStream.mock_responses.find do |pattern, _responses|
+            case pattern
+            when String
+              pattern == request_uri
+            when Regexp
+              pattern.match?(request_uri)
+            end
           end
         end
 

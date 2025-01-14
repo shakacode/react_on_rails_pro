@@ -24,7 +24,7 @@ module ReactOnRailsPro
 
       def render_code_as_stream(path, js_code, is_rendering_rsc_payload)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
-        ReactOnRailsPro::StreamRequest.create(is_rendering_rsc_payload) do |send_bundle|
+        ReactOnRailsPro::StreamRequest.create(is_rsc: is_rendering_rsc_payload) do |send_bundle|
           perform_request(path, is_rendering_rsc_payload,
                           form: form_with_code(js_code, send_bundle, is_rendering_rsc_payload), stream: true)
         end
@@ -70,7 +70,7 @@ module ReactOnRailsPro
         end
       end
 
-      def perform_request(path, is_rendering_rsc_payload, **post_options) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
+      def perform_request(path, is_rendering_rsc_payload, **post_options) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity,Metrics/PerceivedComplexity
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true
         while retry_request
@@ -126,15 +126,20 @@ module ReactOnRailsPro
       end
 
       def populate_form_with_bundle_and_assets(form, is_rendering_rsc_payload, check_bundle:)
-        server_bundle_path = is_rendering_rsc_payload ? ReactOnRails::Utils.rsc_bundle_js_file_path : ReactOnRails::Utils.server_bundle_js_file_path
+        server_bundle_path = if is_rendering_rsc_payload
+                               ReactOnRails::Utils.rsc_bundle_js_file_path
+                             else
+                               ReactOnRails::Utils.server_bundle_js_file_path
+                             end
         if check_bundle && !File.exist?(server_bundle_path)
           raise ReactOnRailsPro::Error, "Bundle not found #{server_bundle_path}"
         end
 
+        pool = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool
         renderer_bundle_file_name = if is_rendering_rsc_payload
-                                      ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.rsc_renderer_bundle_file_name
+                                      pool.rsc_renderer_bundle_file_name
                                     else
-                                      ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool.renderer_bundle_file_name
+                                      pool.renderer_bundle_file_name
                                     end
         form["bundle"] = {
           body: get_form_body_for_file(server_bundle_path),
@@ -142,30 +147,36 @@ module ReactOnRailsPro
           filename: renderer_bundle_file_name
         }
 
+        add_assets_to_form(form, is_rendering_rsc_payload)
+      end
+
+      def add_assets_to_form(form, is_rendering_rsc_payload)
         assets_to_copy = ReactOnRailsPro.configuration.assets_to_copy.presence || []
         # react_client_manifest file is needed to generate react server components payload
         assets_to_copy << ReactOnRails::Utils.react_client_manifest_file_path if is_rendering_rsc_payload
-        if assets_to_copy.present?
-          assets_to_copy.each_with_index do |asset_path, idx|
-            Rails.logger.info { "[ReactOnRailsPro] Uploading asset #{asset_path}" }
-            unless http_url?(asset_path) || File.exist?(asset_path)
-              warn "Asset not found #{asset_path}"
-              next
-            end
 
-            content_type = ReactOnRailsPro::Utils.mine_type_from_file_name(asset_path)
+        return form unless assets_to_copy.present?
 
-            begin
-              form["assetsToCopy#{idx}"] = {
-                body: get_form_body_for_file(asset_path),
-                content_type: content_type,
-                filename: File.basename(asset_path)
-              }
-            rescue e
-              warn "[ReactOnRailsPro] Error uploading asset #{asset_path}: #{e}"
-            end
+        assets_to_copy.each_with_index do |asset_path, idx|
+          Rails.logger.info { "[ReactOnRailsPro] Uploading asset #{asset_path}" }
+          unless http_url?(asset_path) || File.exist?(asset_path)
+            warn "Asset not found #{asset_path}"
+            next
+          end
+
+          content_type = ReactOnRailsPro::Utils.mine_type_from_file_name(asset_path)
+
+          begin
+            form["assetsToCopy#{idx}"] = {
+              body: get_form_body_for_file(asset_path),
+              content_type: content_type,
+              filename: File.basename(asset_path)
+            }
+          rescue e
+            warn "[ReactOnRailsPro] Error uploading asset #{asset_path}: #{e}"
           end
         end
+
         form
       end
 
