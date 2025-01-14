@@ -130,10 +130,15 @@ module ReactOnRailsPro
     end
 
     def self.common_form_data(rsc_renderer:)
+      password = if rsc_renderer
+                   ReactOnRailsPro.configuration.rsc_renderer_password
+                 else
+                   ReactOnRailsPro.configuration.renderer_password
+                 end
       {
         "gemVersion" => ReactOnRailsPro::VERSION,
         "protocolVersion" => "1.0.0",
-        "password" => rsc_renderer ? ReactOnRailsPro.configuration.rsc_renderer_password : ReactOnRailsPro.configuration.renderer_password
+        "password" => password
       }
     end
 

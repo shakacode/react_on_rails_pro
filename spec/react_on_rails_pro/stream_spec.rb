@@ -6,25 +6,27 @@ RSpec.describe "Streaming API" do
   let(:origin) { "http://api.example.com" }
   let(:path) { "/stream" }
   let(:url) { "#{origin}#{path}" }
-  let(:http) { HTTPX.plugin(:mock_stream)
-    .plugin(:retries, max_retries: 1, retry_change_requests: true)
-    .plugin(:stream)
-    .with(
-      origin: url,
-      # Version of HTTP protocol to use by default in the absence of protocol negotiation
-      fallback_protocol: "h2",
-      max_concurrent_requests: 10,
-      persistent: true,
-      # Other timeouts supported https://honeyryderchuck.gitlab.io/httpx/wiki/Timeouts:
-      # :write_timeout
-      # :request_timeout
-      # :operation_timeout
-      # :keep_alive_timeout
-      timeout: {
-        connect_timeout: 30,
-        read_timeout: 30
-      }
-    ) }
+  let(:http) do
+    HTTPX.plugin(:mock_stream)
+         .plugin(:retries, max_retries: 1, retry_change_requests: true)
+         .plugin(:stream)
+         .with(
+           origin: url,
+           # Version of HTTP protocol to use by default in the absence of protocol negotiation
+           fallback_protocol: "h2",
+           max_concurrent_requests: 10,
+           persistent: true,
+           # Other timeouts supported https://honeyryderchuck.gitlab.io/httpx/wiki/Timeouts:
+           # :write_timeout
+           # :request_timeout
+           # :operation_timeout
+           # :keep_alive_timeout
+           timeout: {
+             connect_timeout: 30,
+             read_timeout: 30
+           }
+         )
+  end
 
   before do
     clear_stream_mocks
@@ -234,7 +236,6 @@ RSpec.describe "Streaming API" do
       end
 
       response = http.get(path, stream: true)
-      chunks = []
       response.each(&mocked_block.block)
       expect(mocked_block).to have_received(:call).with("First chunk")
       expect(mocked_block).to have_received(:call).with("Second chunk")
