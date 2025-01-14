@@ -16,10 +16,11 @@ module ReactOnRailsPro
                                  "serverRenderReactComponent"
                                end
         rsc_props_if_rsc_request = if render_options.rsc?
-                                       "reactClientManifestFileName: '#{ReactOnRails.configuration.react_client_manifest_file}',"
-                                     else
-                                       ""
-                                     end
+                                     manifest_file = ReactOnRails.configuration.react_client_manifest_file
+                                     "reactClientManifestFileName: '#{manifest_file}',"
+                                   else
+                                     ""
+                                   end
         <<-JS
         (function() {
           var railsContext = #{rails_context};

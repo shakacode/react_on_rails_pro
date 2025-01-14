@@ -64,7 +64,7 @@ module ReactOnRailsPro
   end
 
   class StreamRequest
-    def initialize(is_rsc = false, &request_block)
+    def initialize(is_rsc: false, &request_block)
       @request_executor = request_block
       @is_rsc = is_rsc
     end
@@ -108,8 +108,8 @@ module ReactOnRailsPro
     end
 
     # Method to start the decoration
-    def self.create(is_rsc = false, &request_block)
-      StreamDecorator.new(new(is_rsc, &request_block))
+    def self.create(is_rsc: false, &request_block)
+      StreamDecorator.new(new(is_rsc: is_rsc, &request_block))
     end
 
     private
@@ -118,7 +118,7 @@ module ReactOnRailsPro
     # It fixes the problem of not yielding the last chunk on error
     # You can check the spec of `each_line` in `spec/react_on_rails_pro/stream_spec.rb` for more details
     def loop_response_lines(response)
-      return enum_for(__method__) unless block_given?
+      return enum_for(__method__, response) unless block_given?
 
       line = "".b
 

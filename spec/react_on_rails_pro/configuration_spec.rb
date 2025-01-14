@@ -2,7 +2,7 @@
 
 require_relative "spec_helper"
 
-module ReactOnRailsPro
+module ReactOnRailsPro # rubocop:disable Metrics/ModuleLength
   RSpec.describe Configuration do
     after do
       ReactOnRailsPro.instance_variable_set(:@configuration, nil)
