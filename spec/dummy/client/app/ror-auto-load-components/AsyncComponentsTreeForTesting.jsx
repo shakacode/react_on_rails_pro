@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import HelloWorldHooks from './HelloWorldHooks';
+import HelloWorldHooks from '../components/HelloWorldHooks';
 
 const AsyncComponentsBranch = ({ branchName, level }) => {
   const buildResult = () => {
