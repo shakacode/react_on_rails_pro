@@ -21,6 +21,35 @@ When a user visits the page, they'll experience the following sequence:
    - No waiting for full page JavaScript or other components to load
    - Each component becomes interactive immediately after its own hydration
 
+### Bundle Size Benefits
+
+React Server Components significantly reduce client-side JavaScript by:
+
+1. **Server-Only Code Elimination:**
+    - Dependencies used only in server components never ship to the client
+    - Database queries, API calls, and their libraries stay server-side
+    - Heavy data processing utilities remain on the server
+    - Server-only npm packages don't impact client bundle
+
+2. **Concrete Examples:**
+    - Routing logic can stay server-side
+    - Data fetching libraries (like React Query) often unnecessary
+    - Large formatting libraries (e.g., date-fns, numeral) can be server-only
+    - Image processing utilities stay on server
+    - Markdown parsers run server-side only
+    - Heavy validation libraries remain server-side
+
+For example, a typical dashboard might see:
+```jsx
+// Before: All code shipped to client
+import { format } from 'date-fns'; // ~30KB
+import { marked } from 'marked';    // ~35KB
+import numeral from 'numeral';      // ~25KB
+
+// After: With RSC, these imports stay server-side
+// Client bundle reduced by ~90KB
+```
+
 ### Comparison with Other Approaches:
 
 1. **Full Server Rendering:**
