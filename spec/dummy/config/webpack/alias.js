@@ -1,11 +1,9 @@
 const { resolve } = require('path');
 
-const aliasConfig = {
+module.exports = {
   resolve: {
     alias: {
       Assets: resolve(__dirname, '..', '..', 'client', 'app', 'assets'),
     },
   },
 };
-
-module.exports = aliasConfig;

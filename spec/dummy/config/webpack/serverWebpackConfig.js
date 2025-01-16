@@ -1,6 +1,6 @@
 const { config } = require('shakapacker');
-const webpack = require('webpack');
 const commonWebpackConfig = require('./commonWebpackConfig');
+const webpack = require('webpack');
 
 function extractLoader(rule, loaderName) {
   return rule.use.find((item) => {
@@ -16,7 +16,7 @@ function extractLoader(rule, loaderName) {
   });
 };
 
-function configureServer() {
+const configureServer = () => {
   // We need to use "merge" because the clientConfigObject, EVEN after running
   // toWebpackConfig() is a mutable GLOBAL. Thus any changes, like modifying the
   // entry value will result in changing the client config!
@@ -109,7 +109,7 @@ function configureServer() {
   // eval works well for the SSR bundle because it's the fastest and shows
   // lines in the server bundle which is good for debugging SSR
   // The default of cheap-module-source-map is slow and provides poor info.
-  serverWebpackConfig.devtool = 'source-map';
+  serverWebpackConfig.devtool = 'eval';
 
   // If using the default 'web', then libraries like Emotion and loadable-components
   // break with SSR. The fix is to use a node renderer and change the target.
