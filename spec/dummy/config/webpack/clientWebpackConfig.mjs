@@ -1,10 +1,9 @@
 import LoadablePlugin from '@loadable/webpack-plugin';
 import commonWebpackConfig from './commonWebpackConfig.mjs';
-import RSDWPlugin from 'react-server-dom-webpack/plugin';
 
 const isHMR = process.env.HMR;
 
-const configureClient = () => {
+const configureClient = async () => {
   const clientConfig = commonWebpackConfig();
 
   // server-bundle is special and should ONLY be built by the serverConfig
@@ -13,7 +12,8 @@ const configureClient = () => {
   // client config is going to try to load chunks.
   delete clientConfig.entry['server-bundle'];
 
-  clientConfig.plugins.push(new RSDWPlugin({ isServer: false }));
+  const RSDWPlugin = await import('react-server-dom-webpack/plugin');
+  clientConfig.plugins.push(new RSDWPlugin.default({ isServer: false }));
 
   if (!isHMR) {
     clientConfig.plugins.unshift(new LoadablePlugin({ filename: 'loadable-stats.json', writeToDisk: true }));
