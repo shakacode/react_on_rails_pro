@@ -1,9 +1,9 @@
-import clientWebpackConfig from './clientWebpackConfig.mjs';
-import serverWebpackConfig from './serverWebpackConfig.mjs';
-import rscWebpackConfig from './rscWebpackConfig.mjs';
+const clientWebpackConfig = require('./clientWebpackConfig.js');
+const serverWebpackConfig = require('./serverWebpackConfig.js');
+const rscWebpackConfig = require('./rscWebpackConfig.js');
 
-const webpackConfig = async (envSpecific) => {
-  const clientConfig = await clientWebpackConfig();
+const webpackConfig = (envSpecific) => {
+  const clientConfig = clientWebpackConfig();
   const serverConfig = serverWebpackConfig();
   const rscConfig = rscWebpackConfig();
 
@@ -29,4 +29,4 @@ const webpackConfig = async (envSpecific) => {
   return result;
 };
 
-export default webpackConfig;
+module.exports = webpackConfig;
