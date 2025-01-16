@@ -5687,7 +5687,7 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro1674/export-stream-functions-only-for-node-bundles":
   version "14.1.0"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#4e55bc640b73e4e206c6ff5f463e542bb5eb9865"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#751635a224868f6dd0b58554664fd2cccb6d9240"
   dependencies:
     "@babel/runtime-corejs3" "^7.12.5"
 
