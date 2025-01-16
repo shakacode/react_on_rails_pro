@@ -1,10 +1,8 @@
-import shakapacker from 'shakapacker';
-import webpack from 'webpack';
-import commonWebpackConfig from './commonWebpackConfig.mjs';
+const { config } = require('shakapacker');
+const webpack = require('webpack');
+const commonWebpackConfig = require('./commonWebpackConfig');
 
-const { config } = shakapacker;
-
-export function extractLoader(rule, loaderName) {
+function extractLoader(rule, loaderName) {
   return rule.use.find((item) => {
     let testValue;
 
@@ -16,9 +14,9 @@ export function extractLoader(rule, loaderName) {
 
     return testValue.includes(loaderName);
   });
-}
+};
 
-const configureServer = () => {
+function configureServer() {
   // We need to use "merge" because the clientConfigObject, EVEN after running
   // toWebpackConfig() is a mutable GLOBAL. Thus any changes, like modifying the
   // entry value will result in changing the client config!
@@ -123,4 +121,5 @@ const configureServer = () => {
   return serverWebpackConfig;
 };
 
-export default configureServer;
+module.exports = configureServer;
+module.exports.extractLoader = extractLoader;

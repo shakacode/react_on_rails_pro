@@ -1,8 +1,6 @@
-import shakapacker from 'shakapacker';
-import webpack from 'webpack';
-import aliasConfig from './alias.mjs';
-
-const { generateWebpackConfig, merge } = shakapacker;
+const { generateWebpackConfig, merge } = require('shakapacker');
+const webpack = require('webpack');
+const aliasConfig = require('./alias.js');
 
 const sassResources = ['./client/app/assets/styles/app-variables.scss'];
 
@@ -43,4 +41,4 @@ if (isHMR) {
 
 const commonWebpackConfig = () => merge({}, baseClientWebpackConfig, commonOptions, aliasConfig);
 
-export default commonWebpackConfig;
+module.exports = commonWebpackConfig;

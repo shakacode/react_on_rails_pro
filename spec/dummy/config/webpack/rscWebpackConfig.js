@@ -1,8 +1,5 @@
-import path from 'path';
-import serverWebpackConfig, { extractLoader } from './serverWebpackConfig.mjs';
-import { fileURLToPath } from 'url';
-
-const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const serverWebpackConfig = require('./serverWebpackConfig.js');
+const { extractLoader } = require('./serverWebpackConfig.js');
 
 const configureRsc = () => {
   const rscConfig = serverWebpackConfig();
@@ -39,4 +36,4 @@ const configureRsc = () => {
   return rscConfig;
 };
 
-export default configureRsc;
+module.exports = configureRsc;
