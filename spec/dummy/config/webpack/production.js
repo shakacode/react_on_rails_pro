@@ -1,3 +1,3 @@
-const webpackConfig = require('./ServerClientOrBoth.js');
+const webpackConfig = require('./ServerClientOrBoth');
 
 module.exports = webpackConfig();
