@@ -2,8 +2,8 @@ import clientWebpackConfig from './clientWebpackConfig.mjs';
 import serverWebpackConfig from './serverWebpackConfig.mjs';
 import rscWebpackConfig from './rscWebpackConfig.mjs';
 
-const webpackConfig = (envSpecific) => {
-  const clientConfig = clientWebpackConfig();
+const webpackConfig = async (envSpecific) => {
+  const clientConfig = await clientWebpackConfig();
   const serverConfig = serverWebpackConfig();
   const rscConfig = rscWebpackConfig();
 
