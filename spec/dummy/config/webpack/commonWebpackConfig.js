@@ -1,8 +1,8 @@
 const { generateWebpackConfig, merge } = require('shakapacker');
 const webpack = require('webpack');
-const aliasConfig = require('./alias');
 
 const sassResources = ['./client/app/assets/styles/app-variables.scss'];
+const aliasConfig = require('./alias');
 
 const commonOptions = {
   resolve: {
@@ -16,6 +16,8 @@ const isHMR = process.env.HMR;
 // https://developers.google.com/web/fundamentals/design-and-ux/responsive/images
 // https://survivejs.com/webpack/loading/images/
 // Normally below 1k, inline. We're making the example bigger to show a both inlined and non-inlined images
+
+// rules
 const sassLoaderConfig = {
   loader: 'sass-resources-loader',
   options: {

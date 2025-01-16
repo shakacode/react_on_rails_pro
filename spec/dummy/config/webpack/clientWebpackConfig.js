@@ -1,6 +1,6 @@
+const RSDWPlugin = require('react-server-dom-webpack/plugin');
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const commonWebpackConfig = require('./commonWebpackConfig');
-const RSDWPlugin = require('react-server-dom-webpack/plugin');
 
 const isHMR = process.env.HMR;
 
