@@ -18,18 +18,13 @@ const configureRsc = () => {
     );
   }
 
-  rscConfig.resolveLoader = {
-    alias: {
-      'rsc-transform': path.resolve(__dirname, './rsc-transform-loader.mjs'),
-    },
-  };
   const rules = rscConfig.module.rules;
   rules.forEach((rule) => {
     if (Array.isArray(rule.use)) {
       const babelLoader = extractLoader(rule, 'babel-loader');
       if (babelLoader) {
         rule.use.push({
-          loader: 'rsc-transform',
+          loader: 'react-on-rails/RSCWebpackLoader',
         });
       }
     }
