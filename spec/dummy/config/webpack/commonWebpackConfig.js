@@ -1,6 +1,6 @@
 const { generateWebpackConfig, merge } = require('shakapacker');
 const webpack = require('webpack');
-const aliasConfig = require('./alias.js');
+const aliasConfig = require('./alias');
 
 const sassResources = ['./client/app/assets/styles/app-variables.scss'];
 

@@ -1,5 +1,5 @@
-const serverWebpackConfig = require('./serverWebpackConfig.js');
-const { extractLoader } = require('./serverWebpackConfig.js');
+const serverWebpackConfig = require('./serverWebpackConfig');
+const { extractLoader } = require('./serverWebpackConfig');
 
 const configureRsc = () => {
   const rscConfig = serverWebpackConfig();

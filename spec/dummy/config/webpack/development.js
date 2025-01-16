@@ -1,7 +1,7 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const { devServer, inliningCss } = require('shakapacker');
 
-const webpackConfig = require('./ServerClientOrBoth.js');
+const webpackConfig = require('./ServerClientOrBoth');
 
 const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
