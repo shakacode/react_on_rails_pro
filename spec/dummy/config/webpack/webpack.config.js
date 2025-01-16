@@ -2,12 +2,11 @@ const { env } = require('shakapacker');
 const { existsSync } = require('fs');
 const { resolve } = require('path');
 
-const envSpecificConfig = async () => {
-  const path = resolve(__dirname, `${env.nodeEnv}.mjs`);
+const envSpecificConfig = () => {
+  const path = resolve(__dirname, `${env.nodeEnv}.js`);
   if (existsSync(path)) {
     console.log(`Loading ENV specific webpack configuration file ${path}`);
-    const importedModule = await import(path);
-    return importedModule.default;
+    return require(path);
   } else {
     throw new Error(
       `Invalid NODE_ENV = ${env.nodeEnv}. Please use one of the following 'test', 'development' or 'production'.`,
@@ -15,4 +14,4 @@ const envSpecificConfig = async () => {
   }
 };
 
-module.exports = envSpecificConfig;
+module.exports = envSpecificConfig();

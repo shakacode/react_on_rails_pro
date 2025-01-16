@@ -1,11 +1,9 @@
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
-import shakapacker from 'shakapacker';
+const { devServer, inliningCss } = require('shakapacker');
 
-import webpackConfig from './ServerClientOrBoth.mjs';
+const webpackConfig = require('./ServerClientOrBoth.js');
 
-const { devServer, inliningCss } = shakapacker;
-
-import ReactRefreshWebpackPlugin from '@pmmmwh/react-refresh-webpack-plugin';
+const ReactRefreshWebpackPlugin = require('@pmmmwh/react-refresh-webpack-plugin');
 
 const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
   if (inliningCss) {
@@ -19,4 +17,4 @@ const developmentEnvOnly = (clientWebpackConfig, _serverWebpackConfig) => {
   }
 };
 
-export default webpackConfig(developmentEnvOnly);
+module.exports = webpackConfig(developmentEnvOnly);
