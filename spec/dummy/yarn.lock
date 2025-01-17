@@ -5685,9 +5685,9 @@ react-lifecycles-compat@^3.0.0, react-lifecycles-compat@^3.0.4:
   resolved "https://registry.yarnpkg.com/react-lifecycles-compat/-/react-lifecycles-compat-3.0.4.tgz#4f1a273afdfc8f3488a8c516bfda78f872352362"
   integrity sha512-fBASbA6LnOU9dOU2eW7aQ8xmYBSXUIWr+UmF9b1efZBazGNO+rcXT/icdKnYm2pTwcRylVUYwW7H1PHfLekVzA==
 
-"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro1674/export-stream-functions-only-for-node-bundles":
-  version "14.1.0"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#751635a224868f6dd0b58554664fd2cccb6d9240"
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro1674/fix-react-on-rails-overwrite-error":
+  version "14.1.1"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#289c189f2bb33f4e267c866bda77c56eb0cb677e"
   dependencies:
     "@babel/runtime-corejs3" "^7.12.5"
 
