@@ -106,7 +106,7 @@ jobs:
       - run: *format
       - run: *typescript-check
 
-  # Install Node modules for Renderer package with Yarn and save them to chache.
+  # Install Node modules for Renderer package with Yarn and save them to cache.
   install-package-node-packages:
     docker:
       - image: *docker_image
@@ -203,9 +203,15 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - run: *install-package-node-modules
+      # https://circleci.com/docs/collect-test-data/#jest
       - run:
           name: Run JS unit tests for Renderer package
-          command: yarn test
+          command: yarn run nps test.ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./jest
+            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+      - store_test_results:
+          path: ./jest
 
   rspec-package-specs:
     docker:
