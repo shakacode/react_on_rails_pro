@@ -61,6 +61,13 @@ declare global {
   }
 }
 
+const extendContext = (contextObject: vm.Context, additionalContext: Record<string, unknown>) => {
+  if (log.level === 'debug') {
+    log.debug(`Adding ${Object.keys(additionalContext).join(', ')} to context object.`);
+  }
+  Object.assign(contextObject, additionalContext);
+};
+
 export async function buildVM(filePath: string) {
   if (filePath === vmBundleFilePath && context) {
     return Promise.resolve(true);
@@ -72,15 +79,20 @@ export async function buildVM(filePath: string) {
     vmBundleFilePath = undefined;
     const contextObject = {};
     if (supportModules) {
-      log.debug(
-        'Adding Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval to context object.',
-      );
-      Object.assign(contextObject, { Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval });
+      extendContext(contextObject, {
+        Buffer,
+        process,
+        setTimeout,
+        setInterval,
+        setImmediate,
+        clearTimeout,
+        clearInterval,
+        clearImmediate,
+        queueMicrotask,
+      });
     }
     if (additionalContextIsObject) {
-      const keysString = Object.keys(additionalContext).join(', ');
-      log.debug(`Adding ${keysString} to context object.`);
-      Object.assign(contextObject, additionalContext);
+      extendContext(contextObject, additionalContext);
     }
     context = vm.createContext(contextObject);
 
@@ -126,6 +138,8 @@ export async function buildVM(filePath: string) {
       vm.runInContext(`function setTimeout() {}`, context);
       vm.runInContext(`function clearTimeout() {}`, context);
       vm.runInContext(`function clearInterval() {}`, context);
+      vm.runInContext(`function clearImmediate() {}`, context);
+      vm.runInContext(`function queueMicrotask() {}`, context);
     }
 
     // Run bundle code in created context:
