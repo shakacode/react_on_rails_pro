@@ -14,8 +14,6 @@ const config = {
 
   // See value in /config/initializers/react_on_rails_pro.rb. Should use env value in real app.
   password: 'myPassword1',
-  // This is a test account for React on Rails Pro. Substitute your own.
-  honeybadgerApiKey: 'a602365c',
 
   // If set to true, `supportModules` enables the server-bundle code to call a default set of NodeJS modules
   // that get added to the VM context: { Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval }.

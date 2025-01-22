@@ -230,10 +230,16 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
       'honeybadgerApiKey, sentryDsn, sentryTracing, and sentryTracesSampleRate are not used since RoRP 4.0. ' +
         'See https://www.shakacode.com/react-on-rails-pro/docs/node-renderer/error-reporting-and-tracing.',
     );
+    process.exit(1);
   }
 
-  if ('includeTimerPolyfills' in config || env.INCLUDE_TIMER_POLYFILLS) {
+  if (env.INCLUDE_TIMER_POLYFILLS) {
+    log.error('INCLUDE_TIMER_POLYFILLS environment variable is renamed to RENDERER_STUB_TIMERS in RoRP 4.0');
+    process.exit(1);
+  }
+  if ('includeTimerPolyfills' in config) {
     log.error('includeTimerPolyfills is renamed to stubTimers in RoRP 4.0');
+    process.exit(1);
   }
 
   log.level = config.logLevel;
