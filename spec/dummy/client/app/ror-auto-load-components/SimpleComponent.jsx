@@ -1,21 +1,18 @@
 import React, { Suspense } from 'react';
-import fetch from 'node-fetch';
-import SimpleClientComponent from '../components/SimpleClientComponent.jsx';
 
-const Post = async () => {
-  const post = await (await fetch('https://jsonplaceholder.org/posts/1')).json();
+async function AsyncComponent() {
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return <div>AsyncComponent</div>;
+}
+
+export default function StaticServerComponent() {
   return (
     <div>
-      <h1>{post.title}</h1>
-      <SimpleClientComponent content={post.content} />
+      <h1>StaticServerComponent</h1>
+      <p>This is a static server component</p>
+      <Suspense fallback={<div>Loading AsyncComponent...</div>}>
+        <AsyncComponent />
+      </Suspense>
     </div>
-  );
-};
-
-export default SimpleComponent = () => {
-  return (
-    <Suspense fallback={<div>Loading Post...</div>}>
-      <Post />
-    </Suspense>
-  );
-};
+  )
+}

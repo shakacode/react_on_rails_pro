@@ -56,10 +56,10 @@ const AsyncComponentsTreeForTesting = (props) => {
       <div>
         <p>Header for AsyncComponentsTreeForTesting</p>
       </div>
-      <Suspense fallback={<div>Loading HelloWorldHooks...</div>}>
+      {/* <Suspense fallback={<div>Loading HelloWorldHooks...</div>}>
         <AsyncHelloWorldHooks {...props} />
       </Suspense>
-      <HydrationStatus />
+      <HydrationStatus /> */}
       <Suspense fallback={<div>Loading branch1...</div>}>
         <AsyncComponentsBranch branchName="branch1" level={4} />
       </Suspense>
