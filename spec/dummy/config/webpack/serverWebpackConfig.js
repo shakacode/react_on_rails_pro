@@ -14,7 +14,7 @@ function extractLoader(rule, loaderName) {
 
     return testValue.includes(loaderName);
   });
-};
+}
 
 const configureServer = () => {
   // We need to use "merge" because the clientConfigObject, EVEN after running
