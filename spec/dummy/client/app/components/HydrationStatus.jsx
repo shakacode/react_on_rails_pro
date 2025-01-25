@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 
 const STATUS = {
-  streamingServerRender: "streamingServerRender",
-  hydrated: "hydrated",
-  pageLoaded: "pageLoaded",
+  streamingServerRender: 'streamingServerRender',
+  hydrated: 'hydrated',
+  pageLoaded: 'pageLoaded',
 };
 
 const STATUS_MESSAGES = {
-  [STATUS.streamingServerRender]: "Streaming server render",
-  [STATUS.hydrated]: "Hydrated",
-  [STATUS.pageLoaded]: "Page loaded",
+  [STATUS.streamingServerRender]: 'Streaming server render',
+  [STATUS.hydrated]: 'Hydrated',
+  [STATUS.pageLoaded]: 'Page loaded',
 };
 
 export default function HydrationStatus() {
@@ -20,8 +20,8 @@ export default function HydrationStatus() {
   useEffect(() => {
     console.log("Hydrated (This message is logged on client only as useEffect isn't called on server)");
     setHydrationStatus(STATUS.hydrated);
-    window.addEventListener("load", () => {
-      console.log("Page loaded");
+    window.addEventListener('load', () => {
+      console.log('Page loaded');
       setHydrationStatus(STATUS.pageLoaded);
     });
   }, []);
