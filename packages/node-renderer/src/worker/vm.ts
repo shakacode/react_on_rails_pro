@@ -91,7 +91,6 @@ export async function buildVM(filePath: string) {
         clearInterval,
         clearImmediate,
         queueMicrotask,
-        console,
       });
     }
 
@@ -106,7 +105,6 @@ export async function buildVM(filePath: string) {
     // Reimplement console methods for replaying on the client:
     vm.runInContext(
       `
-    debugConsole = console;
     console = {
       get history() {
         return sharedConsoleHistory.getConsoleHistory();
