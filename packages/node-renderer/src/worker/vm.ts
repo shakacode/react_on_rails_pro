@@ -9,6 +9,7 @@ import vm from 'vm';
 import m from 'module';
 import cluster from 'cluster';
 import type { Readable } from 'stream';
+import { ReadableStream } from 'stream/web';
 import { promisify, TextEncoder } from 'util';
 import type { ReactOnRails as ROR } from 'react-on-rails';
 
@@ -81,8 +82,6 @@ export async function buildVM(filePath: string) {
         TextDecoder,
         TextEncoder,
         URLSearchParams,
-        // @ts-expect-error ReadableStream is defined. TODO: fix tsconfig
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         ReadableStream,
         process,
         setTimeout,
