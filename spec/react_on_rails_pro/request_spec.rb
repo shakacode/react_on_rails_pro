@@ -46,7 +46,7 @@ describe ReactOnRailsPro::Request do
 
   describe "render_code_as_stream" do
     it "returns a stream" do
-      stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", false)
+      stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", is_rsc: false)
       expect(stream).to be_a(ReactOnRailsPro::StreamDecorator)
     end
 
@@ -58,7 +58,7 @@ describe ReactOnRailsPro::Request do
           end
         end
 
-        stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", false)
+        stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", is_rsc: false)
         chunks = []
         stream.each_chunk do |chunk|
           chunks << chunk
@@ -100,7 +100,7 @@ describe ReactOnRailsPro::Request do
           expect(mocked_block).to have_received(:call).with("Final chunk")
         end
 
-        stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", false)
+        stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", is_rsc: false)
         stream.each_chunk(&mocked_block.block)
       end
     end
@@ -114,7 +114,7 @@ describe ReactOnRailsPro::Request do
         yielder.call("Hello, world!\n")
       end
 
-      stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", false)
+      stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", is_rsc: false)
       chunks = []
       stream.each_chunk do |chunk|
         chunks << chunk
@@ -142,7 +142,7 @@ describe ReactOnRailsPro::Request do
         yielder.call("Incompatible error")
       end
 
-      stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", false)
+      stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", is_rsc: false)
       expect do
         stream.each_chunk(&mocked_block.block)
       end.to raise_error(ReactOnRailsPro::Error, /Incompatible error/)
@@ -158,7 +158,7 @@ describe ReactOnRailsPro::Request do
           yielder.call("Unkown error message")
         end
 
-        stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", false)
+        stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');", is_rsc: false)
         expect do
           stream.each_chunk(&mocked_block.block)
         end.to raise_error(ReactOnRailsPro::Error, /#{status_code}:\nUnkown error message/)
