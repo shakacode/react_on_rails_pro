@@ -20,7 +20,11 @@ module ReactOnRailsPro
     #   stream_view_containing_react_components(template: 'path/to/your/template')
     #
     # @example
-    #   stream_view_containing_react_components(template: 'path/to/your/template', close_stream_at_end: false, layout: false)
+    #   stream_view_containing_react_components(
+    #     template: 'path/to/your/template',
+    #     close_stream_at_end: false,
+    #     layout: false
+    #   )
     #
     # @note The `stream_react_component` helper is defined in the react_on_rails gem.
     #       For more details, refer to `lib/react_on_rails/helper.rb` in the react_on_rails repository.
