@@ -51,7 +51,7 @@ module ReactOnRailsPro
 
         def eval_streaming_js(js_code, render_options)
           path = prepare_render_path(js_code, render_options)
-          ReactOnRailsPro::Request.render_code_as_stream(path, js_code, render_options.rsc?)
+          ReactOnRailsPro::Request.render_code_as_stream(path, js_code, is_rsc: render_options.rsc?)
         end
 
         def eval_js(js_code, render_options, send_bundle: false)
