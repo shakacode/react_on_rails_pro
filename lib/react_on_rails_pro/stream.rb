@@ -2,8 +2,10 @@
 
 module ReactOnRailsPro
   module Stream
-    def self.included(base)
-      base.include ActionController::Live
+    extend ActiveSupport::Concern
+
+    included do
+      include ActionController::Live
     end
 
     # Streams React components within a specified template to the client.
