@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module ReactOnRailsPro
-  module RscControllerConcern
+  module RSCRenderer
     extend ActiveSupport::Concern
 
     included do
