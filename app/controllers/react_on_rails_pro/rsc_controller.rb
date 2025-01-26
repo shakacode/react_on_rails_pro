@@ -2,6 +2,6 @@
 
 module ReactOnRailsPro
   class RscController < ActionController::Base
-    include RscControllerConcern
+    include RSCRenderer
   end
 end
