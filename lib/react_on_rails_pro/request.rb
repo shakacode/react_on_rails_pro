@@ -173,7 +173,7 @@ module ReactOnRailsPro
               content_type: content_type,
               filename: File.basename(asset_path)
             }
-          rescue e
+          rescue StandardError => e
             warn "[ReactOnRailsPro] Error uploading asset #{asset_path}: #{e}"
           end
         end

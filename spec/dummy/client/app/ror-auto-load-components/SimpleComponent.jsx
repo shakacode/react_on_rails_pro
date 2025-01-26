@@ -12,10 +12,12 @@ const Post = async () => {
   );
 };
 
-export default SimpleComponent = () => {
+const SimpleComponent = () => {
   return (
     <Suspense fallback={<div>Loading Post...</div>}>
       <Post />
     </Suspense>
   );
 };
+
+export default SimpleComponent;
