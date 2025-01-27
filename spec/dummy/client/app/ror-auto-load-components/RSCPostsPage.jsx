@@ -4,14 +4,14 @@ import Posts from '../components/RSCPostsPage/Posts';
 import HelloWorld from '../components/HelloWorld.jsx';
 import ErrorComponent from '../components/ErrorComponent.jsx';
 
-const RSCPostsPage = (props) => {
+const RSCPostsPage = ({ artificialDelay, ...props }) => {
   return (
     <ErrorBoundary FallbackComponent={ErrorComponent}>
       <div>
         <HelloWorld {...props} />
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>RSC Posts Page</h1>
         <Suspense fallback={<div>Loading Posts...</div>}>
-          <Posts />
+          <Posts artificialDelay={artificialDelay} />
         </Suspense>
       </div>
     </ErrorBoundary>
