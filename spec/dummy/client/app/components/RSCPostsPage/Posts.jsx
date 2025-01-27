@@ -5,12 +5,13 @@ import Post from './Post';
 
 const Posts = async () => {
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  const posts = await (await fetch(`https://jsonplaceholder.org/posts`)).json();
-  const topFivePosts = _.take(posts, 5);
+  const posts = await (await fetch(`http://localhost:3000/api/posts`)).json();
+  const postsByUser = _.groupBy(posts, 'user_id');
+  const onePostPerUser = _.map(postsByUser, (group) => group[0]);
 
   return (
     <div>
-      {topFivePosts.map((post) => (
+      {onePostPerUser.map((post) => (
         <Post key={post.id} post={post} />
       ))}
     </div>

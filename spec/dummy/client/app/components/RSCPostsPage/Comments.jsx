@@ -5,14 +5,13 @@ import ToggleContainer from './ToggleContainer';
 import Comment from './Comment';
 
 const Comments = async ({ postId }) => {
-  const comments = await (await fetch(`https://jsonplaceholder.org/comments`)).json();
+  const postComments = await (await fetch(`http://localhost:3000/api/posts/${postId}/comments`)).json();
   await new Promise((resolve) => setTimeout(resolve, 2000));
-  const postComments = comments.filter((comment) => comment.postId === postId);
 
   const prepareComment = (comment) => {
-    const safeComment = _.pick(comment, ['comment', 'userId']);
-    const truncatedComment = _.truncate(safeComment.comment, { length: 100 });
-    return { ...safeComment, comment: truncatedComment };
+    const safeComment = _.pick(comment, ['body', 'user_id']);
+    const truncatedComment = _.truncate(safeComment.body, { length: 100 });
+    return { ...safeComment, body: truncatedComment };
   };
 
   return (
