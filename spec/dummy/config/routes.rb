@@ -60,4 +60,12 @@ Rails.application.routes.draw do
   get "server_render_with_timeout" => "pages#server_render_with_timeout"
   get "context_function_return_jsx" => "pages#context_function_return_jsx"
   get "pure_component_wrapped_in_function" => "pages#pure_component_wrapped_in_function"
+
+  # API Routes
+  namespace :api do
+    resources :posts do
+      resources :comments
+    end
+    resources :users
+  end
 end

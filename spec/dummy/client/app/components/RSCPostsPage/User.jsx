@@ -2,12 +2,11 @@ import React from 'react';
 import fetch from 'node-fetch';
 
 const User = async ({ userId }) => {
-  const user = await (await fetch(`https://jsonplaceholder.org/users/${userId}`)).json();
-  const fullName = `${user.firstname} ${user.lastname}`;
+  const user = await (await fetch(`http://localhost:3000/api/users/${userId}`)).json();
 
   return (
     <p>
-      By <span style={{ fontWeight: 'bold' }}>{fullName}</span>
+      By <span style={{ fontWeight: 'bold' }}>{user.name}</span>
     </p>
   );
 };

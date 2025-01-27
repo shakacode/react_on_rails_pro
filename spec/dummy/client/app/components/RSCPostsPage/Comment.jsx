@@ -4,9 +4,9 @@ import User from './User';
 const Comment = ({ comment }) => {
   return (
     <div>
-      <p>{comment.comment}</p>
+      <p>{comment.body}</p>
       <Suspense fallback={<div>Loading User...</div>}>
-        <User userId={comment.userId} />
+        <User userId={comment.user_id} />
       </Suspense>
     </div>
   );
