@@ -2,7 +2,7 @@ import React, { Suspense } from 'react';
 import moment from 'moment';
 import Comments from './Comments';
 
-const Post = ({ post }) => {
+const Post = ({ post, artificialDelay }) => {
   // render the post with its thumbnail
   return (
     <div style={{ border: '1px solid black', margin: '10px', padding: '10px' }}>
@@ -13,7 +13,7 @@ const Post = ({ post }) => {
       </p>
       <img src="https://placehold.co/200" alt={post.title} />
       <Suspense fallback={<div>Loading Comments...</div>}>
-        <Comments postId={post.id} />
+        <Comments postId={post.id} artificialDelay={artificialDelay} />
       </Suspense>
     </div>
   );
