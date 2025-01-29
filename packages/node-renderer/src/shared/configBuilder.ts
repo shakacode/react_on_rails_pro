@@ -10,6 +10,8 @@ import { LevelWithSilent } from 'pino';
 import log from './log';
 import packageJson from './packageJson';
 import truthy from './truthy';
+import * as http2 from 'node:http2'
+import { FastifyServerOptions } from 'fastify';
 
 // usually remote renderers are on staging or production, so, use production folder always
 const DEFAULT_PORT = 3800;
@@ -22,6 +24,7 @@ export interface Config {
   port: number;
   logLevel: LevelWithSilent;
   logHttpLevel: LevelWithSilent;
+  fastifyServerOptions: FastifyServerOptions<http2.Http2Server>;
   bundlePath: string;
   // If set to true, `supportModules` enables the server-bundle code to call a default set of NodeJS
   // global objects and functions that get added to the VM context:
@@ -121,6 +124,8 @@ const defaultConfig: Config = {
 
   // Log only errors from Fastify by default
   logHttpLevel: logLevel(env.RENDERER_LOG_HTTP_LEVEL || 'error'),
+
+  fastifyServerOptions: {},
 
   bundlePath: env.RENDERER_BUNDLE_PATH || defaultBundlePath(),
 
