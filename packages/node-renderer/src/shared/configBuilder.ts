@@ -6,12 +6,12 @@
 import os from 'os';
 import path from 'path';
 import fs from 'fs';
+import * as http2 from 'node:http2'
+import { FastifyServerOptions } from 'fastify';
 import { LevelWithSilent } from 'pino';
 import log from './log';
 import packageJson from './packageJson';
 import truthy from './truthy';
-import * as http2 from 'node:http2'
-import { FastifyServerOptions } from 'fastify';
 
 // usually remote renderers are on staging or production, so, use production folder always
 const DEFAULT_PORT = 3800;
