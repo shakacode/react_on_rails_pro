@@ -16,6 +16,9 @@ You can find the **package** version numbers from this repo's tags and below in 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+### Changed
+- Set `bodyLimit` to 100 MB by default to fix error 413. [PR 511](https://github.com/shakacode/react_on_rails_pro/pull/511) by [Romex91](https://github.com/Romex91)
+
 ### Fixed
 - Enabled `queueMicrotask` use in server bundle to support React 19. [PR 505](https://github.com/shakacode/react_on_rails_pro/pull/505) by [alexeyr-ci](https://github.com/alexeyr-ci).
 
