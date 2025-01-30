@@ -80,7 +80,7 @@
     "nps": "^5.9.12",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.2.5",
-    "react-on-rails": "14.1.0",
+    "react-on-rails": "github:shakacode/react_on_rails#abanoubghadban/pro425/hydrate-components-immediately-after-downloading-chunks",
     "release-it": "^17.6.0",
     "sentry-testkit": "^5.0.6",
     "touch": "^3.1.0",
@@ -108,8 +108,9 @@
     "packages/node-renderer/dist"
   ],
   "scripts": {
+    "postinstall": "test -f post-yarn-install.local && ./post-yarn-install.local || true",
     "test": "nps test",
-    "prepack": "nps build.prepack",
+    "prepack": "nps build.prepack", 
     "prepare": "nps build.prepack",
     "prepublishOnly": "nps build",
     "start": "nps",

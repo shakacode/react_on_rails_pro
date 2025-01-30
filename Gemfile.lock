@@ -6,6 +6,18 @@ GIT
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
 
+GIT
+  remote: https://github.com/shakacode/react_on_rails.git
+  revision: 96d10eaa6bbb27425b683f1c5cef7f0586f2a8ce
+  branch: abanoubghadban/pro425/hydrate-components-immediately-after-downloading-chunks
+  specs:
+    react_on_rails (14.1.1)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
+
 PATH
   remote: .
   specs:
@@ -296,12 +308,6 @@ GEM
     rb_sys (0.9.98)
     rdoc (6.7.0)
       psych (>= 4.0.0)
-    react_on_rails (14.1.1)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
     regexp_parser (2.9.2)
     reline (0.5.10)
       io-console (~> 0.5)
@@ -484,7 +490,7 @@ DEPENDENCIES
   pry-theme
   puma (~> 6)
   rails (~> 7.1)
-  react_on_rails (= 14.1.1)
+  react_on_rails!
   react_on_rails_pro!
   rspec-rails
   rspec-retry
