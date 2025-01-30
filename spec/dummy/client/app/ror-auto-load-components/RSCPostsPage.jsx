@@ -3,6 +3,7 @@ import { ErrorBoundary } from '../components/ErrorBoundary';
 import Posts from '../components/RSCPostsPage/Posts';
 import HelloWorld from '../components/HelloWorld.jsx';
 import ErrorComponent from '../components/ErrorComponent.jsx';
+import Spinner from '../components/Spinner.jsx';
 
 const RSCPostsPage = ({ artificialDelay, ...props }) => {
   return (
@@ -10,7 +11,7 @@ const RSCPostsPage = ({ artificialDelay, ...props }) => {
       <div>
         <HelloWorld {...props} />
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>RSC Posts Page</h1>
-        <Suspense fallback={<div>Loading Posts...</div>}>
+        <Suspense fallback={<Spinner />}>
           <Posts artificialDelay={artificialDelay} />
         </Suspense>
       </div>
