@@ -44,7 +44,7 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/rsc_posts_page")
   end
 
-  def posts_page
+  def posts_page # rubocop:disable Metrics/AbcSize
     artificial_delay = params[:artificial_delay] || 0
     posts = JSON.parse(HTTPX.get("http://localhost:3000/api/posts").body, symbolize_names: true)
     # pick one post per user
