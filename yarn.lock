@@ -6909,9 +6909,9 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-"react-on-rails@github:shakacode/react_on_rails#abanoubghadban/pro425/hydrate-components-immediately-after-downloading-chunks":
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro425/hydrate-components-immediately-after-downloading-chunks":
   version "14.1.1"
-  resolved "https://codeload.github.com/shakacode/react_on_rails/tar.gz/96d10eaa6bbb27425b683f1c5cef7f0586f2a8ce"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#402bd8f8d2e0a0b983697d1006da588408a5d9c9"
 
 readable-stream@^2.2.2:
   version "2.3.8"
