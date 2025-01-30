@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import React from 'react';
 import PreloadedPosts from '../components/RSCPostsPage/PreloadedPosts';
