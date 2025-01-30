@@ -145,7 +145,7 @@ RSpec.describe "Streaming API" do
     end
   end
 
-  it "handles errornous and then successful streaming responses" do
+  it "handles erroneous and then successful streaming responses" do
     mock_streaming_response(url, 410) do |yielder|
       yielder.call("Bundle Required")
     end

@@ -129,8 +129,8 @@ module ReactOnRailsPro
       result
     end
 
-    def self.common_form_data(rsc_renderer:)
-      password = if rsc_renderer
+    def self.common_form_data(is_rsc:)
+      password = if is_rsc
                    ReactOnRailsPro.configuration.rsc_renderer_password
                  else
                    ReactOnRailsPro.configuration.renderer_password
