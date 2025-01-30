@@ -44,6 +44,27 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/rsc_posts_page")
   end
 
+  def posts_page
+    artificial_delay = params[:artificial_delay] || 0
+    posts = JSON.parse(HTTPX.get("http://localhost:3000/api/posts").body, symbolize_names: true)
+    # pick one post per user
+    posts = posts.group_by { |post| post[:user_id] }.map { |_, user_posts| user_posts.first }
+    posts = posts.map do |post|
+      comments = JSON.parse(HTTPX.get("http://localhost:3000/api/posts/#{post[:id]}/comments").body,
+                            symbolize_names: true)
+      comments = comments.map do |comment|
+        comment.merge(user: JSON.parse(HTTPX.get("http://localhost:3000/api/users/#{comment[:user_id]}").body,
+                                       symbolize_names: true))
+      end
+      post.merge(comments: comments)
+    rescue StandardError => e
+      raise "Error while fetching post #{post} #{post[:id]}: #{e.message}"
+    end
+    sleep artificial_delay.to_i / 1000 * 2
+    @posts = posts
+    render "/pages/posts_page"
+  end
+
   def loadable_component
     render "/pages/pro/loadable_component"
   end

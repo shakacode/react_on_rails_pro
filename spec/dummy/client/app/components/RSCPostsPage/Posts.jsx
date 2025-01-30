@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import fetch from 'node-fetch';
 import _ from 'lodash';
 import Post from './Post';
