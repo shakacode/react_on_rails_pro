@@ -8,6 +8,7 @@ ruby '3.3.0'
 gem "react_on_rails", "14.1.1" # keep in sync with package.json files
 
 # For local development
+# Add the following line to the Gemfile.local file
 # gem "react_on_rails", path: "../react_on_rails"
 
 gem "shakapacker", "8.0.0"
