@@ -9,11 +9,11 @@ module ReactOnRailsPro
     class << self
       def reset_connection
         @connection&.close
-        @rsc_connection&.close
         @connection = create_connection(url: ReactOnRailsPro.configuration.renderer_url)
 
         return unless ReactOnRailsPro.configuration.enable_rsc_support
 
+        @rsc_connection&.close
         @rsc_connection = create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
       end
 
@@ -38,17 +38,17 @@ module ReactOnRailsPro
 
         return unless ReactOnRailsPro.configuration.enable_rsc_support
 
-        perform_request("/upload-assets", is_rsc: true, form: form_with_assets_and_bundle(rsc_renderer: true))
+        perform_request("/upload-assets", is_rsc: true, form: form_with_assets_and_bundle(is_rsc: true))
         # Explicitly return nil to ensure consistent return value regardless of whether
         # enable_rsc_support is true or false. Without this, the method would return nil
         # when RSC is disabled but return the response object when RSC is enabled.
         nil
       end
 
-      def asset_exists_on_vm_renderer?(filename, rsc_renderer: false)
+      def asset_exists_on_vm_renderer?(filename, is_rsc: false)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on node-renderer: #{filename}" }
-        form_data = common_form_data(rsc_renderer: rsc_renderer)
-        response = perform_request("/asset-exists?filename=#{filename}", is_rsc: rsc_renderer, json: form_data)
+        form_data = common_form_data(is_rsc: is_rsc)
+        response = perform_request("/asset-exists?filename=#{filename}", is_rsc: is_rsc, json: form_data)
         JSON.parse(response.body)["exists"] == true
       end
 
@@ -120,7 +120,7 @@ module ReactOnRailsPro
       end
 
       def form_with_code(js_code, send_bundle, is_rsc:)
-        form = common_form_data(rsc_renderer: is_rsc)
+        form = common_form_data(is_rsc: is_rsc)
         form["renderingRequest"] = js_code
         populate_form_with_bundle_and_assets(form, is_rsc: is_rsc, check_bundle: false) if send_bundle
         form
@@ -152,7 +152,7 @@ module ReactOnRailsPro
       end
 
       def add_assets_to_form(form, is_rsc:)
-        assets_to_copy = ReactOnRailsPro.configuration.assets_to_copy.presence || []
+        assets_to_copy = ReactOnRailsPro.configuration.assets_to_copy || []
         # react_client_manifest file is needed to generate react server components payload
         assets_to_copy << ReactOnRails::Utils.react_client_manifest_file_path if is_rsc
 
@@ -181,14 +181,14 @@ module ReactOnRailsPro
         form
       end
 
-      def form_with_assets_and_bundle(rsc_renderer: false)
-        form = common_form_data(rsc_renderer: rsc_renderer)
-        populate_form_with_bundle_and_assets(form, is_rsc: rsc_renderer, check_bundle: true)
+      def form_with_assets_and_bundle(is_rsc: false)
+        form = common_form_data(is_rsc: is_rsc)
+        populate_form_with_bundle_and_assets(form, is_rsc: is_rsc, check_bundle: true)
         form
       end
 
-      def common_form_data(rsc_renderer:)
-        password = if rsc_renderer
+      def common_form_data(is_rsc:)
+        password = if is_rsc
                      ReactOnRailsPro.configuration.rsc_renderer_password
                    else
                      ReactOnRailsPro.configuration.renderer_password
