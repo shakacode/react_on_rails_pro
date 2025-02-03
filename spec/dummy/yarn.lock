@@ -5693,9 +5693,9 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro425/hydrate-components-immediately-after-downloading-chunks":
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro362-add-support-for-RSC":
   version "14.1.1"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#402bd8f8d2e0a0b983697d1006da588408a5d9c9"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#44dee52b7068d8a6bab062bd68a8a1f1e5c67f4a"
 
 react-proptypes@^1.0.0:
   version "1.0.0"

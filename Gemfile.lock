@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 96d10eaa6bbb27425b683f1c5cef7f0586f2a8ce
-  branch: abanoubghadban/pro425/hydrate-components-immediately-after-downloading-chunks
+  revision: 44dee52b7068d8a6bab062bd68a8a1f1e5c67f4a
+  branch: abanoubghadban/pro362-add-support-for-RSC
   specs:
     react_on_rails (14.1.1)
       addressable
