@@ -176,3 +176,59 @@ This migration approach allows you to:
 - Test changes in isolation
 - Keep interactive components working as before
 - Eliminate client-side lazy loading overhead
+
+### Client Component Manifest
+
+The React Server Components system needs to know which JavaScript chunks to load for each client component. This is handled through a manifest file called `react-client-manifest.json` that maps component file paths to their corresponding chunks.
+
+This manifest is generated automatically by the `react-server-dom-webpack/plugin` (RSDWPlugin) that we added in the client webpack configuration:
+
+```javascript:config/webpack/clientWebpackConfig.js
+clientConfig.plugins.push(new RSDWPlugin({ isServer: false }));
+```
+
+This plugin is responsible for generating the manifest file, which is then used by the React Server Components system to determine which chunks to load for each client component.
+
+The manifest contains entries that look like this:
+
+```json
+{
+  "file:///app/components/HelloWorld.jsx": {
+    "id": "./client/app/components/HelloWorld.jsx",
+    "chunks": [
+      "client25",
+      "js/client25.js"
+    ],
+    "name": ""
+  }
+}
+```
+
+When the RSC server is rendering a rsc payload, it doesn't render the client components. It just renders the server components. Client components are added as a reference to their corresponding chunks in the manifest. Like this:
+
+```rsc
+M1:{"id":"./client/app/components/HelloWorld.jsx","chunks":["client25"],"name":""}
+J0:["$","@1",null,{"children":["$","span",null,{"children":"Hello from server land"}]}]
+
+```
+
+On the client side, React processes the RSC payload in two key steps:
+
+1. Server Component Resolution:
+   - The RSC payload is parsed and server components are converted to their HTML representation
+   - This happens synchronously without any network requests
+   - Server components maintain their rendered state from the server
+
+2. Client Component Loading:
+   - The RSC payload includes references to the JavaScript chunks needed for client components
+   - These chunks are loaded asynchronously and in parallel
+   - Once loaded, client components hydrate and become interactive
+   - Each client component hydrates independently, allowing for progressive interactivity
+
+This allows the client to know exactly which JavaScript chunks it needs to load to hydrate each client component, enabling efficient code-splitting and selective hydration of only the interactive parts of your application.
+
+The manifest is particularly important for:
+- Code splitting - Only loading the JS needed for specific client components
+- Selective hydration - Hydrating client components independently
+
+You can find your application's manifest at `public/webpack/development/react-client-manifest.json` after building your client bundle by running `yarn run build:dev`.
