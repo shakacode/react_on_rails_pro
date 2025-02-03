@@ -6909,9 +6909,9 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-"react-on-rails@github:shakacode/react_on_rails#abanoubghadban/pro362-add-support-for-RSC":
-  version "15.0.0-alpha.2"
-  resolved "https://codeload.github.com/shakacode/react_on_rails/tar.gz/f1d0964dfa000858a9b7145059d02dc108f37350"
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro362-add-support-for-RSC":
+  version "14.1.1"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#44dee52b7068d8a6bab062bd68a8a1f1e5c67f4a"
 
 readable-stream@^2.2.2:
   version "2.3.8"
