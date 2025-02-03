@@ -9,12 +9,12 @@ module ReactOnRailsPro
     class << self
       def reset_connection
         @connection&.close
-        @connection = create_connection(url: ReactOnRailsPro.configuration.renderer_url)
+        @connection = create_connection(is_rsc: false)
 
         return unless ReactOnRailsPro.configuration.enable_rsc_support
 
         @rsc_connection&.close
-        @rsc_connection = create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
+        @rsc_connection = create_connection(is_rsc: true)
       end
 
       def render_code(path, js_code, send_bundle)
@@ -55,7 +55,7 @@ module ReactOnRailsPro
       private
 
       def connection
-        @connection ||= create_connection(url: ReactOnRailsPro.configuration.renderer_url)
+        @connection ||= create_connection(is_rsc: false)
       end
 
       def rsc_connection
@@ -67,7 +67,7 @@ module ReactOnRailsPro
                   "rendering any RSC payload."
           end
 
-          create_connection(url: ReactOnRailsPro.configuration.rsc_renderer_url)
+          create_connection(is_rsc: true)
         end
       end
 
@@ -200,7 +200,12 @@ module ReactOnRailsPro
         }
       end
 
-      def create_connection(url:)
+      def create_connection(is_rsc:)
+        url = if is_rsc
+                ReactOnRailsPro.configuration.rsc_renderer_url
+              else
+                ReactOnRailsPro.configuration.renderer_url
+              end
         Rails.logger.info do
           "[ReactOnRailsPro] Setting up Node Renderer connection to #{url}"
         end
