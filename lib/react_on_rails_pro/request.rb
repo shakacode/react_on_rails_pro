@@ -155,7 +155,11 @@ module ReactOnRailsPro
           # For persistent connections we want retries,
           # so the requests don't just fail if the other side closes the connection
           # https://honeyryderchuck.gitlab.io/httpx/wiki/Persistent
-          .plugin(:retries, max_retries: 1, retry_change_requests: true)
+          .plugin(:retries, max_retries: 1, retry_change_requests: true, retry_on: lambda { |res|
+            # Retrying on timeout errors is a bad idea: timeout often happen during high server load
+            # retrying in that case would increase server-load even further.
+            !res.error.is_a?(HTTPX::TimeoutError)
+          })
           .plugin(:stream)
           # See https://www.rubydoc.info/gems/httpx/1.3.3/HTTPX%2FOptions:initialize for the available options
           .with(
