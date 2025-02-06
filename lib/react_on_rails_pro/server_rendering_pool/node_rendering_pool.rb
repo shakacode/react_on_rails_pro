@@ -21,7 +21,10 @@ module ReactOnRailsPro
             @server_bundle_hash = ReactOnRailsPro::Utils.bundle_hash
           end
 
-          return unless ReactOnRails.configuration.enable_rsc_support && (@rsc_bundle_hash.blank? || ReactOnRails.configuration.development_mode)
+          unless ReactOnRailsPro.configuration.enable_rsc_support &&
+                 (@rsc_bundle_hash.blank? || ReactOnRails.configuration.development_mode)
+            return
+          end
 
           @rsc_bundle_hash = ReactOnRailsPro::Utils.rsc_bundle_hash
         end

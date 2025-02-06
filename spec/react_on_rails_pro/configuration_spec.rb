@@ -2,7 +2,7 @@
 
 require_relative "spec_helper"
 
-module ReactOnRailsPro # rubocop:disable Metrics/ModuleLength
+module ReactOnRailsPro
   RSpec.describe Configuration do
     after do
       ReactOnRailsPro.instance_variable_set(:@configuration, nil)
@@ -152,37 +152,6 @@ module ReactOnRailsPro # rubocop:disable Metrics/ModuleLength
         end
 
         expect(ReactOnRailsPro.configuration.renderer_password).to be_nil
-      end
-    end
-
-    describe ".rsc_renderer_password" do
-      it "is the rsc_renderer_password if provided" do
-        password = "abcdef"
-
-        ReactOnRailsPro.configure do |config|
-          config.rsc_renderer_password = password
-        end
-
-        expect(ReactOnRailsPro.configuration.rsc_renderer_password).to eq(password)
-      end
-
-      it "is the URI password if provided in the RSC URL" do
-        password = "abcdef"
-
-        url = "https://:#{password}@localhost:3801"
-        ReactOnRailsPro.configure do |config|
-          config.rsc_renderer_url = url
-        end
-
-        expect(ReactOnRailsPro.configuration.rsc_renderer_password).to eq(password)
-      end
-
-      it "is blank if not provided in the RSC URL" do
-        ReactOnRailsPro.configure do |config|
-          config.rsc_renderer_url = "https://localhost:3801"
-        end
-
-        expect(ReactOnRailsPro.configuration.rsc_renderer_password).to be_nil
       end
     end
 

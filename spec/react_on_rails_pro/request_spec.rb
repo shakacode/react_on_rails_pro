@@ -6,7 +6,6 @@ require "fakefs/safe"
 describe ReactOnRailsPro::Request do
   let(:logger_mock) { instance_double(ActiveSupport::Logger).as_null_object }
   let(:renderer_url) { "http://node-renderer.com:3800" }
-  let(:rsc_renderer_url) { "http://node-rsc-renderer.com:3800" }
   let(:render_path) { "/render" }
   let(:render_full_url) { "#{renderer_url}#{render_path}" }
   let(:server_bundle_path) { "public/webpack/production/server_bundle.js" }
@@ -23,7 +22,6 @@ describe ReactOnRailsPro::Request do
 
     clear_stream_mocks
     allow(ReactOnRailsPro.configuration).to receive(:renderer_url).and_return(renderer_url)
-    allow(ReactOnRailsPro.configuration).to receive(:rsc_renderer_url).and_return(rsc_renderer_url)
 
     original_httpx_plugin = HTTPX.method(:plugin)
     allow(HTTPX).to receive(:plugin) do |*args|

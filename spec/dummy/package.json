@@ -105,8 +105,7 @@
     "build:server": "RAILS_ENV=production NODE_ENV=production SERVER=true bin/shakapacker",
     "build:clean": "rm -rf public/webpack || true",
     "node-renderer-debug": "RENDERER_PORT=3800 ndb client/node-renderer.js",
-    "node-renderer": "node client/node-renderer.js",
-    "rsc-node-renderer": "RENDERER_PORT=3900 node client/node-renderer.js"
+    "node-renderer": "node client/node-renderer.js"
   },
   "license": "UNLICENSED",
   "repository": {

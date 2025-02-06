@@ -59,6 +59,10 @@ export interface Config {
   // If set to false, only logs that occur on the server prior to any awaited asynchronous operations will be replayed.
   // The default value is true in development, otherwise it is set to false.
   replayServerAsyncOperationLogs: boolean;
+  // Maximum number of VM contexts to keep in memory. Defaults to 2 since typically only two contexts
+  // are needed - one for the server bundle and one for React Server Components (RSC) if enabled.
+  // Older contexts are removed when this limit is reached.
+  maxVMPoolSize: number;
 }
 
 let config: Config | undefined;
@@ -152,6 +156,10 @@ const defaultConfig: Config = {
   replayServerAsyncOperationLogs: truthy(
     env.REPLAY_SERVER_ASYNC_OPERATION_LOGS ?? NODE_ENV === 'development',
   ),
+
+  // Maximum number of VM contexts to keep in memory. Defaults to 2 since typically only two contexts
+  // are needed - one for the server bundle and one for React Server Components (RSC) if enabled.
+  maxVMPoolSize: (env.MAX_VM_POOL_SIZE && parseInt(env.MAX_VM_POOL_SIZE, 10)) || 2,
 };
 
 function envValuesUsed() {
@@ -172,6 +180,7 @@ function envValuesUsed() {
     INCLUDE_TIMER_POLYFILLS: !('includeTimerPolyfills' in userConfig) && env.INCLUDE_TIMER_POLYFILLS,
     REPLAY_SERVER_ASYNC_OPERATION_LOGS:
       !userConfig.replayServerAsyncOperationLogs && env.REPLAY_SERVER_ASYNC_OPERATION_LOGS,
+    MAX_VM_POOL_SIZE: !userConfig.maxVMPoolSize && env.MAX_VM_POOL_SIZE,
   };
 }
 
@@ -205,6 +214,10 @@ export function buildConfig(providedUserConfig?: Partial<Config>): Config {
   config = { ...defaultConfig, ...userConfig };
 
   config.supportModules = truthy(config.supportModules);
+
+  if (config.maxVMPoolSize <= 0 || !Number.isInteger(config.maxVMPoolSize)) {
+    throw new Error('maxVMPoolSize must be a positive integer');
+  }
 
   let currentArg: string | undefined;
 

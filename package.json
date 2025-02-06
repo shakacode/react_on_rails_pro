@@ -108,7 +108,7 @@
     "packages/node-renderer/dist"
   ],
   "scripts": {
-    "postinstall": "echo 'post-yarn-install.local executed' || true",
+    "postinstall": "test -f post-yarn-install.local && ./post-yarn-install.local || true",
     "test": "nps test",
     "prepublishOnly": "nps build",
     "start": "nps",
