@@ -64,9 +64,8 @@ module ReactOnRailsPro
   end
 
   class StreamRequest
-    def initialize(is_rsc: false, &request_block)
+    def initialize(&request_block)
       @request_executor = request_block
-      @is_rsc = is_rsc
     end
 
     private_class_method :new
@@ -89,7 +88,7 @@ module ReactOnRailsPro
             next
           end
 
-          processed_chunk = @is_rsc ? chunk : chunk.strip
+          processed_chunk = chunk.strip
           yield processed_chunk unless processed_chunk.empty?
         end
         break
@@ -108,8 +107,8 @@ module ReactOnRailsPro
     end
 
     # Method to start the decoration
-    def self.create(is_rsc: false, &request_block)
-      StreamDecorator.new(new(is_rsc: is_rsc, &request_block))
+    def self.create(&request_block)
+      StreamDecorator.new(new(&request_block))
     end
 
     private

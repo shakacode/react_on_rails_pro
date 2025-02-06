@@ -12,7 +12,6 @@ ReactOnRailsPro.configure do |config|
   config.throw_js_errors = false
 
   config.renderer_password = "myPassword1"
-  config.rsc_renderer_password = "myPassword1"
 
   config.enable_rsc_support = true
   config.renderer_url = "http://localhost:3800"

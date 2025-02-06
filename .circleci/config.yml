@@ -277,10 +277,6 @@ jobs:
           command: cd spec/dummy && yarn run node-renderer
           background: true
       - run:
-          name: Run RSC Node renderer in a background
-          command: cd spec/dummy && yarn run rsc-node-renderer
-          background: true
-      - run:
           name: run rails server in background
           command: cd spec/dummy && RAILS_ENV=test rails server
           background: true
