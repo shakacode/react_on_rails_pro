@@ -169,7 +169,10 @@ describe('buildVM and runInVM', () => {
     await createUploadedBundleForTest();
     await buildVM(uploadedBundlePathForTest());
 
-    const vmResult = await runInVM('console.log("Console message inside of VM") || console.history;', uploadedBundlePathForTest());
+    const vmResult = await runInVM(
+      'console.log("Console message inside of VM") || console.history;',
+      uploadedBundlePathForTest(),
+    );
     const consoleHistory = JSON.stringify([
       { level: 'log', arguments: ['[SERVER] Console message inside of VM'] },
     ]);
@@ -193,7 +196,10 @@ describe('buildVM and runInVM', () => {
     const config = getConfig();
     config.supportModules = false;
 
-    const serverBundlePath = path.resolve(__dirname, './fixtures/projects/friendsandguests/1a7fe417/server-bundle.js');
+    const serverBundlePath = path.resolve(
+      __dirname,
+      './fixtures/projects/friendsandguests/1a7fe417/server-bundle.js',
+    );
     await buildVM(serverBundlePath);
 
     // WelcomePage component:
@@ -213,7 +219,10 @@ describe('buildVM and runInVM', () => {
       commit,
       'layoutNavbarRenderingRequest.js',
     );
-    const layoutNavbarRenderingResult = await runInVM(layoutNavbarComponentRenderingRequest, serverBundlePath);
+    const layoutNavbarRenderingResult = await runInVM(
+      layoutNavbarComponentRenderingRequest,
+      serverBundlePath,
+    );
     expect(
       (layoutNavbarRenderingResult as string).includes('data-react-checksum=\\"-667058792\\"'),
     ).toBeTruthy();
@@ -224,7 +233,10 @@ describe('buildVM and runInVM', () => {
       commit,
       'listingIndexRenderingRequest.js',
     );
-    const listingIndexRenderingResult = await runInVM(listingIndexComponentRenderingRequest, serverBundlePath);
+    const listingIndexRenderingResult = await runInVM(
+      listingIndexComponentRenderingRequest,
+      serverBundlePath,
+    );
     expect(
       (listingIndexRenderingResult as string).includes('data-react-checksum=\\"452252439\\"'),
     ).toBeTruthy();
@@ -258,7 +270,10 @@ describe('buildVM and runInVM', () => {
     const project = 'react-webpack-rails-tutorial';
     const commit = 'ec974491';
 
-    const serverBundlePath = path.resolve(__dirname, './fixtures/projects/react-webpack-rails-tutorial/ec974491/server-bundle.js');
+    const serverBundlePath = path.resolve(
+      __dirname,
+      './fixtures/projects/react-webpack-rails-tutorial/ec974491/server-bundle.js',
+    );
     await buildVM(serverBundlePath);
 
     // NavigationBar component:
@@ -267,7 +282,10 @@ describe('buildVM and runInVM', () => {
       commit,
       'navigationBarAppRenderingRequest.js',
     );
-    const navigationBarRenderingResult = await runInVM(navigationBarComponentRenderingRequest, serverBundlePath);
+    const navigationBarRenderingResult = await runInVM(
+      navigationBarComponentRenderingRequest,
+      serverBundlePath,
+    );
     expect(
       (navigationBarRenderingResult as string).includes('data-react-checksum=\\"-472831860\\"'),
     ).toBeTruthy();
@@ -295,7 +313,10 @@ describe('buildVM and runInVM', () => {
     const project = 'bionicworkshop';
     const commit = 'fa6ccf6b';
 
-    const serverBundlePath = path.resolve(__dirname, './fixtures/projects/bionicworkshop/fa6ccf6b/server-bundle.js');
+    const serverBundlePath = path.resolve(
+      __dirname,
+      './fixtures/projects/bionicworkshop/fa6ccf6b/server-bundle.js',
+    );
     await buildVM(serverBundlePath);
 
     // SignIn page with flash component:
@@ -304,7 +325,10 @@ describe('buildVM and runInVM', () => {
       commit,
       'signInPageWithFlashRenderingRequest.js',
     );
-    const signInPageWithFlashRenderingResult = await runInVM(signInPageWithFlashRenderingRequest, serverBundlePath);
+    const signInPageWithFlashRenderingResult = await runInVM(
+      signInPageWithFlashRenderingRequest,
+      serverBundlePath,
+    );
 
     // We don't put checksum here since it changes for every request with Rails auth token:
     expect((signInPageWithFlashRenderingResult as string).includes('data-react-checksum=')).toBeTruthy();
@@ -346,7 +370,10 @@ describe('buildVM and runInVM', () => {
     const project = 'spec-dummy';
     const commit = '9fa89f7';
 
-    const serverBundlePath = path.resolve(__dirname, './fixtures/projects/spec-dummy/9fa89f7/server-bundle-web-target.js');
+    const serverBundlePath = path.resolve(
+      __dirname,
+      './fixtures/projects/spec-dummy/9fa89f7/server-bundle-web-target.js',
+    );
     await buildVM(serverBundlePath);
 
     // WelcomePage component:
@@ -372,7 +399,10 @@ describe('buildVM and runInVM', () => {
       commit,
       'consoleLogsInAsyncServerRequest.js',
     );
-    const serverBundlePath = path.resolve(__dirname, './fixtures/projects/spec-dummy/e5e10d1/server-bundle-node-target.js');
+    const serverBundlePath = path.resolve(
+      __dirname,
+      './fixtures/projects/spec-dummy/e5e10d1/server-bundle-node-target.js',
+    );
 
     const requestId = '6ce0caf9-2691-472a-b59b-5de390bcffdf';
 
@@ -389,7 +419,7 @@ describe('buildVM and runInVM', () => {
       await prepareVM(true);
       const consoleLogsInAsyncServerRequestResult = (await runInVM(
         consoleLogsInAsyncServerRequest,
-        serverBundlePath
+        serverBundlePath,
       )) as string;
 
       expect(consoleLogsInAsyncServerRequestResult).toContain(
@@ -440,7 +470,10 @@ describe('buildVM and runInVM', () => {
 
     test('if replayServerAsyncOperationLogs is false, only sync console logs are replayed', async () => {
       await prepareVM(false);
-      const consoleLogsInAsyncServerRequestResult = await runInVM(consoleLogsInAsyncServerRequest, serverBundlePath);
+      const consoleLogsInAsyncServerRequestResult = await runInVM(
+        consoleLogsInAsyncServerRequest,
+        serverBundlePath,
+      );
 
       expect(consoleLogsInAsyncServerRequestResult as string).toContain(
         `console.log.apply(console, [\\"[SERVER] [${requestId}] Console log from Sync Server\\"]);`,
