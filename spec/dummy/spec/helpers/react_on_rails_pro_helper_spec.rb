@@ -223,7 +223,7 @@ describe ReactOnRailsProHelper, type: :helper do
       HTML
     end
 
-    def mock_request_and_response
+    def mock_request_and_response(mock_chunks = chunks)
       # Reset connection instance variables to ensure clean state for tests
       ReactOnRailsPro::Request.instance_variable_set(:@connection, nil)
       ReactOnRailsPro::Request.instance_variable_set(:@rsc_connection, nil)
@@ -235,7 +235,7 @@ describe ReactOnRailsProHelper, type: :helper do
 
       chunks_read.clear
       mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}/render/[a-f0-9]{32}}, 200) do |yielder|
-        chunks.each do |chunk|
+        mock_chunks.each do |chunk|
           chunks_read << chunk
           yielder.call("#{chunk.to_json}\n")
         end
@@ -250,10 +250,10 @@ describe ReactOnRailsProHelper, type: :helper do
         # This setup is necessary because stream_react_component relies on @rorp_rendering_fibers
         # to function correctly within the streaming context.
         @rorp_rendering_fibers = []
-        mock_request_and_response
       end
 
       it "returns the component shell that exist in the initial chunk with the consoleReplayScript" do
+        mock_request_and_response
         initial_result = stream_react_component(component_name, props: props, **component_options)
         expect(initial_result).to include(react_component_div_with_initial_chunk)
         expect(initial_result).to include(chunks.first[:consoleReplayScript])
@@ -262,6 +262,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "creates a fiber to read subsequent chunks" do
+        mock_request_and_response
         stream_react_component(component_name, props: props, **component_options)
         expect(@rorp_rendering_fibers.count).to eq(1) # rubocop:disable RSpec/InstanceVariable
         fiber = @rorp_rendering_fibers.first # rubocop:disable RSpec/InstanceVariable
@@ -283,6 +284,23 @@ describe ReactOnRailsProHelper, type: :helper do
         expect(fiber.resume).to be_nil
         expect(fiber).not_to be_alive
         expect(chunks_read.count).to eq(chunks.count)
+      end
+
+      it "does not trim whitespaces from html" do
+        first_chunk_string = +"  <div>Chunk 1: with whitespaces</div>  "
+        chunks_with_whitespaces = [
+          { html: first_chunk_string },
+          { html: "\n\n\n<div>Chunk 2: with newlines</div>\n\n\n" },
+          { html: "<div>Chunk 3: with tabs</div>\t\t\t" },
+          { html: "\t\t\t<div>Chunk 4: with mixed whitespaces</div>  \n\n\n" }
+        ].map { |chunk| chunk.merge(consoleReplayScript: "") }
+        mock_request_and_response(chunks_with_whitespaces)
+        initial_result = stream_react_component(component_name, props: props, **component_options)
+        expect(initial_result).to include(chunks_with_whitespaces.first[:html])
+        fiber = @rorp_rendering_fibers.first # rubocop:disable RSpec/InstanceVariable
+        expect(fiber.resume).to include(chunks_with_whitespaces[1][:html])
+        expect(fiber.resume).to include(chunks_with_whitespaces[2][:html])
+        expect(fiber.resume).to include(chunks_with_whitespaces[3][:html])
       end
     end
 
