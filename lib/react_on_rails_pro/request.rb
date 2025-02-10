@@ -26,18 +26,9 @@ module ReactOnRailsPro
         end
       end
 
-      # TODO: add support for uploading rsc assets
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
         perform_request("/upload-assets", form: form_with_assets_and_bundle)
-
-        return unless ReactOnRailsPro.configuration.enable_rsc_support
-
-        perform_request("/upload-assets", form: form_with_assets_and_bundle(is_rsc: true))
-        # Explicitly return nil to ensure consistent return value regardless of whether
-        # enable_rsc_support is true or false. Without this, the method would return nil
-        # when RSC is disabled but return the response object when RSC is enabled.
-        nil
       end
 
       def asset_exists_on_vm_renderer?(filename)
@@ -116,39 +107,52 @@ module ReactOnRailsPro
       def form_with_code(js_code, send_bundle, is_rsc:)
         form = common_form_data
         form["renderingRequest"] = js_code
-        populate_form_with_bundle_and_assets(form, is_rsc: is_rsc, check_bundle: false) if send_bundle
+        unless is_rsc
+          pool = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool
+          form["rscBundleTimestamp"] = pool.rsc_bundle_hash
+        end
+        populate_form_with_bundle_and_assets(form, check_bundle: false) if send_bundle
         form
       end
 
-      def populate_form_with_bundle_and_assets(form, is_rsc:, check_bundle:)
-        server_bundle_path = if is_rsc
-                               ReactOnRails::Utils.rsc_bundle_js_file_path
-                             else
-                               ReactOnRails::Utils.server_bundle_js_file_path
-                             end
+      def populate_form_with_bundle_and_assets(form, check_bundle:)
+        server_bundle_path = ReactOnRails::Utils.server_bundle_js_file_path
+        rsc_support_enabled = ReactOnRailsPro.configuration.enable_rsc_support
+        rsc_bundle_path = ReactOnRails::Utils.rsc_bundle_js_file_path
+
         if check_bundle && !File.exist?(server_bundle_path)
           raise ReactOnRailsPro::Error, "Bundle not found #{server_bundle_path}"
         end
 
+        if check_bundle && rsc_support_enabled && !File.exist?(rsc_bundle_path)
+          raise ReactOnRailsPro::Error, "RSC bundle not found #{rsc_bundle_path}"
+        end
+
         pool = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool
-        renderer_bundle_file_name = if is_rsc
-                                      pool.rsc_renderer_bundle_file_name
-                                    else
-                                      pool.renderer_bundle_file_name
-                                    end
         form["bundle"] = {
           body: get_form_body_for_file(server_bundle_path),
           content_type: "text/javascript",
-          filename: renderer_bundle_file_name
+          filename: pool.renderer_bundle_file_name
         }
 
-        add_assets_to_form(form, is_rsc: is_rsc)
+        if rsc_support_enabled
+          form["rscBundle"] = {
+            body: get_form_body_for_file(rsc_bundle_path),
+            content_type: "text/javascript",
+            filename: pool.rsc_renderer_bundle_file_name
+          }
+        end
+
+        add_assets_to_form(form)
       end
 
-      def add_assets_to_form(form, is_rsc:)
+      def add_assets_to_form(form)
         assets_to_copy = ReactOnRailsPro.configuration.assets_to_copy || []
-        # react_client_manifest file is needed to generate react server components payload
-        assets_to_copy << ReactOnRails::Utils.react_client_manifest_file_path if is_rsc
+        # react_client_manifest and react_server_manifest files are needed to generate react server components payload
+        if ReactOnRailsPro.configuration.enable_rsc_support
+          assets_to_copy << ReactOnRails::Utils.react_client_manifest_file_path
+          assets_to_copy << ReactOnRails::Utils.react_server_manifest_file_path
+        end
 
         return form unless assets_to_copy.present?
 
@@ -175,9 +179,9 @@ module ReactOnRailsPro
         form
       end
 
-      def form_with_assets_and_bundle(is_rsc: false)
+      def form_with_assets_and_bundle
         form = common_form_data
-        populate_form_with_bundle_and_assets(form, is_rsc: is_rsc, check_bundle: true)
+        populate_form_with_bundle_and_assets(form, check_bundle: true)
         form
       end
 

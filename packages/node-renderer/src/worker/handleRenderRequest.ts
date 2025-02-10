@@ -29,9 +29,14 @@ import { buildVM, hasVMContextForBundle, runInVM } from './vm';
 async function prepareResult(
   renderingRequest: string,
   bundleFilePathPerTimestamp: string,
+  rscBundleFilePathPerTimestamp?: string,
 ): Promise<ResponseResult> {
   try {
-    const result = await runInVM(renderingRequest, bundleFilePathPerTimestamp, cluster);
+    let rscResult;
+    if (rscBundleFilePathPerTimestamp) {
+      rscResult = await runInVM(renderingRequest, rscBundleFilePathPerTimestamp, cluster);
+    }
+    const result = await runInVM(renderingRequest, bundleFilePathPerTimestamp, cluster, rscResult);
 
     let exceptionMessage = null;
     if (!result) {
@@ -84,7 +89,7 @@ async function handleNewBundleProvided(
   providedNewBundle: Asset,
   renderingRequest: string,
   assetsToCopy: Asset[] | null | undefined,
-): Promise<ResponseResult> {
+): Promise<void> {
   log.info('Worker received new bundle: %s', bundleFilePathPerTimestamp);
 
   let lockAcquired = false;
@@ -100,7 +105,7 @@ async function handleNewBundleProvided(
         errorMessage,
         `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
       );
-      return Promise.resolve(errorResponseResult(msg));
+      throw new Error(msg);
     }
 
     try {
@@ -123,27 +128,12 @@ async function handleNewBundleProvided(
 to ${bundleFilePathPerTimestamp})`,
         );
         log.error(msg);
-        return Promise.resolve(errorResponseResult(msg));
+        throw new Error(msg);
       }
       log.info(
         'File exists when trying to overwrite bundle %s. Assuming bundle written by other thread',
         bundleFilePathPerTimestamp,
       );
-    }
-
-    try {
-      // Either this process or another process placed the file. Because the lock is acquired, the
-      // file must be fully written
-      log.info('buildVM, bundleFilePathPerTimestamp', bundleFilePathPerTimestamp);
-      await buildVM(bundleFilePathPerTimestamp);
-      return prepareResult(renderingRequest, bundleFilePathPerTimestamp);
-    } catch (error) {
-      const msg = formatExceptionMessage(
-        renderingRequest,
-        error,
-        `Unexpected error when building the VM ${bundleFilePathPerTimestamp}`,
-      );
-      return Promise.resolve(errorResponseResult(msg));
     }
   } finally {
     if (lockAcquired) {
@@ -173,24 +163,29 @@ export = async function handleRenderRequest({
   renderingRequest,
   bundleTimestamp,
   providedNewBundle,
+  providedNewRscBundle,
   assetsToCopy,
+  rscBundleTimestamp,
 }: {
   renderingRequest: string;
   bundleTimestamp: string | number;
   providedNewBundle?: Asset | null;
+  providedNewRscBundle?: Asset | null;
   assetsToCopy?: Asset[] | null;
+  rscBundleTimestamp?: string | undefined;
 }): Promise<ResponseResult> {
   try {
     const bundleFilePathPerTimestamp = getRequestBundleFilePath(bundleTimestamp);
+    const rscBundleFilePathPerTimestamp = rscBundleTimestamp && getRequestBundleFilePath(rscBundleTimestamp);
 
     // If the current VM has the correct bundle and is ready
-    if (hasVMContextForBundle(bundleFilePathPerTimestamp)) {
-      return prepareResult(renderingRequest, bundleFilePathPerTimestamp);
+    if (hasVMContextForBundle(bundleFilePathPerTimestamp) && (!rscBundleFilePathPerTimestamp || hasVMContextForBundle(rscBundleFilePathPerTimestamp))) {
+      return prepareResult(renderingRequest, bundleFilePathPerTimestamp, rscBundleFilePathPerTimestamp);
     }
 
     // If gem has posted updated bundle:
     if (providedNewBundle) {
-      return handleNewBundleProvided(
+      await handleNewBundleProvided(
         bundleFilePathPerTimestamp,
         providedNewBundle,
         renderingRequest,
@@ -198,8 +193,18 @@ export = async function handleRenderRequest({
       );
     }
 
+    if (providedNewRscBundle && rscBundleFilePathPerTimestamp) {
+      await handleNewBundleProvided(
+        rscBundleFilePathPerTimestamp,
+        providedNewRscBundle,
+        renderingRequest,
+        [],
+      );
+    }
+
     // Check if the bundle exists:
-    const fileExists = await fileExistsAsync(bundleFilePathPerTimestamp);
+    const fileExists = await fileExistsAsync(bundleFilePathPerTimestamp) &&
+      (!rscBundleFilePathPerTimestamp || await fileExistsAsync(rscBundleFilePathPerTimestamp));
     if (!fileExists) {
       log.info(`No saved bundle ${bundleFilePathPerTimestamp}. Requesting a new bundle.`);
       return Promise.resolve({
@@ -213,8 +218,11 @@ export = async function handleRenderRequest({
     // Another worker must have written it or it was saved during deployment.
     log.info('Bundle %s exists. Building VM for worker %s.', bundleFilePathPerTimestamp, workerIdLabel());
     await buildVM(bundleFilePathPerTimestamp);
+    if (rscBundleFilePathPerTimestamp) {
+      await buildVM(rscBundleFilePathPerTimestamp);
+    }
 
-    return prepareResult(renderingRequest, bundleFilePathPerTimestamp);
+    return prepareResult(renderingRequest, bundleFilePathPerTimestamp, rscBundleFilePathPerTimestamp);
   } catch (error) {
     const msg = formatExceptionMessage(
       renderingRequest,

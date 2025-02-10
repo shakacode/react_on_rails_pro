@@ -246,6 +246,7 @@ export async function runInVM(
   renderingRequest: string,
   filePath: string,
   vmCluster?: typeof cluster,
+  rscResult?: RenderResult,
 ): Promise<RenderResult> {
   const { bundlePath } = getConfig();
 
@@ -273,7 +274,14 @@ ${smartTrim(renderingRequest)}`);
     }
 
     let result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
-      () => vm.runInContext(renderingRequest, context) as RenderCodeResult,
+      () => {
+        try {
+          context.rscResult = rscResult;
+          return vm.runInContext(renderingRequest, context) as RenderCodeResult
+        } finally {
+          context.rscResult = undefined;
+        }
+      },
     );
 
     if (isReadableStream(result)) {

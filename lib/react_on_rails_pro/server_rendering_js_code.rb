@@ -9,25 +9,32 @@ module ReactOnRailsPro
 
       def render(props_string, rails_context, redux_stores, react_component_name, render_options)
         render_function_name = if render_options.rsc?
-                                 "serverRenderRSCReactComponent"
+                                 "'serverRenderRSCReactComponent'"
                                elsif render_options.stream?
-                                 "streamServerRenderedReactComponent"
+                                 "ReactOnRails.isRSCBundle ? 'serverRenderRSCReactComponent' : 'streamServerRenderedReactComponent'"
                                else
-                                 "serverRenderReactComponent"
+                                 "'serverRenderReactComponent'"
                                end
-        rsc_props_if_rsc_request = if render_options.rsc?
-                                     manifest_file = ReactOnRails.configuration.react_client_manifest_file
-                                     "reactClientManifestFileName: '#{manifest_file}',"
-                                   else
-                                     ""
-                                   end
+        request_specific_props = if render_options.rsc?
+                                   manifest_file = ReactOnRails.configuration.react_client_manifest_file
+                                   "reactClientManifestFileName: '#{manifest_file}',"
+                                 elsif render_options.stream?
+                                   client_manifest_file = ReactOnRails.configuration.react_client_manifest_file
+                                   server_manifest_file = ReactOnRails.configuration.react_server_manifest_file
+                                   <<-JS
+                                     reactClientManifestFileName: '#{client_manifest_file}',
+                                     reactServerManifestFileName: '#{server_manifest_file}',
+                                   JS
+                                 else
+                                   ""
+                                 end
         <<-JS
         (function() {
           var railsContext = #{rails_context};
         #{ssr_pre_hook_js}
         #{redux_stores}
           var props = #{props_string};
-          return ReactOnRails.#{render_function_name}({
+          return ReactOnRails[#{render_function_name}]({
             name: '#{react_component_name}',
             domNodeId: '#{render_options.dom_id}',
             props: props,
@@ -35,7 +42,8 @@ module ReactOnRailsPro
             railsContext: railsContext,
             throwJsErrors: #{ReactOnRailsPro.configuration.throw_js_errors},
             renderingReturnsPromises: #{ReactOnRailsPro.configuration.rendering_returns_promises},
-            #{rsc_props_if_rsc_request}
+            rscResult,
+            #{request_specific_props}
           });
         })()
         JS

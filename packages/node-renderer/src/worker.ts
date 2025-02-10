@@ -191,13 +191,16 @@ export default function run(config: Partial<Config>) {
     //   await delay(100000);
     // }
 
-    const { renderingRequest } = req.body;
+    const { renderingRequest, rscBundleTimestamp } = req.body;
     const { bundleTimestamp } = req.params;
     let providedNewBundle: Asset | undefined;
+    let providedNewRscBundle: Asset | undefined;
     const assetsToCopy: Asset[] = [];
     Object.entries(req.body).forEach(([key, value]) => {
       if (key === 'bundle') {
         providedNewBundle = value as Asset;
+      } else if (key === 'rscBundle') {
+        providedNewRscBundle = value as Asset;
       } else if (isAsset(value)) {
         assetsToCopy.push(value);
       }
@@ -210,7 +213,9 @@ export default function run(config: Partial<Config>) {
             renderingRequest,
             bundleTimestamp,
             providedNewBundle,
+            providedNewRscBundle,
             assetsToCopy,
+            rscBundleTimestamp: rscBundleTimestamp as string | undefined,
           });
           await setResponse(result, res);
         } catch (err) {

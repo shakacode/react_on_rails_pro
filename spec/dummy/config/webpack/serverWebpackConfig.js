@@ -1,6 +1,7 @@
-const { config } = require('shakapacker');
-const commonWebpackConfig = require('./commonWebpackConfig');
 const webpack = require('webpack');
+const { config } = require('shakapacker');
+const RSDWPlugin = require('react-server-dom-webpack/plugin');
+const commonWebpackConfig = require('./commonWebpackConfig');
 
 function extractLoader(rule, loaderName) {
   return rule.use.find((item) => {
@@ -52,6 +53,11 @@ const configureServer = () => {
     minimize: false,
   };
 
+  serverWebpackConfig.plugins.push(new RSDWPlugin({
+    isServer: false,
+    clientManifestFilename: 'react-server-manifest.json',
+    ssrManifestFilename: 'react-server-ssr-manifest.json',
+  }));
   serverWebpackConfig.plugins.unshift(new webpack.optimize.LimitChunkCountPlugin({ maxChunks: 1 }));
   // Custom output for the server-bundle that matches the config in
   // config/initializers/react_on_rails.rb
