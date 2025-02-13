@@ -8,14 +8,14 @@ module ReactOnRailsPro
       end
 
       def render(props_string, rails_context, redux_stores, react_component_name, render_options)
-        render_function_name = if render_options.flight_payload_streaming?
+        render_function_name = if render_options.rsc_payload_streaming?
                                  "serverRenderRSCReactComponent"
                                elsif render_options.html_streaming?
                                  "streamServerRenderedReactComponent"
                                else
                                  "serverRenderReactComponent"
                                end
-        rsc_props_if_rsc_request = if render_options.flight_payload_streaming?
+        rsc_props_if_rsc_request = if render_options.rsc_payload_streaming?
                                      manifest_file = ReactOnRails.configuration.react_client_manifest_file
                                      "reactClientManifestFileName: '#{manifest_file}',"
                                    else
