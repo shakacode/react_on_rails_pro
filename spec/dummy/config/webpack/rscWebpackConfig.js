@@ -4,17 +4,13 @@ const { extractLoader } = require('./serverWebpackConfig');
 const configureRsc = () => {
   const rscConfig = serverWebpackConfig();
 
+  // Update the entry name to be `rsc-bundle` instead of `server-bundle`
   const rscEntry = {
     'rsc-bundle': rscConfig.entry['server-bundle'],
   };
   rscConfig.entry = rscEntry;
 
-  if (!rscEntry['rsc-bundle']) {
-    throw new Error(
-      "Create a pack with the file name 'server-bundle.js' containing all the server rendering files",
-    );
-  }
-
+  // Add the RSC loader before the babel loader
   const rules = rscConfig.module.rules;
   rules.forEach((rule) => {
     if (Array.isArray(rule.use)) {
@@ -27,11 +23,14 @@ const configureRsc = () => {
     }
   });
 
+  // Add the `react-server`, `rsc-server`, and `workerd` condition to the resolve config
+  // These conditions are used by React and React on Rails to know that this bundle is a React Server Component bundle
   rscConfig.resolve = {
     ...rscConfig.resolve,
     conditionNames: ['rsc-server', 'react-server', 'workerd'],
   };
 
+  // Update the output bundle name to be `rsc-bundle.js` instead of `server-bundle.js`
   rscConfig.output.filename = 'rsc-bundle.js';
   return rscConfig;
 };
