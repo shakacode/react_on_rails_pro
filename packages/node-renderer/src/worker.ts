@@ -26,7 +26,7 @@ import {
   Asset,
 } from './shared/utils';
 import * as errorReporter from './shared/errorReporter';
-import { lock, unlock } from './shared/locks';
+import { lock } from './shared/locks';
 import { startSsrRequestOptions, trace } from './shared/tracing';
 
 // Uncomment the below for testing timeouts:
@@ -240,20 +240,17 @@ export default function run(config: Partial<Config>) {
     if (!(await requestPrechecks(req, res))) {
       return;
     }
-    let lockAcquired = false;
-    let lockfileName: string | undefined;
     const assets: Asset[] = Object.values(req.body).filter(isAsset);
     const assetsDescription = JSON.stringify(assets.map((asset) => asset.filename));
     const taskDescription = `Uploading files ${assetsDescription} to ${bundlePath}`;
+    const lockfileName = 'transferring-assets';
+    // lock already catches errors internally, so it's safe to call without try/catch
+    const lockResult = await lock(lockfileName);
     try {
-      const { lockfileName: name, wasLockAcquired, errorMessage } = await lock('transferring-assets');
-      lockfileName = name;
-      lockAcquired = wasLockAcquired;
-
-      if (!wasLockAcquired) {
+      if (!lockResult.wasLockAcquired) {
         const msg = formatExceptionMessage(
           taskDescription,
-          errorMessage,
+          lockResult.error,
           `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
         );
         await setResponse(errorResponseResult(msg), res);
@@ -280,11 +277,9 @@ export default function run(config: Partial<Config>) {
         }
       }
     } finally {
-      if (lockAcquired) {
+      if (lockResult.wasLockAcquired) {
         try {
-          if (lockfileName) {
-            await unlock(lockfileName);
-          }
+          await lockResult.release();
         } catch (error) {
           log.warn({
             msg: `Error unlocking ${lockfileName} from worker ${workerIdLabel()}`,

@@ -1,17 +1,17 @@
 import path from 'path';
 import touch from 'touch';
-import lockfile from 'lockfile';
+import { lockSync } from 'proper-lockfile';
 import {
-  createVmBundle,
-  uploadedBundlePath,
-  createUploadedBundle,
-  resetForTest,
   BUNDLE_TIMESTAMP,
+  createUploadedBundle,
+  createVmBundle,
   lockfilePath,
+  resetForTest,
+  uploadedBundlePath,
 } from './helper';
 import { getVmBundleFilePath } from '../src/worker/vm';
 import handleRenderRequest from '../src/worker/handleRenderRequest';
-import { delay, Asset } from '../src/shared/utils';
+import { Asset, delay } from '../src/shared/utils';
 
 const testName = 'handleRenderRequest';
 const uploadedBundleForTest = (): Asset => ({
@@ -79,12 +79,6 @@ describe(testName, () => {
   });
 
   test('If lockfile exists, and is stale', async () => {
-    // We're using a lockfile with an artificially old date,
-    // so make it use that instead of ctime.
-    // Probably you should never do this in production!
-    // @ts-expect-error Not allowed by the types
-    lockfile.filetime = 'mtime';
-
     expect.assertions(2);
     touch.sync(lockfilePathForTest(), { time: '1979-07-01T19:10:00.000Z' });
     await createUploadedBundleForTest();
@@ -103,16 +97,17 @@ describe(testName, () => {
     expect.assertions(2);
     await createUploadedBundleForTest();
 
-    const lockfileOptions = { pollPeriod: 100, stale: 10000 };
-    lockfile.lockSync(lockfilePathForTest(), lockfileOptions);
+    const release = lockSync(
+      lockfilePathForTest(),
+      { stale: 10000, realpath: false },
+    );
 
     await delay(5);
     console.log('TEST building VM from sleep');
     await createVmBundleForTest();
     console.log('TEST DONE building VM from sleep');
-    lockfile.unlock(lockfilePathForTest(), (err) => {
-      console.log('TEST unlocked lockfile', err);
-    });
+    release();
+    console.log('TEST unlocked lockfile');
 
     const result = await handleRenderRequest({
       renderingRequest: 'ReactOnRails.dummy',
