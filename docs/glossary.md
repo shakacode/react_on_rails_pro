@@ -69,7 +69,7 @@ The JavaScript bundle that runs in the browser, containing client components and
 
 ## Concepts
 
-### Flight Format
+### Flight Format (RSC Format)
 The wire format used by React Server Components to stream component data from server to client. It's a compact binary format that represents the component tree and its data.
 
 ### Hydration
@@ -77,7 +77,7 @@ The process where React attaches event handlers and state to server-rendered HTM
 
 ### RSC Payload (Flight Payload)
 The serialized output of server components that gets streamed to the client. Contains:
-- HTML representation of server components
+- React render tree of the server component
 - References to client components that need hydration
 - Data for client components
 
@@ -97,9 +97,6 @@ The ability to progressively send server component renders to the client before 
 
 ### Client Component Manifest
 A JSON file mapping component paths to their corresponding JavaScript chunks. Used by RSC to determine which client-side code to load for hydration.
-
-### RSC Support Configuration
-Configuration option in React on Rails Pro that enables RSC features through the `enable_rsc_support` setting.
 
 ### RSC URL Path
 The endpoint path where RSC requests are handled, defaulting to "rsc/" in the React on Rails Pro configuration.

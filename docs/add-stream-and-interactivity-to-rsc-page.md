@@ -187,3 +187,7 @@ The browser automatically knows to load this additional client bundle because of
 This demonstrates one of the key benefits of React Server Components - automatic code splitting and loading of just the client-side JavaScript needed for interactivity, while keeping the bulk of the application logic on the server.
 
 For more details on this architecture, see React's [Server Components documentation](https://react.dev/learn/thinking-in-react#how-react-server-components-work).
+
+## Next Steps
+
+Now that you understand how to add streaming and interactivity to React Server Components, you can proceed to the next article: [SSR React Server Components](ssr-react-server-components.md) to learn how to enable server-side rendering (SSR) for your React Server Components.

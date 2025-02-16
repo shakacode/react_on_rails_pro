@@ -56,7 +56,7 @@ For example:
 
 RSC bundles is a clone of the server bundle `server-bundle.js` but we just add the RSC loader `react-on-rails/RSCWebpackLoader` to the used loaders.
 
-You can check the [How React Server Components works](https://github.com/shakacode/react_on_rails/blob/master/docs/additional-guides/how-react-server-components-works.md) for more information about the RSC loader (It's better to read it after reading this article).
+You can check the [How React Server Components works](how-react-server-components-works.md) for more information about the RSC loader (It's better to read it after reading this article).
 
 Create a new file `config/webpack/rscWebpackConfig.js`:
 ```js
@@ -100,11 +100,11 @@ const configureRsc = () => {
     }
   });
 
-  // Add the `react-server`, `rsc-server`, and `workerd` condition to the resolve config
+  // Add the `react-server`, and `workerd` condition to the resolve config
   // These conditions are used by React and React on Rails to know that this bundle is a React Server Component bundle
   rscConfig.resolve = {
     ...rscConfig.resolve,
-    conditionNames: ['rsc-server', 'react-server', 'workerd'],
+    conditionNames: ['react-server', 'workerd'],
   };
 
   // Update the output bundle name to be `rsc-bundle.js` instead of `server-bundle.js`
@@ -152,7 +152,16 @@ rails-rsc-assets: HMR=true RSC_BUNDLE_ONLY=yes bin/shakapacker --watch
 
 This change will make the bundling process generate a new bundle named `rsc-bundle.js` in addition to the `server-bundle.js` and `client-bundle.js` bundles.
 
-4. Make the client bundle use the React Server Components plugin `react-server-dom-webpack/plugin`, for more information about this plugin, you can check the [How React Server Components works](https://github.com/shakacode/react_on_rails/blob/master/docs/additional-guides/how-react-server-components-works.md) (It's better to read it after reading this article).
+Then, we need to tell React on Rails to upload the `rsc-bundle.js` file to the renderer while uploading the server bundle.
+
+```ruby
+# config/initializers/react_on_rails.rb
+ReactOnRailsPro.configure do |config|
+  config.rsc_bundle_js_file = "rsc-bundle.js"
+end
+```
+
+4. Make the client bundle use the React Server Components plugin `react-server-dom-webpack/plugin`, for more information about this plugin, you can check the [How React Server Components works](how-react-server-components-works.md) (It's better to read it after reading this article).
 
 ```js
 // config/webpack/clientWebpackConfig.js
@@ -316,7 +325,7 @@ Rails.application.routes.draw do
 end
 ```
 
-This will add the "/rsc" path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_route` is explained in the [How React Server Components works](https://github.com/shakacode/react_on_rails/blob/master/docs/additional-guides/how-react-server-components-works.md) document.
+This will add the "/rsc" path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_route` is explained in the [How React Server Components works](how-react-server-components-works.md) document.
 
 
 ## Add Route to the React Server Component Page
@@ -397,4 +406,9 @@ The response contains two main parts:
    - Replaying server-side console logs in the client
    - Error tracking and reporting
 
-The RSC payload format and how React processes it is explained in detail in the [How React Server Components works](https://github.com/shakacode/react_on_rails/blob/master/docs/additional-guides/how-react-server-components-works.md) document.
+The RSC payload format and how React processes it is explained in detail in the [How React Server Components works](how-react-server-components-works.md) document.
+
+## Next Steps
+
+Now that you understand the basics of React Server Components, you can proceed to the next article: [Add Stream and Interactivity to RSC Page](add-stream-and-interactivity-to-rsc-page.md) to learn how to enhance your RSC page with streaming capabilities and client-side interactivity.
+

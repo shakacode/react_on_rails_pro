@@ -100,8 +100,6 @@ Ensure you have a controller that renders the view containing the React componen
 # app/controllers/example_controller.rb
 
 class ExampleController < ApplicationController
-  include ActionController::Live
-  include ReactOnRails::Controller
   include ReactOnRailsPro::Stream
 
   def show

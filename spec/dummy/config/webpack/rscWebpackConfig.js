@@ -23,11 +23,11 @@ const configureRsc = () => {
     }
   });
 
-  // Add the `react-server`, `rsc-server`, and `workerd` condition to the resolve config
+  // Add the `react-server`, and `workerd` condition to the resolve config
   // These conditions are used by React and React on Rails to know that this bundle is a React Server Component bundle
   rscConfig.resolve = {
     ...rscConfig.resolve,
-    conditionNames: ['rsc-server', 'react-server', 'workerd'],
+    conditionNames: ['react-server', 'workerd'],
   };
 
   // Update the output bundle name to be `rsc-bundle.js` instead of `server-bundle.js`
