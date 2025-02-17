@@ -196,21 +196,21 @@ This information comes from the `react-client-manifest.json` file, which maps cl
 
 ## Automatically Generate the RSC Payload
 
-Usually, you don't need to generate the RSC payload manually. You can use the `rsc_route` helper method inside the `config/routes.rb` file to automatically add the rsc route that accepts the component name as a parameter and returns the RSC payload.
+Usually, you don't need to generate the RSC payload manually. You can use the `rsc_payload_route` helper method inside the `config/routes.rb` file to automatically add the rsc route that accepts the component name as a parameter and returns the RSC payload.
 
 ```ruby
 # config/routes.rb
 Rails.application.routes.draw do
-  rsc_route
+  rsc_payload_route
 end
 ```
 
-You can change the path of the rsc route by passing the `path` option to the `rsc_route` method.
+You can change the path of the rsc route by passing the `path` option to the `rsc_payload_route` method.
 
 ```ruby
 # config/routes.rb
 Rails.application.routes.draw do
-  rsc_route path: "/rsc-payload"
+  rsc_payload_route path: "/rsc-payload"
 end
 ```
 

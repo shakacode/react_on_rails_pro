@@ -2,7 +2,7 @@
 
 module ReactOnRailsPro
   module Routes
-    def rsc_route(
+    def rsc_payload_route(
       path: ReactOnRailsPro.configuration.rsc_rendering_url_path,
       controller: "react_on_rails_pro/rsc",
       **options

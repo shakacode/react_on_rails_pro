@@ -321,11 +321,11 @@ Add the following route to your `config/routes.rb` file:
 ```ruby
 # config/routes.rb
 Rails.application.routes.draw do
-  rsc_route
+  rsc_payload_route
 end
 ```
 
-This will add the "/rsc" path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_route` is explained in the [How React Server Components works](how-react-server-components-works.md) document.
+This will add the "/rsc" path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_payload_route` is explained in the [How React Server Components works](how-react-server-components-works.md) document.
 
 
 ## Add Route to the React Server Component Page
