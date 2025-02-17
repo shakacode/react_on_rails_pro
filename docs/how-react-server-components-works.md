@@ -233,3 +233,7 @@ ReactOnRailsPro.configure do |config|
   config.rsc_payload_generation_url_path = "flight-payload"
 end
 ```
+
+## Next Steps
+
+To learn more about how React Server Components are rendered in React on Rails Pro, including the rendering flow, bundle types, and upcoming improvements, see [React Server Components Rendering Flow](react-server-components-rendering-flow.md).

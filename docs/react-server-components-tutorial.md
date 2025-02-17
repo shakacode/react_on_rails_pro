@@ -12,4 +12,6 @@ This tutorial will guide you through learning React Server Components (RSC) with
 
 5. [How React Server Components Works](how-react-server-components-works.md) - Dive deep into the technical details and underlying mechanisms of React Server Components.
 
+6. [React Server Components Rendering Flow](react-server-components-rendering-flow.md) - Understand the detailed rendering flow of RSC, including bundle types, current limitations, and future improvements.
+
 Each part of the tutorial builds on the concepts from previous sections, so it's recommended to follow them in order. Let's begin with creating your first React Server Component!
