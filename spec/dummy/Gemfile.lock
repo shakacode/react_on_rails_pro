@@ -6,6 +6,18 @@ GIT
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
 
+GIT
+  remote: https://github.com/shakacode/react_on_rails.git
+  revision: dbcaa76cad57b3c0df4d8e723e7225c2fdf52234
+  branch: abanoubghadban/pro362-add-support-for-RSC
+  specs:
+    react_on_rails (14.1.1)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
+
 PATH
   remote: ../..
   specs:
@@ -16,16 +28,6 @@ PATH
       httpx (~> 1.4, >= 1.4.1)
       rainbow
       react_on_rails (>= 14.1.0)
-
-PATH
-  remote: ../../../react_on_rails
-  specs:
-    react_on_rails (14.1.1)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
 
 GEM
   remote: https://rubygems.org/
