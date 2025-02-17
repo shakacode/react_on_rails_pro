@@ -1,6 +1,6 @@
 # Add Stream and Interactivity to RSC Page
 
-Before reading this document, please read the [Create React Server Component without SSR](https://github.com/shakacode/react_on_rails/blob/master/docs/additional-guides/create-react-server-component-without-ssr.md) document.
+Before reading this document, please read the [Create React Server Component without SSR](create-react-server-component-without-ssr.md) document.
 
 ## Make the React Server Component Page Progressively Load
 React Server Components support progressive loading, which means they can be built as asynchronous functions that resolve and render after the initial HTML is sent to the client. This enables a better user experience by:
