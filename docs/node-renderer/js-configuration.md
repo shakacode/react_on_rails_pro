@@ -30,7 +30,7 @@ Setting this value to false causes the NodeRenderer to behave like ExecJS.
 See also `stubTimers`.
 1. **additionalContext** - (default: `null`) - additionalContext enables you to specify additional NodeJS objects (usually from https://nodejs.org/api/globals.html) to add to the VM context in addition to our `supportModules` defaults. 
 Object shorthand notation may be used, but is not required.
-Example: `{ URL, URLSearchParams, Crypto }`
+Example: `{ URL, Crypto }`
 1. **stubTimers** - (default: `env.RENDERER_STUB_TIMERS` if that environment variable is set, `true` otherwise) - With this option set, use of functions `setTimeout`, `setInterval`, `setImmediate`, `clearTimeout`, `clearInterval`, `clearImmediate`, and `queueMicrotask` will do nothing during server-rendering. 
 This is useful when using dependencies like [react-virtuoso](https://github.com/petyosi/react-virtuoso) that use these functions during hydration.
 In RORP, hydration typically is synchronous and single-task (unless you use streaming) and thus callbacks passed to  task-scheduling functions should never run during server-side rendering.

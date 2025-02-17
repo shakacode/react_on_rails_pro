@@ -121,5 +121,7 @@ const configureServer = () => {
   return serverWebpackConfig;
 };
 
-module.exports = configureServer;
-module.exports.extractLoader = extractLoader;
+module.exports = {
+  default: configureServer,
+  extractLoader,
+};

@@ -33,7 +33,7 @@ React Server Components significantly reduce client-side JavaScript by:
 
 2. **Concrete Examples:**
     - Routing logic can stay server-side
-    - Data fetching libraries (like React Query) often unnecessary
+    - Data fetching libraries (like React Query) are often unnecessary
     - Large formatting libraries (e.g., date-fns, numeral) can be server-only
     - Image processing utilities stay on server
     - Markdown parsers run server-side only
@@ -109,7 +109,8 @@ rules.forEach((rule) => {
 ### 3. Gradual Component Migration
 
 1. **Mark Entry Points as Client Components**
-Adding the 'use client' directive to entry points maintains existing functionality while allowing for incremental migration of individual components to server components. This approach ensures a smooth transition without disrupting the application's current behavior.
+Adding the `'use client'` directive to entry points maintains existing functionality while allowing for incremental migration of individual components to server components.
+This approach ensures a smooth transition without disrupting the application's current behavior.
 
 ```jsx:app/components/App.jsx
 'use client';

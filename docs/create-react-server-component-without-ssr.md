@@ -33,7 +33,8 @@ ReactOnRailsPro.configure do |config|
 end
 ```
 
-> **Important Note**: After enabling RSC support, you must add the `'use client';` directive at the top of your JavaScript entry points (packs) that are not yet migrated to support Server Components.
+> [!IMPORTANT]
+> After enabling RSC support, you must add the `'use client';` directive at the top of your JavaScript entry points (packs) that are not yet migrated to support Server Components.
 >
 > This directive tells React that these files should be treated as client components. You don't need to add this directive to all JavaScript files - only the entry points. Any file imported by a file marked with `'use client';` will automatically be treated as a client component as well. Without this directive, React will assume these files contain Server Components, which will cause errors if the components use client-side features like:
 > - `useState` or other state hooks
@@ -305,9 +306,10 @@ ReactOnRails.register({
 // client/app/packs/client-bundle.js
 import registerServerComponent from 'react-on-rails/registerServerComponent';
 
-registerServerComponent({
-  rscPayloadGenerationUrlPath: "rsc_payload/",
-}, "ReactServerComponentPage")
+registerServerComponent(
+  { rscPayloadGenerationUrlPath: 'rsc_payload/' },
+  'ReactServerComponentPage',
+);
 ```
 
 As you can see, registering a server component on the client bundle is different. We use the `registerServerComponent` function to register the server component. `registerServerComponent` takes only the component name as an argument. We don't need to import the component, so the component will not be bundled into the client bundle.
@@ -325,7 +327,7 @@ Rails.application.routes.draw do
 end
 ```
 
-This will add the "/rsc_payload" path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_payload_route` is explained in the [How React Server Components works](how-react-server-components-works.md) document.
+This will add the `/rsc_payload` path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_payload_route` is explained in the [How React Server Components works](how-react-server-components-works.md) document.
 
 
 ## Add Route to the React Server Component Page
@@ -387,7 +389,7 @@ The `[SERVER]` prefix indicates that the component was executed on the server si
 
 ## How the React Server Component Page is Rendered on Browser?
 
-We can get the answer from the network tab in the browser's developer tools. We can see there is a fetch request to the `/rsc_payload/ReactServerComponentPage` path. This is the `rsc_payload` path that we added to the routes in the previous steps and it accepts the `ReactServerComponentPage` component name as a parameter.
+We can get the answer from the network tab in the browser's developer tools. We can see there is a fetch request to the `/rsc_payload/ReactServerComponentPage` path. This is the `rsc_payload` route that we added to the routes in the previous steps and it accepts the component name `ReactServerComponentPage` as a parameter.
 
 ![image](https://github.com/user-attachments/assets/c0059975-206a-4699-9d4b-abf9799aa142)
 

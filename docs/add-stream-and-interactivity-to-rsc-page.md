@@ -48,7 +48,7 @@ const Posts = async () => {
 export default Posts;
 ```
 
-The `async` Posts component fetches and displays a list of posts, showing one post per user with title, body, timestamp and thumbnail image.
+The async `Posts` component fetches and displays a list of posts, showing one post per user with title, body, timestamp and thumbnail image.
 
 Let's add the Posts component to the React Server Component Page.
 
@@ -91,21 +91,21 @@ http://localhost:3000/react_server_component_without_ssr
 
 When you open the page, you'll see the ReactServerComponent render immediately, followed by the "Loading..." fallback state from the Suspense component. After a 1-second delay, the Posts component will render with the fetched data. This artificial delay helps demonstrate how React Server Components handle asynchronous operations and streaming:
 
-1. The page loads instantly with the ReactServerComponent
-2. The Suspense fallback shows "Loading..." where the Posts will appear
-3. After the delay, the Posts component streams in and replaces the loading state
+1. The page loads instantly with the ReactServerComponent.
+2. The Suspense fallback shows "Loading..." where the Posts will appear.
+3. After the delay, the Posts component streams in and replaces "Loading...".
 
 ## How The Streaming Works
 
 The streaming happens through the `rsc_payload/ReactServerComponentPage` fetch request that React on Rails Pro initiates when loading the page. The server keeps this connection open and sends data in chunks:
 
-1. The initial chunk contains the immediately available content (ReactServerComponent)
-2. When the Posts component's async operation completes, the server sends another chunk with its rendered content
-3. The browser progressively receives and renders these chunks, updating the page seamlessly
+1. The initial chunk contains the immediately available content (ReactServerComponent).
+2. When the Posts component's async operation completes, the server sends another chunk with its rendered content.
+3. The browser progressively receives and renders these chunks, updating the page seamlessly.
 
 This streaming approach means users see content as soon as it's ready, rather than waiting for everything to load before seeing anything. The Suspense boundary ensures a smooth transition between the loading state and the final content.
 
-You can observe this streaming behavior in your browser's network tab - the `rsc_payload/ReactServerComponentPage` request will show multiple chunks arriving over time, each one adding more content to your page.
+You can observe this streaming behavior in your browser's network tab: the `rsc/ReactServerComponentPage` request will show multiple chunks arriving over time, each one adding more content to your page.
 
 ## Add Interactivity
 

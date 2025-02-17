@@ -6,7 +6,7 @@ This tutorial will guide you through learning React Server Components (RSC) with
 
 2. [Add Stream and Interactivity to RSC Page](add-stream-and-interactivity-to-rsc-page.md) - Enhance your RSC page with streaming capabilities and client-side interactivity using Suspense and client components.
 
-3. [SSR React Server Components](ssr-react-server-components.md) - Add server-side rendering to your React Server Components for improved initial page load performance.
+3. [Server-Side Rendering for React Server Components](ssr-react-server-components.md) - Add SSR to your React Server Components for improved initial page load performance.
 
 4. [Selective Hydration in Streamed Components](selective-hydration-in-streamed-components.md) - Learn about React's selective hydration feature and how it improves page interactivity.
 
