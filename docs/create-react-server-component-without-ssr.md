@@ -306,13 +306,13 @@ ReactOnRails.register({
 import registerServerComponent from 'react-on-rails/registerServerComponent';
 
 registerServerComponent({
-  rscRenderingUrlPath: "rsc_payload/",
+  rscPayloadGenerationUrlPath: "rsc_payload/",
 }, "ReactServerComponentPage")
 ```
 
 As you can see, registering a server component on the client bundle is different. We use the `registerServerComponent` function to register the server component. `registerServerComponent` takes only the component name as an argument. We don't need to import the component, so the component will not be bundled into the client bundle.
 
-The `rscRenderingUrlPath` option will be explained in detail later in this document. For now, just know that it specifies the base URL path for React Server Component requests.
+The `rscPayloadGenerationUrlPath` option will be explained in detail later in this document. For now, just know that it specifies the base URL path for React Server Component requests.
 
 ## Add the React Server Component Rendering URL Path to the Rails Routes
 

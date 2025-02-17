@@ -221,7 +221,7 @@ In this case, ensure to pass the correct path to `registerServerComponent` funct
 import registerServerComponent from 'react-on-rails/registerServerComponent';
 
 registerServerComponent({
-  rscRenderingUrlPath: "flight-payload",
+  rscPayloadGenerationUrlPath: "flight-payload",
 }, "ReactServerComponentPage")
 ```
 

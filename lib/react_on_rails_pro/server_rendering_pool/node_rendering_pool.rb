@@ -57,7 +57,7 @@ module ReactOnRailsPro
           ReactOnRailsPro::Request.render_code_as_stream(
             path,
             js_code,
-            is_rsc: render_options.rsc_payload_streaming?
+            is_rsc_payload: render_options.rsc_payload_streaming?
           )
         end
 
