@@ -29,7 +29,7 @@ React Server Components significantly reduce client-side JavaScript by:
     - Dependencies used only in server components never ship to the client
     - Database queries, API calls, and their libraries stay server-side
     - Heavy data processing utilities remain on the server
-    - Server-only npm packages don't impact client bundle
+    - Server-only NPM packages don't impact client bundle
 
 2. **Concrete Examples:**
     - Routing logic can stay server-side

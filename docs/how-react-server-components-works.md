@@ -214,7 +214,7 @@ Rails.application.routes.draw do
 end
 ```
 
-In this case, ensure to pass the correct path to `registerServerComponent` function in the client bundle.
+In this case, ensure you pass the correct path to `registerServerComponent` function in the client bundle.
 
 ```js
 // client/app/packs/client-bundle.js
