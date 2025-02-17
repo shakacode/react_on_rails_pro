@@ -24,7 +24,7 @@ env:
   jest: true
 
 settings:
-  import/extensions: [".js", ".ts", ".mjs"]
+  import/extensions: [".js", ".ts"]
   import/parsers:
     "@typescript-eslint/parser": [".ts"]
   import/resolver:

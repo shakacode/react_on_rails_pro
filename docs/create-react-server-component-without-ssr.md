@@ -306,7 +306,7 @@ ReactOnRails.register({
 import registerServerComponent from 'react-on-rails/registerServerComponent';
 
 registerServerComponent({
-  rscRenderingUrlPath: "rsc/",
+  rscRenderingUrlPath: "rsc_payload/",
 }, "ReactServerComponentPage")
 ```
 
@@ -325,7 +325,7 @@ Rails.application.routes.draw do
 end
 ```
 
-This will add the "/rsc" path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_payload_route` is explained in the [How React Server Components works](how-react-server-components-works.md) document.
+This will add the "/rsc_payload" path to the routes. This is the base URL path that will receive requests from the client to render the React Server Components. `rsc_payload_route` is explained in the [How React Server Components works](how-react-server-components-works.md) document.
 
 
 ## Add Route to the React Server Component Page
@@ -387,7 +387,7 @@ The `[SERVER]` prefix indicates that the component was executed on the server si
 
 ## How the React Server Component Page is Rendered on Browser?
 
-We can get the answer from the network tab in the browser's developer tools. We can see there is a fetch request to the `/rsc/ReactServerComponentPage` path. This is the `rsc` path that we added to the routes in the previous steps and it accepts the `ReactServerComponentPage` component name as a parameter.
+We can get the answer from the network tab in the browser's developer tools. We can see there is a fetch request to the `/rsc_payload/ReactServerComponentPage` path. This is the `rsc_payload` path that we added to the routes in the previous steps and it accepts the `ReactServerComponentPage` component name as a parameter.
 
 ![image](https://github.com/user-attachments/assets/c0059975-206a-4699-9d4b-abf9799aa142)
 

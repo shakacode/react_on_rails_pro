@@ -99,4 +99,4 @@ The ability to progressively send server component renders to the client before 
 A JSON file mapping component paths to their corresponding JavaScript chunks. Used by RSC to determine which client-side code to load for hydration.
 
 ### RSC URL Path
-The endpoint path where RSC requests are handled, defaulting to "rsc/" in the React on Rails Pro configuration.
+The endpoint path where RSC requests are handled, defaulting to "rsc_payload/" in the React on Rails Pro configuration.

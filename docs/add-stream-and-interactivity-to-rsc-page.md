@@ -97,7 +97,7 @@ When you open the page, you'll see the ReactServerComponent render immediately, 
 
 ## How The Streaming Works
 
-The streaming happens through the `rsc/ReactServerComponentPage` fetch request that React on Rails Pro initiates when loading the page. The server keeps this connection open and sends data in chunks:
+The streaming happens through the `rsc_payload/ReactServerComponentPage` fetch request that React on Rails Pro initiates when loading the page. The server keeps this connection open and sends data in chunks:
 
 1. The initial chunk contains the immediately available content (ReactServerComponent)
 2. When the Posts component's async operation completes, the server sends another chunk with its rendered content
@@ -105,7 +105,7 @@ The streaming happens through the `rsc/ReactServerComponentPage` fetch request t
 
 This streaming approach means users see content as soon as it's ready, rather than waiting for everything to load before seeing anything. The Suspense boundary ensures a smooth transition between the loading state and the final content.
 
-You can observe this streaming behavior in your browser's network tab - the `rsc/ReactServerComponentPage` request will show multiple chunks arriving over time, each one adding more content to your page.
+You can observe this streaming behavior in your browser's network tab - the `rsc_payload/ReactServerComponentPage` request will show multiple chunks arriving over time, each one adding more content to your page.
 
 ## Add Interactivity
 

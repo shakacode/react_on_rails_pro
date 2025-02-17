@@ -210,7 +210,7 @@ You can change the path of the rsc route by passing the `path` option to the `rs
 ```ruby
 # config/routes.rb
 Rails.application.routes.draw do
-  rsc_payload_route path: "/rsc-payload"
+  rsc_payload_route path: "/flight-payload"
 end
 ```
 
@@ -221,15 +221,15 @@ In this case, ensure to pass the correct path to `registerServerComponent` funct
 import registerServerComponent from 'react-on-rails/registerServerComponent';
 
 registerServerComponent({
-  rscRenderingUrlPath: "rsc-payload",
+  rscRenderingUrlPath: "flight-payload",
 }, "ReactServerComponentPage")
 ```
 
-Or if you enabled the `auto_load_bundle` option to make React on Rails automatically register react components, you can pass the path to the `rsc_rendering_url_path` config in React on Rails Pro configuration.
+Or if you enabled the `auto_load_bundle` option to make React on Rails automatically register react components, you can pass the path to the `rsc_payload_generation_url_path` config in React on Rails Pro configuration.
 
 ```ruby
 # config/initializers/react_on_rails.rb
 ReactOnRailsPro.configure do |config|
-  config.rsc_rendering_url_path = "rsc-payload"
+  config.rsc_payload_generation_url_path = "flight-payload"
 end
 ```
