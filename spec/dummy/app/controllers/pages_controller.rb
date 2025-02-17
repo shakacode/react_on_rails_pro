@@ -95,7 +95,7 @@ class PagesController < ApplicationController
 
   private
 
-  def rsc_component_props
+  def rsc_payload_component_props
     APP_PROPS_SERVER_RENDER
   end
 

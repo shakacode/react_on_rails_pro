@@ -128,10 +128,10 @@ end
 
 ## React Server Component Payload (RSC Payload)
 
-The React Server Component Payload (RSC Payload) is a mechanism that allows you to pass the rendered server components from the server to the client. You can use the `rsc_react_component` helper function to embed the RSC payload of any component in your Rails views. Let's try to embed the RSC payload of the `ReactServerComponentPage` component in the `app/views/pages/react_server_component_page_rsc_payload.html.erb` view.
+The React Server Component Payload (RSC Payload) is a mechanism that allows you to pass the rendered server components from the server to the client. You can use the `rsc_payload_react_component` helper function to embed the RSC payload of any component in your Rails views. Let's try to embed the RSC payload of the `ReactServerComponentPage` component in the `app/views/pages/react_server_component_page_rsc_payload.html.erb` view.
 
 ```erb
-<%= rsc_react_component("ReactServerComponentPage") %>
+<%= rsc_payload_react_component("ReactServerComponentPage") %>
 ```
 
 Add the route to the `app/config/routes.rb` file.
