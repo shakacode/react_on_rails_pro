@@ -1,7 +1,7 @@
 import React, { Suspense } from 'react';
 import { ErrorBoundary } from '../components/ErrorBoundary';
 import Posts from '../components/RSCPostsPage/Posts';
-import HelloWorld from '../components/HelloWorld.jsx';
+import HelloWorld from '../components/HelloWorldHooks.jsx';
 import ErrorComponent from '../components/ErrorComponent.jsx';
 import Spinner from '../components/Spinner.jsx';
 

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PreloadedPosts from '../components/RSCPostsPage/PreloadedPosts';
-import HelloWorld from '../components/HelloWorld.jsx';
+import HelloWorld from '../components/HelloWorldHooks.jsx';
 
 const PostsPage = ({ posts, ...props }) => {
   return (
