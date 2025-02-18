@@ -6911,7 +6911,7 @@ react-is@^18.0.0:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro362-add-support-for-RSC":
   version "14.1.1"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#95f5b866216281a69c72912fe3b8808d631ab3ef"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#c61eb1fe7b9235feea1aa246fb84069c33206dfe"
 
 readable-stream@^2.2.2:
   version "2.3.8"
