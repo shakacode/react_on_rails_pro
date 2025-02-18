@@ -1,5 +1,5 @@
 const clientWebpackConfig = require('./clientWebpackConfig');
-const serverWebpackConfig = require('./serverWebpackConfig');
+const serverWebpackConfig = require('./serverWebpackConfig').default;
 const rscWebpackConfig = require('./rscWebpackConfig');
 
 const webpackConfig = (envSpecific) => {
