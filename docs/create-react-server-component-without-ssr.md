@@ -92,6 +92,8 @@ const configureRsc = () => {
   const rules = rscConfig.module.rules;
   rules.forEach((rule) => {
     if (Array.isArray(rule.use)) {
+      // Ensure this loader runs before the JS loader (Babel loader in this case) to properly exclude client components from the RSC bundle.  
+      // If your project uses a different JS loader, insert it before that loader instead.
       const babelLoader = extractLoader(rule, 'babel-loader');
       if (babelLoader) {
         rule.use.push({
