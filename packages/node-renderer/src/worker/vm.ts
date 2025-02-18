@@ -108,6 +108,9 @@ export async function buildVM(filePath: string) {
     const contextObject = { sharedConsoleHistory };
 
     if (supportModules) {
+      // IMPORTANT: When adding anything to this object, update:
+      // 1. docs/node-renderer/js-configuration.md
+      // 2. packages/node-renderer/src/shared/configBuilder.ts
       extendContext(contextObject, {
         Buffer,
         TextDecoder,
