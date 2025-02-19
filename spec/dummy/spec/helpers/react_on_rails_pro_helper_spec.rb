@@ -207,7 +207,6 @@ describe ReactOnRailsProHelper, type: :helper do
           data-component-name="TestingStreamableComponent"
           data-trace="true"
           data-dom-id="TestingStreamableComponent-react-component-0"
-          data-store-dependencies="[]"
           data-force-load="true"
         >{"helloWorldData":{"name":"Mr. Server Side Rendering"}}</script>
       SCRIPT
