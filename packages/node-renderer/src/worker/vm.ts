@@ -84,7 +84,7 @@ function manageVMPoolSize() {
   const sortedEntries = Array.from(vmContexts.entries()).sort(([, a], [, b]) => a.lastUsed - b.lastUsed);
 
   while (sortedEntries.length > maxVMPoolSize) {
-    const [oldestPath] = sortedEntries.shift() ?? [];
+    const oldestPath = sortedEntries.shift()?.[0];
     if (oldestPath) {
       vmContexts.delete(oldestPath);
       log.debug(`Removed VM for bundle ${oldestPath} due to pool size limit (max: ${maxVMPoolSize})`);

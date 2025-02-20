@@ -155,14 +155,14 @@ describe ReactOnRailsPro::Request do
         mocked_block = mock_block
 
         mock_streaming_response(render_full_url, status_code) do |yielder|
-          yielder.call("Unkown error message")
+          yielder.call("Unknown error message")
         end
 
         stream = described_class.render_code_as_stream("/render", "console.log('Hello, world!');",
                                                        is_rsc_payload: false)
         expect do
           stream.each_chunk(&mocked_block.block)
-        end.to raise_error(ReactOnRailsPro::Error, /#{status_code}:\nUnkown error message/)
+        end.to raise_error(ReactOnRailsPro::Error, /#{status_code}:\nUnknown error message/)
 
         expect(mocked_block).not_to have_received(:call)
       end

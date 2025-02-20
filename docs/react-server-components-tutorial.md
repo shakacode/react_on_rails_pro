@@ -1,6 +1,6 @@
 # React Server Components Tutorial
 
-This tutorial will guide you through learning React Server Components (RSC) with React on Rails Pro, from basic concepts to advanced features. The tutorial is divided into several parts that build upon each other:
+This tutorial will guide you through learning [React Server Components (RSC)](https://react.dev/reference/rsc/server-components) with React on Rails Pro, from basic concepts to advanced features. The tutorial is divided into several parts that build upon each other:
 
 1. [Create React Server Component without SSR](create-react-server-component-without-ssr.md) - Learn the fundamentals of React Server Components by creating a basic RSC page without server-side rendering.
 
@@ -10,7 +10,7 @@ This tutorial will guide you through learning React Server Components (RSC) with
 
 4. [Selective Hydration in Streamed Components](selective-hydration-in-streamed-components.md) - Learn about React's selective hydration feature and how it improves page interactivity.
 
-5. [How React Server Components Works](how-react-server-components-works.md) - Dive deep into the technical details and underlying mechanisms of React Server Components.
+5. [How React Server Components Work](how-react-server-components-work.md) - Dive deep into the technical details and underlying mechanisms of React Server Components.
 
 6. [React Server Components Rendering Flow](react-server-components-rendering-flow.md) - Understand the detailed rendering flow of RSC, including bundle types, current limitations, and future improvements.
 

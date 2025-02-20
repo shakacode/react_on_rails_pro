@@ -42,8 +42,7 @@ module ReactOnRailsPro
 
       def asset_exists_on_vm_renderer?(filename)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on node-renderer: #{filename}" }
-        form_data = common_form_data
-        response = perform_request("/asset-exists?filename=#{filename}", json: form_data)
+        response = perform_request("/asset-exists?filename=#{filename}", json: common_form_data)
         JSON.parse(response.body)["exists"] == true
       end
 

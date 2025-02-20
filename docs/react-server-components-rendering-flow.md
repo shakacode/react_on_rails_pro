@@ -10,7 +10,7 @@ In a React Server Components project, there are three distinct types of bundles:
 - Contains only server components and references to client components
 - Generated using the RSC Webpack Loader which transforms client components into references
 - Used specifically for generating RSC payloads
-- Configured with `react-server` and `workerd` conditions to enable RSC-specific code paths that tell the runtime that this bundle is used for RSC payload generation.
+- Configured with `react-server` condition to enable RSC-specific code paths that tell the runtime that this bundle is used for RSC payload generation.
 
 ### Server Bundle (server-bundle.js)
 - Contains both server and client components in their full form
@@ -88,7 +88,8 @@ sequenceDiagram
     end
 ```
 
-> **Note**: For simplicity, this diagram shows the RSC payload being fetched after the HTML is fully streamed to the client. In reality, the browser begins fetching the RSC payload and starts hydration immediately as soon as it receives the necessary HTML, without waiting for the complete page to be streamed. This parallel processing enables faster page interactivity and better performance.
+> [!NOTE]
+> For simplicity, this diagram shows the RSC payload being fetched after the HTML is fully streamed to the client. In reality, the browser begins fetching the RSC payload and starts hydration immediately as soon as it receives the necessary HTML, without waiting for the complete page to be streamed. This parallel processing enables faster page interactivity and better performance.
 
 ## Future Improvements
 

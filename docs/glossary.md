@@ -1,6 +1,6 @@
 # React Server Components Glossary
 
-### RSC (React Server Components)
+### RSC (React Server Component)
 A React architecture that allows components to execute exclusively on the server while streaming results to the client. Benefits include:
 - Reduced client-side JavaScript
 - Direct access to server resources

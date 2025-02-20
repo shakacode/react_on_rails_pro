@@ -110,6 +110,8 @@
   "scripts": {
     "postinstall": "test -f post-yarn-install.local && ./post-yarn-install.local || true",
     "test": "nps test",
+    "prepack": "nps build.prepack",
+    "prepare": "nps build.prepack",
     "prepublishOnly": "nps build",
     "start": "nps",
     "developing": "nps node-renderer.debug",

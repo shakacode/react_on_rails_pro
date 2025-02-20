@@ -72,4 +72,4 @@ Selective hydration is a powerful feature that allows React to become interactiv
 
 ## Next Steps
 
-Now that you understand how to use selective hydration in React Server Components, you can proceed to the next article: [How React Server Components Works](how-react-server-components-works.md) to learn about the technical details and underlying mechanisms of React Server Components.
+Now that you understand how to use selective hydration in React Server Components, you can proceed to the next article: [How React Server Components Work](how-react-server-components-work.md) to learn about the technical details and underlying mechanisms of React Server Components.

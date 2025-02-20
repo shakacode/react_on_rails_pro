@@ -39,9 +39,7 @@ To enable streaming SSR for React Server Components, we need to:
 
 ```erb
 # app/views/pages/react_server_component_ssr.html.erb
-<%= stream_react_component("ReactServerComponentPage", 
-    prerender: true,
-    trace: true,
+<%= stream_react_component("ReactServerComponentPage",
     id: "ReactServerComponentPage-react-component-0") %>
 
 <h1>React Server Component with SSR</h1>

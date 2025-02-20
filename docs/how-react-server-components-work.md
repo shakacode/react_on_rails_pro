@@ -1,4 +1,4 @@
-# How React Server Components works
+# How React Server Components work
 
 React Server Components (RSC) enable server-side component execution with client-side streaming. This document explains the underlying mechanisms and technical details of how RSC works under the hood.
 
@@ -35,7 +35,8 @@ export default function HomePage() {
 
 It replaces all exports of the file with the client references.
 
-> **Important Note**: The code shown below represents internal implementation details of how React Server Components work under the hood. You don't need to understand these details to use React Server Components effectively in your application. This section is included for those interested in the technical implementation.
+> [!NOTE]
+> The code shown below represents internal implementation details of how React Server Components work under the hood. You don't need to understand these details to use React Server Components effectively in your application. This section is included for those interested in the technical implementation.
 
 
 ```js
@@ -72,14 +73,15 @@ Note that all imports from the original file are removed in the transformed code
 
 ### RSC Client Plugin
 
-We also, used the `react-server-dom-webpack/plugin` with the client bundle. It does the following:
+We also used `react-server-dom-webpack/plugin` with the client bundle. It does the following:
 
 1. Adds all files with the `'use client'` directive on top of it as entry points to the client bundle.
 2. Creates the `react-client-manifest.json` file that contains the mapping of the client components files to their corresponding webpack chunk IDs.
 
 Let's examine the `react-client-manifest.json` file.
 
-> **Important Note**: The code shown below represents internal implementation details of how React Server Components work under the hood. You don't need to understand these details to use React Server Components effectively in your application. This section is included for those interested in the technical implementation.
+> [!NOTE]
+> The code shown below represents internal implementation details of how React Server Components work under the hood. You don't need to understand these details to use React Server Components effectively in your application. This section is included for those interested in the technical implementation.
 
 First, you need to build the client bundle by running:
 
@@ -87,7 +89,8 @@ First, you need to build the client bundle by running:
 CLIENT_BUNDLE_ONLY=true bin/shakapacker
 ```
 
-> **Note**: When you run `bin/dev`, the client bundle may not be written to the disk, it's served from the webpack-dev-server. That's why you need to run `CLIENT_BUNDLE_ONLY=true bin/shakapacker` to ensure the client bundle is built and written to the disk.
+> [!NOTE]
+> When you run `bin/dev`, the client bundle may not be written to the disk, it's served from the webpack-dev-server. That's why you need to run `CLIENT_BUNDLE_ONLY=true bin/shakapacker` to ensure the client bundle is built and written to the disk.
 
 Then, you can find the `react-client-manifest.json` file in the `public/webpack/development` or `public/webpack/production` directory, depending on the environment you are building for.
 
@@ -173,7 +176,8 @@ When you navigate to the `http://localhost:3000/react_server_component_page_rsc_
 
 The real RSC payload is embedded in the `html` field. Other fields are used by React on Rails Pro to ensure the RSC payload is rendered correctly and to replay the console logs in the browser.
 
-> **Note**: using `html` field to refer to the RSC payload may be confusing. It will be changed later to `rscPayload`, but it's an implementation detail and you should not rely on it.
+> [!NOTE]
+> using `html` field to refer to the RSC payload may be confusing. It will be changed later to `rscPayload`, but it's an implementation detail and you should not rely on it.
 
 The RSC payload itself is an implementation detail, you don't need to understand it to use React Server Components. But we can notice that it contains the React render tree of the `ReactServerComponentPage` component. Like this:
 
