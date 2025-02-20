@@ -36,8 +36,8 @@ const configureRsc = () => {
       // Ignore import of react-dom/server in rsc bundle
       // This module is not needed to generate the rsc payload, it's rendered using `react-server-dom-webpack`
       // Not removing it will cause a runtime error
-      'react-dom/server': false
-    }
+      'react-dom/server': false,
+    },
   };
 
   // Update the output bundle name to be `rsc-bundle.js` instead of `server-bundle.js`

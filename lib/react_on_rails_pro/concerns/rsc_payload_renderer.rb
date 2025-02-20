@@ -22,7 +22,7 @@ module ReactOnRailsPro
     private
 
     def rsc_payload_component_props
-      {}
+      JSON.parse(params[:props])
     end
 
     def rsc_payload_component_name

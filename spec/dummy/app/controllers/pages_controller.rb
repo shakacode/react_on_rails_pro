@@ -95,10 +95,6 @@ class PagesController < ApplicationController
 
   private
 
-  def rsc_payload_component_props
-    APP_PROPS_SERVER_RENDER
-  end
-
   def calc_slow_app_props_server_render
     msg = <<-MSG.strip_heredoc
       XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
