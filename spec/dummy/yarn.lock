@@ -5708,7 +5708,7 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro362-add-support-for-RSC":
   version "14.1.1"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#ff7fbfadb8d7a16480677a7b6a14c3516cfda1be"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#5c36388bac363f7ea889dfe1e9884239eb9f57b7"
 
 react-proptypes@^1.0.0:
   version "1.0.0"
