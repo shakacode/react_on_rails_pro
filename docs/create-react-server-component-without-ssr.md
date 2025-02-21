@@ -55,7 +55,7 @@ For example:
 
 3. Create a new Webpack configuration to generate React Server Components bundles (RSC bundles) (usually named `rsc-bundle.js`).
 
-RSC bundles is a clone of the server bundle `server-bundle.js` but we just add the RSC loader `react-on-rails/RSCWebpackLoader` to the used loaders.
+RSC bundle is a clone of the server bundle `server-bundle.js` but we just add the RSC loader `react-on-rails/RSCWebpackLoader` to the used loaders.
 
 You can check the [How React Server Components work](how-react-server-components-work.md) for more information about the RSC loader (It's better to read it after reading this article).
 
