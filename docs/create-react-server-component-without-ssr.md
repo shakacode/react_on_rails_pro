@@ -17,10 +17,10 @@ yarn add react-on-rails@15.0.0-alpha.2 react-on-rails-pro@4.0.0-rc.11
 bundle add react_on_rails@15.0.0.alpha.2 react_on_rails_pro@4.0.0.rc.11
 ```
 
-Also, install the canary version of React, React DOM, and `react-server-dom-webpack`:
+Also, install version 19 of React, React DOM, and `react-server-dom-webpack`:
 
 ```bash
-yarn add react@18.3.0-canary-670811593-20240322 react-dom@18.3.0-canary-670811593-20240322 react-server-dom-webpack@18.3.0-canary-670811593-20240322
+yarn add react@19.0.0 react-dom@19.0.0 react-server-dom-webpack@19.0.0
 ```
 
 2. Enable support for Server Components in React on Rails Pro configuration:
