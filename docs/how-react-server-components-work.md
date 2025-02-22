@@ -222,7 +222,7 @@ In this case, ensure you pass the correct path to `registerServerComponent` func
 
 ```js
 // client/app/packs/client-bundle.js
-import registerServerComponent from 'react-on-rails/registerServerComponent';
+import registerServerComponent from 'react-on-rails/registerServerComponent/client';
 
 registerServerComponent({
   rscPayloadGenerationUrlPath: "flight-payload",
