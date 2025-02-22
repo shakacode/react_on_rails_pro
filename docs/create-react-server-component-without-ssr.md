@@ -297,17 +297,17 @@ If you didn't enable `auto_load_bundle`, you need to register the React Server C
 
 ```js
 // client/app/packs/server-bundle.js
-import ReactOnRails from 'react-on-rails';
+import registerServerComponent from 'react-on-rails/registerServerComponent/server';
 import ReactServerComponentPage from './components/ReactServerComponentPage';
 
-ReactOnRails.register({
+registerServerComponent({
   ReactServerComponentPage,
 });
 ```
 
 ```js
 // client/app/packs/client-bundle.js
-import registerServerComponent from 'react-on-rails/registerServerComponent';
+import registerServerComponent from 'react-on-rails/registerServerComponent/client';
 
 registerServerComponent(
   { rscPayloadGenerationUrlPath: 'rsc_payload/' },
@@ -315,7 +315,15 @@ registerServerComponent(
 );
 ```
 
-As you can see, registering a server component on the client bundle is different. We use the `registerServerComponent` function to register the server component. `registerServerComponent` takes only the component name as an argument. We don't need to import the component, so the component will not be bundled into the client bundle.
+As you can see, server components are not registered using the `ReactOnRails.register` function. Instead, we use the `registerServerComponent` function to register the server component. Also, `registerServerComponent` has different options for the client bundle and the server bundle.
+- For the server bundle, the component itself is passed to the `registerServerComponent` function, so the component is bundled into the server bundle.
+- For the client bundle, we pass the component name as an argument to the `registerServerComponent` function, so the component is not bundled into the client bundle.
+
+As you can see at [How React Server Components work](how-react-server-components-work.md):
+- Server components are rendered on the client using the rsc payload not the component itself.
+
+And as you can see at [React Server Components Rendering Flow](react-server-components-rendering-flow.md):
+- In the future, the server bundle will use the rsc payload to render the server component on the server side as well.
 
 The `rscPayloadGenerationUrlPath` option will be explained in detail later in this document. For now, just know that it specifies the base URL path for React Server Component requests.
 
