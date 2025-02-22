@@ -165,22 +165,40 @@ ReactOnRailsPro.configure do |config|
 end
 ```
 
-4. Make the client bundle use the React Server Components plugin `react-server-dom-webpack/plugin`, for more information about this plugin, you can check the [How React Server Components work](how-react-server-components-work.md) (It's better to read it after reading this article).
+4. Make the client bundle use the React Server Components plugin `react-on-rails/RSCWebpackPlugin`, for more information about this plugin, you can check the [How React Server Components work](how-react-server-components-work.md) (It's better to read it after reading this article).
 
 ```js
 // config/webpack/clientWebpackConfig.js
-const RSDWPlugin = require('react-server-dom-webpack/plugin');
+const { RSCWebpackPlugin } = require('react-on-rails/RSCWebpackPlugin');
 // existing code...
 
 const configureClient = () => {
   // existing code...
 
-  config.plugins.push(new RSDWPlugin());
+  config.plugins.push(new RSCWebpackPlugin({ isServer: false }));
 
   return config;
 };
 
 module.exports = configureClient;
+```
+
+5. Make the server bundle use the React Server Components plugin `react-on-rails/RSCWebpackPlugin`
+
+```js
+// config/webpack/serverWebpackConfig.js
+const { RSCWebpackPlugin } = require('react-on-rails/RSCWebpackPlugin');
+// existing code...
+
+const configureServer = () => {
+  // existing code...
+
+  config.plugins.push(new RSCWebpackPlugin({ isServer: true }));
+
+  return config;
+};
+
+module.exports = configureServer;
 ```
 
 ## Create a React Server Component

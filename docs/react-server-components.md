@@ -182,10 +182,10 @@ This migration approach allows you to:
 
 The React Server Components system needs to know which JavaScript chunks to load for each client component. This is handled through a manifest file called `react-client-manifest.json` that maps component file paths to their corresponding chunks.
 
-This manifest is generated automatically by the `react-server-dom-webpack/plugin` (RSDWPlugin) that we added in the client webpack configuration:
+This manifest is generated automatically by the `react-on-rails/RSCWebpackPlugin` (RSCWebpackPlugin) that we added in the client webpack configuration:
 
 ```javascript:config/webpack/clientWebpackConfig.js
-clientConfig.plugins.push(new RSDWPlugin({ isServer: false }));
+clientConfig.plugins.push(new RSCWebpackPlugin({ isServer: false }));
 ```
 
 This plugin is responsible for generating the manifest file, which is then used by the React Server Components system to determine which chunks to load for each client component.
