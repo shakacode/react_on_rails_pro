@@ -99,7 +99,7 @@ rules.forEach((rule) => {
     const babelLoader = extractLoader(rule, 'babel-loader');
     if (babelLoader) {
       rule.use.push({
-        loader: 'react-on-rails/RSCWebpackLoader',
+        loader: '@shakacode-tools/react-on-rails-rsc/WebpackLoader',
       });
     }
   }
@@ -182,7 +182,7 @@ This migration approach allows you to:
 
 The React Server Components system needs to know which JavaScript chunks to load for each client component. This is handled through a manifest file called `react-client-manifest.json` that maps component file paths to their corresponding chunks.
 
-This manifest is generated automatically by the `react-on-rails/RSCWebpackPlugin` (RSCWebpackPlugin) that we added in the client webpack configuration:
+This manifest is generated automatically by the `@shakacode-tools/react-on-rails-rsc/WebpackPlugin` (RSCWebpackPlugin) that we added in the client webpack configuration:
 
 ```javascript:config/webpack/clientWebpackConfig.js
 clientConfig.plugins.push(new RSCWebpackPlugin({ isServer: false }));

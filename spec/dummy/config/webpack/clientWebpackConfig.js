@@ -1,4 +1,4 @@
-const { RSCWebpackPlugin } = require('react-on-rails/RSCWebpackPlugin');
+const { RSCWebpackPlugin } = require('@shakacode-tools/react-on-rails-rsc/WebpackPlugin');
 const LoadablePlugin = require('@loadable/webpack-plugin');
 const commonWebpackConfig = require('./commonWebpackConfig');
 

@@ -8,7 +8,7 @@ We showed in the [Create a React Server Component without SSR](create-react-serv
 
 ### RSC Webpack Loader
 
-The `react-on-rails/RSCWebpackLoader` is a custom loader that removes the client components and their dependencies from the RSC bundle and replace them with client references that tell the rsc runtime that there is a client component entry point in this place.
+The `@shakacode-tools/react-on-rails-rsc/WebpackLoader` is a custom loader that removes the client components and their dependencies from the RSC bundle and replace them with client references that tell the rsc runtime that there is a client component entry point in this place.
 
 The RSC Webpack Loader works when it finds a file with the `'use client'` directive on top of it.
 
@@ -73,7 +73,7 @@ Note that all imports from the original file are removed in the transformed code
 
 ### RSC Client Plugin
 
-We also used `react-on-rails/RSCWebpackPlugin` with the client bundle. It does the following:
+We also used `@shakacode-tools/react-on-rails-rsc/WebpackPlugin` with the client bundle. It does the following:
 
 1. Adds all files with the `'use client'` directive on top of it as entry points to the client bundle.
 2. Creates the `react-client-manifest.json` file that contains the mapping of the client components files to their corresponding webpack chunk IDs.
@@ -109,10 +109,10 @@ Let's search for the client component `ToggleContainer` that we built before in 
 
 This entry indicates that the `ToggleContainer` client component is included in the `client25` chunk. The `js/client25.js` file contains the client-side code for the `ToggleContainer` component. You can find the `client25` chunk in the `public/webpack/<environment>/js/client25.js` file. Also, the `id` field is the Webpack module ID for the `ToggleContainer` client component. It's used by react runtime to load and hydrate the component in the browser.
 
-If you want to change the file name of the `react-client-manifest.json` file, you can do so by setting the `clientManifestFilename` option in the `react-on-rails/RSCWebpackPlugin` plugin as follows:
+If you want to change the file name of the `react-client-manifest.json` file, you can do so by setting the `clientManifestFilename` option in the `@shakacode-tools/react-on-rails-rsc/WebpackPlugin` plugin as follows:
 
 ```js
-const { RSCWebpackPlugin } = require('react-on-rails/RSCWebpackPlugin');
+const { RSCWebpackPlugin } = require('@shakacode-tools/react-on-rails-rsc/WebpackPlugin');
 
 config.plugins.push(new RSCWebpackPlugin({
   isServer: false,

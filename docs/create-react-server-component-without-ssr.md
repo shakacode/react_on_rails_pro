@@ -17,11 +17,14 @@ yarn add react-on-rails@15.0.0-alpha.2 react-on-rails-pro@4.0.0-rc.11
 bundle add react_on_rails@15.0.0.alpha.2 react_on_rails_pro@4.0.0.rc.11
 ```
 
-Also, install version 19 of React, React DOM, and `react-server-dom-webpack`:
+Also, install version 19 of React, React DOM, and `@shakacode-tools/react-on-rails-rsc`:
 
 ```bash
-yarn add react@19.0.0 react-dom@19.0.0 react-server-dom-webpack@19.0.0
+yarn add react@19.0.0 react-dom@19.0.0 @shakacode-tools/react-on-rails-rsc@19.0.0
 ```
+
+> [!NOTE]
+> While React Server Components in React 19 are stable, the underlying APIs used to implement React Server Components bundlers may break between minor versions (19.x). According to the [React Documentation](https://react.dev/reference/rsc/server-components#how-do-i-build-support-for-server-components). React on Rails Pro currently only supports React 19.0.x.
 
 2. Enable support for Server Components in React on Rails Pro configuration:
 
@@ -55,7 +58,7 @@ For example:
 
 3. Create a new Webpack configuration to generate React Server Components bundles (RSC bundles) (usually named `rsc-bundle.js`).
 
-RSC bundle is a clone of the server bundle `server-bundle.js` but we just add the RSC loader `react-on-rails/RSCWebpackLoader` to the used loaders.
+RSC bundle is a clone of the server bundle `server-bundle.js` but we just add the RSC loader `@shakacode-tools/react-on-rails-rsc/WebpackLoader` to the used loaders.
 
 You can check the [How React Server Components work](how-react-server-components-work.md) for more information about the RSC loader (It's better to read it after reading this article).
 
@@ -97,7 +100,7 @@ const configureRsc = () => {
       const babelLoader = extractLoader(rule, 'babel-loader');
       if (babelLoader) {
         rule.use.push({
-          loader: 'react-on-rails/RSCWebpackLoader',
+          loader: '@shakacode-tools/react-on-rails-rsc/WebpackLoader',
         });
       }
     }
@@ -165,11 +168,11 @@ ReactOnRailsPro.configure do |config|
 end
 ```
 
-4. Make the client bundle use the React Server Components plugin `react-on-rails/RSCWebpackPlugin`, for more information about this plugin, you can check the [How React Server Components work](how-react-server-components-work.md) (It's better to read it after reading this article).
+4. Make the client bundle use the React Server Components plugin `@shakacode-tools/react-on-rails-rsc/WebpackPlugin`, for more information about this plugin, you can check the [How React Server Components work](how-react-server-components-work.md) (It's better to read it after reading this article).
 
 ```js
 // config/webpack/clientWebpackConfig.js
-const { RSCWebpackPlugin } = require('react-on-rails/RSCWebpackPlugin');
+const { RSCWebpackPlugin } = require('@shakacode-tools/react-on-rails-rsc/WebpackPlugin');
 // existing code...
 
 const configureClient = () => {
@@ -183,11 +186,11 @@ const configureClient = () => {
 module.exports = configureClient;
 ```
 
-5. Make the server bundle use the React Server Components plugin `react-on-rails/RSCWebpackPlugin`
+5. Make the server bundle use the React Server Components plugin `@shakacode-tools/react-on-rails-rsc/WebpackPlugin`
 
 ```js
 // config/webpack/serverWebpackConfig.js
-const { RSCWebpackPlugin } = require('react-on-rails/RSCWebpackPlugin');
+const { RSCWebpackPlugin } = require('@shakacode-tools/react-on-rails-rsc/WebpackPlugin');
 // existing code...
 
 const configureServer = () => {

@@ -18,7 +18,7 @@ const configureRsc = () => {
       const babelLoader = extractLoader(rule, 'babel-loader');
       if (babelLoader) {
         rule.use.push({
-          loader: 'react-on-rails/RSCWebpackLoader',
+          loader: '@shakacode-tools/react-on-rails-rsc/WebpackLoader',
         });
       }
     }
@@ -33,7 +33,7 @@ const configureRsc = () => {
     alias: {
       ...rscConfig.resolve?.alias,
       // Ignore import of react-dom/server in rsc bundle
-      // This module is not needed to generate the rsc payload, it's rendered using `react-server-dom-webpack`
+      // This module is not needed to generate the rsc payload, it's rendered using `@shakacode-tools/react-on-rails-rsc`
       // Not removing it will cause a runtime error
       'react-dom/server': false,
     },
