@@ -26,6 +26,9 @@ You can find the **package** version numbers from this repo's tags and below in 
 
 [PR 422](https://github.com/shakacode/react_on_rails_pro/pull/422) by [AbanoubGhadban](https://github.com/AbanoubGhadban).
 
+### Changed (Breaking)
+- `ReactOnRailsPro::Utils#copy_assets` retuns `nil` instead of `Response` object. Because it throws an error if an error occurs.
+
 ## [4.0.0.rc.11] - 2025-02-09
 
 ### Changed
