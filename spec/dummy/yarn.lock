@@ -1375,7 +1375,7 @@
 
 "@shakacode-tools/react-on-rails-rsc@git+https://github.com/shakacode/react_on_rails_rsc.git#main":
   version "19.0.0"
-  resolved "git+https://github.com/shakacode/react_on_rails_rsc.git#6e72fd0a1a51729c7e9c298fb96c3eea7cfa1dab"
+  resolved "git+https://github.com/shakacode/react_on_rails_rsc.git#5453eaa574cd6ad54698b0f2ad8c1c44985e169d"
   dependencies:
     react-server-dom-webpack "19.0.0"
 
@@ -5697,7 +5697,7 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro362-add-support-for-RSC":
   version "14.1.1"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#28cdbd279e4637cfd573fb4aacd9b13e18835827"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#086ef84e89d5c613580721c16eb32dde10594de3"
   dependencies:
     "@shakacode-tools/react-on-rails-rsc" "git+https://github.com/shakacode/react_on_rails_rsc.git#main"
 
