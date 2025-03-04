@@ -18,7 +18,7 @@
     "@loadable/webpack-plugin": "^5.15.2",
     "@sentry/node": "^7.120.0",
     "@shakacode-tools/react-on-rails-pro-node-renderer": "link:.yalc/@shakacode-tools/react-on-rails-pro-node-renderer",
-    "@shakacode-tools/react-on-rails-rsc": "git+https://github.com/shakacode/react_on_rails_rsc.git#main",
+    "@abanoubghadban/react-on-rails-rsc": "^19.0.0-rc.3",
     "@shakacode/use-ssr-computation.macro": "^1.2.4",
     "@shakacode/use-ssr-computation.runtime": "^2.0.0",
     "@webpack-cli/serve": "^1.6.0",
