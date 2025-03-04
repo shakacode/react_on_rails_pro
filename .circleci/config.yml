@@ -38,7 +38,11 @@ aliases:
   # Install/update Node modules for dummy app unless existing set of modules is satisfying Yarn.
   - &install-dummy-app-node-modules
     name: Install Node modules with Yarn for dummy app
-    command: cd spec/dummy && yarn install --frozen-lockfile --no-progress --no-emoji
+    command: |
+      cd spec/dummy
+      echo "//npm.pkg.github.com/:_authToken=${SHAKACODE_TOOLS_PACKAGES_TOKEN}" >> .npmrc
+      echo "@abanoubghadban:registry=https://npm.pkg.github.com/" >> .npmrc
+      yarn install --frozen-lockfile --no-progress --no-emoji
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-dummy-app-ruby-gems
