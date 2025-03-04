@@ -33,6 +33,8 @@ aliases:
     name: Install Node modules with Yarn for renderer package
     command: |
       sudo yarn global add yalc
+      echo "//npm.pkg.github.com/:_authToken=${SHAKACODE_TOOLS_PACKAGES_TOKEN}" >> .npmrc
+      echo "@abanoubghadban:registry=https://npm.pkg.github.com/" >> .npmrc
       yarn install --frozen-lockfile --no-progress --no-emoji
 
   # Install/update Node modules for dummy app unless existing set of modules is satisfying Yarn.
