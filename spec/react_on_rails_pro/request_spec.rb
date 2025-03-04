@@ -22,6 +22,7 @@ describe ReactOnRailsPro::Request do
 
     clear_stream_mocks
     allow(ReactOnRailsPro.configuration).to receive(:renderer_url).and_return(renderer_url)
+    allow(ReactOnRailsPro.configuration).to receive(:renderer_http_pool_size).and_return(20)
 
     original_httpx_plugin = HTTPX.method(:plugin)
     allow(HTTPX).to receive(:plugin) do |*args|
