@@ -96,7 +96,7 @@ module ReactOnRailsPro
 
               result = described_class.rsc_bundle_hash
 
-              expect(result).to eq("barfoobarfoo")
+              expect(result).to eq("barfoobarfoo-development")
             end
           end
         end
