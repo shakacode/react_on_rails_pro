@@ -1802,6 +1802,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/k6@^0.54.2":
+  version "0.54.2"
+  resolved "https://registry.yarnpkg.com/@types/k6/-/k6-0.54.2.tgz#944d6e20881d0fed3123742654ec8a12e175ea49"
+  integrity sha512-B5LPxeQm97JnUTpoKNE1UX9jFp+JiJCAXgZOa2P7aChxVoPQXKfWMzK+739xHq3lPkKj1aV+HeOxkP56g/oWBg==
+
 "@types/lockfile@^1.0.4":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@types/lockfile/-/lockfile-1.0.4.tgz#9d6a6d1b6dbd4853cecc7f334bc53ea0ff363b8e"

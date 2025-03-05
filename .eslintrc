@@ -7,10 +7,6 @@ extends:
   - eslint-config-shakacode
   - prettier
 
-globals:
-  __DEBUG_SERVER_ERRORS__: true
-  __SERVER_ERRORS__: true
-
 parserOptions:
   # We have @babel/eslint-parser from eslint-config-shakacode, but don't use Babel in the main project
   requireConfigFile: false
@@ -89,3 +85,28 @@ overrides:
         - error
         - patterns:
           - "../*"
+  - files: "k6/**/*.{js,ts}"
+    globals:
+      # See https://github.com/grafana/k6-docs/blob/65d9f8a9a53f57a4f416763f8020d0c7f40eb976/docs/sources/.eslintrc.js
+      __ENV: readonly
+      __VU: readonly
+      __ITER: readonly
+      console: readonly
+      open: readonly
+      window: readonly
+      setInterval: readonly
+      clearInterval: readonly
+      setTimeout: readonly
+      clearTimeout: readonly
+    rules:
+      "import/extensions":
+        - error
+        - ignorePackages
+      "import/no-unresolved":
+        - error
+        # k6 and k6/... have to be installed globally and can't be resolved by ESLint
+        - { ignore: ["k6.*"] }
+      no-use-before-define:
+        - error
+        # We want to allow function.name in options, and place them at the top of the file
+        - { functions: false }

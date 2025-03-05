@@ -5,11 +5,11 @@ const delayPromise = (promise, ms) => new Promise((resolve) => setTimeout(() => 
 
 const cachedFetches = {};
 
-const AsyncPost = async () => {
+const AsyncPost = async ({ delayMs }) => {
   console.log('Hello from AsyncPost');
   const post = (cachedFetches['post'] ??= await delayPromise(
     fetch('https://jsonplaceholder.org/posts/1'),
-    2000,
+    delayMs,
   ).then((response) => response.json()));
 
   // Uncomment to test handling of errors occuring outside of the shell
@@ -26,10 +26,10 @@ const AsyncPost = async () => {
   );
 };
 
-const AsyncComment = async ({ commentId }) => {
+const AsyncComment = async ({ commentId, delayMs }) => {
   const comment = (cachedFetches[commentId] ??= await delayPromise(
     fetch(`https://jsonplaceholder.org/comments/${commentId}`),
-    2000 + commentId * 1000,
+    delayMs,
   ).then((response) => response.json()));
   console.log('Hello from AsyncComment', commentId);
   return (
@@ -40,8 +40,8 @@ const AsyncComment = async ({ commentId }) => {
   );
 };
 
-function StreamAsyncComponents(props) {
-  const [name, setName] = useState(props.helloWorldData.name);
+function StreamAsyncComponents({ helloWorldData, baseDelayMs = 1000 }) {
+  const [name, setName] = useState(helloWorldData.name);
 
   // Uncomment to test error handling during rendering the shell
   // throw new Error('Hello from StreamAsyncComponents');
@@ -57,13 +57,13 @@ function StreamAsyncComponents(props) {
       <br />
       <br />
       <Suspense fallback={<div>Loading...</div>}>
-        <AsyncPost />
+        <AsyncPost delayMs={baseDelayMs} />
       </Suspense>
       <br />
       <h1 style={{ fontSize: '30px', fontWeight: 'bold' }}>Comments Fetched Asynchronously on Server</h1>
       {[1, 2, 3, 4].map((commentId) => (
         <Suspense key={commentId} fallback={<div>Loading Comment {commentId}...</div>}>
-          <AsyncComment commentId={commentId} />
+          <AsyncComment commentId={commentId} delayMs={(2 + commentId) * baseDelayMs} />
         </Suspense>
       ))}
     </div>
