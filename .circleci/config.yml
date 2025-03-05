@@ -280,7 +280,7 @@ jobs:
           command: cd spec/dummy && bundle exec rake react_on_rails:generate_packs
       - run:
           name: Run Node renderer in a background
-          command: cd spec/dummy && yarn run node-renderer
+          command: cd spec/dummy && RENDERER_LOG_LEVEL=debug yarn run node-renderer
           background: true
       - run:
           name: run rails server in background
