@@ -1,5 +1,5 @@
 const { config } = require('shakapacker');
-const { RSCWebpackPlugin } = require('@abanoubghadban/react-on-rails-rsc/WebpackPlugin');
+const { RSCWebpackPlugin } = require('@shakacode-tools/react-on-rails-rsc/WebpackPlugin');
 const commonWebpackConfig = require('./commonWebpackConfig');
 const webpack = require('webpack');
 

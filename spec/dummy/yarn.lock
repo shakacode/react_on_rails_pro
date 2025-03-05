@@ -2,13 +2,6 @@
 # yarn lockfile v1
 
 
-"@abanoubghadban/react-on-rails-rsc@^19.0.0-rc.3":
-  version "19.0.0-rc.3"
-  resolved "https://npm.pkg.github.com/download/@abanoubghadban/react-on-rails-rsc/19.0.0-rc.3/6a47d5a52930dac461b17b537ebc7105b1a50aee#6a47d5a52930dac461b17b537ebc7105b1a50aee"
-  integrity sha512-ODj2H85GECe/FmHRpKFsT2D21Y9U1dltCwZD5I3FCRGMgj+6vta4oNU5lWqbHX875r6Q2LO4kD0b8b4Qhn7SnA==
-  dependencies:
-    react-server-dom-webpack "19.0.0"
-
 "@alloc/quick-lru@^5.2.0":
   version "5.2.0"
   resolved "https://registry.yarnpkg.com/@alloc/quick-lru/-/quick-lru-5.2.0.tgz#7bf68b20c0a350f936915fcae06f58e32007ce30"
@@ -1379,6 +1372,13 @@
 "@shakacode-tools/react-on-rails-pro-node-renderer@link:.yalc/@shakacode-tools/react-on-rails-pro-node-renderer":
   version "0.0.0"
   uid ""
+
+"@shakacode-tools/react-on-rails-rsc@^19.0.0":
+  version "19.0.0"
+  resolved "https://npm.pkg.github.com/download/@shakacode-tools/react-on-rails-rsc/19.0.0/9ed22080a97f3f9f3d9eaad9a9c6f49f6adf925d#9ed22080a97f3f9f3d9eaad9a9c6f49f6adf925d"
+  integrity sha512-r6ENgCLeqechHHDZsAtxc64i6y4Tl0NG/EIlFvSxOLXx3u8qM2OWs7HLQCwSRo9QJmySteuzIhS/vdOpC8PRww==
+  dependencies:
+    react-server-dom-webpack "19.0.0"
 
 "@shakacode/use-ssr-computation.macro@^1.2.4":
   version "1.2.4"

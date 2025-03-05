@@ -18,7 +18,7 @@ const configureRsc = () => {
       const babelLoader = extractLoader(rule, 'babel-loader');
       if (babelLoader) {
         rule.use.push({
-          loader: '@abanoubghadban/react-on-rails-rsc/WebpackLoader',
+          loader: '@shakacode-tools/react-on-rails-rsc/WebpackLoader',
         });
       }
     }
