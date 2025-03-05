@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 109293f509669c57231233828f550739088e2385
+  revision: 233aefe14577f88efe51e750ce4b13f771a8cf73
   branch: abanoubghadban/pro362-add-support-for-RSC
   specs:
-    react_on_rails (15.0.0.alpha.2)
+    react_on_rails (14.2.0)
       addressable
       connection_pool
       execjs (~> 2.5)
