@@ -50,11 +50,65 @@ import numeral from 'numeral';      // ~25KB
 // Client bundle reduced by ~90KB
 ```
 
+### [Selective Hydration](https://github.com/reactwg/react-18/discussions/37) Benefits
+
+React's selective hydration is a powerful feature that significantly improves page interactivity by:
+
+1. **Independent Component Hydration**
+   - Each client component hydrates independently as soon as its code loads
+   - No waiting for the entire page's JavaScript to load and execute
+   - Components become interactive progressively rather than all at once
+
+2. **Interaction-Based Prioritization**
+   - React automatically prioritizes hydrating components that users try to interact with
+   - If a user clicks a button before hydration, that component gets priority
+   - Other components continue hydrating in the background
+   - Better perceived performance as users can interact sooner
+
+3. **Parallel Processing**
+   - Multiple components can hydrate simultaneously
+   - Network requests for component code happen in parallel
+   - CPU processing for hydration is interleaved efficiently
+   - Maximizes browser resources for faster overall interactivity
+
+For example, in a typical page layout:
+
+```jsx
+<Layout>
+  <Suspense fallback={<NavSkeleton />}>
+    <Navigation /> {/* Client component */}
+  </Suspense>
+  <Suspense fallback={<MainSkeleton />}>
+    <MainContent /> {/* Client component */}
+    <Comments /> {/* Client component */}
+  </Suspense>
+  <Suspense fallback={<SidebarSkeleton />}>
+    <Sidebar /> {/* Client component */}
+  </Suspense>
+</Layout>
+```
+
+With selective hydration:
+- Navigation could become interactive while Comments are still loading
+- If user tries to click a Sidebar button, it gets priority hydration
+- Each component hydrates independently when ready
+- No waiting for all components to load before any become interactive
+
+This approach significantly improves the user experience by:
+- Reducing Time to Interactive (TTI) for important components
+- Providing faster response to user interactions
+- Maintaining smooth performance even on slower devices or networks
+- Eliminating the "all or nothing" hydration approach of traditional SSR
+
+For a deeper dive into selective hydration, see our [Selective Hydration in Streamed Components](./selective-hydration-in-streamed-components.md) guide.
+
+
 ### Comparison with Other Approaches:
 
 1. **Full Server Rendering:**
 - ❌ Delays First Byte until entire page is rendered
-- ❌ All-or-nothing approach
+- ❌ All-or-nothing approach to hydration
+- ❌ Must wait for all JavaScript before any interactivity
 - ✅ Good SEO
 - ✅ Complete initial HTML
 
@@ -62,6 +116,8 @@ import numeral from 'numeral';      // ~25KB
 - ❌ Empty initial HTML for lazy components
 - ❌ Must wait for hydration to load
 - ❌ Poor SEO for lazy content
+- ❌ No prioritization of component hydration
+- ❌ Initial page must be loaded and hydrated before loading lazy components
 - ✅ Reduces initial bundle size
 
 3. **RSC with Streaming:**
@@ -177,59 +233,3 @@ This migration approach allows you to:
 - Test changes in isolation
 - Keep interactive components working as before
 - Eliminate client-side lazy loading overhead
-
-### Client Component Manifest
-
-The React Server Components system needs to know which JavaScript chunks to load for each client component. This is handled through a manifest file called `react-client-manifest.json` that maps component file paths to their corresponding chunks.
-
-This manifest is generated automatically by the `@shakacode-tools/react-on-rails-rsc/WebpackPlugin` (RSCWebpackPlugin) that we added in the client webpack configuration:
-
-```javascript:config/webpack/clientWebpackConfig.js
-clientConfig.plugins.push(new RSCWebpackPlugin({ isServer: false }));
-```
-
-This plugin is responsible for generating the manifest file, which is then used by the React Server Components system to determine which chunks to load for each client component.
-
-The manifest contains entries that look like this:
-
-```json
-{
-  "file:///app/components/HelloWorld.jsx": {
-    "id": "./client/app/components/HelloWorld.jsx",
-    "chunks": [
-      "client25",
-      "js/client25.js"
-    ],
-    "name": ""
-  }
-}
-```
-
-When the RSC server is rendering a rsc payload, it doesn't render the client components. It just renders the server components. Client components are added as a reference to their corresponding chunks in the manifest. Like this:
-
-```rsc
-M1:{"id":"./client/app/components/HelloWorld.jsx","chunks":["client25"],"name":""}
-J0:["$","@1",null,{"children":["$","span",null,{"children":"Hello from server land"}]}]
-
-```
-
-On the client side, React processes the RSC payload in two key steps:
-
-1. Server Component Resolution:
-   - The RSC payload is parsed and server components are converted to their HTML representation
-   - This happens synchronously without any network requests
-   - Server components maintain their rendered state from the server
-
-2. Client Component Loading:
-   - The RSC payload includes references to the JavaScript chunks needed for client components
-   - These chunks are loaded asynchronously and in parallel
-   - Once loaded, client components hydrate and become interactive
-   - Each client component hydrates independently, allowing for progressive interactivity
-
-This allows the client to know exactly which JavaScript chunks it needs to load to hydrate each client component, enabling efficient code-splitting and selective hydration of only the interactive parts of your application.
-
-The manifest is particularly important for:
-- Code splitting - Only loading the JS needed for specific client components
-- Selective hydration - Hydrating client components independently
-
-You can find your application's manifest at `public/webpack/development/react-client-manifest.json` after building your client bundle by running `yarn run build:dev`.
