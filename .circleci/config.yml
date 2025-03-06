@@ -262,6 +262,7 @@ jobs:
   rspec-dummy-app-node-renderer:
     docker:
       - image: *docker_image
+    resource_class: large
     steps:
       - checkout
       - run: *print-system-info
