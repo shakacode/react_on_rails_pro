@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 59359aeb12682f87561d1059d6bd3625f0712519
+  revision: 4eb472d4548d44bd728a314d413dc9fd5dc42ca0
   branch: abanoubghadban/pro362-add-support-for-RSC
   specs:
     react_on_rails (14.2.0)

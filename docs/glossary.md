@@ -62,7 +62,7 @@ function ParentServerComponent() {
 ## Bundle Related
 
 ### React Server Components Bundle (RSC Bundle) (usually `rsc-bundle.js`)
-A new server-side bundle introduced by React Server Components. It contains server components and their dependencies only. It doesn't include client components. It should be the same as the `server_bundle.js` bundle. But it uses the `@shakacode-tools/react-on-rails-rsc/WebpackLoader` loader to trim the client components from the bundle.
+A new server-side bundle introduced by React Server Components. It contains server components and their dependencies only. It doesn't include client components. It should be the same as the `server_bundle.js` bundle. But it uses the `react-on-rails-rsc/WebpackLoader` loader to trim the client components from the bundle.
 
 ### Client Bundle
 The JavaScript bundle that runs in the browser, containing client components and their dependencies. This bundle is responsible for hydration and client-side interactivity.

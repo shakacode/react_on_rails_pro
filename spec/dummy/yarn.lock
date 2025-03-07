@@ -1373,13 +1373,6 @@
   version "0.0.0"
   uid ""
 
-"@shakacode-tools/react-on-rails-rsc@^19.0.0":
-  version "19.0.0"
-  resolved "https://npm.pkg.github.com/download/@shakacode-tools/react-on-rails-rsc/19.0.0/9ed22080a97f3f9f3d9eaad9a9c6f49f6adf925d#9ed22080a97f3f9f3d9eaad9a9c6f49f6adf925d"
-  integrity sha512-r6ENgCLeqechHHDZsAtxc64i6y4Tl0NG/EIlFvSxOLXx3u8qM2OWs7HLQCwSRo9QJmySteuzIhS/vdOpC8PRww==
-  dependencies:
-    react-server-dom-webpack "19.0.0"
-
 "@shakacode/use-ssr-computation.macro@^1.2.4":
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/@shakacode/use-ssr-computation.macro/-/use-ssr-computation.macro-1.2.4.tgz#b247d683e3133126dbdb42060c26e1c34a8b625d"
@@ -1861,15 +1854,20 @@ acorn@^7.1.1:
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-7.4.1.tgz#feaed255973d2e77555b83dbc08851a6c63520fa"
   integrity sha512-nQyp0o1/mNdbTO1PO6kHkwSrmgZ0MT/jCCpNiwbUjGoRN4dlBhqJtoQuCnEOKzgTVwg0ZWiCoQy6SxMebQVh8A==
 
-acorn@^8.11.0, acorn@^8.7.1:
-  version "8.14.0"
-  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.14.0.tgz#063e2c70cac5fb4f6467f0b11152e04c682795b0"
-  integrity sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==
+acorn@^8.11.0:
+  version "8.14.1"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.14.1.tgz#721d5dc10f7d5b5609a891773d47731796935dfb"
+  integrity sha512-OvQ/2pUDKmgfCg++xsTX1wGxfTaszcHVcTctW4UJB4hibJx2HXxxO5UmVgyjMa+ZDsiaf5wWLXYpRWMmBI0QHg==
 
 acorn@^8.2.4:
   version "8.7.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.7.1.tgz#0197122c843d1bf6d0a5e83220a788f278f63c30"
   integrity sha512-Xx54uLJQZ19lKygFXOWsscKUbsBZW0CPykPhVQdhIeIwrbPmJzqeASDInc8nKBnp/JT6igTs82qPXz069H8I/A==
+
+acorn@^8.7.1:
+  version "8.14.0"
+  resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.14.0.tgz#063e2c70cac5fb4f6467f0b11152e04c682795b0"
+  integrity sha512-cl669nCJTZBsL97OF4kUQm5g5hC2uihk0NxY3WENAC0TYdILVkAyHymAntgxGkl7K+t0cXIrH5siy5S4XkFycA==
 
 acorn@^8.8.2:
   version "8.12.1"
@@ -5603,9 +5601,16 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
+react-on-rails-rsc@19.0.0:
+  version "19.0.0"
+  resolved "https://registry.yarnpkg.com/react-on-rails-rsc/-/react-on-rails-rsc-19.0.0.tgz#0061d8f3eb7cdf12a23c66985212f46e3e2ed2ef"
+  integrity sha512-70K46d9Zs071VgUNxZLz0ModMkPRKpSCu5XiICd/8ChMdivSyxdHEZzY4GSiztQnizzKFX7k25N0EIv/DmUPNg==
+  dependencies:
+    react-server-dom-webpack "19.0.0"
+
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro362-add-support-for-RSC":
   version "14.2.0"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#3b137faf88c0907f53aa5b1a72c0f901e7f5cdee"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#4eb472d4548d44bd728a314d413dc9fd5dc42ca0"
 
 react-proptypes@^1.0.0:
   version "1.0.0"
