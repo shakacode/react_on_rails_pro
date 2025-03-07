@@ -20,13 +20,19 @@ module ReactOnRailsPro
 
       def render_code_as_stream(path, js_code, is_rsc_payload:)
         Rails.logger.info { "[ReactOnRailsPro] Perform rendering request as a stream #{path}" }
+        if is_rsc_payload && !ReactOnRailsPro.configuration.enable_rsc_support
+          raise ReactOnRailsPro::Error,
+                "RSC support is not enabled. Please set enable_rsc_support to true in your " \
+                "config/initializers/react_on_rails_pro.rb file before " \
+                "rendering any RSC payload."
+        end
+
         ReactOnRailsPro::StreamRequest.create do |send_bundle|
           form = form_with_code(js_code, send_bundle, is_rsc_payload: is_rsc_payload)
           perform_request(path, form: form, stream: true)
         end
       end
 
-      # TODO: add support for uploading rsc assets
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
         perform_request("/upload-assets", form: form_with_assets_and_bundle)
