@@ -5608,9 +5608,10 @@ react-on-rails-rsc@19.0.0:
   dependencies:
     react-server-dom-webpack "19.0.0"
 
-"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro362-add-support-for-RSC":
-  version "14.2.0"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#4c5a0f27e3ce77d7bdcd9858cc3564a49b03a8ff"
+react-on-rails@15.0.0-alpha.2:
+  version "15.0.0-alpha.2"
+  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-15.0.0-alpha.2.tgz#57c5e34f8d2fcbd2789deabf8dd126e8da15c663"
+  integrity sha512-0T05V9thaVV1k0VINLcjeBU67m+MMLC7pZuqijYZW6fm90n1rMYj+HVCYDhfWXx90jh/wuF744Futilll4NEoA==
 
 react-proptypes@^1.0.0:
   version "1.0.0"

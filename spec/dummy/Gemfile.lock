@@ -6,18 +6,6 @@ GIT
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
 
-GIT
-  remote: https://github.com/shakacode/react_on_rails.git
-  revision: 4c5a0f27e3ce77d7bdcd9858cc3564a49b03a8ff
-  branch: abanoubghadban/pro362-add-support-for-RSC
-  specs:
-    react_on_rails (14.2.0)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
-
 PATH
   remote: ../..
   specs:
@@ -324,6 +312,12 @@ GEM
       ffi (~> 1.0)
     rdoc (6.12.0)
       psych (>= 4.0.0)
+    react_on_rails (15.0.0.alpha.2)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
     regexp_parser (2.9.2)
     reline (0.6.0)
       io-console (~> 0.5)
@@ -515,7 +509,7 @@ DEPENDENCIES
   pry-theme
   puma (~> 6)
   rails (~> 7.1)
-  react_on_rails!
+  react_on_rails (= 15.0.0.alpha.2)
   react_on_rails_pro!
   rspec-rails
   rspec-retry
