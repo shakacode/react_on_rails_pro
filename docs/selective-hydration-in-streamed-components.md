@@ -55,12 +55,12 @@ This happens because React on Rails by default adds the scripts that hydrate com
 
 This default behavior was kept for backward compatibility, as there were previously race conditions that could occur when using `async` scripts before the page fully loaded. However, these race conditions have been fixed in the latest React on Rails release.
 
-To enable true selective hydration, we need to configure React on Rails to load scripts as `async` scripts by adding `defer_generated_component_packs: false` to the React on Rails initializer:
+To enable true selective hydration, we need to ensure React on Rails loads scripts as `async` scripts by setting `generated_component_packs_loading_strategy` to `async` (setting it to `sync` will work as well but with lower performance). Check the [React on Rails v15.0.0 release notes](https://github.com/shakacode/react_on_rails/blob/master/docs/release-notes/15.0.0.md#enhanced-script-loading-strategies) for more details about its default behavior and how to set it to `async`.
 
 ```ruby
 # config/initializers/react_on_rails.rb
 ReactOnRails.configure do |config|
-  config.defer_generated_component_packs = false
+  config.generated_component_packs_loading_strategy = :async
 end
 ```
 
