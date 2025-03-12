@@ -15,7 +15,7 @@ import fileExistsAsync from './shared/fileExistsAsync';
 import type { FastifyInstance, FastifyReply, FastifyRequest } from './worker/types';
 import checkProtocolVersion from './worker/checkProtocolVersionHandler';
 import authenticate from './worker/authHandler';
-import handleRenderRequest from './worker/handleRenderRequest';
+import { handleRenderRequest, type ProvidedNewBundle } from './worker/handleRenderRequest';
 import {
   errorResponseResult,
   formatExceptionMessage,
@@ -174,7 +174,10 @@ export default function run(config: Partial<Config>) {
   // the digest is part of the request URL. Yes, it's not used here, but the
   // server logs might show it to distinguish different requests.
   app.post<{
-    Body: { renderingRequest: string } & Record<string, Asset>;
+    Body: {
+      renderingRequest: string;
+      dependencyBundleTimestamps?: string[];
+    };
     // Can't infer from the route like Express can
     Params: { bundleTimestamp: string; renderRequestDigest: string };
   }>('/bundles/:bundleTimestamp/render/:renderRequestDigest', async (req, res) => {
@@ -193,13 +196,15 @@ export default function run(config: Partial<Config>) {
     //   await delay(100000);
     // }
 
-    const { renderingRequest } = req.body;
+    const { renderingRequest, dependencyBundleTimestamps } = req.body;
     const { bundleTimestamp } = req.params;
-    let providedNewBundle: Asset | undefined;
+    const providedNewBundles: ProvidedNewBundle[] = [];
     const assetsToCopy: Asset[] = [];
     Object.entries(req.body).forEach(([key, value]) => {
-      if (key === 'bundle') {
-        providedNewBundle = value as Asset;
+      if (key === 'bundle' && isAsset(value)) {
+        providedNewBundles.push({ timestamp: bundleTimestamp, bundle: value });
+      } else if (key.startsWith('bundle_') && isAsset(value)) {
+        providedNewBundles.push({ timestamp: key.replace('bundle_', ''), bundle: value });
       } else if (isAsset(value)) {
         assetsToCopy.push(value);
       }
@@ -211,7 +216,8 @@ export default function run(config: Partial<Config>) {
           const result = await handleRenderRequest({
             renderingRequest,
             bundleTimestamp,
-            providedNewBundle,
+            dependencyBundleTimestamps,
+            providedNewBundles,
             assetsToCopy,
           });
           await setResponse(result, res);

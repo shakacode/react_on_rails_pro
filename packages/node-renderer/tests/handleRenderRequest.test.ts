@@ -3,14 +3,21 @@ import touch from 'touch';
 import lockfile from 'lockfile';
 import {
   createVmBundle,
+  createSecondaryVmBundle,
   uploadedBundlePath,
+  uploadedSecondaryBundlePath,
   createUploadedBundle,
+  createUploadedSecondaryBundle,
   resetForTest,
   BUNDLE_TIMESTAMP,
+  SECONDARY_BUNDLE_TIMESTAMP,
   lockfilePath,
+  mkdirAsync,
+  vmBundlePath,
+  vmSecondaryBundlePath,
 } from './helper';
 import { hasVMContextForBundle } from '../src/worker/vm';
-import handleRenderRequest from '../src/worker/handleRenderRequest';
+import { handleRenderRequest } from '../src/worker/handleRenderRequest';
 import { delay, Asset } from '../src/shared/utils';
 
 const testName = 'handleRenderRequest';
@@ -31,6 +38,10 @@ const renderResult = {
 describe(testName, () => {
   beforeEach(async () => {
     await resetForTest(testName);
+    const bundleDirectory = path.dirname(vmBundlePath(testName));
+    await mkdirAsync(bundleDirectory, { recursive: true });
+    const secondaryBundleDirectory = path.dirname(vmSecondaryBundlePath(testName));
+    await mkdirAsync(secondaryBundleDirectory, { recursive: true });
   });
 
   afterAll(async () => {
@@ -44,11 +55,18 @@ describe(testName, () => {
     const result = await handleRenderRequest({
       renderingRequest: 'ReactOnRails.dummy',
       bundleTimestamp: BUNDLE_TIMESTAMP,
-      providedNewBundle: uploadedBundleForTest(),
+      providedNewBundles: [
+        {
+          bundle: uploadedBundleForTest(),
+          timestamp: BUNDLE_TIMESTAMP,
+        },
+      ],
     });
 
     expect(result).toEqual(renderResult);
-    expect(hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898.js`))).toBeTruthy();
+    expect(
+      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898/1495063024898.js`)),
+    ).toBeTruthy();
   });
 
   test('If bundle was not uploaded yet and not provided', async () => {
@@ -92,11 +110,18 @@ describe(testName, () => {
     const result = await handleRenderRequest({
       renderingRequest: 'ReactOnRails.dummy',
       bundleTimestamp: BUNDLE_TIMESTAMP,
-      providedNewBundle: uploadedBundleForTest(),
+      providedNewBundles: [
+        {
+          bundle: uploadedBundleForTest(),
+          timestamp: BUNDLE_TIMESTAMP,
+        },
+      ],
     });
 
     expect(result).toEqual(renderResult);
-    expect(hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898.js`))).toBeTruthy();
+    expect(
+      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898/1495063024898.js`)),
+    ).toBeTruthy();
   });
 
   test('If lockfile exists from another thread and bundle provided.', async () => {
@@ -117,10 +142,86 @@ describe(testName, () => {
     const result = await handleRenderRequest({
       renderingRequest: 'ReactOnRails.dummy',
       bundleTimestamp: BUNDLE_TIMESTAMP,
-      providedNewBundle: uploadedBundleForTest(),
+      providedNewBundles: [
+        {
+          bundle: uploadedBundleForTest(),
+          timestamp: BUNDLE_TIMESTAMP,
+        },
+      ],
     });
 
     expect(result).toEqual(renderResult);
-    expect(hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898.js`))).toBeTruthy();
+    expect(
+      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898/1495063024898.js`)),
+    ).toBeTruthy();
+  });
+
+  test('If multiple bundles are provided', async () => {
+    expect.assertions(3);
+    await createUploadedBundle(testName);
+    await createUploadedSecondaryBundle(testName);
+
+    const result = await handleRenderRequest({
+      renderingRequest: 'ReactOnRails.dummy',
+      bundleTimestamp: BUNDLE_TIMESTAMP,
+      providedNewBundles: [
+        {
+          bundle: {
+            filename: '',
+            savedFilePath: uploadedBundlePath(testName),
+            type: 'asset',
+          },
+          timestamp: BUNDLE_TIMESTAMP,
+        },
+        {
+          bundle: {
+            filename: '',
+            savedFilePath: uploadedSecondaryBundlePath(testName),
+            type: 'asset',
+          },
+          timestamp: SECONDARY_BUNDLE_TIMESTAMP,
+        },
+      ],
+    });
+
+    expect(result).toEqual(renderResult);
+    // only the primary bundle should be in the VM context
+    // The secondary bundle will be processed only if the rendering request requests it
+    expect(
+      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898/1495063024898.js`)),
+    ).toBeTruthy();
+    expect(
+      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024899/1495063024899.js`)),
+    ).toBeFalsy();
+  });
+
+  test('If dependency bundle timestamps are provided but not uploaded yet', async () => {
+    expect.assertions(1);
+
+    const result = await handleRenderRequest({
+      renderingRequest: 'ReactOnRails.dummy',
+      bundleTimestamp: BUNDLE_TIMESTAMP,
+      dependencyBundleTimestamps: [SECONDARY_BUNDLE_TIMESTAMP],
+    });
+
+    expect(result).toEqual({
+      status: 410,
+      headers: { 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate' },
+      data: 'No bundle uploaded',
+    });
+  });
+
+  test('If dependency bundle timestamps are provided and already uploaded', async () => {
+    expect.assertions(1);
+    await createVmBundle(testName);
+    await createSecondaryVmBundle(testName);
+
+    const result = await handleRenderRequest({
+      renderingRequest: 'ReactOnRails.dummy',
+      bundleTimestamp: BUNDLE_TIMESTAMP,
+      dependencyBundleTimestamps: [SECONDARY_BUNDLE_TIMESTAMP],
+    });
+
+    expect(result).toEqual(renderResult);
   });
 });
