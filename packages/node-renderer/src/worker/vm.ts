@@ -15,6 +15,7 @@ import type { ReactOnRails as ROR } from 'react-on-rails';
 import type { Context } from 'vm';
 
 import SharedConsoleHistory from '../shared/sharedConsoleHistory';
+import { handleRenderRequest } from './handleRenderRequest';
 import log from '../shared/log';
 import { getConfig } from '../shared/configBuilder';
 import { formatExceptionMessage, smartTrim, isReadableStream } from '../shared/utils';
@@ -105,7 +106,16 @@ export async function buildVM(filePath: string) {
     const { supportModules, stubTimers, additionalContext } = getConfig();
     const additionalContextIsObject = additionalContext !== null && additionalContext.constructor === Object;
     const sharedConsoleHistory = new SharedConsoleHistory();
-    const contextObject = { sharedConsoleHistory };
+
+    const runOnOtherBundle = async (bundleTimestamp: string | number, renderingRequest: string) => {
+      const result = await handleRenderRequest({ renderingRequest, bundleTimestamp });
+      if (result.status !== 200) {
+        throw new Error(`Failed to render on other bundle ${bundleTimestamp}, error: ${result.data}`);
+      }
+      return result.data ?? result.stream;
+    };
+
+    const contextObject = { sharedConsoleHistory, runOnOtherBundle };
 
     if (supportModules) {
       // IMPORTANT: When adding anything to this object, update:
@@ -275,9 +285,14 @@ ${smartTrim(renderingRequest)}`);
       await writeFileAsync(debugOutputPathCode, renderingRequest);
     }
 
-    let result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(
-      () => vm.runInContext(renderingRequest, context) as RenderCodeResult,
-    );
+    let result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(() => {
+      context.renderingRequest = renderingRequest;
+      try {
+        return vm.runInContext(renderingRequest, context) as RenderCodeResult;
+      } finally {
+        context.renderingRequest = undefined;
+      }
+    });
 
     if (isReadableStream(result)) {
       return result;

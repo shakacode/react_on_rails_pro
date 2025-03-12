@@ -35,6 +35,14 @@ const renderResult = {
   data: JSON.stringify({ html: 'Dummy Object' }),
 };
 
+const renderResultFromBothBundles = {
+  status: 200,
+  headers: { 'Cache-Control': 'public, max-age=31536000' },
+  data: JSON.stringify({
+    mainBundleResult: { html: 'Dummy Object' },
+    secondaryBundleResult: { html: 'Dummy Object from secondary bundle' },
+  }),
+};
 describe(testName, () => {
   beforeEach(async () => {
     await resetForTest(testName);
@@ -223,5 +231,83 @@ describe(testName, () => {
     });
 
     expect(result).toEqual(renderResult);
+  });
+
+  test('rendering request can call runOnOtherBundle', async () => {
+    await createVmBundle(testName);
+    await createSecondaryVmBundle(testName);
+
+    const renderingRequest = `
+      runOnOtherBundle(${SECONDARY_BUNDLE_TIMESTAMP}, 'ReactOnRails.dummy').then((secondaryBundleResult) => ({
+        mainBundleResult: ReactOnRails.dummy,
+        secondaryBundleResult: JSON.parse(secondaryBundleResult),
+      }));
+    `;
+
+    const result = await handleRenderRequest({
+      renderingRequest,
+      bundleTimestamp: BUNDLE_TIMESTAMP,
+      dependencyBundleTimestamps: [SECONDARY_BUNDLE_TIMESTAMP],
+    });
+
+    expect(result).toEqual(renderResultFromBothBundles);
+    // Both bundles should be in the VM context
+    expect(
+      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898/1495063024898.js`)),
+    ).toBeTruthy();
+    expect(
+      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024899/1495063024899.js`)),
+    ).toBeTruthy();
+  });
+
+  test('renderingRequest is globally accessible inside the VM', async () => {
+    await createVmBundle(testName);
+
+    const renderingRequest = `
+      renderingRequest;
+    `;
+
+    const result = await handleRenderRequest({
+      renderingRequest,
+      bundleTimestamp: BUNDLE_TIMESTAMP,
+    });
+
+    expect(result).toEqual({
+      status: 200,
+      headers: { 'Cache-Control': 'public, max-age=31536000' },
+      data: renderingRequest,
+    });
+  });
+
+  // The renderingRequest variable is automatically reset after synchronous execution to prevent data leakage
+  // between requests in the shared VM context. This means it will be undefined in any async callbacks.
+  //
+  // If you need to access renderingRequest in an async context, save it to a local variable first:
+  //
+  // const renderingRequest = `
+  //   const savedRequest = renderingRequest; // Save synchronously
+  //   Promise.resolve().then(() => {
+  //     return savedRequest; // Access async
+  //   });
+  // `;
+  test('renderingRequest is reset after the sync execution (not accessible from async functions)', async () => {
+    await createVmBundle(testName);
+
+    // Since renderingRequest is undefined in async callbacks, we return the string 'undefined'
+    // to demonstrate this behavior (as undefined cannot be returned from the VM)
+    const renderingRequest = `
+      Promise.resolve().then(() => renderingRequest ?? 'undefined');
+    `;
+
+    const result = await handleRenderRequest({
+      renderingRequest,
+      bundleTimestamp: BUNDLE_TIMESTAMP,
+    });
+
+    expect(result).toEqual({
+      status: 200,
+      headers: { 'Cache-Control': 'public, max-age=31536000' },
+      data: JSON.stringify('undefined'),
+    });
   });
 });
