@@ -1,7 +1,7 @@
 {
   "name": "@shakacode-tools/react-on-rails-pro-node-renderer",
   "version": "4.0.0-rc.13",
-  "protocolVersion": "1.0.0",
+  "supportsProtocolVersions": ["1.0.0", "1.1.0"],
   "description": "react-on-rails-pro JavaScript for react_on_rails_pro Ruby gem",
   "exports": {
     ".": {

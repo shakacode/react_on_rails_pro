@@ -23,7 +23,9 @@ const createVmBundleForTest = () => createVmBundle(testName);
 const bundlePathForTest = () => bundlePath(testName);
 
 const gemVersion = packageJson.version;
-const { protocolVersion } = packageJson;
+const { supportsProtocolVersions } = packageJson;
+
+const protocolVersion = supportsProtocolVersions[0];
 
 disableHttp2();
 

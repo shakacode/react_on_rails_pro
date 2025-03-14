@@ -217,7 +217,7 @@ function sanitizedSettings(aConfig: Partial<Config> | undefined, defaultValue?: 
 export function logSanitizedConfig() {
   log.info({
     'Node Renderer version': packageJson.version,
-    'Protocol version': packageJson.protocolVersion,
+    'Supported protocol versions': packageJson.supportsProtocolVersions.join(', '),
     'Default settings': defaultConfig,
     'ENV values used for settings (use "RENDERER_" prefix)': envValuesUsed(),
     'Customized values for settings from config object (overrides ENV)': sanitizedSettings(userConfig),
