@@ -130,9 +130,10 @@ module ReactOnRailsPro
     end
 
     def self.common_form_data
+      is_rsc_support_enabled = ReactOnRailsPro.configuration.enable_rsc_support
       {
         "gemVersion" => ReactOnRailsPro::VERSION,
-        "protocolVersion" => "1.0.0",
+        "protocolVersion" => is_rsc_support_enabled ? "1.1.0" : "1.0.0",
         "password" => ReactOnRailsPro.configuration.renderer_password
       }
     end

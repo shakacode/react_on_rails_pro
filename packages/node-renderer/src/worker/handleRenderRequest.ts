@@ -19,66 +19,31 @@ import {
   moveUploadedAssets,
   ResponseResult,
   moveUploadedAsset,
-  isReadableStream,
-  isErrorRenderResult,
-  handleStreamError,
 } from '../shared/utils';
 import { getConfig } from '../shared/configBuilder';
 import * as errorReporter from '../shared/errorReporter';
 import { buildVM, hasVMContextForBundle, runInVM } from './vm';
+import { prepareResult } from './prepareResult';
 
 export type ProvidedNewBundle = {
   timestamp: string | number;
   bundle: Asset;
 };
 
-async function prepareResult(
-  renderingRequest: string,
-  bundleFilePathPerTimestamp: string,
-): Promise<ResponseResult> {
-  try {
-    const result = await runInVM(renderingRequest, bundleFilePathPerTimestamp, cluster);
-
-    let exceptionMessage = null;
-    if (!result) {
-      const error = new Error('INVALID NIL or NULL result for rendering');
-      exceptionMessage = formatExceptionMessage(renderingRequest, error, 'INVALID result for prepareResult');
-    } else if (isErrorRenderResult(result)) {
-      ({ exceptionMessage } = result);
-    }
-
-    if (exceptionMessage) {
-      return Promise.resolve(errorResponseResult(exceptionMessage));
-    }
-
-    if (isReadableStream(result)) {
-      const newStreamAfterHandlingError = handleStreamError(result, (error) => {
-        const msg = formatExceptionMessage(renderingRequest, error, 'Error in a rendering stream');
-        errorReporter.message(msg);
-      });
-      return Promise.resolve({
-        headers: { 'Cache-Control': 'public, max-age=31536000' },
-        status: 200,
-        stream: newStreamAfterHandlingError,
-      });
-    }
-
-    return Promise.resolve({
-      headers: { 'Cache-Control': 'public, max-age=31536000' },
-      status: 200,
-      data: result,
-    });
-  } catch (err) {
-    const exceptionMessage = formatExceptionMessage(renderingRequest, err, 'Unknown error calling runInVM');
-    return Promise.resolve(errorResponseResult(exceptionMessage));
-  }
-}
-
 function getRequestBundleFilePath(bundleTimestamp: string | number) {
   const { bundlePath } = getConfig();
   const bundleDirectory = path.join(bundlePath, `${bundleTimestamp}`);
   return path.join(bundleDirectory, `${bundleTimestamp}.js`);
 }
+
+async function runAndBuildResult(
+  renderingRequest: string,
+  bundleFilePathPerTimestamp: string,
+): Promise<ResponseResult> {
+  const vmResult = await runInVM(renderingRequest, bundleFilePathPerTimestamp, cluster);
+  return prepareResult(renderingRequest, bundleFilePathPerTimestamp);
+}
+
 
 /**
  * @param bundleFilePathPerTimestamp
