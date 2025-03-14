@@ -19,6 +19,7 @@ import {
   moveUploadedAssets,
   ResponseResult,
   moveUploadedAsset,
+  getRequestBundleFilePath,
 } from '../shared/utils';
 import { getConfig } from '../shared/configBuilder';
 import * as errorReporter from '../shared/errorReporter';
@@ -30,18 +31,12 @@ export type ProvidedNewBundle = {
   bundle: Asset;
 };
 
-function getRequestBundleFilePath(bundleTimestamp: string | number) {
-  const { bundlePath } = getConfig();
-  const bundleDirectory = path.join(bundlePath, `${bundleTimestamp}`);
-  return path.join(bundleDirectory, `${bundleTimestamp}.js`);
-}
-
 async function runAndBuildResult(
   renderingRequest: string,
   bundleFilePathPerTimestamp: string,
 ): Promise<ResponseResult> {
   const vmResult = await runInVM(renderingRequest, bundleFilePathPerTimestamp, cluster);
-  return prepareResult(renderingRequest, bundleFilePathPerTimestamp);
+  return prepareResult(vmResult, renderingRequest);
 }
 
 
@@ -177,7 +172,7 @@ export async function handleRenderRequest({
 
     // If the current VM has the correct bundle and is ready
     if (allBundleFilePaths.every((bundleFilePath) => hasVMContextForBundle(bundleFilePath))) {
-      return prepareResult(renderingRequest, entryBundleFilePath);
+      return runAndBuildResult(renderingRequest, entryBundleFilePath);
     }
 
     // If gem has posted updated bundle:
@@ -212,7 +207,7 @@ export async function handleRenderRequest({
     log.info('Bundle %s exists. Building VM for worker %s.', entryBundleFilePath, workerIdLabel());
     await Promise.all(allBundleFilePaths.map((bundleFilePath) => buildVM(bundleFilePath)));
 
-    return prepareResult(renderingRequest, entryBundleFilePath);
+    return runAndBuildResult(renderingRequest, entryBundleFilePath);
   } catch (error) {
     const msg = formatExceptionMessage(
       renderingRequest,

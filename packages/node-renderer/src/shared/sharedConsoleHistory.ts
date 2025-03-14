@@ -1,8 +1,7 @@
 import { AsyncLocalStorage } from 'async_hooks';
 import { getConfig } from './configBuilder';
 import log from './log';
-import { isPromise, isReadableStream } from './utils';
-import type { RenderCodeResult } from '../worker/vm';
+import { isPromise, isReadableStream, RenderCodeResult } from './utils';
 
 type ConsoleMessage = { level: 'error' | 'log' | 'info' | 'warn'; arguments: unknown[] };
 
