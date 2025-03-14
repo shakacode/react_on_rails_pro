@@ -7,6 +7,7 @@ import { promisify } from 'util';
 import * as errorReporter from './errorReporter';
 import { getConfig } from './configBuilder';
 import log from './log';
+import type { RenderResult } from '../worker/vm';
 
 export const TRUNCATION_FILLER = '\n... TRUNCATED ...\n';
 
@@ -45,19 +46,6 @@ export interface ResponseResult {
   data?: unknown;
   stream?: Readable;
 }
-
-/**
- * The type of the result returned by executing the code payload sent in the rendering request.
- */
-export type RenderCodeResult = string | Promise<string> | Readable;
-
-/**
- * The type of the result returned by the `runInVM` function.
- *
- * Similar to {@link RenderCodeResult} returned by executing the code payload sent in the rendering request,
- * but after awaiting the promise if present and handling exceptions if any.
- */
-export type RenderResult = string | Readable | { exceptionMessage: string };
 
 export function errorResponseResult(msg: string): ResponseResult {
   errorReporter.message(msg);

@@ -36,6 +36,14 @@ module ReactOnRailsPro
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
         perform_request("/upload-assets", form: form_with_assets_and_bundle)
+
+        return unless ReactOnRailsPro.configuration.enable_rsc_support
+
+        perform_request("/upload-assets", form: form_with_assets_and_bundle(is_rsc_payload: true))
+        # Explicitly return nil to ensure consistent return value regardless of whether
+        # enable_rsc_support is true or false. Without this, the method would return nil
+        # when RSC is disabled but return the response object when RSC is enabled.
+        nil
       end
 
       def asset_exists_on_vm_renderer?(filename)
@@ -179,10 +187,9 @@ module ReactOnRailsPro
       end
 
       def common_form_data
-        is_rsc_support_enabled = ReactOnRailsPro.configuration.enable_rsc_support
         {
           "gemVersion" => ReactOnRailsPro::VERSION,
-          "protocolVersion" => is_rsc_support_enabled ? "1.1.0" : "1.0.0",
+          "protocolVersion" => "1.0.0",
           "password" => ReactOnRailsPro.configuration.renderer_password
         }
       end

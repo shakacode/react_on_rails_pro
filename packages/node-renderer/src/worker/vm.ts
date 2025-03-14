@@ -8,6 +8,7 @@ import path from 'path';
 import vm from 'vm';
 import m from 'module';
 import cluster from 'cluster';
+import type { Readable } from 'stream';
 import { ReadableStream } from 'stream/web';
 import { promisify, TextEncoder } from 'util';
 import type { ReactOnRails as ROR } from 'react-on-rails';
@@ -17,13 +18,7 @@ import SharedConsoleHistory from '../shared/sharedConsoleHistory';
 import { handleRenderRequest } from './handleRenderRequest';
 import log from '../shared/log';
 import { getConfig } from '../shared/configBuilder';
-import {
-  formatExceptionMessage,
-  smartTrim,
-  isReadableStream,
-  RenderCodeResult,
-  RenderResult,
-} from '../shared/utils';
+import { formatExceptionMessage, smartTrim, isReadableStream } from '../shared/utils';
 import * as errorReporter from '../shared/errorReporter';
 
 const readFileAsync = promisify(fs.readFile);
@@ -51,6 +46,19 @@ export function hasVMContextForBundle(bundlePath: string) {
 function getVMContext(bundlePath: string): VMContext | undefined {
   return vmContexts.get(bundlePath);
 }
+
+/**
+ * The type of the result returned by executing the code payload sent in the rendering request.
+ */
+export type RenderCodeResult = string | Promise<string> | Readable;
+
+/**
+ * The type of the result returned by the `runInVM` function.
+ *
+ * Similar to {@link RenderCodeResult} returned by executing the code payload sent in the rendering request,
+ * but after awaiting the promise if present and handling exceptions if any.
+ */
+export type RenderResult = string | Readable | { exceptionMessage: string };
 
 declare global {
   // This works on node 16+
