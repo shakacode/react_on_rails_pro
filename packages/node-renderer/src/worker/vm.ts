@@ -14,6 +14,7 @@ import type { ReactOnRails as ROR } from 'react-on-rails';
 import type { Context } from 'vm';
 
 import SharedConsoleHistory from '../shared/sharedConsoleHistory';
+import { handleRenderRequest } from './handleRenderRequest';
 import log from '../shared/log';
 import { getConfig } from '../shared/configBuilder';
 import {
@@ -22,7 +23,6 @@ import {
   isReadableStream,
   RenderCodeResult,
   RenderResult,
-  getRequestBundleFilePath,
 } from '../shared/utils';
 import * as errorReporter from '../shared/errorReporter';
 
@@ -85,74 +85,6 @@ function manageVMPoolSize() {
   }
 }
 
-/**
- *
- * @param renderingRequest JS Code to execute for SSR
- * @param filePath
- * @param vmCluster
- */
-export async function runInVM(
-  renderingRequest: string,
-  filePath: string,
-  vmCluster?: typeof cluster,
-): Promise<RenderResult> {
-  const { bundlePath } = getConfig();
-
-  try {
-    // Get the correct VM context based on the provided bundle path
-    const vmContext = getVMContext(filePath);
-
-    if (!vmContext) {
-      throw new Error(`No VM context found for bundle ${filePath}`);
-    }
-
-    // Update last used timestamp
-    vmContext.lastUsed = Date.now();
-
-    const { context, sharedConsoleHistory } = vmContext;
-
-    if (log.level === 'debug') {
-      // worker is nullable in the primary process
-      const workerId = vmCluster?.worker?.id;
-      log.debug(`worker ${workerId ? `${workerId} ` : ''}received render request for bundle ${filePath} with code
-${smartTrim(renderingRequest)}`);
-      const debugOutputPathCode = path.join(bundlePath, 'code.js');
-      log.debug(`Full code executed written to: ${debugOutputPathCode}`);
-      await writeFileAsync(debugOutputPathCode, renderingRequest);
-    }
-
-    let result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(() => {
-      context.renderingRequest = renderingRequest;
-      try {
-        return vm.runInContext(renderingRequest, context) as RenderCodeResult;
-      } finally {
-        context.renderingRequest = undefined;
-      }
-    });
-
-    if (isReadableStream(result)) {
-      return result;
-    }
-    if (typeof result !== 'string') {
-      const objectResult = await result;
-      result = JSON.stringify(objectResult);
-    }
-    if (log.level === 'debug') {
-      log.debug(`result from JS:
-${smartTrim(result)}`);
-      const debugOutputPathResult = path.join(bundlePath, 'result.json');
-      log.debug(`Wrote result to file: ${debugOutputPathResult}`);
-      await writeFileAsync(debugOutputPathResult, result);
-    }
-
-    return Promise.resolve(result);
-  } catch (exception) {
-    const exceptionMessage = formatExceptionMessage(renderingRequest, exception);
-    log.debug('Caught exception in rendering request', exceptionMessage);
-    return Promise.resolve({ exceptionMessage });
-  }
-}
-
 export async function buildVM(filePath: string) {
   // Check if VM for this bundle already exists
   const vmContext = vmContexts.get(filePath);
@@ -168,9 +100,12 @@ export async function buildVM(filePath: string) {
     const sharedConsoleHistory = new SharedConsoleHistory();
 
     const runOnOtherBundle = async (bundleTimestamp: string | number, renderingRequest: string) => {
-      const bundlePath = getRequestBundleFilePath(bundleTimestamp);
-      return runInVM(renderingRequest, bundlePath, cluster);
-    }
+      const result = await handleRenderRequest({ renderingRequest, bundleTimestamp });
+      if (result.status !== 200) {
+        throw new Error(`Failed to render on other bundle ${bundleTimestamp}, error: ${result.data}`);
+      }
+      return result.data ?? result.stream;
+    };
 
     const contextObject = { sharedConsoleHistory, runOnOtherBundle };
 
@@ -303,6 +238,74 @@ export async function buildVM(filePath: string) {
     log.error('Caught Error when creating context in buildVM, %O', error);
     errorReporter.error(error as Error);
     return Promise.reject(error as Error);
+  }
+}
+
+/**
+ *
+ * @param renderingRequest JS Code to execute for SSR
+ * @param filePath
+ * @param vmCluster
+ */
+export async function runInVM(
+  renderingRequest: string,
+  filePath: string,
+  vmCluster?: typeof cluster,
+): Promise<RenderResult> {
+  const { bundlePath } = getConfig();
+
+  try {
+    // Get the correct VM context based on the provided bundle path
+    const vmContext = getVMContext(filePath);
+
+    if (!vmContext) {
+      throw new Error(`No VM context found for bundle ${filePath}`);
+    }
+
+    // Update last used timestamp
+    vmContext.lastUsed = Date.now();
+
+    const { context, sharedConsoleHistory } = vmContext;
+
+    if (log.level === 'debug') {
+      // worker is nullable in the primary process
+      const workerId = vmCluster?.worker?.id;
+      log.debug(`worker ${workerId ? `${workerId} ` : ''}received render request for bundle ${filePath} with code
+${smartTrim(renderingRequest)}`);
+      const debugOutputPathCode = path.join(bundlePath, 'code.js');
+      log.debug(`Full code executed written to: ${debugOutputPathCode}`);
+      await writeFileAsync(debugOutputPathCode, renderingRequest);
+    }
+
+    let result = sharedConsoleHistory.trackConsoleHistoryInRenderRequest(() => {
+      context.renderingRequest = renderingRequest;
+      try {
+        return vm.runInContext(renderingRequest, context) as RenderCodeResult;
+      } finally {
+        context.renderingRequest = undefined;
+      }
+    });
+
+    if (isReadableStream(result)) {
+      return result;
+    }
+    if (typeof result !== 'string') {
+      const objectResult = await result;
+      result = JSON.stringify(objectResult);
+    }
+    if (log.level === 'debug') {
+      log.debug(`result from JS:
+${smartTrim(result)}`);
+      const debugOutputPathResult = path.join(bundlePath, 'result.json');
+      log.debug(`Wrote result to file: ${debugOutputPathResult}`);
+      await writeFileAsync(debugOutputPathResult, result);
+    }
+
+    return Promise.resolve(result);
+  } catch (exception) {
+    const exceptionMessage = formatExceptionMessage(renderingRequest, exception);
+    log.debug('Caught exception in rendering request', exceptionMessage);
+    return Promise.resolve({ exceptionMessage });
   }
 }
 

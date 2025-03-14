@@ -149,9 +149,3 @@ export const delay = (milliseconds: number) =>
   new Promise((resolve) => {
     setTimeout(resolve, milliseconds);
   });
-
-export function getRequestBundleFilePath(bundleTimestamp: string | number) {
-  const { bundlePath } = getConfig();
-  const bundleDirectory = path.join(bundlePath, `${bundleTimestamp}`);
-  return path.join(bundleDirectory, `${bundleTimestamp}.js`);
-}
