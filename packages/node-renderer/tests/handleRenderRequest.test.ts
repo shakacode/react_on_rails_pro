@@ -310,4 +310,22 @@ describe(testName, () => {
       data: JSON.stringify('undefined'),
     });
   });
+
+  test('If main bundle exists but dependency bundle does not exist', async () => {
+    expect.assertions(1);
+    // Only create the main bundle, not the secondary/dependency bundle
+    await createVmBundle(testName);
+
+    const result = await handleRenderRequest({
+      renderingRequest: 'ReactOnRails.dummy',
+      bundleTimestamp: BUNDLE_TIMESTAMP,
+      dependencyBundleTimestamps: [SECONDARY_BUNDLE_TIMESTAMP],
+    });
+
+    expect(result).toEqual({
+      status: 410,
+      headers: { 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate' },
+      data: 'No bundle uploaded',
+    });
+  });
 });

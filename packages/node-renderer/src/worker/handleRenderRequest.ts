@@ -169,13 +169,6 @@ async function handleNewBundlesProvided(
 ): Promise<ResponseResult | undefined> {
   log.info('Worker received new bundles: %s', providedNewBundles);
 
-  // const handlingPromises = providedNewBundles.map((providedNewBundle) => handleNewBundleProvided(renderingRequest, providedNewBundle, assetsToCopy));
-  // const results = await Promise.all(handlingPromises);
-  // const errorResults = results.filter((result) => result?.status !== 200);
-  // if (errorResults.length > 0) {
-  //   return errorResults[0];
-  // }
-  // return undefined;
   const handlingPromises = providedNewBundles.map((providedNewBundle) =>
     handleNewBundleProvided(renderingRequest, providedNewBundle, assetsToCopy),
   );
@@ -203,11 +196,23 @@ export async function handleRenderRequest({
   assetsToCopy?: Asset[] | null;
 }): Promise<ResponseResult> {
   try {
-    const bundleFilePathPerTimestamp = getRequestBundleFilePath(bundleTimestamp);
+    // const bundleFilePathPerTimestamp = getRequestBundleFilePath(bundleTimestamp);
+    const allBundleFilePaths = [...(dependencyBundleTimestamps ?? []), bundleTimestamp].map(getRequestBundleFilePath);
+    const entryBundleFilePath = getRequestBundleFilePath(bundleTimestamp);
+
+    const { maxVMPoolSize } = getConfig();
+
+    if (allBundleFilePaths.length > maxVMPoolSize) {
+      return Promise.resolve({
+        headers: { 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate' },
+        status: 410,
+        data: `Too many bundles uploaded. The maximum allowed is ${maxVMPoolSize}. Please reduce the number of bundles or increase maxVMPoolSize in your configuration.`,
+      });
+    }
 
     // If the current VM has the correct bundle and is ready
-    if (hasVMContextForBundle(bundleFilePathPerTimestamp)) {
-      return prepareResult(renderingRequest, bundleFilePathPerTimestamp);
+    if (allBundleFilePaths.every((bundleFilePath) => hasVMContextForBundle(bundleFilePath))) {
+      return prepareResult(renderingRequest, entryBundleFilePath);
     }
 
     // If gem has posted updated bundle:
@@ -239,10 +244,10 @@ export async function handleRenderRequest({
 
     // The bundle exists, but the VM has not yet been created.
     // Another worker must have written it or it was saved during deployment.
-    log.info('Bundle %s exists. Building VM for worker %s.', bundleFilePathPerTimestamp, workerIdLabel());
-    await buildVM(bundleFilePathPerTimestamp);
+    log.info('Bundle %s exists. Building VM for worker %s.', entryBundleFilePath, workerIdLabel());
+    await Promise.all(allBundleFilePaths.map((bundleFilePath) => buildVM(bundleFilePath)));
 
-    return prepareResult(renderingRequest, bundleFilePathPerTimestamp);
+    return prepareResult(renderingRequest, entryBundleFilePath);
   } catch (error) {
     const msg = formatExceptionMessage(
       renderingRequest,
