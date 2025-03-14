@@ -22,6 +22,7 @@ import {
   isReadableStream,
   isErrorRenderResult,
   handleStreamError,
+  getRequestBundleFilePath,
 } from '../shared/utils';
 import { getConfig } from '../shared/configBuilder';
 import * as errorReporter from '../shared/errorReporter';
@@ -72,12 +73,6 @@ async function prepareResult(
     const exceptionMessage = formatExceptionMessage(renderingRequest, err, 'Unknown error calling runInVM');
     return Promise.resolve(errorResponseResult(exceptionMessage));
   }
-}
-
-function getRequestBundleFilePath(bundleTimestamp: string | number) {
-  const { bundlePath } = getConfig();
-  const bundleDirectory = path.join(bundlePath, `${bundleTimestamp}`);
-  return path.join(bundleDirectory, `${bundleTimestamp}.js`);
 }
 
 /**
@@ -197,7 +192,9 @@ export async function handleRenderRequest({
 }): Promise<ResponseResult> {
   try {
     // const bundleFilePathPerTimestamp = getRequestBundleFilePath(bundleTimestamp);
-    const allBundleFilePaths = [...(dependencyBundleTimestamps ?? []), bundleTimestamp].map(getRequestBundleFilePath);
+    const allBundleFilePaths = [...(dependencyBundleTimestamps ?? []), bundleTimestamp].map(
+      getRequestBundleFilePath,
+    );
     const entryBundleFilePath = getRequestBundleFilePath(bundleTimestamp);
 
     const { maxVMPoolSize } = getConfig();
