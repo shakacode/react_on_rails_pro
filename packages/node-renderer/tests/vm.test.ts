@@ -185,7 +185,11 @@ describe('buildVM and runInVM', () => {
     expect.assertions(1);
     await createVmBundleForTest();
 
-    expect(hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/${BUNDLE_TIMESTAMP}/${BUNDLE_TIMESTAMP}.js`))).toBeTruthy();
+    expect(
+      hasVMContextForBundle(
+        path.resolve(__dirname, `./tmp/${testName}/${BUNDLE_TIMESTAMP}/${BUNDLE_TIMESTAMP}.js`),
+      ),
+    ).toBeTruthy();
   });
 
   test('FriendsAndGuests bundle for commit 1a7fe417 requires supportModules false', async () => {

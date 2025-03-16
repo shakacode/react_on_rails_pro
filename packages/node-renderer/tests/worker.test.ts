@@ -170,7 +170,7 @@ describe('worker', () => {
   test('post /asset-exists when asset exists', async () => {
     const bundleHash = 'some-bundle-hash';
     await createAsset(testName, bundleHash);
-    
+
     const app = worker({
       bundlePath: bundlePathForTest(),
       password: 'my_password',
@@ -187,16 +187,16 @@ describe('worker', () => {
       })
       .end();
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ 
-      exists: true, 
-      results: [{ bundleHash, exists: true }] 
+    expect(res.json()).toEqual({
+      exists: true,
+      results: [{ bundleHash, exists: true }],
     });
   });
 
   test('post /asset-exists when asset not exists', async () => {
     const bundleHash = 'some-bundle-hash';
     await createAsset(testName, bundleHash);
-    
+
     const app = worker({
       bundlePath: bundlePathForTest(),
       password: 'my_password',
@@ -213,9 +213,9 @@ describe('worker', () => {
       })
       .end();
     expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ 
-      exists: false, 
-      results: [{ bundleHash, exists: false }] 
+    expect(res.json()).toEqual({
+      exists: false,
+      results: [{ bundleHash, exists: false }],
     });
   });
 
@@ -236,13 +236,13 @@ describe('worker', () => {
       })
       .end();
     expect(res.statusCode).toBe(400);
-    
+
     expect(res.payload).toContain('No targetBundles provided');
   });
 
   test('post /upload-assets', async () => {
     const bundleHash = 'some-bundle-hash';
-    
+
     const app = worker({
       bundlePath: bundlePathForTest(),
       password: 'my_password',

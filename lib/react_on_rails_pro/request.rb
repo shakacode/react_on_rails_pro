@@ -35,47 +35,45 @@ module ReactOnRailsPro
 
       def upload_assets
         Rails.logger.info { "[ReactOnRailsPro] Uploading assets" }
-        
+
         # Check if server bundle exists before trying to upload assets
         server_bundle_path = ReactOnRails::Utils.server_bundle_js_file_path
         unless File.exist?(server_bundle_path)
           raise ReactOnRailsPro::Error, "Server bundle not found at #{server_bundle_path}. " \
-                "Please build your bundles before uploading assets."
+                                        "Please build your bundles before uploading assets."
         end
-        
+
         # Create a list of bundle timestamps to send to the node renderer
         target_bundles = [ReactOnRailsPro::Utils.bundle_hash]
-        
+
         # Add RSC bundle if enabled
         if ReactOnRailsPro.configuration.enable_rsc_support
           rsc_bundle_path = ReactOnRails::Utils.rsc_bundle_js_file_path
           unless File.exist?(rsc_bundle_path)
             raise ReactOnRailsPro::Error, "RSC bundle not found at #{rsc_bundle_path}. " \
-                  "Please build your bundles before uploading assets."
+                                          "Please build your bundles before uploading assets."
           end
           target_bundles << ReactOnRailsPro::Utils.rsc_bundle_hash
         end
-        
+
         form = form_with_assets_and_bundle
         form["targetBundles"] = target_bundles
-        
+
         perform_request("/upload-assets", form: form)
       end
 
       def asset_exists_on_vm_renderer?(filename)
         Rails.logger.info { "[ReactOnRailsPro] Sending request to check if file exist on node-renderer: #{filename}" }
-        
+
         form_data = common_form_data
-        
+
         # Add targetBundles from the current bundle hash and RSC bundle hash
         target_bundles = [ReactOnRailsPro::Utils.bundle_hash]
-        
-        if ReactOnRailsPro.configuration.enable_rsc_support
-          target_bundles << ReactOnRailsPro::Utils.rsc_bundle_hash
-        end
-        
+
+        target_bundles << ReactOnRailsPro::Utils.rsc_bundle_hash if ReactOnRailsPro.configuration.enable_rsc_support
+
         form_data["targetBundles"] = target_bundles
-        
+
         response = perform_request("/asset-exists?filename=#{filename}", json: form_data)
         JSON.parse(response.body)["exists"] == true
       end

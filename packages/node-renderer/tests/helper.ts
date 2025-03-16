@@ -109,7 +109,7 @@ export async function createUploadedSecondaryBundle(testName: string) {
 export async function createAsset(testName: string, bundleTimestamp: string) {
   return Promise.all([
     safeCopyFileAsync(getFixtureAsset(), assetPath(testName, bundleTimestamp)),
-    safeCopyFileAsync(getOtherFixtureAsset(), assetPathOther(testName, bundleTimestamp))
+    safeCopyFileAsync(getOtherFixtureAsset(), assetPathOther(testName, bundleTimestamp)),
   ]);
 }
 

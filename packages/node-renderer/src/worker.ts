@@ -252,16 +252,14 @@ export default function run(config: Partial<Config>) {
     let lockAcquired = false;
     let lockfileName: string | undefined;
     const assets: Asset[] = Object.values(req.body).filter(isAsset);
-    
+
     // Handle targetBundles as either a string or an array
     let targetBundles: string[] = [];
     if (req.body.targetBundles) {
-      targetBundles = Array.isArray(req.body.targetBundles) 
-        ? req.body.targetBundles 
+      targetBundles = Array.isArray(req.body.targetBundles)
+        ? req.body.targetBundles
         : [req.body.targetBundles];
     }
-    
-    const configBundlePath = getConfig().bundlePath;
 
     if (targetBundles.length === 0) {
       const errorMsg = 'No targetBundles provided. As of protocol version 2.0.0, targetBundles is required.';
@@ -272,7 +270,7 @@ export default function run(config: Partial<Config>) {
 
     const assetsDescription = JSON.stringify(assets.map((asset) => asset.filename));
     const taskDescription = `Uploading files ${assetsDescription} to bundle directories: ${targetBundles.join(', ')}`;
-    
+
     try {
       const { lockfileName: name, wasLockAcquired, errorMessage } = await lock('transferring-assets');
       lockfileName = name;
@@ -291,27 +289,26 @@ export default function run(config: Partial<Config>) {
           // Prepare all directories first
           const directoryPromises = targetBundles.map(async (bundleTimestamp) => {
             const bundleDirectory = getBundleDirectory(bundleTimestamp);
-            
+
             // Check if bundle directory exists, create if not
-            if (!await fileExistsAsync(bundleDirectory)) {
+            if (!(await fileExistsAsync(bundleDirectory))) {
               log.info(`Creating bundle directory: ${bundleDirectory}`);
               await mkdir(bundleDirectory, { recursive: true });
             }
             return bundleDirectory;
           });
-          
+
           const bundleDirectories = await Promise.all(directoryPromises);
-          
+
           // Move assets to each directory
-          const assetMovePromises = bundleDirectories.map(bundleDirectory => 
-            moveUploadedAssets(assets, bundleDirectory)
-              .then(() => {
-                log.info(`Moved assets to bundle directory: ${bundleDirectory}`);
-              })
+          const assetMovePromises = bundleDirectories.map((bundleDirectory) =>
+            moveUploadedAssets(assets, bundleDirectory).then(() => {
+              log.info(`Moved assets to bundle directory: ${bundleDirectory}`);
+            }),
           );
-          
+
           await Promise.all(assetMovePromises);
-          
+
           await setResponse(
             {
               status: 200,
@@ -368,8 +365,8 @@ export default function run(config: Partial<Config>) {
     // Handle targetBundles as either a string or an array
     let targetBundles: string[] = [];
     if (req.body.targetBundles) {
-      targetBundles = Array.isArray(req.body.targetBundles) 
-        ? req.body.targetBundles 
+      targetBundles = Array.isArray(req.body.targetBundles)
+        ? req.body.targetBundles
         : [req.body.targetBundles];
     }
 
@@ -385,20 +382,20 @@ export default function run(config: Partial<Config>) {
       targetBundles.map(async (bundleHash) => {
         const assetPath = getAssetPath(bundleHash, filename);
         const exists = await fileExistsAsync(assetPath);
-        
+
         if (exists) {
           log.info(`/asset-exists Uploaded asset DOES exist in bundle ${bundleHash}: ${assetPath}`);
         } else {
           log.info(`/asset-exists Uploaded asset DOES NOT exist in bundle ${bundleHash}: ${assetPath}`);
         }
-        
+
         return { bundleHash, exists };
-      })
+      }),
     );
 
     // Asset exists if it exists in all target bundles
-    const allExist = results.every(result => result.exists);
-    
+    const allExist = results.every((result) => result.exists);
+
     await setResponse({ status: 200, data: { exists: allExist, results }, headers: {} }, res);
   });
 
