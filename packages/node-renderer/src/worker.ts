@@ -20,13 +20,14 @@ import { handleRenderRequest, type ProvidedNewBundle } from './worker/handleRend
 import {
   errorResponseResult,
   formatExceptionMessage,
-  moveUploadedAssets,
+  copyUploadedAssets,
   ResponseResult,
   workerIdLabel,
   saveMultipartFile,
   Asset,
   getAssetPath,
   getBundleDirectory,
+  deleteUploadedAssets,
 } from './shared/utils';
 import * as errorReporter from './shared/errorReporter';
 import { lock, unlock } from './shared/locks';
@@ -302,12 +303,13 @@ export default function run(config: Partial<Config>) {
 
           // Move assets to each directory
           const assetMovePromises = bundleDirectories.map((bundleDirectory) =>
-            moveUploadedAssets(assets, bundleDirectory).then(() => {
-              log.info(`Moved assets to bundle directory: ${bundleDirectory}`);
+            copyUploadedAssets(assets, bundleDirectory).then(() => {
+              log.info(`Copied assets to bundle directory: ${bundleDirectory}`);
             }),
           );
 
           await Promise.all(assetMovePromises);
+          await deleteUploadedAssets(assets);
 
           await setResponse(
             {

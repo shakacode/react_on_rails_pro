@@ -16,13 +16,14 @@ import {
   formatExceptionMessage,
   errorResponseResult,
   workerIdLabel,
-  moveUploadedAssets,
+  copyUploadedAssets,
   ResponseResult,
   moveUploadedAsset,
   isReadableStream,
   isErrorRenderResult,
   handleStreamError,
   getRequestBundleFilePath,
+  deleteUploadedAssets,
 } from '../shared/utils';
 import { getConfig } from '../shared/configBuilder';
 import * as errorReporter from '../shared/errorReporter';
@@ -113,7 +114,8 @@ async function handleNewBundleProvided(
       );
       await moveUploadedAsset(providedNewBundle.bundle, bundleFilePathPerTimestamp);
       if (assetsToCopy) {
-        await moveUploadedAssets(assetsToCopy, bundleDirectory);
+        await copyUploadedAssets(assetsToCopy, bundleDirectory);
+        await deleteUploadedAssets(assetsToCopy);
       }
 
       log.info(

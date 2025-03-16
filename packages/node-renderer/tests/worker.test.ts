@@ -6,10 +6,12 @@ import worker, { disableHttp2 } from '../src/worker';
 import packageJson from '../../../package.json';
 import {
   BUNDLE_TIMESTAMP,
+  SECONDARY_BUNDLE_TIMESTAMP,
   createVmBundle,
   resetForTest,
   vmBundlePath,
   getFixtureBundle,
+  getFixtureSecondaryBundle,
   getFixtureAsset,
   getOtherFixtureAsset,
   createAsset,
@@ -61,6 +63,36 @@ describe('worker', () => {
     expect(fs.existsSync(vmBundlePath(testName))).toEqual(true);
     expect(fs.existsSync(assetPath(testName, String(BUNDLE_TIMESTAMP)))).toEqual(true);
     expect(fs.existsSync(assetPathOther(testName, String(BUNDLE_TIMESTAMP)))).toEqual(true);
+  });
+
+  test('POST /bundles/:bundleTimestamp/render/:renderRequestDigest', async () => {
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+    });
+
+    const form = formAutoContent({
+      gemVersion,
+      protocolVersion,
+      renderingRequest: 'ReactOnRails.dummy',
+      bundle: createReadStream(getFixtureBundle()),
+      [`bundle_${SECONDARY_BUNDLE_TIMESTAMP}`]: createReadStream(getFixtureSecondaryBundle()),
+      asset1: createReadStream(getFixtureAsset()),
+      asset2: createReadStream(getOtherFixtureAsset()),
+    });
+    const res = await app
+      .inject()
+      .post(`/bundles/${BUNDLE_TIMESTAMP}/render/d41d8cd98f00b204e9800998ecf8427e`)
+      .payload(form.payload)
+      .headers(form.headers)
+      .end();
+    expect(res.statusCode).toBe(200);
+    expect(res.headers['cache-control']).toBe('public, max-age=31536000');
+    expect(res.payload).toEqual('{"html":"Dummy Object"}');
+    expect(fs.existsSync(vmBundlePath(testName))).toEqual(true);
+    expect(fs.existsSync(assetPath(testName, String(BUNDLE_TIMESTAMP)))).toEqual(true);
+    expect(fs.existsSync(assetPathOther(testName, String(BUNDLE_TIMESTAMP)))).toEqual(true);
+    expect(fs.existsSync(assetPath(testName, String(SECONDARY_BUNDLE_TIMESTAMP)))).toEqual(true);
+    expect(fs.existsSync(assetPathOther(testName, String(SECONDARY_BUNDLE_TIMESTAMP)))).toEqual(true);
   });
 
   test(
@@ -260,5 +292,31 @@ describe('worker', () => {
     expect(res.statusCode).toBe(200);
     expect(fs.existsSync(assetPath(testName, bundleHash))).toEqual(true);
     expect(fs.existsSync(assetPathOther(testName, bundleHash))).toEqual(true);
+  });
+
+  test('post /upload-assets with multiple bundles and assets', async () => {
+    const bundleHash = 'some-bundle-hash';
+    const bundleHashOther = 'some-other-bundle-hash';
+
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+      password: 'my_password',
+    });
+
+    const form = formAutoContent({
+      gemVersion,
+      protocolVersion,
+      password: 'my_password',
+      targetBundles: [bundleHash, bundleHashOther],
+      asset1: createReadStream(getFixtureAsset()),
+      asset2: createReadStream(getOtherFixtureAsset()),
+    });
+
+    const res = await app.inject().post(`/upload-assets`).payload(form.payload).headers(form.headers).end();
+    expect(res.statusCode).toBe(200);
+    expect(fs.existsSync(assetPath(testName, bundleHash))).toEqual(true);
+    expect(fs.existsSync(assetPathOther(testName, bundleHash))).toEqual(true);
+    expect(fs.existsSync(assetPath(testName, bundleHashOther))).toEqual(true);
+    expect(fs.existsSync(assetPathOther(testName, bundleHashOther))).toEqual(true);
   });
 });
