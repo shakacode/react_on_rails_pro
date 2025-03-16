@@ -113,7 +113,7 @@ async function handleNewBundleProvided(
       );
       await moveUploadedAsset(providedNewBundle.bundle, bundleFilePathPerTimestamp);
       if (assetsToCopy) {
-        await moveUploadedAssets(assetsToCopy);
+        await moveUploadedAssets(assetsToCopy, bundleDirectory);
       }
 
       log.info(

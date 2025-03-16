@@ -29,7 +29,7 @@ const createForm = ({
 } = {}) => {
   const form = new FormData();
   form.append('gemVersion', '4.0.0.rc.5');
-  form.append('protocolVersion', '1.0.0');
+  form.append('protocolVersion', '2.0.0');
   form.append('password', 'myPassword1');
 
   let renderingRequestCode = readRenderingRequest(

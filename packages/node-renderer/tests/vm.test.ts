@@ -5,6 +5,7 @@ import {
   readRenderingRequest,
   createVmBundle,
   resetForTest,
+  BUNDLE_TIMESTAMP,
 } from './helper';
 import { buildVM, hasVMContextForBundle, resetVM, runInVM } from '../src/worker/vm';
 import { getConfig } from '../src/shared/configBuilder';
@@ -184,7 +185,7 @@ describe('buildVM and runInVM', () => {
     expect.assertions(1);
     await createVmBundleForTest();
 
-    expect(hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898.js`))).toBeTruthy();
+    expect(hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/${BUNDLE_TIMESTAMP}/${BUNDLE_TIMESTAMP}.js`))).toBeTruthy();
   });
 
   test('FriendsAndGuests bundle for commit 1a7fe417 requires supportModules false', async () => {

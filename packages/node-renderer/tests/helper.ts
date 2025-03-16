@@ -9,6 +9,11 @@ import { buildConfig } from '../src/shared/configBuilder';
 
 export const mkdirAsync = promisify(fs.mkdir);
 const fsCopyFileAsync = promisify(fs.copyFile);
+const safeCopyFileAsync = async (src: string, dest: string) => {
+  const parentDir = path.dirname(dest);
+  await mkdirAsync(parentDir, { recursive: true });
+  await fsCopyFileAsync(src, dest);
+};
 
 export const BUNDLE_TIMESTAMP = 1495063024898;
 export const SECONDARY_BUNDLE_TIMESTAMP = 1495063024899;
@@ -54,12 +59,12 @@ export function vmSecondaryBundlePath(testName: string) {
 }
 
 export async function createVmBundle(testName: string) {
-  await fsCopyFileAsync(getFixtureBundle(), vmBundlePath(testName));
+  await safeCopyFileAsync(getFixtureBundle(), vmBundlePath(testName));
   return buildVM(vmBundlePath(testName));
 }
 
 export async function createSecondaryVmBundle(testName: string) {
-  await fsCopyFileAsync(getFixtureSecondaryBundle(), vmSecondaryBundlePath(testName));
+  await safeCopyFileAsync(getFixtureSecondaryBundle(), vmSecondaryBundlePath(testName));
   return buildVM(vmSecondaryBundlePath(testName));
 }
 
@@ -83,26 +88,29 @@ export function uploadedSecondaryBundlePath(testName: string) {
   return path.resolve(uploadedBundleDir(testName), `${SECONDARY_BUNDLE_TIMESTAMP}.js`);
 }
 
-export function assetPath(testName: string) {
-  return path.resolve(bundlePath(testName), ASSET_UPLOAD_FILE);
+export function assetPath(testName: string, bundleTimestamp: string) {
+  return path.resolve(bundlePath(testName), bundleTimestamp, ASSET_UPLOAD_FILE);
 }
 
-export function assetPathOther(testName: string) {
-  return path.resolve(bundlePath(testName), ASSET_UPLOAD_OTHER_FILE);
+export function assetPathOther(testName: string, bundleTimestamp: string) {
+  return path.resolve(bundlePath(testName), bundleTimestamp, ASSET_UPLOAD_OTHER_FILE);
 }
 
 export async function createUploadedBundle(testName: string) {
   await mkdirAsync(uploadedBundleDir(testName), { recursive: true });
-  return fsCopyFileAsync(getFixtureBundle(), uploadedBundlePath(testName));
+  return safeCopyFileAsync(getFixtureBundle(), uploadedBundlePath(testName));
 }
 
 export async function createUploadedSecondaryBundle(testName: string) {
   await mkdirAsync(uploadedBundleDir(testName), { recursive: true });
-  return fsCopyFileAsync(getFixtureSecondaryBundle(), uploadedSecondaryBundlePath(testName));
+  return safeCopyFileAsync(getFixtureSecondaryBundle(), uploadedSecondaryBundlePath(testName));
 }
 
-export async function createAsset(testName: string) {
-  return fsCopyFileAsync(getFixtureAsset(), assetPath(testName));
+export async function createAsset(testName: string, bundleTimestamp: string) {
+  return Promise.all([
+    safeCopyFileAsync(getFixtureAsset(), assetPath(testName, bundleTimestamp)),
+    safeCopyFileAsync(getOtherFixtureAsset(), assetPathOther(testName, bundleTimestamp))
+  ]);
 }
 
 export async function resetForTest(testName: string) {

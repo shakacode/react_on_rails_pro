@@ -5,6 +5,7 @@
 
 import path from 'path';
 import cluster from 'cluster';
+import { mkdir } from 'fs/promises';
 import fastify from 'fastify';
 import fastifyFormbody from '@fastify/formbody';
 import fastifyMultipart from '@fastify/multipart';
@@ -24,6 +25,8 @@ import {
   workerIdLabel,
   saveMultipartFile,
   Asset,
+  getAssetPath,
+  getBundleDirectory,
 } from './shared/utils';
 import * as errorReporter from './shared/errorReporter';
 import { lock, unlock } from './shared/locks';
@@ -241,7 +244,7 @@ export default function run(config: Partial<Config>) {
   // There can be additional files that might be required at the runtime.
   // Since the remote renderer doesn't contain any assets, they must be uploaded manually.
   app.post<{
-    Body: Record<string, Asset>;
+    Body: Record<string, Asset> & { targetBundles?: string | string[] };
   }>('/upload-assets', async (req, res) => {
     if (!(await requestPrechecks(req, res))) {
       return;
@@ -249,8 +252,27 @@ export default function run(config: Partial<Config>) {
     let lockAcquired = false;
     let lockfileName: string | undefined;
     const assets: Asset[] = Object.values(req.body).filter(isAsset);
+    
+    // Handle targetBundles as either a string or an array
+    let targetBundles: string[] = [];
+    if (req.body.targetBundles) {
+      targetBundles = Array.isArray(req.body.targetBundles) 
+        ? req.body.targetBundles 
+        : [req.body.targetBundles];
+    }
+    
+    const configBundlePath = getConfig().bundlePath;
+
+    if (targetBundles.length === 0) {
+      const errorMsg = 'No targetBundles provided. As of protocol version 2.0.0, targetBundles is required.';
+      log.error(errorMsg);
+      await setResponse(errorResponseResult(errorMsg), res);
+      return;
+    }
+
     const assetsDescription = JSON.stringify(assets.map((asset) => asset.filename));
-    const taskDescription = `Uploading files ${assetsDescription} to ${bundlePath}`;
+    const taskDescription = `Uploading files ${assetsDescription} to bundle directories: ${targetBundles.join(', ')}`;
+    
     try {
       const { lockfileName: name, wasLockAcquired, errorMessage } = await lock('transferring-assets');
       lockfileName = name;
@@ -266,7 +288,30 @@ export default function run(config: Partial<Config>) {
       } else {
         log.info(taskDescription);
         try {
-          await moveUploadedAssets(assets);
+          // Prepare all directories first
+          const directoryPromises = targetBundles.map(async (bundleTimestamp) => {
+            const bundleDirectory = getBundleDirectory(bundleTimestamp);
+            
+            // Check if bundle directory exists, create if not
+            if (!await fileExistsAsync(bundleDirectory)) {
+              log.info(`Creating bundle directory: ${bundleDirectory}`);
+              await mkdir(bundleDirectory, { recursive: true });
+            }
+            return bundleDirectory;
+          });
+          
+          const bundleDirectories = await Promise.all(directoryPromises);
+          
+          // Move assets to each directory
+          const assetMovePromises = bundleDirectories.map(bundleDirectory => 
+            moveUploadedAssets(assets, bundleDirectory)
+              .then(() => {
+                log.info(`Moved assets to bundle directory: ${bundleDirectory}`);
+              })
+          );
+          
+          await Promise.all(assetMovePromises);
+          
           await setResponse(
             {
               status: 200,
@@ -305,6 +350,7 @@ export default function run(config: Partial<Config>) {
   // Checks if file exist
   app.post<{
     Querystring: { filename: string };
+    Body: { targetBundles?: string | string[] };
   }>('/asset-exists', async (req, res) => {
     if (!(await isAuthenticated(req, res))) {
       return;
@@ -319,17 +365,41 @@ export default function run(config: Partial<Config>) {
       return;
     }
 
-    const assetPath = path.join(bundlePath, filename);
-
-    const fileExists = await fileExistsAsync(assetPath);
-
-    if (fileExists) {
-      log.info(`/asset-exists Uploaded asset DOES exist: ${assetPath}`);
-      await setResponse({ status: 200, data: { exists: true }, headers: {} }, res);
-    } else {
-      log.info(`/asset-exists Uploaded asset DOES NOT exist: ${assetPath}`);
-      await setResponse({ status: 200, data: { exists: false }, headers: {} }, res);
+    // Handle targetBundles as either a string or an array
+    let targetBundles: string[] = [];
+    if (req.body.targetBundles) {
+      targetBundles = Array.isArray(req.body.targetBundles) 
+        ? req.body.targetBundles 
+        : [req.body.targetBundles];
     }
+
+    if (targetBundles.length === 0) {
+      const errorMsg = 'No targetBundles provided. As of protocol version 2.0.0, targetBundles is required.';
+      log.error(errorMsg);
+      await setResponse(errorResponseResult(errorMsg), res);
+      return;
+    }
+
+    // Check if the asset exists in each of the target bundles
+    const results = await Promise.all(
+      targetBundles.map(async (bundleHash) => {
+        const assetPath = getAssetPath(bundleHash, filename);
+        const exists = await fileExistsAsync(assetPath);
+        
+        if (exists) {
+          log.info(`/asset-exists Uploaded asset DOES exist in bundle ${bundleHash}: ${assetPath}`);
+        } else {
+          log.info(`/asset-exists Uploaded asset DOES NOT exist in bundle ${bundleHash}: ${assetPath}`);
+        }
+        
+        return { bundleHash, exists };
+      })
+    );
+
+    // Asset exists if it exists in all target bundles
+    const allExist = results.every(result => result.exists);
+    
+    await setResponse({ status: 200, data: { exists: allExist, results }, headers: {} }, res);
   });
 
   app.get('/info', (_req, res) => {

@@ -98,11 +98,9 @@ export function moveUploadedAsset(
   return move(asset.savedFilePath, destinationPath, options);
 }
 
-export async function moveUploadedAssets(uploadedAssets: Asset[]): Promise<void> {
-  const { bundlePath } = getConfig();
-
+export async function moveUploadedAssets(uploadedAssets: Asset[], targetDirectory: string): Promise<void> {
   const moveMultipleAssets = uploadedAssets.map((asset) => {
-    const destinationAssetFilePath = path.join(bundlePath, asset.filename);
+    const destinationAssetFilePath = path.join(targetDirectory, asset.filename);
     return moveUploadedAsset(asset, destinationAssetFilePath, { overwrite: true });
   });
   await Promise.all(moveMultipleAssets);
@@ -138,8 +136,17 @@ export const delay = (milliseconds: number) =>
     setTimeout(resolve, milliseconds);
   });
 
-export function getRequestBundleFilePath(bundleTimestamp: string | number) {
+export function getBundleDirectory(bundleTimestamp: string | number) {
   const { bundlePath } = getConfig();
-  const bundleDirectory = path.join(bundlePath, `${bundleTimestamp}`);
+  return path.join(bundlePath, `${bundleTimestamp}`);
+}
+
+export function getRequestBundleFilePath(bundleTimestamp: string | number) {
+  const bundleDirectory = getBundleDirectory(bundleTimestamp);
   return path.join(bundleDirectory, `${bundleTimestamp}.js`);
+}
+
+export function getAssetPath(bundleTimestamp: string | number, filename: string) {
+  const bundleDirectory = getBundleDirectory(bundleTimestamp);
+  return path.join(bundleDirectory, filename);
 }

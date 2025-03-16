@@ -23,9 +23,7 @@ const createVmBundleForTest = () => createVmBundle(testName);
 const bundlePathForTest = () => bundlePath(testName);
 
 const gemVersion = packageJson.version;
-const { supportsProtocolVersions } = packageJson;
-
-const protocolVersion = supportsProtocolVersions[0];
+const { protocolVersion } = packageJson;
 
 disableHttp2();
 
@@ -61,8 +59,8 @@ describe('worker', () => {
     expect(res.headers['cache-control']).toBe('public, max-age=31536000');
     expect(res.payload).toEqual('{"html":"Dummy Object"}');
     expect(fs.existsSync(vmBundlePath(testName))).toEqual(true);
-    expect(fs.existsSync(assetPath(testName))).toEqual(true);
-    expect(fs.existsSync(assetPathOther(testName))).toEqual(true);
+    expect(fs.existsSync(assetPath(testName, String(BUNDLE_TIMESTAMP)))).toEqual(true);
+    expect(fs.existsSync(assetPathOther(testName, String(BUNDLE_TIMESTAMP)))).toEqual(true);
   });
 
   test(
@@ -170,7 +168,59 @@ describe('worker', () => {
   );
 
   test('post /asset-exists when asset exists', async () => {
-    await createAsset(testName);
+    const bundleHash = 'some-bundle-hash';
+    await createAsset(testName, bundleHash);
+    
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+      password: 'my_password',
+    });
+
+    const query = querystring.stringify({ filename: 'loadable-stats.json' });
+
+    const res = await app
+      .inject()
+      .post(`/asset-exists?${query}`)
+      .payload({
+        password: 'my_password',
+        targetBundles: [bundleHash],
+      })
+      .end();
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual({ 
+      exists: true, 
+      results: [{ bundleHash, exists: true }] 
+    });
+  });
+
+  test('post /asset-exists when asset not exists', async () => {
+    const bundleHash = 'some-bundle-hash';
+    await createAsset(testName, bundleHash);
+    
+    const app = worker({
+      bundlePath: bundlePathForTest(),
+      password: 'my_password',
+    });
+
+    const query = querystring.stringify({ filename: 'foobar.json' });
+
+    const res = await app
+      .inject()
+      .post(`/asset-exists?${query}`)
+      .payload({
+        password: 'my_password',
+        targetBundles: [bundleHash],
+      })
+      .end();
+    expect(res.statusCode).toBe(200);
+    expect(res.json()).toEqual({ 
+      exists: false, 
+      results: [{ bundleHash, exists: false }] 
+    });
+  });
+
+  test('post /asset-exists requires targetBundles (protocol version 2.0.0)', async () => {
+    await createAsset(testName, String(BUNDLE_TIMESTAMP));
     const app = worker({
       bundlePath: bundlePathForTest(),
       password: 'my_password',
@@ -185,31 +235,14 @@ describe('worker', () => {
         password: 'my_password',
       })
       .end();
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ exists: true });
-  });
-
-  test('post /asset-exists when asset not exists', async () => {
-    await createAsset(testName);
-    const app = worker({
-      bundlePath: bundlePathForTest(),
-      password: 'my_password',
-    });
-
-    const query = querystring.stringify({ filename: 'foobar.json' });
-
-    const res = await app
-      .inject()
-      .post(`/asset-exists?${query}`)
-      .payload({
-        password: 'my_password',
-      })
-      .end();
-    expect(res.statusCode).toBe(200);
-    expect(res.json()).toEqual({ exists: false });
+    expect(res.statusCode).toBe(400);
+    
+    expect(res.payload).toContain('No targetBundles provided');
   });
 
   test('post /upload-assets', async () => {
+    const bundleHash = 'some-bundle-hash';
+    
     const app = worker({
       bundlePath: bundlePathForTest(),
       password: 'my_password',
@@ -219,12 +252,13 @@ describe('worker', () => {
       gemVersion,
       protocolVersion,
       password: 'my_password',
+      targetBundles: [bundleHash],
       asset1: createReadStream(getFixtureAsset()),
       asset2: createReadStream(getOtherFixtureAsset()),
     });
     const res = await app.inject().post(`/upload-assets`).payload(form.payload).headers(form.headers).end();
     expect(res.statusCode).toBe(200);
-    expect(fs.existsSync(assetPath(testName))).toEqual(true);
-    expect(fs.existsSync(assetPathOther(testName))).toEqual(true);
+    expect(fs.existsSync(assetPath(testName, bundleHash))).toEqual(true);
+    expect(fs.existsSync(assetPathOther(testName, bundleHash))).toEqual(true);
   });
 });

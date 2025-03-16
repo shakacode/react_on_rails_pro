@@ -132,7 +132,7 @@ module ReactOnRailsPro
     def self.common_form_data
       {
         "gemVersion" => ReactOnRailsPro::VERSION,
-        "protocolVersion" => "1.0.0",
+        "protocolVersion" => "2.0.0",
         "password" => ReactOnRailsPro.configuration.renderer_password
       }
     end
