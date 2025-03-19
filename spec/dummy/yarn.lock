@@ -5601,12 +5601,13 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-react-on-rails-rsc@19.0.0:
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/react-on-rails-rsc/-/react-on-rails-rsc-19.0.0.tgz#0061d8f3eb7cdf12a23c66985212f46e3e2ed2ef"
-  integrity sha512-70K46d9Zs071VgUNxZLz0ModMkPRKpSCu5XiICd/8ChMdivSyxdHEZzY4GSiztQnizzKFX7k25N0EIv/DmUPNg==
+"react-on-rails-rsc@git+https://github.com/shakacode/react_on_rails_rsc.git#add-support-for-generating-client-components-manifest-for-server-bundle":
+  version "19.0.0-rc.2"
+  resolved "git+https://github.com/shakacode/react_on_rails_rsc.git#fcd2b93eb400f9ae702d31da1d04d08b5d12ea06"
   dependencies:
-    react-server-dom-webpack "19.0.0"
+    acorn-loose "^8.3.0"
+    neo-async "^2.6.1"
+    webpack-sources "^3.2.0"
 
 react-on-rails@15.0.0-alpha.2:
   version "15.0.0-alpha.2"
@@ -5647,15 +5648,6 @@ react-router@6.24.1:
   integrity sha512-PTXFXGK2pyXpHzVo3rR9H7ip4lSPZZc0bHG5CARmj65fTT6qG7sTngmb6lcYu1gf3y/8KxORoy9yn59pGpCnpg==
   dependencies:
     "@remix-run/router" "1.17.1"
-
-react-server-dom-webpack@19.0.0:
-  version "19.0.0"
-  resolved "https://registry.yarnpkg.com/react-server-dom-webpack/-/react-server-dom-webpack-19.0.0.tgz#c60819b6cb54e317e675ddc0c5959ff915b789d0"
-  integrity sha512-hLug9KEXLc8vnU9lDNe2b2rKKDaqrp5gNiES4uyu2Up3FZfZJZmdwLFXlWzdA9gTB/6/cWduSB2K1Lfag2pSvw==
-  dependencies:
-    acorn-loose "^8.3.0"
-    neo-async "^2.6.1"
-    webpack-sources "^3.2.0"
 
 react-side-effect@^2.1.0:
   version "2.1.2"

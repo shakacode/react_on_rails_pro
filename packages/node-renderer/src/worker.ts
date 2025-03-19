@@ -180,7 +180,7 @@ export default function run(config: Partial<Config>) {
   app.post<{
     Body: {
       renderingRequest: string;
-      dependencyBundleTimestamps?: string[];
+      ['dependencyBundleTimestamps[]']?: string[];
     };
     // Can't infer from the route like Express can
     Params: { bundleTimestamp: string; renderRequestDigest: string };
@@ -200,7 +200,7 @@ export default function run(config: Partial<Config>) {
     //   await delay(100000);
     // }
 
-    const { renderingRequest, dependencyBundleTimestamps } = req.body;
+    const { renderingRequest, 'dependencyBundleTimestamps[]': dependencyBundleTimestamps } = req.body;
     const { bundleTimestamp } = req.params;
     const providedNewBundles: ProvidedNewBundle[] = [];
     const assetsToCopy: Asset[] = [];

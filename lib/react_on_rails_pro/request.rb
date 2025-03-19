@@ -190,7 +190,7 @@ module ReactOnRailsPro
         # react_client_manifest and react_server_manifest files are needed to generate react server components payload
         if ReactOnRailsPro.configuration.enable_rsc_support
           assets_to_copy << ReactOnRails::Utils.react_client_manifest_file_path
-          assets_to_copy << ReactOnRails::Utils.react_server_manifest_file_path
+          assets_to_copy << ReactOnRails::Utils.react_server_client_manifest_file_path
         end
 
         return form unless assets_to_copy.present?
@@ -225,11 +225,7 @@ module ReactOnRailsPro
       end
 
       def common_form_data
-        {
-          "gemVersion" => ReactOnRailsPro::VERSION,
-          "protocolVersion" => "2.0.0",
-          "password" => ReactOnRailsPro.configuration.renderer_password
-        }
+        ReactOnRailsPro::Utils.common_form_data
       end
 
       def create_connection

@@ -194,8 +194,8 @@ export async function handleRenderRequest({
 }): Promise<ResponseResult> {
   try {
     // const bundleFilePathPerTimestamp = getRequestBundleFilePath(bundleTimestamp);
-    const allBundleFilePaths = [...(dependencyBundleTimestamps ?? []), bundleTimestamp].map(
-      getRequestBundleFilePath,
+    const allBundleFilePaths = Array.from(
+      new Set([...(dependencyBundleTimestamps ?? []), bundleTimestamp].map(getRequestBundleFilePath)),
     );
     const entryBundleFilePath = getRequestBundleFilePath(bundleTimestamp);
 

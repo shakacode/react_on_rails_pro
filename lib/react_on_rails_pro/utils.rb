@@ -130,10 +130,15 @@ module ReactOnRailsPro
     end
 
     def self.common_form_data
+      dependencies = if ReactOnRailsPro.configuration.enable_rsc_support
+                       [ReactOnRailsPro::Utils.rsc_bundle_hash, ReactOnRailsPro::Utils.bundle_hash]
+                     end
+
       {
         "gemVersion" => ReactOnRailsPro::VERSION,
         "protocolVersion" => "2.0.0",
-        "password" => ReactOnRailsPro.configuration.renderer_password
+        "password" => ReactOnRailsPro.configuration.renderer_password,
+        "dependencyBundleTimestamps" => dependencies
       }
     end
 

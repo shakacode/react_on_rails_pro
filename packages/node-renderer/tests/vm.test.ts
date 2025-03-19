@@ -529,4 +529,138 @@ describe('buildVM and runInVM', () => {
       );
     });
   });
+
+  describe('VM Pool Management', () => {
+    beforeEach(async () => {
+      await resetForTest(testName);
+      const config = getConfig();
+      config.supportModules = true;
+      config.maxVMPoolSize = 2; // Set a small pool size for testing
+    });
+
+    afterEach(async () => {
+      await resetForTest(testName);
+      resetVM();
+    });
+
+    test('respects maxVMPoolSize limit', async () => {
+      const bundle1 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/9fa89f7/server-bundle-web-target.js',
+      );
+      const bundle2 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/e5e10d1/server-bundle-node-target.js',
+      );
+      const bundle3 = path.resolve(__dirname, './fixtures/projects/bionicworkshop/fa6ccf6b/server-bundle.js');
+
+      // Build VMs up to and beyond the pool limit
+      await buildVM(bundle1);
+      await buildVM(bundle2);
+      await buildVM(bundle3);
+
+      // Only the two most recently used bundles should have contexts
+      expect(hasVMContextForBundle(bundle1)).toBeFalsy();
+      expect(hasVMContextForBundle(bundle2)).toBeTruthy();
+      expect(hasVMContextForBundle(bundle3)).toBeTruthy();
+    });
+
+    test('calling buildVM with the same bundle path does not create a new VM', async () => {
+      const bundle1 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/9fa89f7/server-bundle-web-target.js',
+      );
+      const bundle2 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/e5e10d1/server-bundle-node-target.js',
+      );
+      await buildVM(bundle1);
+      await buildVM(bundle2);
+      await buildVM(bundle2);
+      await buildVM(bundle2);
+
+      expect(hasVMContextForBundle(bundle1)).toBeTruthy();
+      expect(hasVMContextForBundle(bundle2)).toBeTruthy();
+    });
+
+    test('updates lastUsed timestamp when accessing existing VM', async () => {
+      const bundle1 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/9fa89f7/server-bundle-web-target.js',
+      );
+      const bundle2 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/e5e10d1/server-bundle-node-target.js',
+      );
+      const bundle3 = path.resolve(__dirname, './fixtures/projects/bionicworkshop/fa6ccf6b/server-bundle.js');
+
+      // Create initial VMs
+      await buildVM(bundle1);
+      await buildVM(bundle2);
+
+      // Wait a bit to ensure timestamp difference
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Access bundle1 again to update its timestamp
+      await buildVM(bundle1);
+
+      // Add a new VM - should remove bundle2 as it's the oldest
+      await buildVM(bundle3);
+
+      // Bundle1 should still exist as it was accessed more recently
+      expect(hasVMContextForBundle(bundle1)).toBeTruthy();
+      expect(hasVMContextForBundle(bundle2)).toBeFalsy();
+      expect(hasVMContextForBundle(bundle3)).toBeTruthy();
+    });
+
+    test('updates lastUsed timestamp when running code in VM', async () => {
+      const bundle1 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/9fa89f7/server-bundle-web-target.js',
+      );
+      const bundle2 = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/e5e10d1/server-bundle-node-target.js',
+      );
+      const bundle3 = path.resolve(__dirname, './fixtures/projects/bionicworkshop/fa6ccf6b/server-bundle.js');
+
+      // Create initial VMs
+      await buildVM(bundle1);
+      await buildVM(bundle2);
+
+      // Wait a bit to ensure timestamp difference
+      await new Promise((resolve) => setTimeout(resolve, 100));
+
+      // Run code in bundle1 to update its timestamp
+      await runInVM('1 + 1', bundle1);
+
+      // Add a new VM - should remove bundle2 as it's the oldest
+      await buildVM(bundle3);
+
+      // Bundle1 should still exist as it was used more recently
+      expect(hasVMContextForBundle(bundle1)).toBeTruthy();
+      expect(hasVMContextForBundle(bundle2)).toBeFalsy();
+      expect(hasVMContextForBundle(bundle3)).toBeTruthy();
+    });
+
+    test('reuses existing VM context', async () => {
+      const bundle = path.resolve(
+        __dirname,
+        './fixtures/projects/spec-dummy/9fa89f7/server-bundle-web-target.js',
+      );
+
+      // Build VM first time
+      await buildVM(bundle);
+
+      // Set a variable in the VM context
+      await runInVM('global.testVar = "test value"', bundle);
+
+      // Build VM second time - should reuse existing context
+      await buildVM(bundle);
+
+      // Variable should still exist if context was reused
+      const result = await runInVM('global.testVar', bundle);
+      expect(result).toBe('test value');
+    });
+  });
 });
