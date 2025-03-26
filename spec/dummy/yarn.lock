@@ -5609,10 +5609,9 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
     neo-async "^2.6.1"
     webpack-sources "^3.2.0"
 
-react-on-rails@15.0.0-alpha.2:
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server":
   version "15.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-15.0.0-alpha.2.tgz#57c5e34f8d2fcbd2789deabf8dd126e8da15c663"
-  integrity sha512-0T05V9thaVV1k0VINLcjeBU67m+MMLC7pZuqijYZW6fm90n1rMYj+HVCYDhfWXx90jh/wuF744Futilll4NEoA==
+  resolved "git+https://github.com/shakacode/react_on_rails.git#11c97ce8d9ce71d5e41af9bf48fbb1bbe61145eb"
 
 react-proptypes@^1.0.0:
   version "1.0.0"
