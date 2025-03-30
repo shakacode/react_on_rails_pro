@@ -153,7 +153,7 @@ const defaultConfig: Config = {
 
   // Workers count defaults to number of CPUs minus 1
   workersCount:
-    (env.RENDERER_WORKERS_COUNT && parseInt(env.RENDERER_WORKERS_COUNT, 10)) || defaultWorkersCount(),
+    (env.RENDERER_WORKERS_COUNT ? parseInt(env.RENDERER_WORKERS_COUNT, 10) : defaultWorkersCount()),
 
   // No default for password, means no auth
   password: env.RENDERER_PASSWORD,
