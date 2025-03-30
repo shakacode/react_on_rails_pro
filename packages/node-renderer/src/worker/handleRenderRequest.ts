@@ -54,14 +54,10 @@ async function prepareResult(
     }
 
     if (isReadableStream(result)) {
-      const newStreamAfterHandlingError = handleStreamError(result, (error) => {
-        const msg = formatExceptionMessage(renderingRequest, error, 'Error in a rendering stream');
-        errorReporter.message(msg);
-      });
       return Promise.resolve({
         headers: { 'Cache-Control': 'public, max-age=31536000' },
         status: 200,
-        stream: newStreamAfterHandlingError,
+        stream: result,
       });
     }
 

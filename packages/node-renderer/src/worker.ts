@@ -180,7 +180,7 @@ export default function run(config: Partial<Config>) {
   app.post<{
     Body: {
       renderingRequest: string;
-      ['dependencyBundleTimestamps[]']?: string[];
+      ['dependencyBundleTimestamps[]']?: string[] | string;
     };
     // Can't infer from the route like Express can
     Params: { bundleTimestamp: string; renderRequestDigest: string };
@@ -215,12 +215,18 @@ export default function run(config: Partial<Config>) {
     });
 
     try {
+      let dependencyBundleTimestampsArray: string[] | undefined;
+      if (Array.isArray(dependencyBundleTimestamps)) {
+        dependencyBundleTimestampsArray = dependencyBundleTimestamps;
+      } else if (dependencyBundleTimestamps) {
+        dependencyBundleTimestampsArray = [dependencyBundleTimestamps];
+      }
       await trace(async (context) => {
         try {
           const result = await handleRenderRequest({
             renderingRequest,
             bundleTimestamp,
-            dependencyBundleTimestamps,
+            dependencyBundleTimestamps: dependencyBundleTimestampsArray,
             providedNewBundles,
             assetsToCopy,
           });

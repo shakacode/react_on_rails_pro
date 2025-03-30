@@ -22,6 +22,7 @@ import {
   smartTrim,
   isReadableStream,
   getRequestBundleFilePath,
+  handleStreamError,
 } from '../shared/utils';
 import * as errorReporter from '../shared/errorReporter';
 
@@ -47,7 +48,7 @@ export function hasVMContextForBundle(bundlePath: string) {
 /**
  * Get a specific VM context by bundle path
  */
-function getVMContext(bundlePath: string): VMContext | undefined {
+export function getVMContext(bundlePath: string): VMContext | undefined {
   return vmContexts.get(bundlePath);
 }
 
@@ -143,7 +144,11 @@ ${smartTrim(renderingRequest)}`);
     });
 
     if (isReadableStream(result)) {
-      return result;
+      const newStreamAfterHandlingError = handleStreamError(result, (error) => {
+        const msg = formatExceptionMessage(renderingRequest, error, 'Error in a rendering stream');
+        errorReporter.message(msg);
+      });
+      return newStreamAfterHandlingError;
     }
     if (typeof result !== 'string') {
       const objectResult = await result;
@@ -211,13 +216,6 @@ export async function buildVM(filePath: string) {
       extendContext(contextObject, additionalContext);
     }
     const context = vm.createContext(contextObject);
-
-    // Store the new context with timestamp
-    vmContexts.set(filePath, {
-      context,
-      sharedConsoleHistory,
-      lastUsed: Date.now(),
-    });
 
     // Manage pool size after adding new VM
     manageVMPoolSize();
@@ -309,6 +307,13 @@ export async function buildVM(filePath: string) {
         !!global.ReactOnRails,
       );
     }
+
+    // Store the new context with timestamp
+    vmContexts.set(filePath, {
+      context,
+      sharedConsoleHistory,
+      lastUsed: Date.now(),
+    });
 
     return Promise.resolve(true);
   } catch (error) {

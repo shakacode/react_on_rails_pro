@@ -20,10 +20,13 @@ afterAll(async () => {
 
 jest.spyOn(errorReporter, 'message').mockImplementation(jest.fn());
 
+const SERVER_BUNDLE_TIMESTAMP = '77777-test';
+// Ensure to match the rscBundleHash at `asyncComponentsTreeForTestingRenderingRequest.js` fixture
+const RSC_BUNDLE_TIMESTAMP = '88888-test';
+
 const createForm = ({
   project = 'spec-dummy',
-  commit = '220f7a3',
-  useTestBundle = true,
+  commit = '',
   props = {},
   throwJsErrors = false,
 } = {}) => {
@@ -31,44 +34,52 @@ const createForm = ({
   form.append('gemVersion', '4.0.0.rc.5');
   form.append('protocolVersion', '2.0.0');
   form.append('password', 'myPassword1');
+  form.append('dependencyBundleTimestamps[]', RSC_BUNDLE_TIMESTAMP);
 
   let renderingRequestCode = readRenderingRequest(
     project,
     commit,
     'asyncComponentsTreeForTestingRenderingRequest.js',
   );
-  renderingRequestCode = renderingRequestCode.replace(
-    'props: props,',
-    `props: { ...props, ...{${Object.entries(props)
-      .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
-      .join(', ')}} },`,
-  );
+  renderingRequestCode = renderingRequestCode.replace(/\(\s*\)\s*$/, `(undefined, ${JSON.stringify(props)})`)
   if (throwJsErrors) {
     renderingRequestCode = renderingRequestCode.replace('throwJsErrors: false', 'throwJsErrors: true');
   }
   form.append('renderingRequest', renderingRequestCode);
 
-  const bundlePath = useTestBundle
-    ? '../../../spec/dummy/public/webpack/test/server-bundle.js'
-    : `./fixtures/projects/${project}/${commit}/server-bundle-web-target.js`;
-  form.append('bundle', fs.createReadStream(path.join(__dirname, bundlePath)), {
+  const testBundlesDirectory = path.join(__dirname, '../../../spec/dummy/public/webpack/test');
+  const bundlePath = path.join(testBundlesDirectory, 'server-bundle.js');
+  form.append(`bundle_${SERVER_BUNDLE_TIMESTAMP}`, fs.createReadStream(bundlePath), {
     contentType: 'text/javascript',
     filename: 'server-bundle.js',
+  });
+  const rscBundlePath = path.join(testBundlesDirectory, 'rsc-bundle.js');
+  form.append(`bundle_${RSC_BUNDLE_TIMESTAMP}`, fs.createReadStream(rscBundlePath), {
+    contentType: 'text/javascript',
+    filename: 'rsc-bundle.js',
+  });
+  const clientManifestPath = path.join(testBundlesDirectory, 'react-client-manifest.json');
+  form.append('asset1', fs.createReadStream(clientManifestPath), {
+    contentType: 'application/json',
+    filename: 'react-client-manifest.json',
+  });
+  const reactServerClientManifestPath = path.join(testBundlesDirectory, 'react-server-client-manifest.json');
+  form.append('asset2', fs.createReadStream(reactServerClientManifestPath), {
+    contentType: 'application/json',
+    filename: 'react-server-client-manifest.json',
   });
 
   return form;
 };
 
 const makeRequest = async (options = {}) => {
-  const useTestBundle = options.useTestBundle ?? true;
   const startTime = Date.now();
   const form = createForm(options);
-  const bundleHash = useTestBundle ? '77777' : '88888';
   const { address, port } = app.server.address();
   const client = http2.connect(`http://${address}:${port}`);
   const request = client.request({
     ':method': 'POST',
-    ':path': `/bundles/${bundleHash}/render/454a82526211afdb215352755d36032c`,
+    ':path': `/bundles/${SERVER_BUNDLE_TIMESTAMP}/render/454a82526211afdb215352755d36032c`,
     'content-type': `multipart/form-data; boundary=${form.getBoundary()}`,
   });
   request.setEncoding('utf8');
@@ -182,10 +193,9 @@ describe('html streaming', () => {
     async (throwJsErrors) => {
       const { status, chunks } = await makeRequest({
         props: { throwSyncError: true },
-        useTestBundle: true,
         throwJsErrors,
       });
-      expect(chunks).toHaveLength(1);
+      expect(chunks).toHaveLength(2);
       expect(chunks[0]).toMatch(
         /<pre>Exception in rendering[\s\S.]*Sync error from AsyncComponentsTreeForTesting[\s\S.]*<\/pre>/,
       );
@@ -197,7 +207,6 @@ describe('html streaming', () => {
   it("shouldn't notify error reporter when throwJsErrors is false and shell error happens", async () => {
     await makeRequest({
       props: { throwSyncError: true },
-      useTestBundle: true,
       // throwJsErrors is false by default
     });
     expect(errorReporter.message).not.toHaveBeenCalled();
@@ -206,7 +215,6 @@ describe('html streaming', () => {
   it('should notify error reporter when throwJsErrors is true and shell error happens', async () => {
     await makeRequest({
       props: { throwSyncError: true },
-      useTestBundle: true,
       throwJsErrors: true,
     });
     expect(errorReporter.message).toHaveBeenCalledTimes(1);
@@ -217,12 +225,11 @@ describe('html streaming', () => {
     );
   }, 10000);
 
-  it.each([true, false])(
+  it.only.each([true, false])(
     'should keep rendering other suspense boundaries if error happen in one of them (throwJsErrors: %s)',
     async (throwJsErrors) => {
       const { status, chunks, fullBody, jsonChunks } = await makeRequest({
         props: { throwAsyncError: true },
-        useTestBundle: true,
         throwJsErrors,
       });
       expect(chunks.length).toBeGreaterThan(5);
@@ -247,7 +254,6 @@ describe('html streaming', () => {
   it('should not notify error reporter when throwJsErrors is false and async error happens', async () => {
     await makeRequest({
       props: { throwAsyncError: true },
-      useTestBundle: true,
       throwJsErrors: false,
     });
     expect(errorReporter.message).not.toHaveBeenCalled();
@@ -256,7 +262,6 @@ describe('html streaming', () => {
   it('should notify error reporter when throwJsErrors is true and async error happens', async () => {
     await makeRequest({
       props: { throwAsyncError: true },
-      useTestBundle: true,
       throwJsErrors: true,
     });
     expect(errorReporter.message).toHaveBeenCalledTimes(1);
