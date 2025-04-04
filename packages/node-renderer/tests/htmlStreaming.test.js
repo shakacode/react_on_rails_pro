@@ -217,7 +217,8 @@ describe('html streaming', () => {
       props: { throwSyncError: true },
       throwJsErrors: true,
     });
-    expect(errorReporter.message).toHaveBeenCalledTimes(1);
+    // Reporter is called twice: once for the error occured at RSC vm and the other while rendering the errornous rsc payload
+    expect(errorReporter.message).toHaveBeenCalledTimes(2);
     expect(errorReporter.message).toHaveBeenCalledWith(
       expect.stringMatching(
         /Error in a rendering stream[\s\S.]*Sync error from AsyncComponentsTreeForTesting/,
@@ -225,7 +226,7 @@ describe('html streaming', () => {
     );
   }, 10000);
 
-  it.only.each([true, false])(
+  it.each([true, false])(
     'should keep rendering other suspense boundaries if error happen in one of them (throwJsErrors: %s)',
     async (throwJsErrors) => {
       const { status, chunks, fullBody, jsonChunks } = await makeRequest({
@@ -244,9 +245,14 @@ describe('html streaming', () => {
       expect(fullBody).toContain('branch2 (level 1)');
       expect(fullBody).toContain('branch2 (level 0)');
 
-      expect(jsonChunks[0].hasErrors).toBeFalsy();
-      // All chunks after the first one should have errors
-      expect(jsonChunks.slice(1).every((chunk) => chunk.hasErrors)).toBeTruthy();
+      expect(jsonChunks[0].isShellReady).toBeTruthy();
+      expect(jsonChunks[0].hasErrors).toBeTruthy();
+      expect(jsonChunks[0].renderingError).toMatchObject({
+        message: 'Async error from AsyncHelloWorldHooks',
+        stack: expect.stringMatching(/Error: Async error from AsyncHelloWorldHooks\s*at AsyncHelloWorldHooks/),
+      });
+      expect(jsonChunks.slice(1).some((chunk) => chunk.hasErrors)).toBeFalsy();
+      expect(jsonChunks.slice(1).some((chunk) => chunk.renderingError)).toBeFalsy();
     },
     10000,
   );
@@ -264,7 +270,8 @@ describe('html streaming', () => {
       props: { throwAsyncError: true },
       throwJsErrors: true,
     });
-    expect(errorReporter.message).toHaveBeenCalledTimes(1);
+    // Reporter is called twice: once for the error occured at RSC vm and the other while rendering the errornous rsc payload
+    expect(errorReporter.message).toHaveBeenCalledTimes(2);
     expect(errorReporter.message).toHaveBeenCalledWith(
       expect.stringMatching(/Error in a rendering stream[\s\S.]*Async error from AsyncHelloWorldHooks/),
     );

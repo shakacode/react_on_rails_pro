@@ -217,9 +217,6 @@ export async function buildVM(filePath: string) {
     }
     const context = vm.createContext(contextObject);
 
-    // Manage pool size after adding new VM
-    manageVMPoolSize();
-
     // Create explicit reference to global context, just in case (some libs can use it):
     vm.runInContext('global = this', context);
 
@@ -314,6 +311,9 @@ export async function buildVM(filePath: string) {
       sharedConsoleHistory,
       lastUsed: Date.now(),
     });
+
+    // Manage pool size after adding new VM
+    manageVMPoolSize();
 
     return Promise.resolve(true);
   } catch (error) {
