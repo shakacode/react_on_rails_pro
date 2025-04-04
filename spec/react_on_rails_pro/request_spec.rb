@@ -131,9 +131,9 @@ describe ReactOnRailsPro::Request do
       second_request_body = second_request_info[:request].body.instance_variable_get(:@body)
       second_request_form = second_request_body.instance_variable_get(:@form)
 
-      expect(second_request_form).to have_key("bundle")
-      expect(second_request_form["bundle"][:body]).to be_a(FakeFS::Pathname)
-      expect(second_request_form["bundle"][:body].to_s).to eq(server_bundle_path)
+      expect(second_request_form).to have_key("bundle_server_bundle.js")
+      expect(second_request_form["bundle_server_bundle.js"][:body]).to be_a(FakeFS::Pathname)
+      expect(second_request_form["bundle_server_bundle.js"][:body].to_s).to eq(server_bundle_path)
     end
 
     it "raises incompatible error when server returns incompatible error" do
