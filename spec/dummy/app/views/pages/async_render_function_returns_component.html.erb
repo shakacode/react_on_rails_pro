@@ -3,12 +3,10 @@
   This example demonstrates a component that returns a React component from an async function.
 </p>
 
-<% app = react_component_hash("AsyncRenderFunctionReturnsComponent", trace: true) %>
-
-<%= app["componentHtml"] %>
+<%= react_component("AsyncRenderFunctionReturnsComponent", prerender: true, trace: true) %>
 
 <hr/>
 <h2>Details</h2>
 <p>
-  Component source: spec/dummy/client/app/startup/AsyncRenderFunctionReturnsComponent.client.jsx
-</p> 
+  Component source: spec/dummy/client/app/startup/AsyncRenderFunctionReturnsComponent.server.jsx
+</p>

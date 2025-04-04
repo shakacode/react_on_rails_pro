@@ -337,11 +337,9 @@ export default function run(config: Partial<Config>) {
   // will not listen:
   // we are extracting worker from cluster to avoid false TS error
   const { worker } = cluster;
-  if (cluster.isWorker && worker !== undefined) {
-    app.listen({ port }, () => {
-      log.info(`Node renderer worker #${worker.id} listening on port ${port}!`);
-    });
-  }
+  app.listen({ port }, () => {
+    log.info(`Node renderer worker #${worker?.id} listening on port ${port}!`);
+  });
 
   fastifyConfigFunctions.forEach((configFunction) => {
     configFunction(app);
