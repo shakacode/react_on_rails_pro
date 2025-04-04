@@ -38,16 +38,16 @@ describe('serverRenderRSCReactComponent', () => {
     const { ReactOnRails, React } = vmContext.context;
 
     function SuspensedComponentWithAsyncError() {
-      return React.createElement('div', null,
-        [
-          React.createElement('div', null, 'Hello'),
-          React.createElement(React.Suspense, {
+      return React.createElement('div', null, [
+        React.createElement('div', null, 'Hello'),
+        React.createElement(
+          React.Suspense,
+          {
             fallback: React.createElement('div', null, 'Loading Async Component...'),
           },
-            React.createElement(ComponentWithAsyncError),
-          ),
-        ]
-      );
+          React.createElement(ComponentWithAsyncError),
+        ),
+      ]);
     }
 
     ReactOnRails.register({
@@ -111,7 +111,7 @@ describe('serverRenderRSCReactComponent', () => {
       expect(onError).toHaveBeenCalledWith(new Error(expectedError));
     }
 
-    expectedContents.forEach(text => {
+    expectedContents.forEach((text) => {
       expect(content).toContain(text);
     });
   };
@@ -128,9 +128,9 @@ describe('serverRenderRSCReactComponent', () => {
 
   it('should emit an error when the component throws a sync error and throwJsErrors is true', async () => {
     const result = await renderComponent('ComponentWithSyncError', true);
-    await expectStreamContent(result, ['Sync error'], { 
-      throwJsErrors: true, 
-      expectedError: 'Sync error' 
+    await expectStreamContent(result, ['Sync error'], {
+      throwJsErrors: true,
+      expectedError: 'Sync error',
     });
   });
 
@@ -146,10 +146,9 @@ describe('serverRenderRSCReactComponent', () => {
 
   it('emits an error when the suspense component throws an async error and throwJsErrors is true', async () => {
     const result = await renderComponent('SuspensedComponentWithAsyncError', true);
-    await expectStreamContent(
-      result, 
-      ['Loading Async Component...', 'Hello', 'Async error'],
-      { throwJsErrors: true, expectedError: 'Async error' }
-    );
+    await expectStreamContent(result, ['Loading Async Component...', 'Hello', 'Async error'], {
+      throwJsErrors: true,
+      expectedError: 'Async error',
+    });
   });
 });

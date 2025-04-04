@@ -599,7 +599,9 @@ describe('buildVM and runInVM', () => {
       await buildVM(bundle2);
 
       // Wait a bit to ensure timestamp difference
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 100);
+      });
 
       // Access bundle1 again to update its timestamp
       await buildVM(bundle1);
@@ -629,7 +631,9 @@ describe('buildVM and runInVM', () => {
       await buildVM(bundle2);
 
       // Wait a bit to ensure timestamp difference
-      await new Promise((resolve) => setTimeout(resolve, 100));
+      await new Promise((resolve) => {
+        setTimeout(resolve, 100);
+      });
 
       // Run code in bundle1 to update its timestamp
       await runInVM('1 + 1', bundle1);

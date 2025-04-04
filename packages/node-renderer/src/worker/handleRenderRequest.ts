@@ -21,7 +21,6 @@ import {
   moveUploadedAsset,
   isReadableStream,
   isErrorRenderResult,
-  handleStreamError,
   getRequestBundleFilePath,
   deleteUploadedAssets,
 } from '../shared/utils';

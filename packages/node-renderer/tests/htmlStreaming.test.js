@@ -24,12 +24,7 @@ const SERVER_BUNDLE_TIMESTAMP = '77777-test';
 // Ensure to match the rscBundleHash at `asyncComponentsTreeForTestingRenderingRequest.js` fixture
 const RSC_BUNDLE_TIMESTAMP = '88888-test';
 
-const createForm = ({
-  project = 'spec-dummy',
-  commit = '',
-  props = {},
-  throwJsErrors = false,
-} = {}) => {
+const createForm = ({ project = 'spec-dummy', commit = '', props = {}, throwJsErrors = false } = {}) => {
   const form = new FormData();
   form.append('gemVersion', '4.0.0.rc.5');
   form.append('protocolVersion', '2.0.0');
@@ -41,7 +36,7 @@ const createForm = ({
     commit,
     'asyncComponentsTreeForTestingRenderingRequest.js',
   );
-  renderingRequestCode = renderingRequestCode.replace(/\(\s*\)\s*$/, `(undefined, ${JSON.stringify(props)})`)
+  renderingRequestCode = renderingRequestCode.replace(/\(\s*\)\s*$/, `(undefined, ${JSON.stringify(props)})`);
   if (throwJsErrors) {
     renderingRequestCode = renderingRequestCode.replace('throwJsErrors: false', 'throwJsErrors: true');
   }
@@ -249,7 +244,9 @@ describe('html streaming', () => {
       expect(jsonChunks[0].hasErrors).toBeTruthy();
       expect(jsonChunks[0].renderingError).toMatchObject({
         message: 'Async error from AsyncHelloWorldHooks',
-        stack: expect.stringMatching(/Error: Async error from AsyncHelloWorldHooks\s*at AsyncHelloWorldHooks/),
+        stack: expect.stringMatching(
+          /Error: Async error from AsyncHelloWorldHooks\s*at AsyncHelloWorldHooks/,
+        ),
       });
       expect(jsonChunks.slice(1).some((chunk) => chunk.hasErrors)).toBeFalsy();
       expect(jsonChunks.slice(1).some((chunk) => chunk.renderingError)).toBeFalsy();
