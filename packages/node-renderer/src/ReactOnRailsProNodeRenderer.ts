@@ -29,6 +29,10 @@ and for "@fastify/..." dependencies in your package.json. Consider removing them
   /* eslint-disable global-require,@typescript-eslint/no-var-requires --
    * Using normal `import` fails before the check above.
    */
-  await (require('./worker') as typeof import('./worker')).default(config).ready();
+  if (cluster.isPrimary) {
+    (require('./master') as typeof import('./master'))(config);
+  } else {
+    await (require('./worker') as typeof import('./worker')).default(config).ready();
+  }
   /* eslint-enable global-require,@typescript-eslint/no-var-requires */
 }
