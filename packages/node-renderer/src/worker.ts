@@ -251,7 +251,10 @@ export default function run(config: Partial<Config>) {
   // There can be additional files that might be required at the runtime.
   // Since the remote renderer doesn't contain any assets, they must be uploaded manually.
   app.post<{
-    Body: Record<string, Asset> & { 'targetBundles[]'?: string | string[], 'targetBundles'?: string | string[] };
+    Body: Record<string, Asset> & {
+      'targetBundles[]'?: string | string[];
+      targetBundles?: string | string[];
+    };
   }>('/upload-assets', async (req, res) => {
     if (!(await requestPrechecks(req, res))) {
       return;
@@ -356,7 +359,7 @@ export default function run(config: Partial<Config>) {
   // Checks if file exist
   app.post<{
     Querystring: { filename: string };
-    Body: { 'targetBundles[]'?: string | string[], 'targetBundles'?: string | string[] };
+    Body: { 'targetBundles[]'?: string | string[]; targetBundles?: string | string[] };
   }>('/asset-exists', async (req, res) => {
     if (!(await isAuthenticated(req, res))) {
       return;

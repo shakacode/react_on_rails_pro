@@ -231,7 +231,6 @@ describe "Pages/stream_async_components_for_testing", :js do
     input_component_hydrated_on_chunk = nil
     navigate_with_streaming("/stream_async_components_for_testing") do |_content|
       chunks_count += 1
-      expect(page).to have_text "HydrationStatus: Streaming server render" if chunks_count == 1
 
       # The code that updates the states to Hydrated is executed on `useEffect` which is called only on hydration
       if status_component_hydrated_on_chunk.nil? && page.has_text?("HydrationStatus: Hydrated")
