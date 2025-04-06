@@ -96,6 +96,13 @@ module ReactOnRailsPro
         response = e.response
         case response.status
         when ReactOnRailsPro::STATUS_SEND_BUNDLE
+          # To prevent infinite loop
+          if send_bundle
+            raise "ReactOnRailsPro Error: The bundle has already been uploaded, " \
+                  "but the server is still sending the send_bundle status code. " \
+                  "This is unexpected behavior."
+          end
+
           send_bundle = true
           next
         when ReactOnRailsPro::STATUS_INCOMPATIBLE

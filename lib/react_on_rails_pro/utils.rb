@@ -131,7 +131,8 @@ module ReactOnRailsPro
 
     def self.common_form_data
       dependencies = if ReactOnRailsPro.configuration.enable_rsc_support
-                       [ReactOnRailsPro::Utils.rsc_bundle_hash, ReactOnRailsPro::Utils.bundle_hash]
+                       pool = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool
+                       [pool.rsc_bundle_hash, pool.server_bundle_hash]
                      end
 
       {

@@ -44,7 +44,8 @@ module ReactOnRailsPro
         end
 
         # Create a list of bundle timestamps to send to the node renderer
-        target_bundles = [ReactOnRailsPro::Utils.bundle_hash]
+        pool = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool
+        target_bundles = [pool.server_bundle_hash]
 
         # Add RSC bundle if enabled
         if ReactOnRailsPro.configuration.enable_rsc_support
@@ -53,7 +54,7 @@ module ReactOnRailsPro
             raise ReactOnRailsPro::Error, "RSC bundle not found at #{rsc_bundle_path}. " \
                                           "Please build your bundles before uploading assets."
           end
-          target_bundles << ReactOnRailsPro::Utils.rsc_bundle_hash
+          target_bundles << pool.rsc_bundle_hash
         end
 
         form = form_with_assets_and_bundle
@@ -68,9 +69,10 @@ module ReactOnRailsPro
         form_data = common_form_data
 
         # Add targetBundles from the current bundle hash and RSC bundle hash
-        target_bundles = [ReactOnRailsPro::Utils.bundle_hash]
+        pool = ReactOnRailsPro::ServerRenderingPool::NodeRenderingPool
+        target_bundles = [pool.server_bundle_hash]
 
-        target_bundles << ReactOnRailsPro::Utils.rsc_bundle_hash if ReactOnRailsPro.configuration.enable_rsc_support
+        target_bundles << pool.rsc_bundle_hash if ReactOnRailsPro.configuration.enable_rsc_support
 
         form_data["targetBundles"] = target_bundles
 
@@ -158,7 +160,7 @@ module ReactOnRailsPro
           form,
           bundle_path: ReactOnRails::Utils.server_bundle_js_file_path,
           bundle_file_name: pool.renderer_bundle_file_name,
-          bundle_hash: ReactOnRailsPro::Utils.bundle_hash,
+          bundle_hash: pool.server_bundle_hash,
           check_bundle: check_bundle
         )
 
@@ -167,7 +169,7 @@ module ReactOnRailsPro
             form,
             bundle_path: ReactOnRails::Utils.rsc_bundle_js_file_path,
             bundle_file_name: pool.rsc_renderer_bundle_file_name,
-            bundle_hash: ReactOnRailsPro::Utils.rsc_bundle_hash,
+            bundle_hash: pool.rsc_bundle_hash,
             check_bundle: check_bundle
           )
         end
