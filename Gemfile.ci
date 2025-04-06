@@ -1,0 +1,1 @@
+gem "react_on_rails", github: "shakacode/react_on_rails", branch: "abanoubghadban/ror1719/add-support-for-async-render-function-returns-component"

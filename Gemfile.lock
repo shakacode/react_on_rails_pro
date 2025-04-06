@@ -6,8 +6,10 @@ GIT
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
 
-PATH
-  remote: ../react_on_rails
+GIT
+  remote: https://github.com/shakacode/react_on_rails.git
+  revision: 7d6f7e5d2bc62ef397b8867ec6f6111a6b938f0d
+  branch: abanoubghadban/ror1719/add-support-for-async-render-function-returns-component
   specs:
     react_on_rails (15.0.0.alpha.2)
       addressable

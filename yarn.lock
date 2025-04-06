@@ -6909,10 +6909,9 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-react-on-rails@15.0.0-alpha.2:
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/ror1719/add-support-for-async-render-function-returns-component":
   version "15.0.0-alpha.2"
-  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-15.0.0-alpha.2.tgz#57c5e34f8d2fcbd2789deabf8dd126e8da15c663"
-  integrity sha512-0T05V9thaVV1k0VINLcjeBU67m+MMLC7pZuqijYZW6fm90n1rMYj+HVCYDhfWXx90jh/wuF744Futilll4NEoA==
+  resolved "git+https://github.com/shakacode/react_on_rails.git#7d6f7e5d2bc62ef397b8867ec6f6111a6b938f0d"
 
 readable-stream@^2.2.2:
   version "2.3.8"
