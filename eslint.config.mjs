@@ -1,10 +1,9 @@
 import { defineConfig, globalIgnores } from 'eslint/config';
-import { fixupConfigRules } from '@eslint/compat';
+import importPlugin from 'eslint-plugin-import';
 import jest from 'eslint-plugin-jest';
-import prettier from 'eslint-plugin-prettier';
+import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
-import typescriptEslint from '@typescript-eslint/eslint-plugin';
-import tsParser from '@typescript-eslint/parser';
+import typescriptEslint from 'typescript-eslint';
 import js from '@eslint/js';
 import { FlatCompat } from '@eslint/eslintrc';
 
@@ -38,14 +37,13 @@ export default defineConfig([
     '**/.yalc/',
   ]),
   {
-    files: ['**/*.[jt]s', '**/*.m[jt]s', '**/*.[jt]sx'],
-    extends: fixupConfigRules(
-      compat.extends('eslint:recommended', 'plugin:import/typescript', 'eslint-config-shakacode', 'prettier'),
-    ),
-
+    files: ['**/*.[jt]s', '**/*.[cm][jt]s', '**/*.[jt]sx'],
+  },
+  js.configs.recommended,
+  compat.extends('eslint-config-shakacode'),
+  {
     plugins: {
       jest,
-      prettier,
     },
 
     languageOptions: {
@@ -106,14 +104,9 @@ export default defineConfig([
   },
   {
     files: ['**/*.ts{x,}'],
-    extends: compat.extends('plugin:@typescript-eslint/strict-type-checked'),
-
-    plugins: {
-      '@typescript-eslint': typescriptEslint,
-    },
+    extends: [importPlugin.flatConfigs.typescript, typescriptEslint.configs.strictTypeChecked],
 
     languageOptions: {
-      parser: tsParser,
       ecmaVersion: 5,
       sourceType: 'script',
 
@@ -174,4 +167,7 @@ export default defineConfig([
       ],
     },
   },
+  // must be the last config in the array
+  // https://github.com/prettier/eslint-plugin-prettier?tab=readme-ov-file#configuration-new-eslintconfigjs
+  prettierRecommended,
 ]);
