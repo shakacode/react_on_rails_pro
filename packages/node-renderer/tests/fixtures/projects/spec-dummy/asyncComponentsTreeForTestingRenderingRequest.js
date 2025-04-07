@@ -8,8 +8,8 @@
   rscBundleHash: '88888-test',
 }
 if (typeof generateRSCPayload !== 'function') {
-  globalThis.generateRSCPayload = function generateRSCPayload(componentName, props, serverSideRSCPayloadParameters) {
-    const { renderingRequest, rscBundleHash } = serverSideRSCPayloadParameters;
+  globalThis.generateRSCPayload = function generateRSCPayload(componentName, props, railsContext) {
+    const { renderingRequest, rscBundleHash } = railsContext.serverSideRSCPayloadParameters;
     const propsString = JSON.stringify(props);
     const newRenderingRequest = renderingRequest.replace(/\(\s*\)\s*$/, `('${componentName}', ${propsString})`);
     return runOnOtherBundle(rscBundleHash, newRenderingRequest);
