@@ -45,18 +45,8 @@ export default defineConfig([
   js.configs.recommended,
   compat.extends('eslint-config-shakacode'),
   {
-    plugins: {
-      jest,
-    },
-
     languageOptions: {
-      globals: {
-        ...globals.browser,
-        ...globals.node,
-        ...globals.jest,
-        __DEBUG_SERVER_ERRORS__: true,
-        __SERVER_ERRORS__: true,
-      },
+      globals: globals.node,
 
       parserOptions: {
         // We have @babel/eslint-parser from eslint-config-shakacode, but don't use Babel in the main project
@@ -92,11 +82,6 @@ export default defineConfig([
       'no-restricted-syntax': 'off',
       // https://github.com/benmosher/eslint-plugin-import/issues/340
       'import/no-extraneous-dependencies': 'off',
-      'jest/no-disabled-tests': 'warn',
-      'jest/no-focused-tests': 'error',
-      'jest/no-identical-title': 'error',
-      'jest/prefer-to-have-length': 'warn',
-      'jest/valid-expect': 'error',
       'import/extensions': 'off',
       'import/prefer-default-export': 'off',
       // incompatible with prettier
@@ -149,9 +134,22 @@ export default defineConfig([
   {
     files: ['packages/node-renderer/tests/**'],
 
+    plugins: {
+      jest,
+    },
+
+    languageOptions: {
+      globals: globals.jest,
+    },
+
     rules: {
       // Allows Jest mocks before import
       'import/first': 'off',
+      'jest/no-disabled-tests': 'warn',
+      'jest/no-focused-tests': 'error',
+      'jest/no-identical-title': 'error',
+      'jest/prefer-to-have-length': 'warn',
+      'jest/valid-expect': 'error',
       // Simplifies test code
       '@typescript-eslint/no-non-null-assertion': 'off',
     },
