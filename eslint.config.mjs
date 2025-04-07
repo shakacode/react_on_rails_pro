@@ -84,9 +84,15 @@ export default defineConfig([
       'import/no-extraneous-dependencies': 'off',
       'import/extensions': 'off',
       'import/prefer-default-export': 'off',
-      // incompatible with prettier
-      // TODO: double-check, may be false now
-      'lines-between-class-members': 'off',
+      'lines-between-class-members': [
+        'error',
+        {
+          enforce: [
+            { blankLine: 'always', prev: '*', next: '*' },
+            { blankLine: 'never', prev: 'field', next: 'field' },
+          ],
+        },
+      ],
       'no-mixed-operators': 'off',
     },
   },
