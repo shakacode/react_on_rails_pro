@@ -1,11 +1,13 @@
+import path from 'node:path';
+import { includeIgnoreFile } from '@eslint/compat';
+import js from '@eslint/js';
+import { FlatCompat } from '@eslint/eslintrc';
 import { defineConfig, globalIgnores } from 'eslint/config';
 import importPlugin from 'eslint-plugin-import';
 import jest from 'eslint-plugin-jest';
 import prettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import typescriptEslint from 'typescript-eslint';
-import js from '@eslint/js';
-import { FlatCompat } from '@eslint/eslintrc';
 
 const compat = new FlatCompat({
   baseDirectory: import.meta.dirname,
@@ -14,6 +16,7 @@ const compat = new FlatCompat({
 });
 
 export default defineConfig([
+  includeIgnoreFile(path.resolve(import.meta.dirname, '.gitignore')),
   globalIgnores([
     '**/node_modules',
     '**/coverage',
