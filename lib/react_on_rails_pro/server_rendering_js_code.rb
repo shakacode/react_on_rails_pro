@@ -8,7 +8,7 @@ module ReactOnRailsPro
       end
 
       def generate_rsc_payload_js_function(render_options)
-        return "" unless ReactOnRailsPro.configuration.enable_rsc_support
+        return "" unless ReactOnRailsPro.configuration.enable_rsc_support && render_options.streaming?
 
         if render_options.rsc_payload_streaming?
           return <<-JS
@@ -30,8 +30,8 @@ module ReactOnRailsPro
           rscBundleHash: '#{ReactOnRailsPro::Utils.rsc_bundle_hash}',
         }
         if (typeof generateRSCPayload !== 'function') {
-          globalThis.generateRSCPayload = function generateRSCPayload(componentName, props, serverSideRSCPayloadParameters) {
-            const { renderingRequest, rscBundleHash } = serverSideRSCPayloadParameters;
+          globalThis.generateRSCPayload = function generateRSCPayload(componentName, props, railsContext) {
+            const { renderingRequest, rscBundleHash } = railsContext.serverSideRSCPayloadParameters;
             const propsString = JSON.stringify(props);
             const newRenderingRequest = renderingRequest.replace(/\\(\\s*\\)\\s*$/, `('${componentName}', ${propsString})`);
             return runOnOtherBundle(rscBundleHash, newRenderingRequest);
@@ -48,7 +48,7 @@ module ReactOnRailsPro
                                else
                                  "'serverRenderReactComponent'"
                                end
-        rsc_params = if ReactOnRailsPro.configuration.enable_rsc_support
+        rsc_params = if ReactOnRailsPro.configuration.enable_rsc_support && render_options.streaming?
                        react_client_manifest_file = ReactOnRails.configuration.react_client_manifest_file
                        react_server_client_manifest_file = ReactOnRails.configuration.react_server_client_manifest_file
                        <<-JS
