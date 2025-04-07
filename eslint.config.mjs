@@ -95,11 +95,8 @@ export default defineConfig([
     extends: [importPlugin.flatConfigs.typescript, typescriptEslint.configs.strictTypeChecked],
 
     languageOptions: {
-      ecmaVersion: 5,
-      sourceType: 'script',
-
       parserOptions: {
-        project: true,
+        projectService: true,
       },
     },
 
