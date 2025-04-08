@@ -22,8 +22,8 @@ export default defineConfig([
     '**/coverage',
     'gen-documentation/**/*',
     'spec/react_on_rails/dummy-for-generators',
-    'spec/dummy',
-    'spec/execjs-compatible-dummy',
+    // includes some generated code
+    'spec/dummy/client/app/packs/server-bundle.js',
     'packages/node-renderer/lib/',
     'packages/node-renderer/tests/fixtures',
     'packages/node-renderer/webpack.config.js',
@@ -51,6 +51,10 @@ export default defineConfig([
       parserOptions: {
         // We have @babel/eslint-parser from eslint-config-shakacode, but don't use Babel in the main project
         requireConfigFile: false,
+
+        babelOptions: {
+          presets: ['@babel/preset-env', '@babel/preset-react'],
+        },
       },
     },
 
