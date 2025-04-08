@@ -66,6 +66,7 @@ export default defineConfig([
       },
 
       'import/resolver': {
+        alias: [['Assets', './spec/dummy/client/app/assets']],
         node: true,
         typescript: true,
       },
@@ -73,7 +74,7 @@ export default defineConfig([
 
     rules: {
       'no-console': 'off',
-
+      'no-underscore-dangle': 'off',
       'no-void': [
         'error',
         {
@@ -98,6 +99,34 @@ export default defineConfig([
         },
       ],
       'no-mixed-operators': 'off',
+      'react/forbid-prop-types': 'off',
+      'react/function-component-definition': [
+        'error',
+        {
+          namedComponents: ['function-declaration', 'arrow-function'],
+          unnamedComponents: 'arrow-function',
+        },
+      ],
+      'react/jsx-filename-extension': [
+        'error',
+        {
+          extensions: ['.jsx', '.tsx'],
+        },
+      ],
+      'react/jsx-props-no-spreading': [
+        'error',
+        {
+          custom: 'ignore',
+        },
+      ],
+      'react/prop-types': 'off',
+      'react/static-property-placement': 'off',
+    },
+  },
+  {
+    files: ['spec/dummy/**/*', 'spec/execjs-compatible-dummy'],
+    languageOptions: {
+      globals: globals.browser,
     },
   },
   {
