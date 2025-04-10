@@ -1,80 +1,55 @@
-import lockfile, { Options } from 'lockfile';
-import { promisify } from 'util';
+import { lock as lockLib, LockOptions } from 'proper-lockfile';
 
 import debug from './debug';
 import log from './log';
 import { delay, workerIdLabel } from './utils';
 
-const lockfileLockAsync = promisify<string, Options>(lockfile.lock);
-const lockfileUnlockAsync = promisify(lockfile.unlock);
-
 const TEST_LOCKFILE_THREADING = false;
 
-// See definitions here: https://github.com/npm/lockfile/blob/master/README.md#options
-/*
- * A number of milliseconds to wait for locks to expire before giving up. Only used by
- * lockFile.lock. Poll for opts.wait ms. If the lock is not cleared by the time the wait expires,
- * then it returns with the original error.
- */
-const LOCKFILE_WAIT = 3000;
-
-/*
- * When using opts.wait, this is the period in ms in which it polls to check if the lock has
- * expired. Defaults to 100.
- */
-const LOCKFILE_POLL_PERIOD = 300; // defaults to 100
-
+// See definitions here: https://www.npmjs.com/package/proper-lockfile?activeTab=readme#lockfile-options
+// and https://www.npmjs.com/package/retry#retryoperationoptions for retries
 /*
  * A number of milliseconds before locks are considered to have expired.
  */
 const LOCKFILE_STALE = 20000;
 
 /*
- * Used by lock and lockSync. Retry n number of times before giving up.
+ * The number of retries.
  */
 const LOCKFILE_RETRIES = 45;
 
 /*
- * Used by lock. Wait n milliseconds before retrying.
+ * The number of milliseconds before starting the first retry.
  */
-const LOCKFILE_RETRY_WAIT = 300;
+const LOCKFILE_RETRY_MIN_TIMEOUT = 300;
 
-const lockfileOptions = {
-  wait: LOCKFILE_WAIT,
-  retryWait: LOCKFILE_RETRY_WAIT,
-  retries: LOCKFILE_RETRIES,
+const lockfileOptions: LockOptions = {
+  // so the argument doesn't have to be an existing file
+  realpath: false,
+  retries: {
+    retries: LOCKFILE_RETRIES,
+    minTimeout: LOCKFILE_RETRY_MIN_TIMEOUT,
+    maxTimeout: 100 * LOCKFILE_RETRY_MIN_TIMEOUT,
+    randomize: true,
+  },
   stale: LOCKFILE_STALE,
-  pollPeriod: LOCKFILE_POLL_PERIOD,
 };
 
-export async function unlock(lockfileName: string) {
-  debug('Worker %s: About to unlock %s', workerIdLabel(), lockfileName);
-  log.info('Worker %s: About to unlock %s', workerIdLabel(), lockfileName);
-
-  await lockfileUnlockAsync(lockfileName);
-}
-
-type LockResult = {
-  lockfileName: string;
-} & (
-  | {
-      wasLockAcquired: true;
-      errorMessage: null;
-    }
-  | {
-      wasLockAcquired: false;
-      errorMessage: Error;
-    }
-);
+type LockResult = | {
+  wasLockAcquired: true;
+  release: () => Promise<void>;
+} | {
+  wasLockAcquired: false;
+  error: Error;
+};
 
 export async function lock(filename: string): Promise<LockResult> {
-  const lockfileName = `${filename}.lock`;
   const workerId = workerIdLabel();
 
   try {
-    debug('Worker %s: About to request lock %s', workerId, lockfileName);
-    log.info('Worker %s: About to request lock %s', workerId, lockfileName);
-    await lockfileLockAsync(lockfileName, lockfileOptions);
+    debug('Worker %s: About to request lock %s', workerId, filename);
+    log.info('Worker %s: About to request lock %s', workerId, filename);
+    const releaseLib = await lockLib(filename, lockfileOptions);
 
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- the const may be changed to test threading
     if (TEST_LOCKFILE_THREADING) {
@@ -82,10 +57,17 @@ export async function lock(filename: string): Promise<LockResult> {
       await delay(5000);
       debug('Worker %i: handleNewBundleProvided done sleeping 5s', workerId);
     }
-    debug('After acquired lock in pid', lockfileName);
+    debug('After acquired lock in pid', filename);
+    return {
+      wasLockAcquired: true,
+      release: () => {
+        debug('Worker %s: About to unlock %s', workerIdLabel(), filename);
+        log.info('Worker %s: About to unlock %s', workerIdLabel(), filename);
+        return releaseLib();
+      },
+    };
   } catch (error) {
-    log.info('Worker %s: Failed to acquire lock %s, error %s', workerId, lockfileName, error);
-    return { lockfileName, wasLockAcquired: false, errorMessage: error as Error };
+    log.info('Worker %s: Failed to acquire lock %s, error %s', workerId, filename, error);
+    return { wasLockAcquired: false, error: error as Error };
   }
-  return { lockfileName, wasLockAcquired: true, errorMessage: null };
 }

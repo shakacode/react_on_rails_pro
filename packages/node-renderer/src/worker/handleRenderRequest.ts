@@ -7,7 +7,7 @@
 
 import cluster from 'cluster';
 import path from 'path';
-import { lock, unlock } from '../shared/locks';
+import { lock } from '../shared/locks';
 import fileExistsAsync from '../shared/fileExistsAsync';
 import log from '../shared/log';
 import {
@@ -87,18 +87,14 @@ async function handleNewBundleProvided(
 ): Promise<ResponseResult> {
   log.info('Worker received new bundle: %s', bundleFilePathPerTimestamp);
 
-  let lockAcquired = false;
-  let lockfileName: string | undefined;
+  // lock already catches errors internally, so it's safe to call without try/catch
+  const lockResult = await lock(bundleFilePathPerTimestamp);
   try {
-    const { lockfileName: name, wasLockAcquired, errorMessage } = await lock(bundleFilePathPerTimestamp);
-    lockfileName = name;
-    lockAcquired = wasLockAcquired;
-
-    if (!wasLockAcquired) {
+    if (!lockResult.wasLockAcquired) {
       const msg = formatExceptionMessage(
         renderingRequest,
-        errorMessage,
-        `Failed to acquire lock ${lockfileName}. Worker: ${workerIdLabel()}.`,
+        lockResult.error,
+        `Failed to acquire lock ${bundleFilePathPerTimestamp}. Worker: ${workerIdLabel()}.`,
       );
       return errorResponseResult(msg);
     }
@@ -146,17 +142,15 @@ to ${bundleFilePathPerTimestamp})`,
       return errorResponseResult(msg);
     }
   } finally {
-    if (lockAcquired) {
-      log.info('About to unlock %s from worker %i', lockfileName, workerIdLabel());
+    if (lockResult.wasLockAcquired) {
+      log.info('About to unlock %s from worker %i', bundleFilePathPerTimestamp, workerIdLabel());
       try {
-        if (lockfileName) {
-          await unlock(lockfileName);
-        }
+        await lockResult.release();
       } catch (error) {
         const msg = formatExceptionMessage(
           renderingRequest,
           error,
-          `Error unlocking ${lockfileName} from worker ${workerIdLabel()}.`,
+          `Error unlocking ${bundleFilePathPerTimestamp} from worker ${workerIdLabel()}.`,
         );
         log.warn(msg);
       }
