@@ -7,9 +7,7 @@ import packageJson from '../shared/packageJson';
 
 export = function checkProtocolVersion(req: FastifyRequest) {
   const reqProtocolVersion = (req.body as { protocolVersion?: string }).protocolVersion;
-  const { protocolVersion } = packageJson;
-
-  if (!reqProtocolVersion || reqProtocolVersion !== protocolVersion) {
+  if (reqProtocolVersion !== packageJson.protocolVersion) {
     return {
       headers: { 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate' },
       status: 412,

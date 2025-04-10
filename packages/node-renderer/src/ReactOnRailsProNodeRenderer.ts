@@ -28,17 +28,20 @@ and for "@fastify/..." dependencies in your package.json. Consider removing them
 
   const { workersCount } = buildConfig(config);
 
-  /* eslint-disable global-require,@typescript-eslint/no-var-requires */
-  if (workersCount === 0) {
-    log.info('Running renderer in single process mode (workersCount: 0)');
+  /* eslint-disable global-require,@typescript-eslint/no-var-requires --
+   * Using normal `import` fails before the check above.
+   */
+  const isSingleProcessMode = workersCount === 0;
+  if (isSingleProcessMode || cluster.isWorker) {
+    if (isSingleProcessMode) {
+      log.info('Running renderer in single process mode (workersCount: 0)');
+    }
+
     const worker = require('./worker') as typeof import('./worker');
     await worker.default(config).ready();
-  } else if (cluster.isPrimary) {
+  } else {
     const master = require('./master') as typeof import('./master');
     master(config);
-  } else {
-    const worker = require('./worker') as typeof import('./worker');
-    await worker.default(config).ready();
   }
   /* eslint-enable global-require,@typescript-eslint/no-var-requires */
 }

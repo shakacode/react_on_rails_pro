@@ -6,6 +6,7 @@ import buildApp from '../src/worker';
 import config from './testingNodeRendererConfigs';
 import { readRenderingRequest } from './helper';
 import * as errorReporter from '../src/shared/errorReporter';
+import packageJson from '../src/shared/packageJson';
 
 const app = buildApp(config);
 
@@ -26,8 +27,8 @@ const RSC_BUNDLE_TIMESTAMP = '88888-test';
 
 const createForm = ({ project = 'spec-dummy', commit = '', props = {}, throwJsErrors = false } = {}) => {
   const form = new FormData();
-  form.append('gemVersion', '4.0.0.rc.5');
-  form.append('protocolVersion', '2.0.0');
+  form.append('gemVersion', packageJson.version);
+  form.append('protocolVersion', packageJson.protocolVersion);
   form.append('password', 'myPassword1');
   form.append('dependencyBundleTimestamps[]', RSC_BUNDLE_TIMESTAMP);
 

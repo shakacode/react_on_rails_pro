@@ -82,12 +82,34 @@ const setResponse = async (result: ResponseResult, res: FastifyReply) => {
 
 const isAsset = (value: unknown): value is Asset => (value as { type?: string }).type === 'asset';
 
+function assertAsset(value: unknown, key: string): asserts value is Asset {
+  if (!isAsset(value)) {
+    throw new Error(`React On Rails Error: Expected an asset for key: ${key}`);
+  }
+}
+
 // Remove after this issue is resolved: https://github.com/fastify/light-my-request/issues/315
 let useHttp2 = true;
 
 // Call before any test using `app.inject()`
 export const disableHttp2 = () => {
   useHttp2 = false;
+};
+
+type WithBodyArrayField<T, K extends string> = T & { [P in K | `${K}[]`]?: string | string[] };
+
+const extractBodyArrayField = <Key extends string>(
+  body: WithBodyArrayField<Record<string, unknown>, Key>,
+  key: Key,
+): string[] | undefined => {
+  const value = body[key] ?? body[`${key}[]`];
+  if (Array.isArray(value)) {
+    return value;
+  }
+  if (typeof value === 'string') {
+    return [value];
+  }
+  return undefined;
 };
 
 export default function run(config: Partial<Config>) {
@@ -178,10 +200,12 @@ export default function run(config: Partial<Config>) {
   // the digest is part of the request URL. Yes, it's not used here, but the
   // server logs might show it to distinguish different requests.
   app.post<{
-    Body: {
-      renderingRequest: string;
-      ['dependencyBundleTimestamps[]']?: string[] | string;
-    };
+    Body: WithBodyArrayField<
+      {
+        renderingRequest: string;
+      },
+      'dependencyBundleTimestamps'
+    >;
     // Can't infer from the route like Express can
     Params: { bundleTimestamp: string; renderRequestDigest: string };
   }>('/bundles/:bundleTimestamp/render/:renderRequestDigest', async (req, res) => {
@@ -200,14 +224,16 @@ export default function run(config: Partial<Config>) {
     //   await delay(100000);
     // }
 
-    const { renderingRequest, 'dependencyBundleTimestamps[]': dependencyBundleTimestamps } = req.body;
+    const { renderingRequest } = req.body;
     const { bundleTimestamp } = req.params;
     const providedNewBundles: ProvidedNewBundle[] = [];
     const assetsToCopy: Asset[] = [];
     Object.entries(req.body).forEach(([key, value]) => {
-      if (key === 'bundle' && isAsset(value)) {
+      if (key === 'bundle') {
+        assertAsset(value, key);
         providedNewBundles.push({ timestamp: bundleTimestamp, bundle: value });
-      } else if (key.startsWith('bundle_') && isAsset(value)) {
+      } else if (key.startsWith('bundle_')) {
+        assertAsset(value, key);
         providedNewBundles.push({ timestamp: key.replace('bundle_', ''), bundle: value });
       } else if (isAsset(value)) {
         assetsToCopy.push(value);
@@ -215,18 +241,13 @@ export default function run(config: Partial<Config>) {
     });
 
     try {
-      let dependencyBundleTimestampsArray: string[] | undefined;
-      if (Array.isArray(dependencyBundleTimestamps)) {
-        dependencyBundleTimestampsArray = dependencyBundleTimestamps;
-      } else if (dependencyBundleTimestamps) {
-        dependencyBundleTimestampsArray = [dependencyBundleTimestamps];
-      }
+      const dependencyBundleTimestamps = extractBodyArrayField(req.body, 'dependencyBundleTimestamps');
       await trace(async (context) => {
         try {
           const result = await handleRenderRequest({
             renderingRequest,
             bundleTimestamp,
-            dependencyBundleTimestamps: dependencyBundleTimestampsArray,
+            dependencyBundleTimestamps,
             providedNewBundles,
             assetsToCopy,
           });
@@ -251,10 +272,7 @@ export default function run(config: Partial<Config>) {
   // There can be additional files that might be required at the runtime.
   // Since the remote renderer doesn't contain any assets, they must be uploaded manually.
   app.post<{
-    Body: Record<string, Asset> & {
-      'targetBundles[]'?: string | string[];
-      targetBundles?: string | string[];
-    };
+    Body: WithBodyArrayField<Record<string, Asset>, 'targetBundles'>;
   }>('/upload-assets', async (req, res) => {
     if (!(await requestPrechecks(req, res))) {
       return;
@@ -264,15 +282,8 @@ export default function run(config: Partial<Config>) {
     const assets: Asset[] = Object.values(req.body).filter(isAsset);
 
     // Handle targetBundles as either a string or an array
-    let targetBundles: string[] = [];
-    const targetBundlesKey = req.body['targetBundles[]'] ? 'targetBundles[]' : 'targetBundles';
-    if (req.body[targetBundlesKey]) {
-      targetBundles = Array.isArray(req.body[targetBundlesKey])
-        ? req.body[targetBundlesKey]
-        : [req.body[targetBundlesKey]];
-    }
-
-    if (targetBundles.length === 0) {
+    const targetBundles = extractBodyArrayField(req.body, 'targetBundles');
+    if (!targetBundles || targetBundles.length === 0) {
       const errorMsg = 'No targetBundles provided. As of protocol version 2.0.0, targetBundles is required.';
       log.error(errorMsg);
       await setResponse(errorResponseResult(errorMsg), res);
@@ -311,14 +322,15 @@ export default function run(config: Partial<Config>) {
 
           const bundleDirectories = await Promise.all(directoryPromises);
 
-          // Move assets to each directory
-          const assetMovePromises = bundleDirectories.map((bundleDirectory) =>
-            copyUploadedAssets(assets, bundleDirectory).then(() => {
-              log.info(`Copied assets to bundle directory: ${bundleDirectory}`);
-            }),
-          );
+          // Copy assets to each bundle directory
+          const assetCopyPromises = bundleDirectories.map(async (bundleDirectory) => {
+            await copyUploadedAssets(assets, bundleDirectory);
+            log.info(`Copied assets to bundle directory: ${bundleDirectory}`);
+          });
 
-          await Promise.all(assetMovePromises);
+          await Promise.all(assetCopyPromises);
+
+          // Delete assets from uploads directory
           await deleteUploadedAssets(assets);
 
           await setResponse(
@@ -359,7 +371,7 @@ export default function run(config: Partial<Config>) {
   // Checks if file exist
   app.post<{
     Querystring: { filename: string };
-    Body: { 'targetBundles[]'?: string | string[]; targetBundles?: string | string[] };
+    Body: WithBodyArrayField<Record<string, unknown>, 'targetBundles'>;
   }>('/asset-exists', async (req, res) => {
     if (!(await isAuthenticated(req, res))) {
       return;
@@ -375,15 +387,8 @@ export default function run(config: Partial<Config>) {
     }
 
     // Handle targetBundles as either a string or an array
-    let targetBundles: string[] = [];
-    const targetBundlesKey = req.body['targetBundles[]'] ? 'targetBundles[]' : 'targetBundles';
-    if (req.body[targetBundlesKey]) {
-      targetBundles = Array.isArray(req.body[targetBundlesKey])
-        ? req.body[targetBundlesKey]
-        : [req.body[targetBundlesKey]];
-    }
-
-    if (targetBundles.length === 0) {
+    const targetBundles = extractBodyArrayField(req.body, 'targetBundles');
+    if (!targetBundles || targetBundles.length === 0) {
       const errorMsg = 'No targetBundles provided. As of protocol version 2.0.0, targetBundles is required.';
       log.error(errorMsg);
       await setResponse(errorResponseResult(errorMsg), res);
@@ -423,9 +428,10 @@ export default function run(config: Partial<Config>) {
   // will not listen:
   // we are extracting worker from cluster to avoid false TS error
   const { worker } = cluster;
-  if (workersCount === 0 || (cluster.isWorker && worker !== undefined)) {
+  if (workersCount === 0 || cluster.isWorker) {
     app.listen({ port }, () => {
-      log.info(`Node renderer worker #${worker?.id ?? 'master'} listening on port ${port}!`);
+      const workerName = worker ? `worker #${worker.id}` : 'master (single-process)';
+      log.info(`Node renderer ${workerName} listening on port ${port}!`);
     });
   }
 

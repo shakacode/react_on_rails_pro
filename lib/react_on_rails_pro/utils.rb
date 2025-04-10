@@ -137,7 +137,7 @@ module ReactOnRailsPro
 
       {
         "gemVersion" => ReactOnRailsPro::VERSION,
-        "protocolVersion" => "2.0.0",
+        "protocolVersion" => ReactOnRailsPro::PROTOCOL_VERSION,
         "password" => ReactOnRailsPro.configuration.renderer_password,
         "dependencyBundleTimestamps" => dependencies
       }

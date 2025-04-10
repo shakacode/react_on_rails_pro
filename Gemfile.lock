@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 8698a9f34f18c68300946b3c5c0189bcfd4b2386
+  revision: c7d4d42682f4620a8ff02cf519e0a61a96534441
   branch: abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server
   specs:
     react_on_rails (15.0.0.alpha.2)

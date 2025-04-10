@@ -6911,7 +6911,7 @@ react-is@^18.0.0:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server":
   version "15.0.0-alpha.2"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#8698a9f34f18c68300946b3c5c0189bcfd4b2386"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#c7d4d42682f4620a8ff02cf519e0a61a96534441"
 
 readable-stream@^2.2.2:
   version "2.3.8"
