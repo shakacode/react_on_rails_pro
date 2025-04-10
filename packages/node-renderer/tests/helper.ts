@@ -7,14 +7,25 @@ import fsExtra from 'fs-extra';
 import { buildVM, resetVM } from '../src/worker/vm';
 import { buildConfig } from '../src/shared/configBuilder';
 
+export const mkdirAsync = promisify(fs.mkdir);
 const fsCopyFileAsync = promisify(fs.copyFile);
+const safeCopyFileAsync = async (src: string, dest: string) => {
+  const parentDir = path.dirname(dest);
+  await mkdirAsync(parentDir, { recursive: true });
+  await fsCopyFileAsync(src, dest);
+};
 
 export const BUNDLE_TIMESTAMP = 1495063024898;
+export const SECONDARY_BUNDLE_TIMESTAMP = 1495063024899;
 export const ASSET_UPLOAD_FILE = 'loadable-stats.json';
 export const ASSET_UPLOAD_OTHER_FILE = 'loadable-stats-other.json';
 
 export function getFixtureBundle() {
   return path.resolve(__dirname, './fixtures/bundle.js');
+}
+
+export function getFixtureSecondaryBundle() {
+  return path.resolve(__dirname, './fixtures/secondary-bundle.js');
 }
 
 export function getFixtureAsset() {
@@ -36,16 +47,33 @@ export function setConfig(testName: string) {
 }
 
 export function vmBundlePath(testName: string) {
-  return path.resolve(bundlePath(testName), `${BUNDLE_TIMESTAMP}.js`);
+  return path.resolve(bundlePath(testName), `${BUNDLE_TIMESTAMP}`, `${BUNDLE_TIMESTAMP}.js`);
+}
+
+export function vmSecondaryBundlePath(testName: string) {
+  return path.resolve(
+    bundlePath(testName),
+    `${SECONDARY_BUNDLE_TIMESTAMP}`,
+    `${SECONDARY_BUNDLE_TIMESTAMP}.js`,
+  );
 }
 
 export async function createVmBundle(testName: string) {
-  await fsCopyFileAsync(getFixtureBundle(), vmBundlePath(testName));
+  await safeCopyFileAsync(getFixtureBundle(), vmBundlePath(testName));
   return buildVM(vmBundlePath(testName));
+}
+
+export async function createSecondaryVmBundle(testName: string) {
+  await safeCopyFileAsync(getFixtureSecondaryBundle(), vmSecondaryBundlePath(testName));
+  return buildVM(vmSecondaryBundlePath(testName));
 }
 
 export function lockfilePath(testName: string) {
   return `${vmBundlePath(testName)}.lock`;
+}
+
+export function secondaryLockfilePath(testName: string) {
+  return `${vmSecondaryBundlePath(testName)}.lock`;
 }
 
 export function uploadedBundleDir(testName: string) {
@@ -56,22 +84,33 @@ export function uploadedBundlePath(testName: string) {
   return path.resolve(uploadedBundleDir(testName), `${BUNDLE_TIMESTAMP}.js`);
 }
 
-export function assetPath(testName: string) {
-  return path.resolve(bundlePath(testName), ASSET_UPLOAD_FILE);
+export function uploadedSecondaryBundlePath(testName: string) {
+  return path.resolve(uploadedBundleDir(testName), `${SECONDARY_BUNDLE_TIMESTAMP}.js`);
 }
 
-export function assetPathOther(testName: string) {
-  return path.resolve(bundlePath(testName), ASSET_UPLOAD_OTHER_FILE);
+export function assetPath(testName: string, bundleTimestamp: string) {
+  return path.resolve(bundlePath(testName), bundleTimestamp, ASSET_UPLOAD_FILE);
+}
+
+export function assetPathOther(testName: string, bundleTimestamp: string) {
+  return path.resolve(bundlePath(testName), bundleTimestamp, ASSET_UPLOAD_OTHER_FILE);
 }
 
 export async function createUploadedBundle(testName: string) {
-  const mkdirAsync = promisify(fs.mkdir);
   await mkdirAsync(uploadedBundleDir(testName), { recursive: true });
-  return fsCopyFileAsync(getFixtureBundle(), uploadedBundlePath(testName));
+  return safeCopyFileAsync(getFixtureBundle(), uploadedBundlePath(testName));
 }
 
-export async function createAsset(testName: string) {
-  return fsCopyFileAsync(getFixtureAsset(), assetPath(testName));
+export async function createUploadedSecondaryBundle(testName: string) {
+  await mkdirAsync(uploadedBundleDir(testName), { recursive: true });
+  return safeCopyFileAsync(getFixtureSecondaryBundle(), uploadedSecondaryBundlePath(testName));
+}
+
+export async function createAsset(testName: string, bundleTimestamp: string) {
+  return Promise.all([
+    safeCopyFileAsync(getFixtureAsset(), assetPath(testName, bundleTimestamp)),
+    safeCopyFileAsync(getOtherFixtureAsset(), assetPathOther(testName, bundleTimestamp)),
+  ]);
 }
 
 export async function resetForTest(testName: string) {

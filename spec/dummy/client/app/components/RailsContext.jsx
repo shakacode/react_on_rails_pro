@@ -5,10 +5,16 @@ import { transform } from 'lodash';
 function renderContextRows(railsContext) {
   // eslint-disable-next-line no-console
   console.log('railsContext.serverSide is ', railsContext.serverSide);
+  const serverSideKeys = [
+    'serverSide',
+    'reactClientManifestFileName',
+    'reactServerClientManifestFileName',
+    'serverSideRSCPayloadParameters',
+  ];
   return transform(
     railsContext,
     (accum, value, key) => {
-      if (key !== 'serverSide') {
+      if (!serverSideKeys.includes(key)) {
         const className = `js-${key}`;
         accum.push(
           <tr key={className}>

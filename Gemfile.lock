@@ -6,6 +6,18 @@ GIT
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
 
+GIT
+  remote: https://github.com/shakacode/react_on_rails.git
+  revision: a87a11133e8d30d2c9270604caa1d4184aa8647f
+  branch: abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server
+  specs:
+    react_on_rails (15.0.0.alpha.2)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
+
 PATH
   remote: .
   specs:
@@ -284,12 +296,6 @@ GEM
       ffi (~> 1.0)
     rdoc (6.12.0)
       psych (>= 4.0.0)
-    react_on_rails (15.0.0.alpha.2)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
     regexp_parser (2.9.2)
     reline (0.6.0)
       io-console (~> 0.5)
@@ -462,7 +468,7 @@ DEPENDENCIES
   pry-theme
   puma (~> 6)
   rails (~> 7.1)
-  react_on_rails (= 15.0.0.alpha.2)
+  react_on_rails!
   react_on_rails_pro!
   rspec-rails
   rspec-retry
