@@ -165,15 +165,9 @@ export default defineConfig([
     },
   },
   {
-    files: ['packages/node-renderer/tests/**'],
+    files: ['packages/node-renderer/tests/**', '**/*.test.{js,jsx,ts,tsx}'],
 
-    plugins: {
-      jest,
-    },
-
-    languageOptions: {
-      globals: globals.jest,
-    },
+    extends: [jest.configs['flat/recommended'], jest.configs['flat/style']],
 
     rules: {
       // Allows Jest mocks before import
