@@ -218,17 +218,19 @@ export async function handleRenderRequest({
     }
 
     // Check if the bundle exists:
-    const notExistingBundles = await Promise.all(
-      [...(dependencyBundleTimestamps ?? []), bundleTimestamp].map(async (timestamp) => {
-        const bundleFilePath = getRequestBundleFilePath(timestamp);
-        const fileExists = await fileExistsAsync(bundleFilePath);
-        return !fileExists;
-      }),
-    );
-    if (notExistingBundles.some((bundle) => bundle)) {
-      log.info(
-        `No saved bundle${notExistingBundles.length > 1 ? 's' : ''} ${notExistingBundles.join(', ')}. Requesting a new bundle${notExistingBundles.length > 1 ? 's' : ''}.`,
-      );
+    const missingBundles = (
+      await Promise.all(
+        [...(dependencyBundleTimestamps ?? []), bundleTimestamp].map(async (timestamp) => {
+          const bundleFilePath = getRequestBundleFilePath(timestamp);
+          const fileExists = await fileExistsAsync(bundleFilePath);
+          return fileExists ? null : timestamp;
+        }),
+      )
+    ).filter((timestamp) => timestamp !== null);
+
+    if (missingBundles.length > 0) {
+      const missingBundlesText = missingBundles.length > 1 ? 'bundles' : 'bundle';
+      log.info(`No saved ${missingBundlesText}: ${missingBundles.join(', ')}`);
       return {
         headers: { 'Cache-Control': 'no-cache, no-store, max-age=0, must-revalidate' },
         status: 410,

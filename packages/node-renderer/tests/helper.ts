@@ -1,18 +1,17 @@
 // NOTE: The tmp bundle directory for each test file must be different due to the fact that
 // jest will run multiple test files synchronously.
 import path from 'path';
+import fsPromises from 'fs/promises';
 import fs from 'fs';
-import { promisify } from 'util';
 import fsExtra from 'fs-extra';
 import { buildVM, resetVM } from '../src/worker/vm';
 import { buildConfig } from '../src/shared/configBuilder';
 
-export const mkdirAsync = promisify(fs.mkdir);
-const fsCopyFileAsync = promisify(fs.copyFile);
+export const mkdirAsync = fsPromises.mkdir;
 const safeCopyFileAsync = async (src: string, dest: string) => {
   const parentDir = path.dirname(dest);
   await mkdirAsync(parentDir, { recursive: true });
-  await fsCopyFileAsync(src, dest);
+  await fsPromises.copyFile(src, dest);
 };
 
 export const BUNDLE_TIMESTAMP = 1495063024898;
