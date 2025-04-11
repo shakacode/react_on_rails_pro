@@ -6,9 +6,9 @@ module ReactOnRailsPro
   class Error < ::ReactOnRails::Error
     def self.raise_duplicate_bundle_upload_error
       raise ReactOnRailsPro::Error,
-                    "The bundle has already been uploaded, " \
-                    "but the server is still sending the send_bundle status code. " \
-                    "This is unexpected behavior."
+            "The bundle has already been uploaded, " \
+            "but the server is still sending the send_bundle status code. " \
+            "This is unexpected behavior."
     end
   end
 end
