@@ -83,7 +83,7 @@ module ReactOnRailsPro
         # is blocking, it will wait for the response to be fully received
         # Look at the spec of `status` in `spec/react_on_rails_pro/stream_spec.rb` for more details
         loop_response_lines(stream_response) do |chunk|
-          if stream_response.status >= 400
+          if !stream_response.respond_to?(:status) || stream_response.status >= 400
             error_body << chunk
             next
           end

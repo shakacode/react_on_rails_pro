@@ -29,6 +29,16 @@ PATH
       rainbow
       react_on_rails (>= 14.1.0)
 
+PATH
+  remote: ../../../react_on_rails
+  specs:
+    react_on_rails (15.0.0.alpha.2)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:

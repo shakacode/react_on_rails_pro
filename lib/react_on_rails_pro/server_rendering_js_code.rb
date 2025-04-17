@@ -80,6 +80,7 @@ module ReactOnRailsPro
           // This function is called with specific componentName and props when generateRSCPayload is invoked
           // In that case, it replaces the empty () with ('componentName', props) in the rendering request
           var railsContext = #{rails_context};
+          railsContext.componentSpecificMetadata = {renderRequestId: '#{render_options.render_request_id}'};
           #{rsc_params}
           #{generate_rsc_payload_js_function(render_options)}
           #{ssr_pre_hook_js}
