@@ -24,6 +24,8 @@ Rails.application.routes.draw do
   get "stream_async_components_for_testing" => "pages#stream_async_components_for_testing",
       as: :stream_async_components_for_testing
   get "rsc_posts_page" => "pages#rsc_posts_page", as: :rsc_posts_page
+  get "async_content" => "pages#async_content", as: :async_content
+  get "server_router/(*all)" => "pages#server_router", as: :server_router
   rsc_payload_route controller: "pages"
 
   # routes copied over from react on rails

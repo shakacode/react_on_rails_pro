@@ -1,7 +1,8 @@
 import React, { Suspense } from 'react';
 import SimpleClientComponent from '../components/SimpleClientComponent.jsx';
 
-const Post = ({ post }) => {
+const Post = async ({ postPromise }) => {
+  const post = await postPromise;
   return (
     <div>
       <h1>{post.title}</h1>
@@ -17,7 +18,7 @@ const SimpleComponent = () => {
   });
   return (
     <Suspense fallback={<div>Loading Post...</div>}>
-      <Post post={postPromise} />
+      <Post postPromise={postPromise} />
     </Suspense>
   );
 };
