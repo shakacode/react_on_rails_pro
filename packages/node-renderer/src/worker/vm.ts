@@ -11,7 +11,7 @@ import cluster from 'cluster';
 import type { Readable } from 'stream';
 import { ReadableStream } from 'stream/web';
 import { promisify, TextEncoder } from 'util';
-import type { ReactOnRails as ROR } from 'react-on-rails';
+import type { ReactOnRails as ROR } from 'react-on-rails' with { 'resolution-mode': 'import' };
 import type { Context } from 'vm';
 
 import SharedConsoleHistory from '../shared/sharedConsoleHistory';
