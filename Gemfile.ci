@@ -1,1 +1,1 @@
-gem "react_on_rails", github: "shakacode/react_on_rails", branch: "abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server"
+gem "react_on_rails", github: "shakacode/react_on_rails", branch: "abanoubghadban/pro532/make-rsc-compatible-with-react-router"
