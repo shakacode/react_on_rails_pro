@@ -44,8 +44,8 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/rsc_posts_page")
   end
 
-  def async_content
-    stream_view_containing_react_components(template: "/pages/async_content")
+  def async_on_server_sync_on_client
+    stream_view_containing_react_components(template: "/pages/async_on_server_sync_on_client")
   end
 
   def server_router

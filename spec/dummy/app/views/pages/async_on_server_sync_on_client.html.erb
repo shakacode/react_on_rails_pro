@@ -1,0 +1,8 @@
+<%= stream_react_component("AsyncOnServerSyncOnClient", 
+  props: @app_props_server_render.merge(artificialDelay: params[:artificial_delay] || 0, postsCount: params[:posts_count] || 2), 
+  trace: true,
+  id: "AsyncOnServerSyncOnClient-react-component-0") %>
+<hr/>
+
+<p>Artificial delay: <%= params[:artificial_delay] %></p>
+<h1>React Rails Server Streaming Server Rendered Client Components containing Server Components</h1>

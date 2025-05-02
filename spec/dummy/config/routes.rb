@@ -23,9 +23,13 @@ Rails.application.routes.draw do
   get "stream_async_components" => "pages#stream_async_components", as: :stream_async_components
   get "stream_async_components_for_testing" => "pages#stream_async_components_for_testing",
       as: :stream_async_components_for_testing
+  get "stream_async_components_for_testing_client_render" => "pages#stream_async_components_for_testing_client_render",
+      as: :stream_async_components_for_testing_client_render
   get "rsc_posts_page" => "pages#rsc_posts_page", as: :rsc_posts_page
-  get "async_content" => "pages#async_content", as: :async_content
+  get "async_on_server_sync_on_client" => "pages#async_on_server_sync_on_client", as: :async_on_server_sync_on_client
+  get "async_on_server_sync_on_client_client_render" => "pages#async_on_server_sync_on_client_client_render", as: :async_on_server_sync_on_client_client_render
   get "server_router/(*all)" => "pages#server_router", as: :server_router
+  get "server_router_client_render/(*all)" => "pages#server_router_client_render", as: :server_router_client_render
   rsc_payload_route controller: "pages"
 
   # routes copied over from react on rails

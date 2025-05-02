@@ -7008,7 +7008,7 @@ react-is@^18.0.0:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro532/make-rsc-compatible-with-react-router":
   version "15.0.0-alpha.2"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#b371f19f380aa213bf184e01c99e8033ff480d54"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#63d86d8423cc2e3931579ce18e6e40e49f8defd3"
 
 readable-stream@^2.2.2:
   version "2.3.8"

@@ -122,27 +122,27 @@ describe "Pages/client_side_log_throw", :js do
   end
 end
 
-describe "Pages/stream_async_components_for_testing", :js do
+shared_examples "async component tests" do |path, selector|
   subject { page }
 
   it "renders the component" do
-    visit "/stream_async_components_for_testing"
+    visit path
     expect(page).to have_text "Header for AsyncComponentsTreeForTesting"
     expect(page).to have_text "Footer for AsyncComponentsTreeForTesting"
   end
 
   it "hydrates the component" do
-    visit "/stream_async_components_for_testing"
+    visit path
     expect(page.html).to include("client-bundle.js")
-    change_text_expect_dom_selector("#AsyncComponentsTreeForTesting-react-component-0")
+    change_text_expect_dom_selector(selector)
   end
 
   it "renders the page completely on server and displays content on client even without JavaScript" do
     # Don't add client-bundle.js to the page to ensure that the app is not hydrated
-    visit "/stream_async_components_for_testing?skip_js_packs=true"
+    visit "#{path}?skip_js_packs=true"
     expect(page.html).not_to include("client-bundle.js")
     # Ensure that the component state is not updated
-    change_text_expect_dom_selector("#AsyncComponentsTreeForTesting-react-component-0", expect_no_change: true)
+    change_text_expect_dom_selector(selector, expect_no_change: true)
 
     expect(page).not_to have_text "Loading branch1"
     expect(page).not_to have_text "Loading branch2"
@@ -153,7 +153,7 @@ describe "Pages/stream_async_components_for_testing", :js do
   shared_examples "shows loading fallback while rendering async components" do |skip_js_packs|
     it "shows the loading fallback while rendering async components" \
        "#{skip_js_packs ? ' when the page is not hydrated' : ''}" do
-      path = "/stream_async_components_for_testing#{skip_js_packs ? '?skip_js_packs=true' : ''}"
+      path = "#{path}#{skip_js_packs ? '?skip_js_packs=true' : ''}"
       chunks_count = 0
       navigate_with_streaming(path) do |_content|
         chunks_count += 1
@@ -166,8 +166,7 @@ describe "Pages/stream_async_components_for_testing", :js do
       expect(chunks_count).to be >= 5
 
       # Check if the page is hydrated or not
-      change_text_expect_dom_selector("#AsyncComponentsTreeForTesting-react-component-0",
-                                      expect_no_change: skip_js_packs)
+      change_text_expect_dom_selector(selector, expect_no_change: skip_js_packs)
     end
   end
 
@@ -175,7 +174,7 @@ describe "Pages/stream_async_components_for_testing", :js do
   it_behaves_like "shows loading fallback while rendering async components", true
 
   it "replays console logs" do
-    visit "/stream_async_components_for_testing"
+    visit path
     logs = page.driver.browser.logs.get(:browser)
     info = logs.select { |log| log.level == "INFO" }
     info_messages = info.map(&:message)
@@ -199,7 +198,7 @@ describe "Pages/stream_async_components_for_testing", :js do
 
   it "replays console logs with each chunk" do
     chunks_count = 0
-    navigate_with_streaming("/stream_async_components_for_testing") do |content|
+    navigate_with_streaming(path) do |content|
       chunks_count += 1
       logs = page.driver.browser.logs.get(:browser)
       info = logs.select { |log| log.level == "INFO" }
@@ -219,7 +218,7 @@ describe "Pages/stream_async_components_for_testing", :js do
 
   it "doesn't hydrate status component if packs are not loaded" do
     # visit waits for the page to load, so we ensure that the page is loaded before checking the hydration status
-    visit "/stream_async_components_for_testing?skip_js_packs=true"
+    visit "#{path}?skip_js_packs=true"
     expect(page).to have_text "HydrationStatus: Streaming server render"
     expect(page).not_to have_text "HydrationStatus: Hydrated"
     expect(page).not_to have_text "HydrationStatus: Page loaded"
@@ -229,7 +228,7 @@ describe "Pages/stream_async_components_for_testing", :js do
     chunks_count = 0
     status_component_hydrated_on_chunk = nil
     input_component_hydrated_on_chunk = nil
-    navigate_with_streaming("/stream_async_components_for_testing") do |_content|
+    navigate_with_streaming(path) do |_content|
       chunks_count += 1
 
       # The code that updates the states to Hydrated is executed on `useEffect` which is called only on hydration
@@ -240,7 +239,7 @@ describe "Pages/stream_async_components_for_testing", :js do
       if input_component_hydrated_on_chunk.nil?
         begin
           # Checks that the input field is hydrated
-          change_text_expect_dom_selector("#AsyncComponentsTreeForTesting-react-component-0")
+          change_text_expect_dom_selector(selector)
           input_component_hydrated_on_chunk = chunks_count
         rescue RSpec::Expectations::ExpectationNotMetError
           # Do nothing if the test fails - component not yet hydrated
@@ -252,6 +251,325 @@ describe "Pages/stream_async_components_for_testing", :js do
     expect(status_component_hydrated_on_chunk).to be < chunks_count
     expect(input_component_hydrated_on_chunk).to be < chunks_count
     expect(page).to have_text "HydrationStatus: Page loaded"
+  end
+end
+
+describe "Pages/stream_async_components_for_testing", :js do
+  it_behaves_like "async component tests", "/stream_async_components_for_testing", "#AsyncComponentsTreeForTesting-react-component-0"
+end
+
+describe "React Router Sixth Page", :js do
+  it_behaves_like "async component tests", "/server_router/sixth", "#ServerComponentRouter-react-component-0"
+end
+
+def rsc_payload_fetch_requests
+  fetch_requests_while_streaming.select { |request| request[:url].include?("/rsc_payload/") }
+end
+
+shared_examples "RSC payload only fetched if component is not server-side rendered" do |server_rendered_path, client_rendered_path|
+  before do
+    # Clear the browser logs. so any test reading the logs will only read the logs from the current page navigation
+    page.driver.browser.logs.get(:browser)
+  end
+
+  it "doesn't fetch RSC payload if component is server-side rendered" do
+    navigate_with_streaming server_rendered_path do |content|
+    end
+
+    expect(rsc_payload_fetch_requests).to eq([])
+  end
+
+  it "fetches RSC payload if component is client-side rendered" do
+    navigate_with_streaming client_rendered_path do |content|
+    end
+
+    expect(rsc_payload_fetch_requests.size).to be > 0
+  end
+end
+
+describe "Pages/server_router/sixth rsc payload fetching", :js do
+  it_behaves_like "RSC payload only fetched if component is not server-side rendered", "/server_router/sixth", "/server_router_client_render/sixth"
+end
+
+describe "Pages/stream_async_components_for_testing rsc payload fetching", :js do
+  it_behaves_like "RSC payload only fetched if component is not server-side rendered", "/stream_async_components_for_testing", "/stream_async_components_for_testing_client_render"
+end
+
+describe "Pages/server_router", :js do
+  subject { page }
+
+  it "navigates between pages" do
+    navigate_with_streaming("/server_router/first") do |content|
+    end
+    expect_client_component_inside_server_component_hydrated(page)
+    expect(page).not_to have_text("Server Component Title")
+    expect(page).not_to have_text("Server Component Description")
+    expect(rsc_payload_fetch_requests).to eq([])
+
+    click_link "Second Page"
+    expect(rsc_payload_fetch_requests).to eq([
+      { url: "/rsc_payload/MyServerComponent?props={}" }
+    ])
+
+    expect(page).to have_text("Server Component Title")
+    expect(page).to have_text("Server Component Description")
+    expect(page).not_to have_text("Post 1")
+    expect(page).not_to have_text("Content 1")
+  end
+
+  it "streams the navigation between pages" do
+    navigate_with_streaming("/server_router/first") do |content|
+    end
+
+    click_link "Sixth Page"
+    expect(rsc_payload_fetch_requests.first[:url]).to include("/rsc_payload/AsyncComponentsTreeForTesting")
+
+    expect(page).not_to have_text("Post 1")
+    expect(page).not_to have_text("Content 1")
+    expect(page).to have_text("Loading branch1 at level 3...", wait: 5)
+
+    # Client component is hydrated before the full page is loaded
+    expect(page).to have_text("HydrationStatus: Hydrated")
+    change_text_expect_dom_selector("#ServerComponentRouter-react-component-0")
+
+    expect(page).to have_text("Loading branch1 at level 1...", wait: 5)
+    expect(page).to have_text("branch1 (level 1)")
+    expect(page).not_to have_text("Loading branch1 at level 1...")
+    expect(page).not_to have_text("Loading branch1 at level 3...")
+  end
+end
+
+def async_on_server_sync_on_client_client_render_logs
+  logs = page.driver.browser.logs.get(:browser)
+  component_logs = logs.select { |log| log.message.include?(component_logs_tag) }
+  client_component_logs = component_logs.select { |log| !log.message.include?("[SERVER]") }
+  client_component_logs.map do |log|
+    # Extract string between double quotes that contains component_logs_tag
+    # The string can contain escaped double quotes (\").
+    message = log.message.match(/"([^"]*(?:\\"[^"]*)*#{component_logs_tag}[^"]*(?:\\"[^"]*)*)"/)[1]
+    JSON.parse("\"#{message}\"").gsub(component_logs_tag, "").strip
+  end
+end
+
+def expect_client_component_inside_server_component_hydrated(page)
+  expect(page).to have_text("Post 1")
+  expect(page).to have_text("Content 1")
+  expect(page).to have_button("Toggle")
+
+  # Check that the client component is hydrated
+  click_button "Toggle"
+  expect(page).not_to have_text("Content 1")
+end
+
+# The following two tests ensure that server components can be rendered inside client components
+# and ensure that no race condition happens that make client side refetch the RSC payload that is already embedded in the HTML
+# By ensuring that the client component is only hydrated after the server component is rendered and its HTML is embedded in the page
+describe "Pages/async_on_server_sync_on_client_client_render", :js do
+  let(:component_logs_tag) { "[AsyncOnServerSyncOnClient]" }
+
+  before do
+    # Clear the browser logs. so any test reading the logs will only read the logs from the current page navigation
+    page.driver.browser.logs.get(:browser)
+  end
+
+  it "all components are rendered on client" do
+    chunks_count = 0
+    # Nothing is rendered on the server
+    navigate_with_streaming("/async_on_server_sync_on_client_client_render") do |content|
+      chunks_count += 1
+      expect(content).not_to include("Async Component 1 from Suspense Boundary1")
+      expect(content).not_to include("Async Component 1 from Suspense Boundary2")
+      expect(content).not_to include("Async Component 1 from Suspense Boundary3")
+      expect(content).to include("React Rails Server Client Side Rendering of Client Components")
+    end
+    expect(chunks_count).to be 1
+
+    # After client side rendering, the component should exist in the DOM
+    expect(page).to have_text("Async Component 1 from Suspense Boundary1")
+    expect(page).to have_text("Async Component 1 from Suspense Boundary2")
+    expect(page).to have_text("Async Component 1 from Suspense Boundary3")
+
+    # Should render "Simple Component" server component
+    expect(page).to have_text("Post 1")
+    expect(page).to have_button("Toggle")
+  end
+
+  it "fetches RSC payload of the Simple Component to render it on client" do
+    fetch_requests_while_streaming
+
+    navigate_with_streaming "/async_on_server_sync_on_client_client_render" do |content|
+    end
+    expect(page).to have_text("Post 1")
+    expect(page).to have_button("Toggle")
+    fetch_requests = fetch_requests_while_streaming
+    expect(fetch_requests).to eq([
+      { url: "/rsc_payload/SimpleComponent?props={}" }
+    ])
+  end
+
+  it "renders the client components on the client side in a sync manner" do
+    navigate_with_streaming "/async_on_server_sync_on_client_client_render" do |content|
+    end
+
+    component_logs = async_on_server_sync_on_client_client_render_logs
+    # The last log happen if the test catched the re-render of the suspensed component on the client
+    expect(component_logs.size).to be_between(13, 14)
+
+    # To understand how these logs show that components are rendered in a sync manner,
+    # check the component page in the dummy app `/async_on_server_sync_on_client_client_render`
+    expect(component_logs[0...13]).to eq([
+      "AsyncContent rendered",
+      "RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)",
+      "RealComponent rendered Async Component 2 from Suspense Boundary1 (2000ms server side delay)",
+      "RealComponent rendered Async Component 1 from Suspense Boundary2 (3000ms server side delay)",
+      "RealComponent rendered Async Component 1 from Suspense Boundary3 (1000ms server side delay)",
+      "RealComponent rendered Server Component from Suspense Boundary4 (2000ms server side delay)",
+      "LoadingComponent rendered Loading Server Component on Suspense Boundary4",
+      "RealComponent has been mounted Async Component 1 from Suspense Boundary1 (1000ms server side delay)",
+      "RealComponent has been mounted Async Component 2 from Suspense Boundary1 (2000ms server side delay)",
+      "RealComponent has been mounted Async Component 1 from Suspense Boundary2 (3000ms server side delay)",
+      "RealComponent has been mounted Async Component 1 from Suspense Boundary3 (1000ms server side delay)",
+      "AsyncContent has been mounted",
+      "RealComponent rendered Server Component from Suspense Boundary4 (2000ms server side delay)"
+    ])
+  end
+
+  it "hydrates the client component inside server component" do
+    navigate_with_streaming "/async_on_server_sync_on_client_client_render" do |content|
+    end
+    expect_client_component_inside_server_component_hydrated(page)
+  end
+end
+
+describe "Pages/async_on_server_sync_on_client", :js do
+  let(:component_logs_tag) { "[AsyncOnServerSyncOnClient]" }
+
+  before do
+    # Clear the browser logs. so any test reading the logs will only read the logs from the current page navigation
+    page.driver.browser.logs.get(:browser)
+  end
+
+  it "all components are rendered on server" do
+    received_server_html = ""
+    navigate_with_streaming("/async_on_server_sync_on_client") do |content|
+      received_server_html += content
+    end
+    expect(received_server_html).to include("Async Component 1 from Suspense Boundary1")
+    expect(received_server_html).to include("Async Component 1 from Suspense Boundary2")
+    expect(received_server_html).to include("Async Component 1 from Suspense Boundary3")
+    expect(received_server_html).to include("Post 1")
+    expect(received_server_html).to include("Content 1")
+    expect(received_server_html).to include("Toggle")
+    expect(received_server_html).to include("React Rails Server Streaming Server Rendered Client Components containing Server Components")
+  end
+
+  it "doesn't fetch the RSC payload of the server component in the page" do
+    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
+    end
+    expect(fetch_requests_while_streaming).to eq([])
+  end
+
+  it "hydrates the client component inside server component" do
+    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
+    end
+    expect_client_component_inside_server_component_hydrated(page)
+  end
+
+  it "progressively renders the page content" do
+    rendering_stages_count = 0
+    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
+      # The first stage when all components are still being rendered on the server
+      if content.include?("Loading Suspense Boundary3")
+        rendering_stages_count += 1
+        expect(page).to have_text("Loading Suspense Boundary3")
+        expect(page).to have_text("Loading Suspense Boundary2")
+        expect(page).to have_text("Loading Suspense Boundary1")
+
+        expect(page).not_to have_text("Post 1")
+        expect(page).not_to have_text("Async Component 1 from Suspense Boundary1")
+        expect(page).not_to have_text("Async Component 1 from Suspense Boundary2")
+        expect(page).not_to have_text("Async Component 1 from Suspense Boundary3")
+      # The second stage when the Suspense Boundary3 (with 1000ms delay) is rendered on the server
+      elsif content.include?("Async Component 1 from Suspense Boundary3")
+        rendering_stages_count += 1
+        expect(page).to have_text("Async Component 1 from Suspense Boundary3")
+        expect(page).not_to have_text("Post 1")
+        expect(page).not_to have_text("Async Component 1 from Suspense Boundary1")
+        expect(page).not_to have_text("Async Component 1 from Suspense Boundary2")
+        expect(page).not_to have_text("Loading Suspense Boundary3")
+      # The third stage when the Suspense Boundary2 (with 3000ms delay) is rendered on the server
+      elsif content.include?("Async Component 1 from Suspense Boundary2")
+        rendering_stages_count += 1
+        expect(page).to have_text("Async Component 1 from Suspense Boundary3")
+        expect(page).to have_text("Post 1")
+        expect(page).to have_text("Async Component 1 from Suspense Boundary1")
+        expect(page).to have_text("Async Component 1 from Suspense Boundary2")
+        expect(page).not_to have_text("Loading Suspense Boundary2")
+
+        # Expect that client component is hydrated
+        expect(page).to have_text("Content 1")
+        expect(page).to have_button("Toggle")
+
+        # Expect that the client component is hydrated
+        click_button "Toggle"
+        expect(page).not_to have_text("Content 1")
+      end
+    end
+    expect(rendering_stages_count).to be 3
+  end
+
+  it "doesn't hydrate client components until they are rendered on the server" do
+    rendering_stages_count = 0
+    component_logs = []
+    RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = nil
+
+    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
+      component_logs += async_on_server_sync_on_client_client_render_logs
+
+      # The first stage when all components are still being rendered on the server
+      if content.include?("<div>Loading Suspense Boundary3</div>")
+        rendering_stages_count += 1
+        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)")
+        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary2 (2000ms server side delay)")
+        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary3 (3000ms server side delay)")
+      # The second stage when the Suspense Boundary3 (with 1000ms delay) is rendered on the server
+      elsif content.include?("<div>Async Component 1 from Suspense Boundary3 (1000ms server side delay)</div>")
+        rendering_stages_count += 1
+        expect(component_logs).to include("AsyncContent rendered")
+        expect(component_logs).to include("AsyncContent has been mounted")
+        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)")
+      # The third stage when the Suspense Boundary2 (with 3000ms delay) is rendered on the server
+      elsif content.include?("<div>Async Component 1 from Suspense Boundary2 (3000ms server side delay)</div>")
+        rendering_stages_count += 1
+        expect(component_logs).to include("RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)")
+        expect(component_logs).to include("RealComponent rendered Async Component 1 from Suspense Boundary2 (3000ms server side delay)")
+      end
+    end
+
+    expect(rendering_stages_count).to be 3
+  end
+
+  it "hydrates the client component inside server component before the full page is loaded" do
+    chunks_count = 0
+    client_component_hydrated_on_chunk = nil
+    component_logs = []
+    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
+      chunks_count += 1
+      component_logs += async_on_server_sync_on_client_client_render_logs
+
+      if client_component_hydrated_on_chunk.nil? && component_logs.include?("RealComponent has been mounted Server Component from Suspense Boundary4 (2000ms server side delay)")
+        client_component_hydrated_on_chunk = chunks_count
+        expect_client_component_inside_server_component_hydrated(page)
+      end
+    end
+    expect(client_component_hydrated_on_chunk).to be < chunks_count
+  end
+
+  it "Server component is pre-rendered on the server and not showing loading component on the client" do
+    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
+    end
+    component_logs = async_on_server_sync_on_client_client_render_logs
+    expect(component_logs).not_to include("LoadingComponent rendered Loading Server Component on Suspense Boundary4")
   end
 end
 
@@ -273,7 +591,6 @@ describe "Pages/server_side_log_throw", :js do
     expect(page).to have_text "Exception in rendering!\n\nMessage: throw in HelloWorldWithLogAndThrow"
   end
 end
-
 describe "Pages/server_side_log_throw_raise", :js do
   subject { page }
 
@@ -490,3 +807,4 @@ end
 describe "2 react components, 1 store, server side, defer", :js do
   include_examples "React Component Shared Store", "/server_side_hello_world_shared_store_defer"
 end
+

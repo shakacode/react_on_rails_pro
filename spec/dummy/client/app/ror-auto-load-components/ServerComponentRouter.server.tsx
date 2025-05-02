@@ -1,10 +1,10 @@
-"use client"
+'use client';
 
-import * as React from 'react'
-import { StaticRouter } from 'react-router-dom/server.js'
-import { RailsContext, ReactComponentOrRenderFunction } from 'react-on-rails'
-import wrapServerComponentRenderer from 'react-on-rails/wrapServerComponentRenderer/server'
-import App from '../components/ServerComponentRouter'
+import * as React from 'react';
+import { StaticRouter } from 'react-router-dom/server.js';
+import { RailsContext, ReactComponentOrRenderFunction } from 'react-on-rails';
+import wrapServerComponentRenderer from 'react-on-rails/wrapServerComponentRenderer/server';
+import App from '../components/ServerComponentRouter';
 
 function ServerComponentRouter(props: object, railsContext: RailsContext) {
   const url = new URL(railsContext.href);
@@ -13,7 +13,7 @@ function ServerComponentRouter(props: object, railsContext: RailsContext) {
     <StaticRouter location={path}>
       <App {...props} />
     </StaticRouter>
-  )
+  );
 }
 
-export default wrapServerComponentRenderer(ServerComponentRouter as ReactComponentOrRenderFunction)
+export default wrapServerComponentRenderer(ServerComponentRouter as ReactComponentOrRenderFunction);
