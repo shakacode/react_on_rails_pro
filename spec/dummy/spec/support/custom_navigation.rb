@@ -10,7 +10,25 @@ module CustomNavigation
     # We need to navigate to an empty page first to avoid CORS issues and to update the page host
     visit empty_page_url
 
-    # Override `fetch` to log the request
+    override_fetch_for_logging
+    url = URI.join(base_url, path).to_s
+    inject_javascript_to_stream_page(url)
+    process_stream_chunks { |content| yield content if block_given? }
+  end
+
+  # Logs all fetch requests happening while streaming the page using the `navigate_with_streaming` method
+  def fetch_requests_while_streaming
+    logs = page.driver.browser.logs.get(:browser)
+    fetch_requests = logs.select { |log| log.message.include?(FETCH_LOG_MESSAGE) }
+    fetch_requests.map do |log|
+      double_stringified_fetch_info = log.message.split(FETCH_LOG_MESSAGE.to_json).last
+      JSON.parse(JSON.parse(double_stringified_fetch_info), symbolize_names: true)
+    end
+  end
+
+  private
+
+  def override_fetch_for_logging
     page.execute_script(<<~JS)
       if (typeof window.originalFetch !== 'function') {
         window.originalFetch = window.fetch;
@@ -21,11 +39,9 @@ module CustomNavigation
         }
       }
     JS
+  end
 
-    url = URI.join(base_url, path).to_s
-
-    inject_javascript_to_stream_page(url)
-
+  def process_stream_chunks
     loop do
       # check if the page has content
       if page.evaluate_script("window.loaded_content")
@@ -46,18 +62,6 @@ module CustomNavigation
       sleep 0.1
     end
   end
-
-  # Logs all fetch requests happening while streaming the page using the `navigate_with_streaming` method
-  def fetch_requests_while_streaming
-    logs = page.driver.browser.logs.get(:browser)
-    fetch_requests = logs.select { |log| log.message.include?(FETCH_LOG_MESSAGE) }
-    fetch_requests.map do |log|
-      double_stringified_fetch_info = log.message.split(FETCH_LOG_MESSAGE.to_json).last
-      JSON.parse(JSON.parse(double_stringified_fetch_info), symbolize_names: true)
-    end
-  end
-
-  private
 
   def inject_javascript_to_stream_page(url)
     js = <<-JS
@@ -88,33 +92,38 @@ module CustomNavigation
           .then(response => {
             const reader = response.body.getReader();
             const decoder = new TextDecoder();
-
-            function readChunk() {
-              reader.read().then(({ done, value }) => {
-                if (done) {
-                  window.finished_loading = true;
-                  if (window.chunkBuffer.length === 0) {
-                    document.close();
-                  }
-                  return;
-                }
-
-                const chunk = decoder.decode(value);
-                window.chunkBuffer.push(chunk);
-
-                // If this is the first chunk, set it as loaded_content
-                if (window.chunkBuffer.length === 1 && !window.loaded_content) {
-                  window.processNextChunk();
-                }
-
-                readChunk();
-              });
-            }
-
-            readChunk();
+            #{streaming_reader_js}
           });
       })();
     JS
     page.execute_script(js)
+  end
+
+  def streaming_reader_js
+    <<~JS
+      function readChunk() {
+        reader.read().then(({ done, value }) => {
+          if (done) {
+            window.finished_loading = true;
+            if (window.chunkBuffer.length === 0) {
+              document.close();
+            }
+            return;
+          }
+
+          const chunk = decoder.decode(value);
+          window.chunkBuffer.push(chunk);
+
+          // If this is the first chunk, set it as loaded_content
+          if (window.chunkBuffer.length === 1 && !window.loaded_content) {
+            window.processNextChunk();
+          }
+
+          readChunk();
+        });
+      }
+
+      readChunk();
+    JS
   end
 end

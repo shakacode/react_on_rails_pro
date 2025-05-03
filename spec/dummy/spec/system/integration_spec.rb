@@ -2,6 +2,8 @@
 
 require "rails_helper"
 
+RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = nil
+
 def change_text_expect_dom_selector(dom_selector, expect_no_change: false)
   new_text = "John Doe"
 
@@ -257,7 +259,8 @@ shared_examples "streamed component tests" do |path, selector|
 end
 
 describe "Pages/stream_async_components_for_testing", :js do
-  it_behaves_like "streamed component tests", "/stream_async_components_for_testing", "#AsyncComponentsTreeForTesting-react-component-0"
+  it_behaves_like "streamed component tests", "/stream_async_components_for_testing",
+                  "#AsyncComponentsTreeForTesting-react-component-0"
 end
 
 describe "React Router Sixth Page", :js do
@@ -268,41 +271,61 @@ def rsc_payload_fetch_requests
   fetch_requests_while_streaming.select { |request| request[:url].include?("/rsc_payload/") }
 end
 
-shared_examples "RSC payload only fetched if component is not server-side rendered" do |server_rendered_path, client_rendered_path|
+shared_examples "RSC payload only fetched if component is not server-side rendered" do |server_rendered_path,
+                                                                                        client_rendered_path|
   before do
     # Clear the browser logs. so any test reading the logs will only read the logs from the current page navigation
     page.driver.browser.logs.get(:browser)
   end
 
   it "doesn't fetch RSC payload if component is server-side rendered" do
-    navigate_with_streaming server_rendered_path do |content|
-    end
+    navigate_with_streaming server_rendered_path
 
     expect(rsc_payload_fetch_requests).to eq([])
   end
 
   it "fetches RSC payload if component is client-side rendered" do
-    navigate_with_streaming client_rendered_path do |content|
-    end
+    navigate_with_streaming client_rendered_path
 
     expect(rsc_payload_fetch_requests.size).to be > 0
   end
 end
 
 describe "Pages/server_router/sixth rsc payload fetching", :js do
-  it_behaves_like "RSC payload only fetched if component is not server-side rendered", "/server_router/sixth", "/server_router_client_render/sixth"
+  it_behaves_like "RSC payload only fetched if component is not server-side rendered", "/server_router/sixth",
+                  "/server_router_client_render/sixth"
 end
 
 describe "Pages/stream_async_components_for_testing rsc payload fetching", :js do
-  it_behaves_like "RSC payload only fetched if component is not server-side rendered", "/stream_async_components_for_testing", "/stream_async_components_for_testing_client_render"
+  it_behaves_like "RSC payload only fetched if component is not server-side rendered",
+                  "/stream_async_components_for_testing", "/stream_async_components_for_testing_client_render"
+end
+
+ASYNC_COMPONENTS_DELAYS = [[1000, 2000], [3000], [1000], [2000]].freeze
+
+def component_rendered_message(suspense_boundary, component)
+  component_name = suspense_boundary == 3 ? "Server Component" : "Async Component #{component + 1}"
+  delay = ASYNC_COMPONENTS_DELAYS[suspense_boundary][component]
+  "RealComponent rendered #{component_name} from Suspense Boundary#{suspense_boundary + 1} " \
+    "(#{delay}ms server side delay)"
+end
+
+def component_hydrated_message(suspense_boundary, component)
+  component_name = suspense_boundary == 3 ? "Server Component" : "Async Component #{component + 1}"
+  delay = ASYNC_COMPONENTS_DELAYS[suspense_boundary][component]
+  "RealComponent has been mounted #{component_name} from " \
+    "Suspense Boundary#{suspense_boundary + 1} (#{delay}ms server side delay)"
+end
+
+def loading_component_message(suspense_boundary)
+  "LoadingComponent rendered Loading Server Component on Suspense Boundary#{suspense_boundary + 1}"
 end
 
 describe "Pages/server_router", :js do
   subject { page }
 
   it "navigates between pages" do
-    navigate_with_streaming("/server_router/first") do |content|
-    end
+    navigate_with_streaming("/server_router/first")
     expect_client_component_inside_server_component_hydrated(page)
     expect(page).not_to have_text("Server Component Title")
     expect(page).not_to have_text("Server Component Description")
@@ -310,8 +333,8 @@ describe "Pages/server_router", :js do
 
     click_link "Second Page"
     expect(rsc_payload_fetch_requests).to eq([
-      { url: "/rsc_payload/MyServerComponent?props={}" }
-    ])
+                                               { url: "/rsc_payload/MyServerComponent?props={}" }
+                                             ])
 
     expect(page).to have_text("Server Component Title")
     expect(page).to have_text("Server Component Description")
@@ -320,8 +343,7 @@ describe "Pages/server_router", :js do
   end
 
   it "streams the navigation between pages" do
-    navigate_with_streaming("/server_router/first") do |content|
-    end
+    navigate_with_streaming("/server_router/first")
 
     click_link "Sixth Page"
     expect(rsc_payload_fetch_requests.first[:url]).to include("/rsc_payload/AsyncComponentsTreeForTesting")
@@ -344,7 +366,7 @@ end
 def async_on_server_sync_on_client_client_render_logs
   logs = page.driver.browser.logs.get(:browser)
   component_logs = logs.select { |log| log.message.include?(component_logs_tag) }
-  client_component_logs = component_logs.select { |log| !log.message.include?("[SERVER]") }
+  client_component_logs = component_logs.reject { |log| log.message.include?("[SERVER]") }
   client_component_logs.map do |log|
     # Extract string between double quotes that contains component_logs_tag
     # The string can contain escaped double quotes (\").
@@ -364,8 +386,10 @@ def expect_client_component_inside_server_component_hydrated(page)
 end
 
 # The following two tests ensure that server components can be rendered inside client components
-# and ensure that no race condition happens that make client side refetch the RSC payload that is already embedded in the HTML
-# By ensuring that the client component is only hydrated after the server component is rendered and its HTML is embedded in the page
+# and ensure that no race condition happens that make client side refetch the RSC payload
+# that is already embedded in the HTML
+# By ensuring that the client component is only hydrated after the server component is
+# rendered and its HTML is embedded in the page
 describe "Pages/async_on_server_sync_on_client_client_render", :js do
   let(:component_logs_tag) { "[AsyncOnServerSyncOnClient]" }
 
@@ -399,19 +423,17 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
   it "fetches RSC payload of the Simple Component to render it on client" do
     fetch_requests_while_streaming
 
-    navigate_with_streaming "/async_on_server_sync_on_client_client_render" do |content|
-    end
+    navigate_with_streaming "/async_on_server_sync_on_client_client_render"
     expect(page).to have_text("Post 1")
     expect(page).to have_button("Toggle")
     fetch_requests = fetch_requests_while_streaming
     expect(fetch_requests).to eq([
-      { url: "/rsc_payload/SimpleComponent?props={}" }
-    ])
+                                   { url: "/rsc_payload/SimpleComponent?props={}" }
+                                 ])
   end
 
   it "renders the client components on the client side in a sync manner" do
-    navigate_with_streaming "/async_on_server_sync_on_client_client_render" do |content|
-    end
+    navigate_with_streaming "/async_on_server_sync_on_client_client_render"
 
     component_logs = async_on_server_sync_on_client_client_render_logs
     # The last log happen if the test catched the re-render of the suspensed component on the client
@@ -420,25 +442,24 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
     # To understand how these logs show that components are rendered in a sync manner,
     # check the component page in the dummy app `/async_on_server_sync_on_client_client_render`
     expect(component_logs[0...13]).to eq([
-      "AsyncContent rendered",
-      "RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)",
-      "RealComponent rendered Async Component 2 from Suspense Boundary1 (2000ms server side delay)",
-      "RealComponent rendered Async Component 1 from Suspense Boundary2 (3000ms server side delay)",
-      "RealComponent rendered Async Component 1 from Suspense Boundary3 (1000ms server side delay)",
-      "RealComponent rendered Server Component from Suspense Boundary4 (2000ms server side delay)",
-      "LoadingComponent rendered Loading Server Component on Suspense Boundary4",
-      "RealComponent has been mounted Async Component 1 from Suspense Boundary1 (1000ms server side delay)",
-      "RealComponent has been mounted Async Component 2 from Suspense Boundary1 (2000ms server side delay)",
-      "RealComponent has been mounted Async Component 1 from Suspense Boundary2 (3000ms server side delay)",
-      "RealComponent has been mounted Async Component 1 from Suspense Boundary3 (1000ms server side delay)",
-      "AsyncContent has been mounted",
-      "RealComponent rendered Server Component from Suspense Boundary4 (2000ms server side delay)"
-    ])
+                                           "AsyncContent rendered",
+                                           component_rendered_message(0, 0),
+                                           component_rendered_message(0, 1),
+                                           component_rendered_message(1, 0),
+                                           component_rendered_message(2, 0),
+                                           component_rendered_message(3, 0),
+                                           loading_component_message(3),
+                                           component_hydrated_message(0, 0),
+                                           component_hydrated_message(0, 1),
+                                           component_hydrated_message(1, 0),
+                                           component_hydrated_message(2, 0),
+                                           "AsyncContent has been mounted",
+                                           component_rendered_message(3, 0)
+                                         ])
   end
 
-  it "hydrates the client component inside server component" do
-    navigate_with_streaming "/async_on_server_sync_on_client_client_render" do |content|
-    end
+  it "hydrates the client component inside server component" do # rubocop:disable RSpec/NoExpectationExample
+    navigate_with_streaming "/async_on_server_sync_on_client_client_render"
     expect_client_component_inside_server_component_hydrated(page)
   end
 end
@@ -462,18 +483,18 @@ describe "Pages/async_on_server_sync_on_client", :js do
     expect(received_server_html).to include("Post 1")
     expect(received_server_html).to include("Content 1")
     expect(received_server_html).to include("Toggle")
-    expect(received_server_html).to include("React Rails Server Streaming Server Rendered Client Components containing Server Components")
+    expect(received_server_html).to include(
+      "React Rails Server Streaming Server Rendered Client Components containing Server Components"
+    )
   end
 
   it "doesn't fetch the RSC payload of the server component in the page" do
-    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
-    end
+    navigate_with_streaming "/async_on_server_sync_on_client"
     expect(fetch_requests_while_streaming).to eq([])
   end
 
-  it "hydrates the client component inside server component" do
-    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
-    end
+  it "hydrates the client component inside server component" do # rubocop:disable RSpec/NoExpectationExample
+    navigate_with_streaming "/async_on_server_sync_on_client"
     expect_client_component_inside_server_component_hydrated(page)
   end
 
@@ -523,7 +544,6 @@ describe "Pages/async_on_server_sync_on_client", :js do
   it "doesn't hydrate client components until they are rendered on the server" do
     rendering_stages_count = 0
     component_logs = []
-    RSpec::Support::ObjectFormatter.default_instance.max_formatted_output_length = nil
 
     navigate_with_streaming "/async_on_server_sync_on_client" do |content|
       component_logs += async_on_server_sync_on_client_client_render_logs
@@ -531,20 +551,20 @@ describe "Pages/async_on_server_sync_on_client", :js do
       # The first stage when all components are still being rendered on the server
       if content.include?("<div>Loading Suspense Boundary3</div>")
         rendering_stages_count += 1
-        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)")
-        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary2 (2000ms server side delay)")
-        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary3 (3000ms server side delay)")
+        expect(component_logs).not_to include(component_rendered_message(0, 0))
+        expect(component_logs).not_to include(component_rendered_message(1, 0))
+        expect(component_logs).not_to include(component_rendered_message(2, 0))
       # The second stage when the Suspense Boundary3 (with 1000ms delay) is rendered on the server
       elsif content.include?("<div>Async Component 1 from Suspense Boundary3 (1000ms server side delay)</div>")
         rendering_stages_count += 1
         expect(component_logs).to include("AsyncContent rendered")
         expect(component_logs).to include("AsyncContent has been mounted")
-        expect(component_logs).not_to include("RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)")
+        expect(component_logs).not_to include(component_rendered_message(1, 0))
       # The third stage when the Suspense Boundary2 (with 3000ms delay) is rendered on the server
       elsif content.include?("<div>Async Component 1 from Suspense Boundary2 (3000ms server side delay)</div>")
         rendering_stages_count += 1
-        expect(component_logs).to include("RealComponent rendered Async Component 1 from Suspense Boundary1 (1000ms server side delay)")
-        expect(component_logs).to include("RealComponent rendered Async Component 1 from Suspense Boundary2 (3000ms server side delay)")
+        expect(component_logs).to include(component_rendered_message(1, 0))
+        expect(component_logs).to include(component_rendered_message(2, 0))
       end
     end
 
@@ -555,11 +575,11 @@ describe "Pages/async_on_server_sync_on_client", :js do
     chunks_count = 0
     client_component_hydrated_on_chunk = nil
     component_logs = []
-    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
+    navigate_with_streaming "/async_on_server_sync_on_client" do |_content|
       chunks_count += 1
       component_logs += async_on_server_sync_on_client_client_render_logs
 
-      if client_component_hydrated_on_chunk.nil? && component_logs.include?("RealComponent has been mounted Server Component from Suspense Boundary4 (2000ms server side delay)")
+      if client_component_hydrated_on_chunk.nil? && component_logs.include?(component_hydrated_message(3, 0))
         client_component_hydrated_on_chunk = chunks_count
         expect_client_component_inside_server_component_hydrated(page)
       end
@@ -568,10 +588,9 @@ describe "Pages/async_on_server_sync_on_client", :js do
   end
 
   it "Server component is pre-rendered on the server and not showing loading component on the client" do
-    navigate_with_streaming "/async_on_server_sync_on_client" do |content|
-    end
+    navigate_with_streaming "/async_on_server_sync_on_client"
     component_logs = async_on_server_sync_on_client_client_render_logs
-    expect(component_logs).not_to include("LoadingComponent rendered Loading Server Component on Suspense Boundary4")
+    expect(component_logs).not_to include(loading_component_message(3))
   end
 end
 
@@ -593,6 +612,7 @@ describe "Pages/server_side_log_throw", :js do
     expect(page).to have_text "Exception in rendering!\n\nMessage: throw in HelloWorldWithLogAndThrow"
   end
 end
+
 describe "Pages/server_side_log_throw_raise", :js do
   subject { page }
 
@@ -809,4 +829,3 @@ end
 describe "2 react components, 1 store, server side, defer", :js do
   include_examples "React Component Shared Store", "/server_side_hello_world_shared_store_defer"
 end
-
