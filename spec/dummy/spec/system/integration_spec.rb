@@ -122,7 +122,7 @@ describe "Pages/client_side_log_throw", :js do
   end
 end
 
-shared_examples "async component tests" do |path, selector|
+shared_examples "streamed component tests" do |path, selector|
   subject { page }
 
   it "renders the component" do
@@ -255,11 +255,11 @@ shared_examples "async component tests" do |path, selector|
 end
 
 describe "Pages/stream_async_components_for_testing", :js do
-  it_behaves_like "async component tests", "/stream_async_components_for_testing", "#AsyncComponentsTreeForTesting-react-component-0"
+  it_behaves_like "streamed component tests", "/stream_async_components_for_testing", "#AsyncComponentsTreeForTesting-react-component-0"
 end
 
 describe "React Router Sixth Page", :js do
-  it_behaves_like "async component tests", "/server_router/sixth", "#ServerComponentRouter-react-component-0"
+  it_behaves_like "streamed component tests", "/server_router/sixth", "#ServerComponentRouter-react-component-0"
 end
 
 def rsc_payload_fetch_requests

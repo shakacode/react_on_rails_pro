@@ -25,6 +25,7 @@ describe ReactOnRailsProHelper, type: :helper do
     allow(self).to receive(:request) {
       RequestDetails.new("http://foobar.com/development", { "HTTP_ACCEPT_LANGUAGE" => "en" })
     }
+    allow(ReactOnRails::ReactComponent::RenderOptions).to receive(:generate_request_id).and_return("123")
   end
 
   let(:hash) do
@@ -208,6 +209,7 @@ describe ReactOnRailsProHelper, type: :helper do
           data-trace="true"
           data-dom-id="TestingStreamableComponent-react-component-0"
           data-force-load="true"
+          data-render-request-id="123"
         >{"helloWorldData":{"name":"Mr. Server Side Rendering"}}</script>
       SCRIPT
     end
