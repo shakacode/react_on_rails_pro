@@ -208,10 +208,12 @@ shared_examples "streamed component tests" do |path, selector|
 
       next if content.empty? || chunks_count == 1
 
-      expect(info_messages).to include(/\[SERVER\] branch1 \(level \d+\)/)
-      expect(errors_messages).to include(
-        /"\[SERVER\] Error message" "{\\"branchName\\":\\"branch1\\",\\"level\\":\d+}/
-      )
+      if chunks_count > 1
+        expect(info_messages).to include(/\[SERVER\] branch1 \(level \d+\)/)
+        expect(errors_messages).to include(
+          /"\[SERVER\] Error message" "{\\"branchName\\":\\"branch1\\",\\"level\\":\d+}/
+        )
+      end
     end
     expect(chunks_count).to be >= 5
   end
