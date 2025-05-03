@@ -45,7 +45,13 @@ class PagesController < ApplicationController
   end
 
   def async_on_server_sync_on_client
+    @render_on_server = true
     stream_view_containing_react_components(template: "/pages/async_on_server_sync_on_client")
+  end
+
+  def async_on_server_sync_on_client_client_render
+    @render_on_server = false
+    render "/pages/async_on_server_sync_on_client"
   end
 
   def server_router
