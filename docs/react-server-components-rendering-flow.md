@@ -80,3 +80,7 @@ sequenceDiagram
         Browser->>Browser: Hydrate component
     end
 ```
+
+## Next Steps
+
+To learn more about how to render React Server Components inside client components, see [React Server Components Inside Client Components](react-server-components-inside-client-components.md).

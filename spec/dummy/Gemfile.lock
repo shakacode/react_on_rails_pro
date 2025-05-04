@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 63d86d8423cc2e3931579ce18e6e40e49f8defd3
+  revision: 8172e076039c405e654be44d5926e1cb7ae4e6fd
   branch: abanoubghadban/pro532/make-rsc-compatible-with-react-router
   specs:
     react_on_rails (15.0.0.alpha.2)
