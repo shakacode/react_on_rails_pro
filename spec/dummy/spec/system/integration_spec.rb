@@ -391,6 +391,7 @@ end
 # By ensuring that the client component is only hydrated after the server component is
 # rendered and its HTML is embedded in the page
 describe "Pages/async_on_server_sync_on_client_client_render", :js do
+  subject { find("#AsyncOnServerSyncOnClient-react-component-0") }
   let(:component_logs_tag) { "[AsyncOnServerSyncOnClient]" }
 
   before do
@@ -403,29 +404,35 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
     # Nothing is rendered on the server
     navigate_with_streaming("/async_on_server_sync_on_client_client_render") do |content|
       chunks_count += 1
+      # This part is rendered from the rails view
+      expect(content).to include("Understanding Server/Client Component Hydration Patterns")
+      # remove the rails view content
+      rails_view_index = content.index("Understanding Server/Client Component Hydration Patterns")
+      content = content[0...rails_view_index]
+
+      # This part is rendered from the server component on client
       expect(content).not_to include("Async Component 1 from Suspense Boundary1")
       expect(content).not_to include("Async Component 1 from Suspense Boundary2")
       expect(content).not_to include("Async Component 1 from Suspense Boundary3")
-      expect(content).to include("React Rails Server Client Side Rendering of Client Components")
     end
     expect(chunks_count).to be 1
 
     # After client side rendering, the component should exist in the DOM
-    expect(page).to have_text("Async Component 1 from Suspense Boundary1")
-    expect(page).to have_text("Async Component 1 from Suspense Boundary2")
-    expect(page).to have_text("Async Component 1 from Suspense Boundary3")
+    expect(subject).to have_text("Async Component 1 from Suspense Boundary1")
+    expect(subject).to have_text("Async Component 1 from Suspense Boundary2")
+    expect(subject).to have_text("Async Component 1 from Suspense Boundary3")
 
     # Should render "Simple Component" server component
-    expect(page).to have_text("Post 1")
-    expect(page).to have_button("Toggle")
+    expect(subject).to have_text("Post 1")
+    expect(subject).to have_button("Toggle")
   end
 
   it "fetches RSC payload of the Simple Component to render it on client" do
     fetch_requests_while_streaming
 
     navigate_with_streaming "/async_on_server_sync_on_client_client_render"
-    expect(page).to have_text("Post 1")
-    expect(page).to have_button("Toggle")
+    expect(subject).to have_text("Post 1")
+    expect(subject).to have_button("Toggle")
     fetch_requests = fetch_requests_while_streaming
     expect(fetch_requests).to eq([
                                    { url: "/rsc_payload/SimpleComponent?props={}" }
@@ -460,11 +467,12 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
 
   it "hydrates the client component inside server component" do # rubocop:disable RSpec/NoExpectationExample
     navigate_with_streaming "/async_on_server_sync_on_client_client_render"
-    expect_client_component_inside_server_component_hydrated(page)
+    expect_client_component_inside_server_component_hydrated(subject)
   end
 end
 
 describe "Pages/async_on_server_sync_on_client", :js do
+  subject { find("#AsyncOnServerSyncOnClient-react-component-0") }
   let(:component_logs_tag) { "[AsyncOnServerSyncOnClient]" }
 
   before do
@@ -484,7 +492,7 @@ describe "Pages/async_on_server_sync_on_client", :js do
     expect(received_server_html).to include("Content 1")
     expect(received_server_html).to include("Toggle")
     expect(received_server_html).to include(
-      "React Rails Server Streaming Server Rendered Client Components containing Server Components"
+      "Understanding Server/Client Component Hydration Patterns"
     )
   end
 
@@ -504,34 +512,35 @@ describe "Pages/async_on_server_sync_on_client", :js do
       # The first stage when all components are still being rendered on the server
       if content.include?("Loading Suspense Boundary3")
         rendering_stages_count += 1
-        expect(page).to have_text("Loading Suspense Boundary3")
-        expect(page).to have_text("Loading Suspense Boundary2")
-        expect(page).to have_text("Loading Suspense Boundary1")
+        expect(subject).to have_text("Loading Suspense Boundary3")
+        expect(subject).to have_text("Loading Suspense Boundary2")
+        expect(subject).to have_text("Loading Suspense Boundary1")
 
-        expect(page).not_to have_text("Post 1")
-        expect(page).not_to have_text("Async Component 1 from Suspense Boundary1")
-        expect(page).not_to have_text("Async Component 1 from Suspense Boundary2")
-        expect(page).not_to have_text("Async Component 1 from Suspense Boundary3")
+        
+        expect(subject).not_to have_text("Post 1")
+        expect(subject).not_to have_text("Async Component 1 from Suspense Boundary1")
+        expect(subject).not_to have_text("Async Component 1 from Suspense Boundary2")
+        expect(subject).not_to have_text("Async Component 1 from Suspense Boundary3")
       # The second stage when the Suspense Boundary3 (with 1000ms delay) is rendered on the server
       elsif content.include?("Async Component 1 from Suspense Boundary3")
         rendering_stages_count += 1
-        expect(page).to have_text("Async Component 1 from Suspense Boundary3")
-        expect(page).not_to have_text("Post 1")
-        expect(page).not_to have_text("Async Component 1 from Suspense Boundary1")
-        expect(page).not_to have_text("Async Component 1 from Suspense Boundary2")
-        expect(page).not_to have_text("Loading Suspense Boundary3")
+        expect(subject).to have_text("Async Component 1 from Suspense Boundary3")
+        expect(subject).not_to have_text("Post 1")
+        expect(subject).not_to have_text("Async Component 1 from Suspense Boundary1")
+        expect(subject).not_to have_text("Async Component 1 from Suspense Boundary2")
+        expect(subject).not_to have_text("Loading Suspense Boundary3")
       # The third stage when the Suspense Boundary2 (with 3000ms delay) is rendered on the server
       elsif content.include?("Async Component 1 from Suspense Boundary2")
         rendering_stages_count += 1
-        expect(page).to have_text("Async Component 1 from Suspense Boundary3")
-        expect(page).to have_text("Post 1")
-        expect(page).to have_text("Async Component 1 from Suspense Boundary1")
-        expect(page).to have_text("Async Component 1 from Suspense Boundary2")
-        expect(page).not_to have_text("Loading Suspense Boundary2")
+        expect(subject).to have_text("Async Component 1 from Suspense Boundary3")
+        expect(subject).to have_text("Post 1")
+        expect(subject).to have_text("Async Component 1 from Suspense Boundary1")
+        expect(subject).to have_text("Async Component 1 from Suspense Boundary2")
+        expect(subject).not_to have_text("Loading Suspense Boundary2")
 
         # Expect that client component is hydrated
-        expect(page).to have_text("Content 1")
-        expect(page).to have_button("Toggle")
+        expect(subject).to have_text("Content 1")
+        expect(subject).to have_button("Toggle")
 
         # Expect that the client component is hydrated
         click_button "Toggle"
@@ -581,7 +590,7 @@ describe "Pages/async_on_server_sync_on_client", :js do
 
       if client_component_hydrated_on_chunk.nil? && component_logs.include?(component_hydrated_message(3, 0))
         client_component_hydrated_on_chunk = chunks_count
-        expect_client_component_inside_server_component_hydrated(page)
+        expect_client_component_inside_server_component_hydrated(subject)
       end
     end
     expect(client_component_hydrated_on_chunk).to be < chunks_count
