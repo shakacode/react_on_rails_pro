@@ -40,8 +40,8 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/stream_async_components_for_testing")
   end
 
-  def rsc_posts_page
-    stream_view_containing_react_components(template: "/pages/rsc_posts_page")
+  def rsc_posts_page_over_http
+    stream_view_containing_react_components(template: "/pages/rsc_posts_page_over_http")
   end
 
   def async_on_server_sync_on_client

@@ -1,11 +1,10 @@
 import React from 'react';
-import fetch from 'node-fetch';
 import _ from 'lodash';
 import ToggleContainer from './ToggleContainer';
 import Comment from './Comment';
 
-const Comments = async ({ postId, artificialDelay }) => {
-  const postComments = await (await fetch(`http://localhost:3000/api/posts/${postId}/comments`)).json();
+const Comments = async ({ postId, artificialDelay, fetchComments }) => {
+  const postComments = await fetchComments(postId);
   await new Promise((resolve) => setTimeout(resolve, artificialDelay));
 
   const prepareComment = (comment) => {
