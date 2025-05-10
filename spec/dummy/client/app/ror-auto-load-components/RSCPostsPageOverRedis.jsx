@@ -13,12 +13,7 @@ const RSCPostsPageOverRedis = ({ requestId, ...props }, railsContext) => {
   ReactOnRails.addPostSSRHook(railsContext, close);
 
   return () => (
-    <RSCPostsPage
-      {...props}
-      fetchPosts={fetchPosts}
-      fetchComments={fetchComments}
-      fetchUser={fetchUser}
-    />
+    <RSCPostsPage {...props} fetchPosts={fetchPosts} fetchComments={fetchComments} fetchUser={fetchUser} />
   );
 };
 

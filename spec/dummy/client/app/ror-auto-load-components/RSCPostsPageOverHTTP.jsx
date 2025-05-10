@@ -19,12 +19,7 @@ const fetchUser = async (userId) => {
 
 const RSCPostsPageOverHTTP = (props) => {
   return (
-    <RSCPostsPage
-      {...props}
-      fetchPosts={fetchPosts}
-      fetchComments={fetchComments}
-      fetchUser={fetchUser}
-    />
+    <RSCPostsPage {...props} fetchPosts={fetchPosts} fetchComments={fetchComments} fetchUser={fetchUser} />
   );
 };
 

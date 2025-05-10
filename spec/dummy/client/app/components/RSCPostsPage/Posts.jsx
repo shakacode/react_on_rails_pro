@@ -12,7 +12,8 @@ const Posts = async ({ artificialDelay, postsCount = 2, fetchPosts, fetchComment
   return (
     <div>
       {postsToShow.map((post) => (
-        <Post key={post.id}
+        <Post
+          key={post.id}
           post={post}
           artificialDelay={artificialDelay}
           fetchComments={fetchComments}
