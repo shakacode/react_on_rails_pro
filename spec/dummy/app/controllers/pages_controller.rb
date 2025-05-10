@@ -44,6 +44,32 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/rsc_posts_page_over_http")
   end
 
+  def rsc_posts_page_over_redis
+    @request_id = SecureRandom.uuid
+
+    Thread.new do
+      redis = ::Redis.new
+      posts = Post.all
+      posts = posts.group_by { |post| post[:user_id] }.map { |_, user_posts| user_posts.first }
+      Rails.logger.info "Adding posts to stream #{@request_id}"
+      redis.xadd("stream:#{@request_id}", { ":posts" => posts.to_json })
+
+      all_posts_comments = []
+      posts.each do |post|
+        Rails.logger.info "Adding comments to stream #{@request_id}"
+        post_comments = post.comments
+        all_posts_comments += post_comments
+        redis.xadd("stream:#{@request_id}", { ":comments:#{post[:id]}" => post_comments.to_json })
+      end
+      all_posts_comments.each do |comment|
+        redis.xadd("stream:#{@request_id}", { ":user:#{comment[:user_id]}" => comment.user.to_json })
+      end
+      redis.xadd("stream:#{@request_id}", { "end" => "true" })
+    end
+
+    stream_view_containing_react_components(template: "/pages/rsc_posts_page_over_redis")
+  end
+
   def async_on_server_sync_on_client
     @render_on_server = true
     stream_view_containing_react_components(template: "/pages/async_on_server_sync_on_client")

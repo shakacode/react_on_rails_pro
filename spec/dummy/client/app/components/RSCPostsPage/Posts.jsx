@@ -2,7 +2,7 @@ import React from 'react';
 import _ from 'lodash';
 import Post from './Post';
 
-const Posts = async ({ artificialDelay, postsCount = 2, fetchPosts, fetchComments }) => {
+const Posts = async ({ artificialDelay, postsCount = 2, fetchPosts, fetchComments, fetchUser }) => {
   await new Promise((resolve) => setTimeout(resolve, artificialDelay));
   const posts = await fetchPosts();
   const postsByUser = _.groupBy(posts, 'user_id');
@@ -12,7 +12,12 @@ const Posts = async ({ artificialDelay, postsCount = 2, fetchPosts, fetchComment
   return (
     <div>
       {postsToShow.map((post) => (
-        <Post key={post.id} post={post} artificialDelay={artificialDelay} fetchComments={fetchComments} />
+        <Post key={post.id}
+          post={post}
+          artificialDelay={artificialDelay}
+          fetchComments={fetchComments}
+          fetchUser={fetchUser}
+        />
       ))}
     </div>
   );

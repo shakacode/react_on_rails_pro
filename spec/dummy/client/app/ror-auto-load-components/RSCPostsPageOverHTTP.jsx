@@ -1,4 +1,4 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import fetch from 'node-fetch';
 import RSCPostsPage from '../components/RSCPostsPage/Main';
 
@@ -12,8 +12,20 @@ const fetchComments = async (postId) => {
   return response.json();
 };
 
+const fetchUser = async (userId) => {
+  const response = await fetch(`http://localhost:3000/api/users/${userId}`);
+  return response.json();
+};
+
 const RSCPostsPageOverHTTP = (props) => {
-  return <RSCPostsPage {...props} fetchPosts={fetchPosts} fetchComments={fetchComments} />;
+  return (
+    <RSCPostsPage
+      {...props}
+      fetchPosts={fetchPosts}
+      fetchComments={fetchComments}
+      fetchUser={fetchUser}
+    />
+  );
 };
 
 export default RSCPostsPageOverHTTP;

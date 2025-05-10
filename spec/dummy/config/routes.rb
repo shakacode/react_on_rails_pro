@@ -26,6 +26,7 @@ Rails.application.routes.draw do
   get "stream_async_components_for_testing_client_render" => "pages#stream_async_components_for_testing_client_render",
       as: :stream_async_components_for_testing_client_render
   get "rsc_posts_page_over_http" => "pages#rsc_posts_page_over_http", as: :rsc_posts_page_over_http
+  get "rsc_posts_page_over_redis" => "pages#rsc_posts_page_over_redis", as: :rsc_posts_page_over_redis
   get "async_on_server_sync_on_client" => "pages#async_on_server_sync_on_client", as: :async_on_server_sync_on_client
   get "async_on_server_sync_on_client_client_render" => "pages#async_on_server_sync_on_client_client_render",
       as: :async_on_server_sync_on_client_client_render

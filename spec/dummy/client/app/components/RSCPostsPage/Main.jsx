@@ -2,12 +2,11 @@ import React, { Suspense } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import Posts from './Posts';
 import HelloWorld from '../HelloWorldHooks.jsx';
-import ErrorComponent from '../ErrorComponent.jsx';
 import Spinner from '../Spinner.jsx';
 
-const RSCPostsPage = ({ artificialDelay, postsCount, fetchPosts, fetchComments, ...props }) => {
+const RSCPostsPage = ({ artificialDelay, postsCount, fetchPosts, fetchComments, fetchUser, ...props }) => {
   return (
-    <ErrorBoundary FallbackComponent={ErrorComponent}>
+    <ErrorBoundary>
       <div>
         <HelloWorld {...props} />
         <h1 style={{ fontSize: '2rem', fontWeight: 'bold' }}>RSC Posts Page</h1>
@@ -17,6 +16,7 @@ const RSCPostsPage = ({ artificialDelay, postsCount, fetchPosts, fetchComments, 
             postsCount={postsCount}
             fetchPosts={fetchPosts}
             fetchComments={fetchComments}
+            fetchUser={fetchUser}
           />
         </Suspense>
       </div>
