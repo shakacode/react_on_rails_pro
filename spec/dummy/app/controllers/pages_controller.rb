@@ -2,6 +2,7 @@
 
 class PagesController < ApplicationController
   include ReactOnRailsPro::RSCPayloadRenderer
+  include RscPostsPageOverRedisHelper
 
   XSS_PAYLOAD = { "<script>window.alert('xss1');</script>" => '<script>window.alert("xss2");</script>' }.freeze
   PROPS_NAME = "Mr. Server Side Rendering"
@@ -49,22 +50,7 @@ class PagesController < ApplicationController
 
     Thread.new do
       redis = ::Redis.new
-      posts = Post.all
-      posts = posts.group_by { |post| post[:user_id] }.map { |_, user_posts| user_posts.first }
-      Rails.logger.info "Adding posts to stream #{@request_id}"
-      redis.xadd("stream:#{@request_id}", { ":posts" => posts.to_json })
-
-      all_posts_comments = []
-      posts.each do |post|
-        Rails.logger.info "Adding comments to stream #{@request_id}"
-        post_comments = post.comments
-        all_posts_comments += post_comments
-        redis.xadd("stream:#{@request_id}", { ":comments:#{post[:id]}" => post_comments.to_json })
-      end
-      all_posts_comments.each do |comment|
-        redis.xadd("stream:#{@request_id}", { ":user:#{comment[:user_id]}" => comment.user.to_json })
-      end
-      redis.xadd("stream:#{@request_id}", { "end" => "true" })
+      write_posts_and_comments_to_redis(redis)
     end
 
     stream_view_containing_react_components(template: "/pages/rsc_posts_page_over_redis")
