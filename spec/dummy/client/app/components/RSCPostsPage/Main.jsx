@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react';
 import { ErrorBoundary } from '../ErrorBoundary';
 import Posts from './Posts';
-import HelloWorld from '../HelloWorldHooks.jsx';
-import Spinner from '../Spinner.jsx';
+import HelloWorld from '../HelloWorldHooksForServerComponents';
+import Spinner from '../Spinner';
 
 const RSCPostsPage = ({ artificialDelay, postsCount, fetchPosts, fetchComments, fetchUser, ...props }) => {
   return (

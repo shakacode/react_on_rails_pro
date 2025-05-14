@@ -5,16 +5,15 @@ module RscPostsPageOverRedisHelper
 
   private
 
+  def artificial_delay
+    params[:artificial_delay].to_i || 0
+  end
+
   def write_posts_and_comments_to_redis(redis)
     posts = fetch_posts
     add_posts_to_stream(redis, posts)
     write_comments_for_posts_to_redis(redis, posts)
     redis.xadd("stream:#{@request_id}", { "end" => "true" })
-  end
-
-  def fetch_posts
-    posts = Post.all
-    posts.group_by { |post| post[:user_id] }.map { |_, user_posts| user_posts.first }
   end
 
   def add_posts_to_stream(redis, posts)
@@ -23,23 +22,30 @@ module RscPostsPageOverRedisHelper
   end
 
   def write_comments_for_posts_to_redis(redis, posts)
-    all_posts_comments = []
     posts.each do |post|
-      write_comments_for_post_to_redis(redis, post, all_posts_comments)
+      post_comments = fetch_post_comments(post, [])
+      redis.xadd("stream:#{@request_id}", { ":comments:#{post[:id]}" => post_comments.to_json })
+      post_comments.each do |comment|
+        user = fetch_comment_user(comment)
+        redis.xadd("stream:#{@request_id}", { ":user:#{comment[:user_id]}" => user.to_json })
+      end
     end
-    write_users_for_comments_to_redis(redis, all_posts_comments)
   end
 
-  def write_comments_for_post_to_redis(redis, post, all_posts_comments)
-    Rails.logger.info "Adding comments to stream #{@request_id}"
-    post_comments = post.comments
+  def fetch_posts
+    posts = Post.with_delay(artificial_delay)
+    posts.group_by { |post| post[:user_id] }.map { |_, user_posts| user_posts.first }
+  end
+
+  def fetch_post_comments(post, all_posts_comments)
+    post_id = post["id"]
+    post_comments = Comment.with_delay(artificial_delay).where(post_id: post_id)
     all_posts_comments.concat(post_comments)
-    redis.xadd("stream:#{@request_id}", { ":comments:#{post[:id]}" => post_comments.to_json })
+    post_comments
   end
 
-  def write_users_for_comments_to_redis(redis, comments)
-    comments.each do |comment|
-      redis.xadd("stream:#{@request_id}", { ":user:#{comment[:user_id]}" => comment.user.to_json })
-    end
+  def fetch_comment_user(comment)
+    user_id = comment["user_id"]
+    User.with_delay(artificial_delay).find(user_id)
   end
 end

@@ -289,7 +289,7 @@ export function listenToRequestData(requestId: string): RequestListener {
           );
           // Keep the pending promise in the dictionary with the error state
         }
-      }, 3000);
+      }, 8000);
 
       // Store the promise and its controllers
       pendingPromises[key] = {

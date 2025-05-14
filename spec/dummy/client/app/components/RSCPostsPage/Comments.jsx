@@ -1,6 +1,6 @@
 import React from 'react';
 import _ from 'lodash';
-import ToggleContainer from './ToggleContainer';
+import ToggleContainer from './ToggleContainerForServerComponents';
 import Comment from './Comment';
 
 const Comments = async ({ postId, artificialDelay, fetchComments, fetchUser }) => {
