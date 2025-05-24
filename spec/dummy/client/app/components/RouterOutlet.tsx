@@ -3,6 +3,6 @@
 import * as React from 'react';
 import { Outlet } from 'react-router-dom';
 
-export default function RouterOutelet() {
-  return React.createElement(Outlet);
+export default function RouterOutlet() {
+  return <Outlet />;
 }

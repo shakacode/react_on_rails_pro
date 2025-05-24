@@ -264,7 +264,8 @@ describe "Pages/stream_async_components_for_testing", :js do
 end
 
 describe "React Router Sixth Page", :js do
-  it_behaves_like "streamed component tests", "/server_router/sixth", "#ServerComponentRouter-react-component-0"
+  it_behaves_like "streamed component tests", "/server_router/streaming-server-component",
+                  "#ServerComponentRouter-react-component-0"
 end
 
 def rsc_payload_fetch_requests
@@ -291,9 +292,9 @@ shared_examples "RSC payload only fetched if component is not server-side render
   end
 end
 
-describe "Pages/server_router/sixth rsc payload fetching", :js do
+describe "Pages/server_router/streaming-server-component rsc payload fetching", :js do
   it_behaves_like "RSC payload only fetched if component is not server-side rendered", "/server_router/sixth",
-                  "/server_router_client_render/sixth"
+                  "/server_router_client_render/streaming-server-component"
 end
 
 describe "Pages/stream_async_components_for_testing rsc payload fetching", :js do
@@ -325,7 +326,7 @@ describe "Pages/server_router", :js do
   subject { page }
 
   it "navigates between pages" do
-    navigate_with_streaming("/server_router/first")
+    navigate_with_streaming("/server_router/simple-server-component")
     expect_client_component_inside_server_component_hydrated(page)
     expect(page).not_to have_text("Server Component Title")
     expect(page).not_to have_text("Server Component Description")
@@ -343,9 +344,9 @@ describe "Pages/server_router", :js do
   end
 
   it "streams the navigation between pages" do
-    navigate_with_streaming("/server_router/first")
+    navigate_with_streaming("/server_router/simple-server-component")
 
-    click_link "Sixth Page"
+    click_link "Server Component with visible streaming behavior"
     expect(rsc_payload_fetch_requests.first[:url]).to include("/rsc_payload/AsyncComponentsTreeForTesting")
 
     expect(page).not_to have_text("Post 1")

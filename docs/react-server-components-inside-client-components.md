@@ -32,7 +32,7 @@ export default function Parent() {
 Now, you can render server components directly inside client components using the `RSCRoute` component:
 
 ```tsx
-"use client";
+'use client';
 import RSCRoute from 'react-on-rails/RSCRoute';
 
 export default function ClientComponent() {
@@ -63,7 +63,7 @@ registerServerComponent({
 ```
 
 > [!NOTE]
-> If you will use the server component inside client components only, you don't need to register it in the client bundle.
+> Server components only need to be registered in the client bundle if they will be rendered directly in Rails views using the `stream_react_component` helper. If you're only using server components inside client components via `RSCRoute`, you can skip client bundle registration entirely. In this case, it's enough to register the server component in the server and RSC bundles.
 
 ### 2. Create your client component
 
@@ -71,7 +71,7 @@ Create a client component that uses `RSCRoute` to render server components:
 
 ```tsx
 // components/MyClientComponent.tsx
-"use client";
+'use client';
 import { useState } from 'react';
 import RSCRoute from 'react-on-rails/RSCRoute';
 
@@ -92,7 +92,7 @@ Create client and server versions of your component wrapped with `wrapServerComp
 #### Client version:
 ```tsx
 // components/MyClientComponent.client.tsx
-"use client";
+'use client';
 import ReactOnRails from 'react-on-rails';
 import wrapServerComponentRenderer from 'react-on-rails/wrapServerComponentRenderer/client';
 import MyClientComponent from './MyClientComponent';
@@ -132,7 +132,7 @@ ReactOnRails.register({
 ### ❌ Bad Example - Frequently Changing Props
 
 ```tsx
-"use client";
+'use client';
 import { useState } from 'react';
 import RSCRoute from 'react-on-rails/RSCRoute';
 
@@ -156,7 +156,7 @@ export default function ClientComponent() {
 ### ✅ Good Example - Router Integration
 
 ```tsx
-"use client";
+'use client';
 import { Routes, Route, Link } from 'react-router-dom';
 import RSCRoute from 'react-on-rails/RSCRoute';
 import AnotherClientComponent from './AnotherClientComponent';
@@ -188,7 +188,7 @@ export default function AppRouter({ user }) {
 The framework supports nesting client and server components to arbitrary depth:
 
 ```tsx
-"use client";
+'use client';
 import { Routes, Route } from 'react-router-dom';
 import RSCRoute from 'react-on-rails/RSCRoute';
 import ServerRouteLayout from './ServerRouteLayout';
@@ -216,7 +216,7 @@ To use React Router's `Outlet` in server components, create a client version:
 
 ```tsx
 // ./components/Outlet.tsx
-"use client";
+'use client';
 export { Outlet as default } from 'react-router-dom';
 ```
 
@@ -264,7 +264,7 @@ When using server components inside client components:
 
 ## Performance Considerations
 
-- Page responivnes is improved because rsc payloads are embedded in the HTML and no additional HTTP requests are needed for hydration
+- Page responsiveness is improved because RSC payloads are embedded in the HTML and no additional HTTP requests are needed for hydration
 - Client navigation to new routes with server components requires an HTTP request
 - Avoid changing server component props frequently
 - Consider using suspense boundaries for loading states during navigation
@@ -274,7 +274,7 @@ When using server components inside client components:
 ### Using a Loading State
 
 ```tsx
-"use client";
+'use client';
 import { Suspense } from 'react';
 import RSCRoute from 'react-on-rails/RSCRoute';
 
@@ -292,7 +292,7 @@ export default function ClientComponent({ user }) {
 ### Conditional Rendering
 
 ```tsx
-"use client";
+'use client';
 import { useState } from 'react';
 import { Suspense } from 'react';
 import RSCRoute from 'react-on-rails/RSCRoute';
@@ -331,4 +331,4 @@ export default function ClientComponent({ user }) {
 
 5. **Use stream_react_component**: Always use `stream_react_component` in your Rails views for streaming server-rendered content.
 
-By following these guidelines, you can effectively leverage React Server Components within client components while maintaining optimal performance.
+By following these guidelines, you can effectively leverage React Server Components while maintaining optimal performance.
