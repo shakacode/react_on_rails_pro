@@ -5601,9 +5601,9 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-"react-on-rails-rsc@git+https://github.com/shakacode/react_on_rails_rsc.git#add-support-for-generating-client-components-manifest-for-server-bundle":
-  version "19.0.0-rc.2"
-  resolved "git+https://github.com/shakacode/react_on_rails_rsc.git#fcd2b93eb400f9ae702d31da1d04d08b5d12ea06"
+"react-on-rails-rsc@git+https://github.com/shakacode/react_on_rails_rsc.git#ssr-support":
+  version "19.0.0"
+  resolved "git+https://github.com/shakacode/react_on_rails_rsc.git#c95a692b493e2dfc650e38d4378d61bd3194e8c8"
   dependencies:
     acorn-loose "^8.3.0"
     neo-async "^2.6.1"
