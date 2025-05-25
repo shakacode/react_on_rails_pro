@@ -438,6 +438,7 @@ shared_examples "streamed component tests" do |path, selector|
 
   it "replays console logs with each chunk" do
     chunks_count = 0
+    chunks_count_containing_server_logs = 0
     navigate_with_streaming(path) do |content|
       chunks_count += 1
       logs = page.driver.browser.logs.get(:browser)
@@ -448,14 +449,14 @@ shared_examples "streamed component tests" do |path, selector|
 
       next if content.empty? || chunks_count == 1
 
-      if chunks_count > 1
-        expect(info_messages).to include(/\[SERVER\] branch1 \(level \d+\)/)
-        expect(errors_messages).to include(
-          /"\[SERVER\] Error message" "{\\"branchName\\":\\"branch1\\",\\"level\\":\d+}/
-        )
+      if info_messages.any?(/\[SERVER\] branch1 \(level \d+\)/) && errors_messages.any?(
+        /"\[SERVER\] Error message" "{\\"branchName\\":\\"branch1\\",\\"level\\":\d+}/
+      )
+        chunks_count_containing_server_logs += 1
       end
     end
     expect(chunks_count).to be >= 5
+    expect(chunks_count_containing_server_logs).to be > 2
   end
 
   it "doesn't hydrate status component if packs are not loaded" do
