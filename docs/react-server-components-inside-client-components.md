@@ -329,6 +329,4 @@ export default function ClientComponent({ user }) {
 
 4. **Use for data-heavy components**: Components that need to fetch data from databases or APIs are good candidates for server components.
 
-5. **Use stream_react_component**: Always use `stream_react_component` in your Rails views for streaming server-rendered content.
-
 By following these guidelines, you can effectively leverage React Server Components while maintaining optimal performance.

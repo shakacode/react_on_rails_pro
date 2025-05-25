@@ -302,26 +302,6 @@ describe "Pages/stream_async_components_for_testing rsc payload fetching", :js d
                   "/stream_async_components_for_testing", "/stream_async_components_for_testing_client_render"
 end
 
-ASYNC_COMPONENTS_DELAYS = [[1000, 2000], [3000], [1000], [2000]].freeze
-
-def component_rendered_message(suspense_boundary, component)
-  component_name = suspense_boundary == 3 ? "Server Component" : "Async Component #{component + 1}"
-  delay = ASYNC_COMPONENTS_DELAYS[suspense_boundary][component]
-  "RealComponent rendered #{component_name} from Suspense Boundary#{suspense_boundary + 1} " \
-    "(#{delay}ms server side delay)"
-end
-
-def component_hydrated_message(suspense_boundary, component)
-  component_name = suspense_boundary == 3 ? "Server Component" : "Async Component #{component + 1}"
-  delay = ASYNC_COMPONENTS_DELAYS[suspense_boundary][component]
-  "RealComponent has been mounted #{component_name} from " \
-    "Suspense Boundary#{suspense_boundary + 1} (#{delay}ms server side delay)"
-end
-
-def loading_component_message(suspense_boundary)
-  "LoadingComponent rendered Loading Server Component on Suspense Boundary#{suspense_boundary + 1}"
-end
-
 describe "Pages/server_router", :js do
   subject { page }
 
@@ -451,18 +431,18 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
     # check the component page in the dummy app `/async_on_server_sync_on_client_client_render`
     expect(component_logs[0...13]).to eq([
                                            "AsyncContent rendered",
-                                           component_rendered_message(0, 0),
-                                           component_rendered_message(0, 1),
-                                           component_rendered_message(1, 0),
-                                           component_rendered_message(2, 0),
-                                           component_rendered_message(3, 0),
-                                           loading_component_message(3),
-                                           component_hydrated_message(0, 0),
-                                           component_hydrated_message(0, 1),
-                                           component_hydrated_message(1, 0),
-                                           component_hydrated_message(2, 0),
+                                           async_component_rendered_message(0, 0),
+                                           async_component_rendered_message(0, 1),
+                                           async_component_rendered_message(1, 0),
+                                           async_component_rendered_message(2, 0),
+                                           async_component_rendered_message(3, 0),
+                                           async_loading_component_message(3),
+                                           async_component_hydrated_message(0, 0),
+                                           async_component_hydrated_message(0, 1),
+                                           async_component_hydrated_message(1, 0),
+                                           async_component_hydrated_message(2, 0),
                                            "AsyncContent has been mounted",
-                                           component_rendered_message(3, 0)
+                                           async_component_rendered_message(3, 0)
                                          ])
   end
 
@@ -561,20 +541,20 @@ describe "Pages/async_on_server_sync_on_client", :js do
       # The first stage when all components are still being rendered on the server
       if content.include?("<div>Loading Suspense Boundary3</div>")
         rendering_stages_count += 1
-        expect(component_logs).not_to include(component_rendered_message(0, 0))
-        expect(component_logs).not_to include(component_rendered_message(1, 0))
-        expect(component_logs).not_to include(component_rendered_message(2, 0))
+        expect(component_logs).not_to include(async_component_rendered_message(0, 0))
+        expect(component_logs).not_to include(async_component_rendered_message(1, 0))
+        expect(component_logs).not_to include(async_component_rendered_message(2, 0))
       # The second stage when the Suspense Boundary3 (with 1000ms delay) is rendered on the server
       elsif content.include?("<div>Async Component 1 from Suspense Boundary3 (1000ms server side delay)</div>")
         rendering_stages_count += 1
         expect(component_logs).to include("AsyncContent rendered")
         expect(component_logs).to include("AsyncContent has been mounted")
-        expect(component_logs).not_to include(component_rendered_message(1, 0))
+        expect(component_logs).not_to include(async_component_rendered_message(1, 0))
       # The third stage when the Suspense Boundary2 (with 3000ms delay) is rendered on the server
       elsif content.include?("<div>Async Component 1 from Suspense Boundary2 (3000ms server side delay)</div>")
         rendering_stages_count += 1
-        expect(component_logs).to include(component_rendered_message(1, 0))
-        expect(component_logs).to include(component_rendered_message(2, 0))
+        expect(component_logs).to include(async_component_rendered_message(1, 0))
+        expect(component_logs).to include(async_component_rendered_message(2, 0))
       end
     end
 
@@ -589,7 +569,7 @@ describe "Pages/async_on_server_sync_on_client", :js do
       chunks_count += 1
       component_logs += async_on_server_sync_on_client_client_render_logs
 
-      if client_component_hydrated_on_chunk.nil? && component_logs.include?(component_hydrated_message(3, 0))
+      if client_component_hydrated_on_chunk.nil? && component_logs.include?(async_component_hydrated_message(3, 0))
         client_component_hydrated_on_chunk = chunks_count
         expect_client_component_inside_server_component_hydrated(subject)
       end
@@ -600,7 +580,7 @@ describe "Pages/async_on_server_sync_on_client", :js do
   it "Server component is pre-rendered on the server and not showing loading component on the client" do
     navigate_with_streaming "/async_on_server_sync_on_client"
     component_logs = async_on_server_sync_on_client_client_render_logs
-    expect(component_logs).not_to include(loading_component_message(3))
+    expect(component_logs).not_to include(async_loading_component_message(3))
   end
 end
 
