@@ -78,7 +78,7 @@ module CustomNavigation
             return;
           }
 
-          const chunk = window.chunkBuffer.shift();
+          const chunk = window.chunkBuffer.pop();
           document.write(chunk);
           window.loaded_content = chunk;
 
