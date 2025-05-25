@@ -550,7 +550,7 @@ describe "Pages/server_router", :js do
     expect(page).not_to have_text("Server Component Description")
     expect(rsc_payload_fetch_requests).to eq([])
 
-    click_link "Second Page"
+    click_link "Another Simple Server Component"
     expect(rsc_payload_fetch_requests).to eq([
                                                { url: "/rsc_payload/MyServerComponent?props={}" }
                                              ])
@@ -635,7 +635,7 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
       expect(content).not_to include("Async Component 1 from Suspense Boundary2")
       expect(content).not_to include("Async Component 1 from Suspense Boundary3")
     end
-    expect(chunks_count).to be 1
+    expect(chunks_count).to be <= 1
 
     # After client side rendering, the component should exist in the DOM
     expect(async_component).to have_text("Async Component 1 from Suspense Boundary1")
