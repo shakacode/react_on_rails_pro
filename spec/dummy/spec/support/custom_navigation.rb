@@ -53,7 +53,7 @@ module CustomNavigation
       end
 
       # check if the page has finished loading
-      if page.evaluate_script("window.finished_loading")
+      if page.evaluate_script("window.finished_loading && window.chunkBuffer.length === 0")
         page.evaluate_script("window.finished_loading = false;")
         break
       end
@@ -78,7 +78,7 @@ module CustomNavigation
             return;
           }
 
-          const chunk = window.chunkBuffer.pop();
+          const chunk = window.chunkBuffer.shift();
           document.write(chunk);
           window.loaded_content = chunk;
 

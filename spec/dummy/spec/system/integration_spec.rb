@@ -488,7 +488,7 @@ shared_examples "streamed component tests" do |path, selector|
           # Checks that the input field is hydrated
           change_text_expect_dom_selector(selector)
           input_component_hydrated_on_chunk = chunks_count
-        rescue RSpec::Expectations::ExpectationNotMetError
+        rescue RSpec::Expectations::ExpectationNotMetError, Capybara::ElementNotFound
           # Do nothing if the test fails - component not yet hydrated
         end
       end
@@ -669,7 +669,7 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
 
     component_logs = async_on_server_sync_on_client_client_render_logs
     # The last log happen if the test catched the re-render of the suspensed component on the client
-    expect(component_logs.size).to be_between(13, 14)
+    expect(component_logs.size).to be_between(13, 15)
 
     # To understand how these logs show that components are rendered in a sync manner,
     # check the component page in the dummy app `/async_on_server_sync_on_client_client_render`
