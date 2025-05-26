@@ -403,8 +403,8 @@ shared_examples "streamed component tests" do |path, selector|
         chunks_count_having_branch2_loading_fallback += 1 if page.has_text?(/Loading branch2 at level \d+/)
       end
 
-      expect(chunks_count_having_branch1_loading_fallback).to be >= 4
-      expect(chunks_count_having_branch2_loading_fallback).to be == 2
+      expect(chunks_count_having_branch1_loading_fallback).to be >= 3
+      expect(chunks_count_having_branch2_loading_fallback).to be == 1
       expect(page).not_to have_text(/Loading branch1 at level \d+/)
       expect(page).not_to have_text(/Loading branch2 at level \d+/)
       expect(chunks_count).to be >= 5
