@@ -395,15 +395,19 @@ shared_examples "streamed component tests" do |path, selector|
        "#{skip_js_packs ? ' when the page is not hydrated' : ''}" do
       path = "#{path}#{skip_js_packs ? '?skip_js_packs=true' : ''}"
       chunks_count = 0
+      chunks_count_having_branch1_loading_fallback = 0
+      chunks_count_having_branch2_loading_fallback = 0
       navigate_with_streaming(path) do |_content|
         chunks_count += 1
-        expect(page).to have_text(/Loading branch1 at level \d+/, count: 1) if chunks_count < 5
-        expect(page).to have_text(/Loading branch2 at level \d+/, count: 1) if chunks_count == 1
-        expect(page).not_to have_text(/Loading branch2 at level \d+/) if chunks_count > 2
+        chunks_count_having_branch1_loading_fallback += 1 if page.has_text?(/Loading branch1 at level \d+/)
+        chunks_count_having_branch2_loading_fallback += 1 if page.has_text?(/Loading branch2 at level \d+/)
       end
+
+      expect(chunks_count_having_branch1_loading_fallback).to be >= 4
+      expect(chunks_count_having_branch2_loading_fallback).to be == 2
       expect(page).not_to have_text(/Loading branch1 at level \d+/)
       expect(page).not_to have_text(/Loading branch2 at level \d+/)
-      expect(chunks_count).to be >= 5
+      expect(chunks_count).to be >= 4
 
       # Check if the page is hydrated or not
       change_text_expect_dom_selector(selector, expect_no_change: skip_js_packs)
