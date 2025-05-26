@@ -74,7 +74,7 @@ module CustomNavigation
 
         // Define the global function to process the next chunk
         window.processNextChunk = function() {
-          if (window.chunkBuffer.length === 0) {
+          if (window.chunkBuffer.length === 0 || window.loaded_content) {
             return;
           }
 

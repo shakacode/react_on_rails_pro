@@ -407,7 +407,7 @@ shared_examples "streamed component tests" do |path, selector|
       expect(chunks_count_having_branch2_loading_fallback).to be == 2
       expect(page).not_to have_text(/Loading branch1 at level \d+/)
       expect(page).not_to have_text(/Loading branch2 at level \d+/)
-      expect(chunks_count).to be >= 4
+      expect(chunks_count).to be >= 5
 
       # Check if the page is hydrated or not
       change_text_expect_dom_selector(selector, expect_no_change: skip_js_packs)
