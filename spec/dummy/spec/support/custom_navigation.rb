@@ -13,9 +13,10 @@ module CustomNavigation
     override_fetch_for_logging
     url = URI.join(base_url, path).to_s
     inject_javascript_to_stream_page(url)
-    until page.evaluate_script("window.streaming_state === 'finished' && window.chunkBuffer.length === 0 && !window.loaded_content") do
+    until finished_streaming?
       chunk = next_streamed_page_chunk
       break if chunk.nil?
+
       yield chunk if block_given?
     end
   end
@@ -25,9 +26,7 @@ module CustomNavigation
   # Raises an error if no page is currently being streamed and there are no chunks to process
   def next_streamed_page_chunk
     # Check if we're either actively streaming or have chunks to process
-    unless page.evaluate_script("window.streaming_state === 'streaming' || window.chunkBuffer.length > 0 || window.loaded_content")
-      raise "No page is currently being streamed. Call navigate_with_streaming first."
-    end
+    raise "No page is currently being streamed. Call navigate_with_streaming first." if finished_streaming?
 
     loop do
       loaded_content = page.evaluate_script(<<~JS)
@@ -43,9 +42,7 @@ module CustomNavigation
       end
 
       # If streaming is finished and no more chunks, we're done
-      if page.evaluate_script("window.streaming_state === 'finished' && window.chunkBuffer.length === 0 && !window.loaded_content")
-        return nil
-      end
+      return nil if finished_streaming?
 
       sleep 0.1
     end
@@ -62,6 +59,14 @@ module CustomNavigation
   end
 
   private
+
+  def finished_streaming?
+    page.evaluate_script(<<~JS)
+      window.streaming_state === 'finished' &&
+      window.chunkBuffer.length === 0 &&
+      !window.loaded_content
+    JS
+  end
 
   def override_fetch_for_logging
     page.execute_script(<<~JS)
