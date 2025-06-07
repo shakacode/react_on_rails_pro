@@ -57,7 +57,7 @@ module ReactOnRailsPro
           ReactOnRailsPro::Request.render_code_as_stream(
             path,
             js_code,
-            is_rsc_payload: render_options.rsc_payload_streaming?
+            is_rsc_payload: ReactOnRailsPro.configuration.enable_rsc_support && render_options.rsc_payload_streaming?
           )
         end
 
@@ -99,7 +99,8 @@ module ReactOnRailsPro
           ReactOnRailsPro::ServerRenderingPool::ProRendering
             .set_request_digest_on_render_options(js_code, render_options)
 
-          is_rendering_rsc_payload = render_options.rsc_payload_streaming?
+          rsc_support_enabled = ReactOnRailsPro.configuration.enable_rsc_support
+          is_rendering_rsc_payload = rsc_support_enabled && render_options.rsc_payload_streaming?
           bundle_hash = is_rendering_rsc_payload ? rsc_bundle_hash : server_bundle_hash
           # TODO: Remove the request_digest. See https://github.com/shakacode/react_on_rails_pro/issues/119
           # From the request path

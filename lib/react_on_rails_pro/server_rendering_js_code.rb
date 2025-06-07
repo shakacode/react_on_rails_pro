@@ -49,7 +49,7 @@ module ReactOnRailsPro
 
       def add_component_specific_metadata(render_options)
         # If RSC support is not enabled, no render request id is available
-        return "" unless render_options.render_request_id
+        return "" unless ReactOnRailsPro.configuration.enable_rsc_support && render_options.render_request_id
 
         <<-JS
           railsContext.componentSpecificMetadata = {renderRequestId: '#{render_options.render_request_id}'};
@@ -65,7 +65,7 @@ module ReactOnRailsPro
       # @return [String] JavaScript code that will render the React component on the server
       def render(props_string, rails_context, redux_stores, react_component_name, render_options)
         render_function_name =
-          if render_options.streaming?
+          if ReactOnRailsPro.configuration.enable_rsc_support && render_options.streaming?
             # Select appropriate function based on whether the rendering request is running on server or rsc bundle
             # As the same rendering request is used to generate the rsc payload and SSR the component.
             "ReactOnRails.isRSCBundle ? 'serverRenderRSCReactComponent' : 'streamServerRenderedReactComponent'"
