@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Outlet from '../components/RouterOutlet';
 // @ts-expect-error JS file
-import ToggleContainer from '../components/RSCPostsPage/ToggleContainer';
+import ToggleContainer from '../components/RSCPostsPage/ToggleContainerForServerComponents';
 
 export default function ServerComponentRouterLayout() {
   return (

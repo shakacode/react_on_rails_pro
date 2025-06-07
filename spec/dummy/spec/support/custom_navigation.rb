@@ -13,7 +13,39 @@ module CustomNavigation
     override_fetch_for_logging
     url = URI.join(base_url, path).to_s
     inject_javascript_to_stream_page(url)
-    process_stream_chunks { |content| yield content if block_given? }
+    until finished_streaming?
+      chunk = next_streamed_page_chunk
+      break if chunk.nil?
+
+      yield chunk if block_given?
+    end
+  end
+
+  # Returns the next chunk of the streamed page content
+  # Blocks until a chunk is available or the page has finished loading
+  # Raises an error if no page is currently being streamed and there are no chunks to process
+  def next_streamed_page_chunk
+    # Check if we're either actively streaming or have chunks to process
+    raise "No page is currently being streamed. Call navigate_with_streaming first." if finished_streaming?
+
+    loop do
+      loaded_content = page.evaluate_script(<<~JS)
+        (function() {
+          const content = window.loaded_content;
+          window.loaded_content = undefined;
+          return content;
+        })();
+      JS
+      if loaded_content
+        page.execute_script("window.processNextChunk()")
+        return loaded_content
+      end
+
+      # If streaming is finished and no more chunks, we're done
+      return nil if finished_streaming?
+
+      sleep 0.1
+    end
   end
 
   # Logs all fetch requests happening while streaming the page using the `navigate_with_streaming` method
@@ -28,6 +60,14 @@ module CustomNavigation
 
   private
 
+  def finished_streaming?
+    page.evaluate_script(<<~JS)
+      window.streaming_state === 'finished' &&
+      window.chunkBuffer.length === 0 &&
+      !window.loaded_content
+    JS
+  end
+
   def override_fetch_for_logging
     page.execute_script(<<~JS)
       if (typeof window.originalFetch !== 'function') {
@@ -41,36 +81,15 @@ module CustomNavigation
     JS
   end
 
-  def process_stream_chunks
-    loop do
-      # check if the page has content
-      if page.evaluate_script("window.loaded_content")
-        loaded_content = page.evaluate_script("window.loaded_content;")
-        page.evaluate_script("window.loaded_content = undefined;")
-        yield loaded_content
-        # Signal the browser to process the next chunk
-        page.execute_script("window.processNextChunk()")
-      end
-
-      # check if the page has finished loading
-      if page.evaluate_script("window.finished_loading && window.chunkBuffer.length === 0")
-        page.evaluate_script("window.finished_loading = false;")
-        break
-      end
-
-      # Sleep briefly to avoid busy-waiting.
-      sleep 0.1
-    end
-  end
-
   def inject_javascript_to_stream_page(url)
     js = <<-JS
       (function() {
         history.replaceState({}, '', '#{url}');
         document.open();
 
-        // Create a buffer for chunks and a flag for processing state
+        // Create a buffer for chunks and initialize streaming state
         window.chunkBuffer = [];
+        window.streaming_state = 'streaming';
 
         // Define the global function to process the next chunk
         window.processNextChunk = function() {
@@ -82,7 +101,7 @@ module CustomNavigation
           document.write(chunk);
           window.loaded_content = chunk;
 
-          if (window.chunkBuffer.length === 0 && window.finished_loading) {
+          if (window.chunkBuffer.length === 0 && window.streaming_state === 'finished') {
             document.close();
           }
         };
@@ -104,7 +123,7 @@ module CustomNavigation
       function readChunk() {
         reader.read().then(({ done, value }) => {
           if (done) {
-            window.finished_loading = true;
+            window.streaming_state = 'finished';
             if (window.chunkBuffer.length === 0) {
               document.close();
             }

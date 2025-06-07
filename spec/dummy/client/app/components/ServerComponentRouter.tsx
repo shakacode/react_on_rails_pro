@@ -55,7 +55,7 @@ export default function App({ basePath = '/server_router', ...props }: { basePat
           <Route path={`${basePath}/client-component`} element={<EchoProps {...props} />} />
           <Route
             path={`${basePath}/complex-server-component`}
-            element={<RSCRoute componentName="RSCPostsPage" componentProps={props} />}
+            element={<RSCRoute componentName="RSCPostsPageOverHTTP" componentProps={props} />}
           />
           <Route
             path={`${basePath}/nested-router`}
