@@ -30,6 +30,7 @@ module ReactOnRailsPro
         # we reuse the existing rendering request string within the generateRSCPayload function.
         # This approach allows us to simply replace the component name and props,
         # rather than rewriting the entire rendering request.
+        # This regex finds the empty function call pattern `()` and replaces it with the component and props
         <<-JS
         railsContext.serverSideRSCPayloadParameters = {
           renderingRequest,
@@ -39,12 +40,19 @@ module ReactOnRailsPro
           globalThis.generateRSCPayload = function generateRSCPayload(componentName, props, railsContext) {
             const { renderingRequest, rscBundleHash } = railsContext.serverSideRSCPayloadParameters;
             const propsString = JSON.stringify(props);
-            // This regex finds the empty function call pattern `()` and replaces it with the component and props
             const newRenderingRequest = renderingRequest.replace(/\\(\\s*\\)\\s*$/, `('${componentName}', ${propsString})`);
-            // Execute the request on the RSC bundle
             return runOnOtherBundle(rscBundleHash, newRenderingRequest);
           }
         }
+        JS
+      end
+
+      def add_component_specific_metadata(render_options)
+        # If RSC support is not enabled, no render request id is available
+        return "" unless ReactOnRailsPro.configuration.enable_rsc_support && render_options.render_request_id
+
+        <<-JS
+          railsContext.componentSpecificMetadata = {renderRequestId: '#{render_options.render_request_id}'};
         JS
       end
 
@@ -57,7 +65,7 @@ module ReactOnRailsPro
       # @return [String] JavaScript code that will render the React component on the server
       def render(props_string, rails_context, redux_stores, react_component_name, render_options)
         render_function_name =
-          if render_options.streaming?
+          if ReactOnRailsPro.configuration.enable_rsc_support && render_options.streaming?
             # Select appropriate function based on whether the rendering request is running on server or rsc bundle
             # As the same rendering request is used to generate the rsc payload and SSR the component.
             "ReactOnRails.isRSCBundle ? 'serverRenderRSCReactComponent' : 'streamServerRenderedReactComponent'"
@@ -75,18 +83,17 @@ module ReactOnRailsPro
                        ""
                      end
 
+        # This function is called with specific componentName and props when generateRSCPayload is invoked
+        # In that case, it replaces the empty () with ('componentName', props) in the rendering request
         <<-JS
         (function(componentName = '#{react_component_name}', props = undefined) {
-          // This function is called with specific componentName and props when generateRSCPayload is invoked
-          // In that case, it replaces the empty () with ('componentName', props) in the rendering request
           var railsContext = #{rails_context};
+          #{add_component_specific_metadata(render_options)}
           #{rsc_params}
           #{generate_rsc_payload_js_function(render_options)}
           #{ssr_pre_hook_js}
           #{redux_stores}
-          // Use provided props if defined, otherwise fall back to the props_string
           var usedProps = typeof props === 'undefined' ? #{props_string} : props;
-          // Call the appropriate ReactOnRails rendering function with all parameters
           return ReactOnRails[#{render_function_name}]({
             name: componentName,
             domNodeId: '#{render_options.dom_id}',

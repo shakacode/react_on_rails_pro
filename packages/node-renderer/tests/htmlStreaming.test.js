@@ -185,16 +185,22 @@ describe('html streaming', () => {
   }, 10000);
 
   it.each([true, false])(
-    'should stop rendering when an error happen in the shell and renders the error (throwJsErrors: %s)',
+    'sever components are not rendered when a sync error happens, but the error is not considered at the shell (throwJsErrors: %s)',
     async (throwJsErrors) => {
-      const { status, chunks } = await makeRequest({
+      const { status, jsonChunks } = await makeRequest({
         props: { throwSyncError: true },
         throwJsErrors,
       });
-      expect(chunks).toHaveLength(2);
-      expect(chunks[0]).toMatch(
-        /<pre>Exception in rendering[\s\S.]*Sync error from AsyncComponentsTreeForTesting[\s\S.]*<\/pre>/,
+      expect(jsonChunks.length).toBeGreaterThanOrEqual(2);
+      expect(jsonChunks.length).toBeLessThanOrEqual(4);
+
+      const chunksWithError = jsonChunks.filter((chunk) => chunk.hasErrors);
+      expect(chunksWithError).toHaveLength(1);
+      expect(chunksWithError[0].renderingError.message).toMatch(
+        /Sync error from AsyncComponentsTreeForTesting/,
       );
+      expect(chunksWithError[0].html).toMatch(/Sync error from AsyncComponentsTreeForTesting/);
+      expect(chunksWithError[0].isShellReady).toBeTruthy();
       expect(status).toBe(200);
     },
     10000,

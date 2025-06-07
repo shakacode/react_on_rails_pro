@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-const ErrorComponent = ({ error }) => {
+const ErrorComponent = ({ error }: { error: Error }) => {
   return (
     <div>
       <h1>Error happened while rendering RSC Page</h1>

@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 029c273940c8a48cf5dc8bd599a882a0fcb80b85
-  branch: abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server
+  revision: bc4b9dabb6eb08206fb84021485cf12b22d5bf73
+  branch: abanoubghadban/pro532/make-rsc-compatible-with-react-router
   specs:
     react_on_rails (15.0.0.alpha.2)
       addressable
@@ -327,6 +327,10 @@ GEM
       ffi (~> 1.0)
     rdoc (6.12.0)
       psych (>= 4.0.0)
+    redis (5.4.0)
+      redis-client (>= 0.22.0)
+    redis-client (0.24.0)
+      connection_pool
     regexp_parser (2.9.2)
     reline (0.6.0)
       io-console (~> 0.5)
@@ -520,6 +524,7 @@ DEPENDENCIES
   rails (~> 7.1)
   react_on_rails!
   react_on_rails_pro!
+  redis
   rspec-rails
   rspec-retry
   rspec_junit_formatter
