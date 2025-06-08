@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Outlet from '../components/RouterOutlet';
-// @ts-expect-error JS file
+// @ts-expect-error - ToggleContainer is a JavaScript file without TypeScript types
 import ToggleContainer from '../components/RSCPostsPage/ToggleContainerForServerComponents';
 
 export default function ServerComponentRouterLayout() {

@@ -4,7 +4,7 @@ declare global {
   interface Log {
     debug: (message: string) => void;
   }
-  var log: Log;
+  const log: Log;
 }
 
 /**
@@ -27,8 +27,16 @@ interface RedisStreamResult {
  * Listener interface
  */
 interface RequestListener {
-  getValue: (key: string) => Promise<any>;
+  getValue: (key: string) => Promise<unknown>;
   close: () => Promise<void>;
+}
+
+interface PendingPromise {
+  promise: Promise<unknown>;
+  resolve: (value: unknown) => void;
+  reject: (reason: unknown) => void;
+  timer: NodeJS.Timeout;
+  resolved?: boolean;
 }
 
 // Shared Redis client
@@ -36,7 +44,10 @@ let sharedRedisClient: RedisClientType | null = null;
 let isClientConnected = false;
 
 // Store active listeners by requestId
-const activeListeners: Record<string, RequestListener> = {};
+const activeListeners: Record<string, RequestListener | undefined> = {};
+
+// Store pending promises
+const pendingPromises: Record<string, PendingPromise | undefined> = {};
 
 /**
  * Gets or creates the shared Redis client
@@ -72,21 +83,11 @@ async function closeRedisClient() {
  */
 export function listenToRequestData(requestId: string): RequestListener {
   // If a listener for this requestId already exists, return it
-  if (activeListeners[requestId]) {
-    return activeListeners[requestId];
+  const existingListener = activeListeners[requestId];
+  if (existingListener) {
+    return existingListener;
   }
 
-  // Store pending promises
-  const pendingPromises: Record<
-    string,
-    {
-      promise: Promise<any>;
-      resolve: (value: any) => void;
-      reject: (reason: any) => void;
-      timer: NodeJS.Timeout;
-      resolved?: boolean; // Flag to track if promise was resolved
-    }
-  > = {};
   const receivedKeys: string[] = [];
 
   // Stream key for this request
@@ -112,13 +113,11 @@ export function listenToRequestData(requestId: string): RequestListener {
       isEnded = true;
 
       // Reject any pending promises that haven't been resolved yet
-      Object.entries(pendingPromises).forEach(([key, { resolved, reject, timer }]) => {
-        // We need to check if this promise is still pending (not yet resolved)
-        // We can use a flag in the promise object to check this
-        if (!resolved) {
-          clearTimeout(timer);
-          reject(new Error(`Key ${key} not found before stream ended`));
-          delete pendingPromises[key];
+      Object.entries(pendingPromises).forEach(([key, pendingPromise]) => {
+        if (pendingPromise && !pendingPromise.resolved) {
+          clearTimeout(pendingPromise.timer);
+          pendingPromise.reject(new Error(`Key ${key} not found before stream ended`));
+          pendingPromises[key] = undefined;
         }
       });
 
@@ -127,14 +126,19 @@ export function listenToRequestData(requestId: string): RequestListener {
 
     // Process each key-value pair in the message
     Object.entries(message).forEach(([key, value]) => {
-      const parsedValue = JSON.parse(value);
+      const parsedValue = JSON.parse(value) as unknown;
 
       // Remove colon prefix if it exists
       const normalizedKey = key.startsWith(':') ? key.substring(1) : key;
       receivedKeys.push(normalizedKey);
 
       // Resolve any pending promises for this key
-      if (!pendingPromises[normalizedKey]) {
+      const pendingPromise = pendingPromises[normalizedKey];
+      if (pendingPromise) {
+        clearTimeout(pendingPromise.timer);
+        pendingPromise.resolve(parsedValue);
+        pendingPromise.resolved = true; // Mark as resolved
+      } else {
         pendingPromises[normalizedKey] = {
           promise: Promise.resolve(parsedValue),
           resolve: () => {},
@@ -143,12 +147,6 @@ export function listenToRequestData(requestId: string): RequestListener {
           resolved: true, // Mark as resolved immediately
         };
       }
-      if (pendingPromises[normalizedKey]) {
-        const { resolve, timer } = pendingPromises[normalizedKey];
-        clearTimeout(timer);
-        resolve(parsedValue);
-        pendingPromises[normalizedKey].resolved = true; // Mark as resolved
-      }
     });
   }
 
@@ -156,7 +154,9 @@ export function listenToRequestData(requestId: string): RequestListener {
    * Delete processed messages from the stream
    */
   async function deleteProcessedMessages() {
-    if (messagesToDelete.length === 0 || !isActive) return;
+    if (messagesToDelete.length === 0 || !isActive) {
+      return;
+    }
 
     try {
       const client = await getRedisClient();
@@ -171,7 +171,9 @@ export function listenToRequestData(requestId: string): RequestListener {
    * Check for existing messages in the stream
    */
   async function checkExistingMessages() {
-    if (!isActive) return;
+    if (!isActive) {
+      return;
+    }
 
     try {
       const client = await getRedisClient();
@@ -201,7 +203,9 @@ export function listenToRequestData(requestId: string): RequestListener {
    * Setup a listener for new messages in the stream
    */
   async function setupStreamListener() {
-    if (!isActive) return;
+    if (!isActive) {
+      return;
+    }
 
     try {
       const client = await getRedisClient();
@@ -211,7 +215,9 @@ export function listenToRequestData(requestId: string): RequestListener {
 
       // Start reading from the stream
       const readStream = async () => {
-        if (!isActive || isEnded) return;
+        if (!isActive || isEnded) {
+          return;
+        }
 
         try {
           const results = (await client.xRead(
@@ -234,11 +240,11 @@ export function listenToRequestData(requestId: string): RequestListener {
         } catch (error) {
           console.error('Error reading from stream:', error);
         } finally {
-          readStream();
+          void readStream();
         }
       };
 
-      readStream();
+      void readStream();
     } catch (error) {
       console.error('Error setting up stream listener:', error);
     }
@@ -252,7 +258,9 @@ export function listenToRequestData(requestId: string): RequestListener {
     } catch (error) {
       console.error('Error initializing Redis listener:', error);
     }
-  })();
+  })().catch((error: unknown) => {
+    console.error('Error initializing Redis listener:', error);
+  });
 
   // Create the listener object
   const listener: RequestListener = {
@@ -263,8 +271,9 @@ export function listenToRequestData(requestId: string): RequestListener {
      */
     getValue: async (key: string) => {
       // If we already have a promise for this key, return it
-      if (pendingPromises[key]) {
-        return pendingPromises[key].promise;
+      const existingPromise = pendingPromises[key];
+      if (existingPromise) {
+        return existingPromise.promise;
       }
 
       // If we've received the end message and don't have this key, reject immediately
@@ -273,18 +282,19 @@ export function listenToRequestData(requestId: string): RequestListener {
       }
 
       // Create a new promise for this key
-      let resolvePromise: (value: any) => void;
-      let rejectPromise: (reason: any) => void;
+      let resolvePromise: ((value: unknown) => void) | undefined;
+      let rejectPromise: ((reason: unknown) => void) | undefined;
 
-      const promise = new Promise((resolve, reject) => {
+      const promise = new Promise<unknown>((resolve, reject) => {
         resolvePromise = resolve;
         rejectPromise = reject;
       });
 
-      // Create a timeout that will reject the promise after 10 seconds
+      // Create a timeout that will reject the promise after 8 seconds
       const timer = setTimeout(() => {
-        if (pendingPromises[key]) {
-          pendingPromises[key].reject(
+        const pendingPromise = pendingPromises[key];
+        if (pendingPromise) {
+          pendingPromise.reject(
             new Error(`Timeout waiting for key: ${key}, available keys: ${receivedKeys.join(', ')}`),
           );
           // Keep the pending promise in the dictionary with the error state
@@ -292,13 +302,15 @@ export function listenToRequestData(requestId: string): RequestListener {
       }, 8000);
 
       // Store the promise and its controllers
-      pendingPromises[key] = {
-        promise,
-        resolve: resolvePromise!,
-        reject: rejectPromise!,
-        timer,
-        resolved: false, // Mark as not resolved initially
-      };
+      if (resolvePromise && rejectPromise) {
+        pendingPromises[key] = {
+          promise,
+          resolve: resolvePromise,
+          reject: rejectPromise,
+          timer,
+          resolved: false, // Mark as not resolved initially
+        };
+      }
 
       return promise;
     },
@@ -310,17 +322,20 @@ export function listenToRequestData(requestId: string): RequestListener {
       isActive = false;
 
       // Delete this listener from active listeners
-      delete activeListeners[requestId];
+      activeListeners[requestId] = undefined;
 
       // Reject any pending promises
-      Object.entries(pendingPromises).forEach(([key, { reject, timer }]) => {
-        clearTimeout(timer);
-        reject(new Error('Redis connection closed'));
-        delete pendingPromises[key];
+      Object.entries(pendingPromises).forEach(([key, pendingPromise]) => {
+        if (pendingPromise) {
+          clearTimeout(pendingPromise.timer);
+          pendingPromise.reject(new Error('Redis connection closed'));
+          pendingPromises[key] = undefined;
+        }
       });
 
       // Only close the Redis client if no other listeners are active
-      if (Object.keys(activeListeners).length === 0) {
+      const hasActiveListeners = Object.values(activeListeners).some(Boolean);
+      if (!hasActiveListeners) {
         await closeRedisClient();
       }
     },

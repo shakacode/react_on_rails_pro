@@ -1,9 +1,9 @@
 import React, { Suspense } from 'react';
 import { Routes, Route, Link } from 'react-router-dom';
 import RSCRoute from 'react-on-rails/RSCRoute';
-// @ts-expect-error JS file
+// @ts-expect-error - EchoProps is a JavaScript file without TypeScript types
 import EchoProps from './EchoProps';
-import ErrorBoundary from './ErrorBoundary';
+import { ErrorBoundary } from './ErrorBoundary';
 
 export default function App({ basePath = '/server_router', ...props }: { basePath?: string }) {
   return (
