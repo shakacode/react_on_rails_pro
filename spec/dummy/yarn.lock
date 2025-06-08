@@ -5352,9 +5352,9 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
     neo-async "^2.6.1"
     webpack-sources "^3.2.0"
 
-"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro532/make-rsc-compatible-with-react-router":
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server":
   version "15.0.0-alpha.2"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#bc4b9dabb6eb08206fb84021485cf12b22d5bf73"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#6b2f6a2d174eb4d2a2cadf4c95afe6b201c2375e"
 
 react-proptypes@^1.0.0:
   version "1.0.0"

@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: bc4b9dabb6eb08206fb84021485cf12b22d5bf73
-  branch: abanoubghadban/pro532/make-rsc-compatible-with-react-router
+  revision: 6b2f6a2d174eb4d2a2cadf4c95afe6b201c2375e
+  branch: abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server
   specs:
     react_on_rails (15.0.0.alpha.2)
       addressable

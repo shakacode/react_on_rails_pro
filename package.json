@@ -85,7 +85,7 @@
     "nps": "^5.9.12",
     "pino-pretty": "^13.0.0",
     "prettier": "^3.2.5",
-    "react-on-rails": "git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro532/make-rsc-compatible-with-react-router",
+    "react-on-rails": "git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server",
     "redis": "^5.0.1",
     "release-it": "^17.6.0",
     "sentry-testkit": "^5.0.6",
