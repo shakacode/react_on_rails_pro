@@ -4,6 +4,7 @@ import RSCRoute from 'react-on-rails/RSCRoute';
 // @ts-expect-error - EchoProps is a JavaScript file without TypeScript types
 import EchoProps from './EchoProps';
 import { ErrorBoundary } from './ErrorBoundary';
+import ServerComponentWithRetry from './ServerComponentWithRetry';
 
 export default function App({ basePath = '/server_router', ...props }: { basePath?: string }) {
   return (
@@ -40,6 +41,9 @@ export default function App({ basePath = '/server_router', ...props }: { basePat
               Server Component with visible streaming behavior
             </Link>
           </li>
+          <li>
+            <Link to={`${basePath}/server-component-with-retry`}>Server Component with Retry</Link>
+          </li>
         </ul>
       </nav>
       <Suspense fallback={<div>Loading Page...</div>}>
@@ -71,6 +75,7 @@ export default function App({ basePath = '/server_router', ...props }: { basePat
             path={`${basePath}/streaming-server-component`}
             element={<RSCRoute componentName="AsyncComponentsTreeForTesting" componentProps={props} />}
           />
+          <Route path={`${basePath}/server-component-with-retry`} element={<ServerComponentWithRetry />} />
         </Routes>
       </Suspense>
     </ErrorBoundary>
