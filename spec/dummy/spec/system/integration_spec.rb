@@ -557,7 +557,7 @@ describe "Pages/server_router", :js do
 
     click_link "Another Simple Server Component"
     expect(rsc_payload_fetch_requests).to eq([
-                                               { url: "/rsc_payload/MyServerComponent?props={}" }
+                                               { url: "/rsc_payload/MyServerComponent?props=%7B%7D" }
                                              ])
 
     expect(page).to have_text("Server Component Title")
@@ -662,7 +662,7 @@ describe "Pages/async_on_server_sync_on_client_client_render", :js do
     expect(async_component).to have_button("Toggle")
     fetch_requests = fetch_requests_while_streaming
     expect(fetch_requests).to eq([
-                                   { url: "/rsc_payload/SimpleComponent?props={}" }
+                                   { url: "/rsc_payload/SimpleComponent?props=%7B%7D" }
                                  ])
   end
 
