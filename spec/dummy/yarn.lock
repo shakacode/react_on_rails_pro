@@ -5354,7 +5354,7 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server":
   version "15.0.0-alpha.2"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#9cd81f9e792144e6aeba752d503cab43778233bc"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#c9c59f8180cdf0d398525a1545d2dac7748f17d2"
 
 react-proptypes@^1.0.0:
   version "1.0.0"
