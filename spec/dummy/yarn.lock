@@ -5344,17 +5344,19 @@ react-is@^16.12.0, react-is@^16.13.1, react-is@^16.7.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
   integrity sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ==
 
-"react-on-rails-rsc@git+https://github.com/shakacode/react_on_rails_rsc.git#ssr-support":
-  version "19.0.0"
-  resolved "git+https://github.com/shakacode/react_on_rails_rsc.git#c95a692b493e2dfc650e38d4378d61bd3194e8c8"
+react-on-rails-rsc@^19.0.2:
+  version "19.0.2"
+  resolved "https://registry.yarnpkg.com/react-on-rails-rsc/-/react-on-rails-rsc-19.0.2.tgz#9b0077674b0b55a45ec0fb7d9d22f59fb45bf55f"
+  integrity sha512-0q26jcWcr6v9nfYfB4wxtAdTwEC4PCDSb/5U7TPperP4Ac9U2K7nt3uLOSVh7BX4bacX3PrpDeI1C30cIkBPog==
   dependencies:
     acorn-loose "^8.3.0"
     neo-async "^2.6.1"
     webpack-sources "^3.2.0"
 
-"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro465/use-rsc-payload-to-render-server-components-on-server":
-  version "15.0.0-alpha.2"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#60de83cbf887351e377402f0e384cbe3da578bdb"
+react-on-rails@^15.0.0-rc.0:
+  version "15.0.0-rc.0"
+  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-15.0.0-rc.0.tgz#c264d64dc5cbd4610b15a9f168422c68eda58bec"
+  integrity sha512-WtKVtKbNj0Qfo83WXwI9ZDL3lKiu2O5BoRMzvJJH2HTpbVViG0nvqYI6A2CUsF07HwCGIMaJwc8IsZCGe0+QKg==
 
 react-proptypes@^1.0.0:
   version "1.0.0"
