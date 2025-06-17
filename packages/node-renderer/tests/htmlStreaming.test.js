@@ -151,24 +151,25 @@ describe('html streaming', () => {
     const { status, chunks } = await makeRequest();
     expect(status).toBe(200);
 
-    const secondChunk = chunks[1];
+    const firstChunk = chunks[0];
 
-    expect(secondChunk).toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
-    expect(secondChunk).toContain('<p>Footer for AsyncComponentsTreeForTesting</p>');
-    expect(secondChunk).toContain('Loading HelloWorldHooks...');
-    expect(secondChunk).toContain('Loading branch1...');
-    expect(secondChunk).toContain('Loading branch2...');
+    expect(firstChunk).toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
+    expect(firstChunk).toContain('<p>Footer for AsyncComponentsTreeForTesting</p>');
+    expect(firstChunk).toContain('Loading HelloWorldHooks...');
+    expect(firstChunk).toContain('Loading branch1...');
+    expect(firstChunk).toContain('Loading branch2...');
   }, 10000);
 
   it('should stream chunks one by one', async () => {
     const { status, chunks } = await makeRequest();
     expect(status).toBe(200);
 
-    expect(chunks[2]).not.toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
-    expect(chunks[2]).not.toContain('<p>Footer for AsyncComponentsTreeForTesting</p>');
-    expect(chunks[3]).not.toContain('Loading branch1...');
-    expect(chunks[3]).not.toContain('Loading branch2...');
-    expect(chunks[3]).not.toContain('branch1 (level 0)');
+    const secondChunk = chunks[1];
+    expect(secondChunk).not.toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
+    expect(secondChunk).not.toContain('<p>Footer for AsyncComponentsTreeForTesting</p>');
+    expect(secondChunk).not.toContain('Loading branch1...');
+    expect(secondChunk).not.toContain('Loading branch2...');
+    expect(secondChunk).not.toContain('branch1 (level 0)');
   }, 10000);
 
   it('should contains all components', async () => {
@@ -198,7 +199,7 @@ describe('html streaming', () => {
       expect(chunksWithError[0].renderingError.message).toMatch(
         /Sync error from AsyncComponentsTreeForTesting/,
       );
-      expect(jsonChunks[1].html).toMatch(/Sync error from AsyncComponentsTreeForTesting/);
+      expect(chunksWithError[0].html).toMatch(/Sync error from AsyncComponentsTreeForTesting/);
       expect(chunksWithError[0].isShellReady).toBeTruthy();
       expect(status).toBe(200);
     },
@@ -237,7 +238,7 @@ describe('html streaming', () => {
       expect(chunks.length).toBeGreaterThan(5);
       expect(status).toBe(200);
 
-      expect(chunks[1]).toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
+      expect(chunks[0]).toContain('<p>Header for AsyncComponentsTreeForTesting</p>');
       expect(fullBody).toContain('branch1 (level 4)');
       expect(fullBody).toContain('branch1 (level 3)');
       expect(fullBody).toContain('branch1 (level 2)');
