@@ -5353,9 +5353,9 @@ react-on-rails-rsc@^19.0.2:
     neo-async "^2.6.1"
     webpack-sources "^3.2.0"
 
-"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/dont-send-first-chunk-until-shell-is-rendered":
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#master":
   version "15.0.0-rc.0"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#aabf2f09166099df0b3eb23f7f898dc09539865c"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#236e4755787d629dd29f78e861a04ca6c0a2bd58"
 
 react-proptypes@^1.0.0:
   version "1.0.0"

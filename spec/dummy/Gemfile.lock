@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 71d3a00067714167f58ce320a77fd90b9248568d
-  branch: abanoubghadban/dont-send-first-chunk-until-shell-is-rendered
+  revision: 236e4755787d629dd29f78e861a04ca6c0a2bd58
+  branch: master
   specs:
     react_on_rails (15.0.0.rc.0)
       addressable
