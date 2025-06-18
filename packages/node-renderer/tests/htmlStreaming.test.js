@@ -191,7 +191,7 @@ describe('html streaming', () => {
         props: { throwSyncError: true },
         throwJsErrors,
       });
-      expect(jsonChunks.length).toBeGreaterThanOrEqual(2);
+      expect(jsonChunks.length).toBeGreaterThanOrEqual(1);
       expect(jsonChunks.length).toBeLessThanOrEqual(4);
 
       const chunksWithError = jsonChunks.filter((chunk) => chunk.hasErrors);

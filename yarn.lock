@@ -6838,10 +6838,9 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-react-on-rails@^15.0.0-rc.0:
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/dont-send-first-chunk-until-shell-is-rendered":
   version "15.0.0-rc.0"
-  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-15.0.0-rc.0.tgz#c264d64dc5cbd4610b15a9f168422c68eda58bec"
-  integrity sha512-WtKVtKbNj0Qfo83WXwI9ZDL3lKiu2O5BoRMzvJJH2HTpbVViG0nvqYI6A2CUsF07HwCGIMaJwc8IsZCGe0+QKg==
+  resolved "git+https://github.com/shakacode/react_on_rails.git#aabf2f09166099df0b3eb23f7f898dc09539865c"
 
 readable-stream@^2.2.2:
   version "2.3.8"
