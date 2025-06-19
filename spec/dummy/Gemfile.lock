@@ -6,18 +6,6 @@ GIT
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
 
-GIT
-  remote: https://github.com/shakacode/react_on_rails.git
-  revision: 236e4755787d629dd29f78e861a04ca6c0a2bd58
-  branch: master
-  specs:
-    react_on_rails (15.0.0.rc.0)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
-
 PATH
   remote: ../..
   specs:
@@ -327,6 +315,12 @@ GEM
       ffi (~> 1.0)
     rdoc (6.12.0)
       psych (>= 4.0.0)
+    react_on_rails (15.0.0.rc.1)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
     redis (5.4.0)
       redis-client (>= 0.22.0)
     redis-client (0.24.0)
@@ -522,7 +516,7 @@ DEPENDENCIES
   pry-theme
   puma (~> 6)
   rails (~> 7.1)
-  react_on_rails!
+  react_on_rails (= 15.0.0.rc.1)
   react_on_rails_pro!
   redis
   rspec-rails
