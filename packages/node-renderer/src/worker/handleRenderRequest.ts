@@ -110,6 +110,7 @@ async function handleNewBundleProvided(
       await moveUploadedAsset(providedNewBundle.bundle, bundleFilePathPerTimestamp);
       if (assetsToCopy) {
         await copyUploadedAssets(assetsToCopy, bundleDirectory);
+        await deleteUploadedAssets(assetsToCopy);
       }
 
       log.info(
@@ -164,11 +165,6 @@ async function handleNewBundlesProvided(
     handleNewBundleProvided(renderingRequest, providedNewBundle, assetsToCopy),
   );
   const results = await Promise.all(handlingPromises);
-
-  if (assetsToCopy) {
-    await deleteUploadedAssets(assetsToCopy);
-  }
-
   const errorResult = results.find((result) => result !== undefined);
   return errorResult;
 }

@@ -87,14 +87,6 @@ export function uploadedSecondaryBundlePath(testName: string) {
   return path.resolve(uploadedBundleDir(testName), `${SECONDARY_BUNDLE_TIMESTAMP}.js`);
 }
 
-export function uploadedAssetPath(testName: string) {
-  return path.resolve(uploadedBundleDir(testName), ASSET_UPLOAD_FILE);
-}
-
-export function uploadedAssetOtherPath(testName: string) {
-  return path.resolve(uploadedBundleDir(testName), ASSET_UPLOAD_OTHER_FILE);
-}
-
 export function assetPath(testName: string, bundleTimestamp: string) {
   return path.resolve(bundlePath(testName), bundleTimestamp, ASSET_UPLOAD_FILE);
 }
@@ -111,14 +103,6 @@ export async function createUploadedBundle(testName: string) {
 export async function createUploadedSecondaryBundle(testName: string) {
   await mkdirAsync(uploadedBundleDir(testName), { recursive: true });
   return safeCopyFileAsync(getFixtureSecondaryBundle(), uploadedSecondaryBundlePath(testName));
-}
-
-export async function createUploadedAsset(testName: string) {
-  await mkdirAsync(uploadedBundleDir(testName), { recursive: true });
-  return Promise.all([
-    safeCopyFileAsync(getFixtureAsset(), uploadedAssetPath(testName)),
-    safeCopyFileAsync(getOtherFixtureAsset(), uploadedAssetOtherPath(testName)),
-  ]);
 }
 
 export async function createAsset(testName: string, bundleTimestamp: string) {

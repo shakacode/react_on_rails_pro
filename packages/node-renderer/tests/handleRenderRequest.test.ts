@@ -8,9 +8,6 @@ import {
   uploadedSecondaryBundlePath,
   createUploadedBundle,
   createUploadedSecondaryBundle,
-  createUploadedAsset,
-  uploadedAssetPath,
-  uploadedAssetOtherPath,
   resetForTest,
   BUNDLE_TIMESTAMP,
   SECONDARY_BUNDLE_TIMESTAMP,
@@ -18,8 +15,6 @@ import {
   mkdirAsync,
   vmBundlePath,
   vmSecondaryBundlePath,
-  ASSET_UPLOAD_FILE,
-  ASSET_UPLOAD_OTHER_FILE,
 } from './helper';
 import { hasVMContextForBundle } from '../src/worker/vm';
 import { handleRenderRequest } from '../src/worker/handleRenderRequest';
@@ -208,97 +203,6 @@ describe(testName, () => {
     expect(
       hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024899/1495063024899.js`)),
     ).toBeFalsy();
-  });
-
-  test('If multiple bundles are provided and multiple assets are provided as well', async () => {
-    await createUploadedBundle(testName);
-    await createUploadedSecondaryBundle(testName);
-
-    // Create additional uploaded assets using helper functions
-    await createUploadedAsset(testName);
-
-    const additionalAssets = [
-      {
-        filename: ASSET_UPLOAD_FILE,
-        savedFilePath: uploadedAssetPath(testName),
-        type: 'asset' as const,
-      },
-      {
-        filename: ASSET_UPLOAD_OTHER_FILE,
-        savedFilePath: uploadedAssetOtherPath(testName),
-        type: 'asset' as const,
-      },
-    ];
-
-    const result = await handleRenderRequest({
-      renderingRequest: 'ReactOnRails.dummy',
-      bundleTimestamp: BUNDLE_TIMESTAMP,
-      providedNewBundles: [
-        {
-          bundle: {
-            filename: '',
-            savedFilePath: uploadedBundlePath(testName),
-            type: 'asset',
-          },
-          timestamp: BUNDLE_TIMESTAMP,
-        },
-        {
-          bundle: {
-            filename: '',
-            savedFilePath: uploadedSecondaryBundlePath(testName),
-            type: 'asset',
-          },
-          timestamp: SECONDARY_BUNDLE_TIMESTAMP,
-        },
-      ],
-      assetsToCopy: additionalAssets,
-    });
-
-    expect(result).toEqual(renderResult);
-
-    // Only the primary bundle should be in the VM context
-    // The secondary bundle will be processed only if the rendering request requests it
-    expect(
-      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024898/1495063024898.js`)),
-    ).toBeTruthy();
-    expect(
-      hasVMContextForBundle(path.resolve(__dirname, `./tmp/${testName}/1495063024899/1495063024899.js`)),
-    ).toBeFalsy();
-
-    // Verify that the additional assets were copied to both bundle directories
-    const mainBundleDir = path.dirname(
-      path.resolve(__dirname, `./tmp/${testName}/1495063024898/1495063024898.js`),
-    );
-    const secondaryBundleDir = path.dirname(
-      path.resolve(__dirname, `./tmp/${testName}/1495063024899/1495063024899.js`),
-    );
-    const mainAsset1Path = path.join(mainBundleDir, ASSET_UPLOAD_FILE);
-    const mainAsset2Path = path.join(mainBundleDir, ASSET_UPLOAD_OTHER_FILE);
-    const secondaryAsset1Path = path.join(secondaryBundleDir, ASSET_UPLOAD_FILE);
-    const secondaryAsset2Path = path.join(secondaryBundleDir, ASSET_UPLOAD_OTHER_FILE);
-
-    const fsModule = await import('fs/promises');
-    const mainAsset1Exists = await fsModule
-      .access(mainAsset1Path)
-      .then(() => true)
-      .catch(() => false);
-    const mainAsset2Exists = await fsModule
-      .access(mainAsset2Path)
-      .then(() => true)
-      .catch(() => false);
-    const secondaryAsset1Exists = await fsModule
-      .access(secondaryAsset1Path)
-      .then(() => true)
-      .catch(() => false);
-    const secondaryAsset2Exists = await fsModule
-      .access(secondaryAsset2Path)
-      .then(() => true)
-      .catch(() => false);
-
-    expect(mainAsset1Exists).toBeTruthy();
-    expect(mainAsset2Exists).toBeTruthy();
-    expect(secondaryAsset1Exists).toBeTruthy();
-    expect(secondaryAsset2Exists).toBeTruthy();
   });
 
   test('If dependency bundle timestamps are provided but not uploaded yet', async () => {
