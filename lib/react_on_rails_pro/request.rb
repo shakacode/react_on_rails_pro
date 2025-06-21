@@ -86,19 +86,6 @@ module ReactOnRailsPro
         @connection ||= create_connection
       end
 
-      def rsc_connection
-        @rsc_connection ||= begin
-          unless ReactOnRailsPro.configuration.enable_rsc_support
-            raise ReactOnRailsPro::Error,
-                  "RSC support is not enabled. Please set enable_rsc_support to true in your " \
-                  "config/initializers/react_on_rails_pro.rb file before " \
-                  "rendering any RSC payload."
-          end
-
-          create_connection
-        end
-      end
-
       def perform_request(path, **post_options) # rubocop:disable Metrics/AbcSize,Metrics/CyclomaticComplexity
         available_retries = ReactOnRailsPro.configuration.renderer_request_retry_limit
         retry_request = true

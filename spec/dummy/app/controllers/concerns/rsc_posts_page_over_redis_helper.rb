@@ -6,7 +6,9 @@ module RscPostsPageOverRedisHelper
   private
 
   def artificial_delay
-    params[:artificial_delay].to_i || 0
+    delay = params[:artificial_delay].to_i
+    # Cap delay to prevent DoS attacks
+    [delay, 10_000].min.clamp(0, 10_000)
   end
 
   def write_posts_and_comments_to_redis(redis)

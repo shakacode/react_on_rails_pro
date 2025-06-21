@@ -50,11 +50,11 @@ const ServerComponentWithRetry: React.FC = () => {
           type="button"
           onClick={() => {
             refetchComponent('ErrorThrowingServerComponent', {})
-              .finally(() => {
-                setKey((key) => key + 1);
-              })
               .catch((err: unknown) => {
                 console.error(err);
+              })
+              .finally(() => {
+                setKey((key) => key + 1);
               });
           }}
         >

@@ -1,12 +1,5 @@
 import { createClient, RedisClientType } from 'redis';
 
-declare global {
-  interface Log {
-    debug: (message: string) => void;
-  }
-  const log: Log;
-}
-
 /**
  * Redis xRead result message structure
  */

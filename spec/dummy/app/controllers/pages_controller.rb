@@ -48,12 +48,21 @@ class PagesController < ApplicationController
   def rsc_posts_page_over_redis
     @request_id = SecureRandom.uuid
 
-    Thread.new do
+    redis_thread = Thread.new do
       redis = ::Redis.new
       write_posts_and_comments_to_redis(redis)
+    rescue StandardError => e
+      Rails.logger.error "Error writing posts and comments to Redis: #{e.message}"
+      Rails.logger.error e.backtrace.join("\n")
+      raise e
     end
 
     stream_view_containing_react_components(template: "/pages/rsc_posts_page_over_redis")
+
+    return if redis_thread.join(10)
+
+    Rails.logger.error "Redis thread timed out"
+    raise "Redis thread timed out"
   end
 
   def async_on_server_sync_on_client
