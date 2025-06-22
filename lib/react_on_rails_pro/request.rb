@@ -175,7 +175,7 @@ module ReactOnRailsPro
       end
 
       def add_assets_to_form(form)
-        assets_to_copy = ReactOnRailsPro.configuration.assets_to_copy || []
+        assets_to_copy = (ReactOnRailsPro.configuration.assets_to_copy || []).dup
         # react_client_manifest and react_server_manifest files are needed to generate react server components payload
         if ReactOnRailsPro.configuration.enable_rsc_support
           assets_to_copy << ReactOnRails::Utils.react_client_manifest_file_path
