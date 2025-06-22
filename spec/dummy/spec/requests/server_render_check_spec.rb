@@ -33,14 +33,17 @@ describe "Server Rendering", :server_rendering do
   describe "reloading the server bundle" do
     let(:server_bundle) { SERVER_BUNDLE_PATH }
     let!(:original_bundle_text) { File.read(server_bundle) }
+    let!(:original_rsc_support_status) { ReactOnRailsPro.configuration.enable_rsc_support }
 
     before do
       ReactOnRails.configure { |config| config.development_mode = true }
+      ReactOnRailsPro.configure { |config| config.enable_rsc_support = false }
     end
 
     after do
       File.open(server_bundle, "w") { |f| f.puts original_bundle_text }
       ReactOnRails.configure { |config| config.development_mode = false }
+      ReactOnRailsPro.configure { |config| config.enable_rsc_support = original_rsc_support_status }
     end
 
     it "reloads the server bundle on a new request if was changed", :caching do
