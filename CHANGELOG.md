@@ -16,6 +16,8 @@ You can find the **package** version numbers from this repo's tags and below in 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+## [4.0.0-rc.14] - 2025-06-22
+
 ### Improved
 - Improved RSC rendering flow by eliminating double rendering of server components and reducing the number of HTTP requests.
 - Updated communication protocol between Node Renderer and Rails to version 2.0.0 which supports the ability to upload multiple bundles at once.
