@@ -15,7 +15,6 @@ Let's create an `async` React Server Component that will be progressively loaded
 
 ```js
 // app/javascript/components/Posts.jsx
-
 import React from 'react';
 import fetch from 'node-fetch';
 import _ from 'lodash';
@@ -54,7 +53,6 @@ Let's add the Posts component to the React Server Component Page.
 
 ```js
 // app/javascript/packs/components/ReactServerComponentPage.jsx
-
 import React from 'react';
 import ReactServerComponent from '../../components/ReactServerComponent';
 import Posts from '../../components/Posts';
@@ -135,7 +133,6 @@ Now, let's use the `ToggleContainer` component to wrap the post image.
 
 ```js
 // app/javascript/components/Posts.jsx
-
 import ToggleContainer from './ToggleContainer';
 
 const Posts = () => {

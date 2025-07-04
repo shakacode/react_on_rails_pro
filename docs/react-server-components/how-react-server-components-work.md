@@ -4,7 +4,7 @@ React Server Components (RSC) enable server-side component execution with client
 
 ## Bundling Process
 
-We showed in the [Create a React Server Component without SSR](create-react-server-component-without-ssr.md) article how to bundle React Server Components. During bundling, we used:
+We showed in the [Create a React Server Component without SSR](./create-react-server-component-without-ssr.md) article how to bundle React Server Components. During bundling, we used:
 
 ### RSC Webpack Loader
 
@@ -160,7 +160,7 @@ end
 When you navigate to the `http://localhost:3000/react_server_component_page_rsc_payload` page, you will see the RSC payload of the `ReactServerComponentPage` component. You will find multiple JSON objects in the response body. Each represents a chunk of the RSC payload.
 
 ```json
- {
+{
   "html":"<RSC Payload>",
   "consoleReplayScript":"",
   "hasErrors":false,
