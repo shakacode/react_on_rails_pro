@@ -10,7 +10,7 @@ const RSCPostsPageOverRedis = ({ requestId, ...props }, railsContext) => {
   const fetchUser = (userId) => getValue(`user:${userId}`);
 
   if ('addPostSSRHook' in railsContext) {
-    railsContext.addPostSSRHook(railsContext, close);
+    railsContext.addPostSSRHook(close);
   }
 
   return () => (
