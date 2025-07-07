@@ -444,5 +444,5 @@ The RSC payload format and how React processes it is explained in detail in the 
 
 ## Next Steps
 
-Now that you understand the basics of React Server Components, you can proceed to the next article: [Add Stream and Interactivity to RSC Page](./add-stream-and-interactivity.md) to learn how to enhance your RSC page with streaming capabilities and client-side interactivity.
+Now that you understand the basics of React Server Components, you can proceed to the next article: [Add Streaming and Interactivity to RSC Page](./add-streaming-and-interactivity.md) to learn how to enhance your RSC page with streaming capabilities and client-side interactivity.
 

@@ -1,4 +1,4 @@
-# Add Stream and Interactivity to RSC Page
+# Add Streaming and Interactivity to RSC Page
 
 Before reading this document, please read the [Create React Server Component without SSR](./create-without-ssr.md) document.
 

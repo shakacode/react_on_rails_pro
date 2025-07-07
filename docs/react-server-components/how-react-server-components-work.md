@@ -94,7 +94,7 @@ CLIENT_BUNDLE_ONLY=true bin/shakapacker
 
 Then, you can find the `react-client-manifest.json` file in the `public/webpack/development` or `public/webpack/production` directory, depending on the environment you are building for.
 
-Let's search for the client component `ToggleContainer` that we built before in [Add Stream and Interactivity to RSC Page](./add-stream-and-interactivity.md) article. You will find the following entry in the `react-client-manifest.json` file:
+Let's search for the client component `ToggleContainer` that we built before in [Add Streaming and Interactivity to RSC Page](./add-streaming-and-interactivity.md) article. You will find the following entry in the `react-client-manifest.json` file:
 
 ```json
 "file:///path/to/app/javascript/components/ToggleContainer.jsx": {

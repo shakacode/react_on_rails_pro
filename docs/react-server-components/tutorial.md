@@ -4,7 +4,7 @@ This tutorial will guide you through learning [React Server Components (RSC)](ht
 
 1. [Create React Server Component without SSR](create-without-ssr.md) - Learn the fundamentals of React Server Components by creating a basic RSC page without server-side rendering.
 
-2. [Add Stream and Interactivity to RSC Page](add-stream-and-interactivity.md) - Enhance your RSC page with streaming capabilities and client-side interactivity using Suspense and client components.
+2. [Add Streaming and Interactivity to RSC Page](add-streaming-and-interactivity.md) - Enhance your RSC page with streaming capabilities and client-side interactivity using Suspense and client components.
 
 3. [Server-Side Rendering for React Server Components](server-side-rendering.md) - Add SSR to your React Server Components for improved initial page load performance.
 

@@ -2,7 +2,7 @@
 
 Before reading this document, please read:
 1. [Create React Server Component without SSR](./create-without-ssr.md)
-2. [Add Stream and Interactivity to RSC Page](./add-stream-and-interactivity.md)
+2. [Add Streaming and Interactivity to RSC Page](./add-streaming-and-interactivity.md)
 
 These documents provide essential background on React Server Components and how they work without Server Side Rendering (SSR).
 
