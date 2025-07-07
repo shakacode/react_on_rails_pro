@@ -44,7 +44,7 @@ group :development do
   gem 'spring-watcher-listen'
 end
 
-group :development, :test do
+group :development, :test, :production do
   gem 'faker'
   gem 'graphiql-rails'
   gem 'pry', '>= 0.14.1' # Console with powerful introspection capabilities

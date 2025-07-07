@@ -45,6 +45,10 @@ class PagesController < ApplicationController
     stream_view_containing_react_components(template: "/pages/rsc_posts_page_over_http")
   end
 
+  def als
+    stream_view_containing_react_components(template: "/pages/als")
+  end
+
   def rsc_posts_page_over_redis
     @request_id = SecureRandom.uuid
 
