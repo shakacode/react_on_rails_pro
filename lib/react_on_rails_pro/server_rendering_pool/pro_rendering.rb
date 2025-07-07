@@ -49,28 +49,25 @@ module ReactOnRailsPro
         def set_request_digest_on_render_options(js_code, render_options)
           return unless render_options.request_digest.blank?
 
-          if render_options.random_dom_id?
-            Rails.logger.info do
-              "[ReactOnRailsPro] Rendering #{render_options.react_component_name}. " \
-                "Suggest setting `id` on react_component or setting react_on_rails.rb initializer " \
-                "config.random_dom_id to false for BETTER performance."
-            end
-          end
-
-          digest = Digest::MD5.hexdigest(without_random_values(js_code, render_options))
+          digest = if render_options.random_dom_id?
+                     Rails.logger.info do
+                       "[ReactOnRailsPro] Rendering #{render_options.react_component_name}. " \
+                         "Suggest setting `id` on react_component or setting react_on_rails.rb initializer " \
+                         "config.random_dom_id to false for BETTER performance."
+                     end
+                     Digest::MD5.hexdigest(without_random_values(js_code))
+                   else
+                     Digest::MD5.hexdigest(js_code)
+                   end
           render_options.request_digest = digest
         end
 
         private
 
-        def without_random_values(js_code, render_options)
-          # renderRequestId is random per request and should not affect cache key calculation
-          code_without_render_request_id = js_code.gsub(/renderRequestId: '[\w-]*'/, "")
-          return code_without_render_request_id unless render_options.random_dom_id?
-
+        def without_random_values(js_code)
           # domNodeId are random to enable multiple instance of the same react component on a page.
           # See https://github.com/shakacode/react_on_rails_pro/issues/44
-          code_without_render_request_id.gsub(/domNodeId: '[\w-]*',/, "")
+          js_code.gsub(/domNodeId: '[\w-]*',/, "")
         end
 
         def cache_key(js_code, render_options)

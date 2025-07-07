@@ -25,8 +25,7 @@ describe ReactOnRailsProHelper, type: :helper do
     allow(self).to receive(:request) {
       RequestDetails.new("http://foobar.com/development", { "HTTP_ACCEPT_LANGUAGE" => "en" })
     }
-    allow(ReactOnRails::ReactComponent::RenderOptions).to receive(:generate_request_id)
-      .and_return("123", "456", "789", "101")
+    allow(ReactOnRails::ReactComponent::RenderOptions).to receive(:generate_request_id).and_return("123")
   end
 
   let(:hash) do
@@ -177,34 +176,6 @@ describe ReactOnRailsProHelper, type: :helper do
             expect(cache_data.keys.count).to eq(1)
           end
         end
-      end
-    end
-  end
-
-  describe "caching react_component", :caching do
-    context "when config.prerender_caching is true" do
-      before { ReactOnRailsPro.configuration.prerender_caching = true }
-
-      after { ReactOnRailsPro.configuration.prerender_caching = false }
-
-      it "caches the content" do
-        props = { a: 1, b: 2 }
-
-        react_component("RandomValue", props: props, prerender: true)
-
-        expect(cache_data.keys.count).to eq(1)
-      end
-
-      it "doesn't rerender the component after the first render", :focus do
-        props = { a: 1, b: 2 }
-
-        # Ignore the first render because it will contain the rails context
-        react_component("RandomValue", props: props, prerender: true)
-        first_render_result = react_component("RandomValue", props: props, prerender: true)
-        second_render_result = react_component("RandomValue", props: props, prerender: true)
-
-        expect(cache_data.keys.count).to eq(1)
-        expect(first_render_result).to eq(second_render_result)
       end
     end
   end
