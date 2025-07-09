@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 521c5b3d3b1e99d483eb5cb0bbf34c50828743d1
+  revision: 92aa907b860ee163c8d451d21c33cdb70dba785d
   branch: abanoubghadban/pro538/fix-problem-of-not-caching-components-while-rsc-is-on
   specs:
     react_on_rails (15.0.0.rc.1)

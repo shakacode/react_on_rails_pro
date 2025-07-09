@@ -5355,7 +5355,7 @@ react-on-rails-rsc@^19.0.2:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/pro538/fix-problem-of-not-caching-components-while-rsc-is-on":
   version "15.0.0-rc.1"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#521c5b3d3b1e99d483eb5cb0bbf34c50828743d1"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#92aa907b860ee163c8d451d21c33cdb70dba785d"
 
 react-proptypes@^1.0.0:
   version "1.0.0"
