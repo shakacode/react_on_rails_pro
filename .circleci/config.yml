@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@2.2.0
 
 aliases:
   # Print critical data and executables versions.
@@ -82,27 +85,11 @@ aliases:
     keys:
       - v4-package-app-gem-cache-{{ checksum "react_on_rails_pro.gemspec" }}
 
-    # NOTE: Sometimes CI generated docker images are not updated in time to keep up with the minimum required
-    # by chromedriver versions of Chrome. Just bump here Chrome version if chromedriver raises errors
-  - &install-latest-chrome
-    name: Ensure minimum required Chrome version
-    command: |
-      echo -e "Installed $(google-chrome --version)\n"
-      MINIMUM_REQUIRED_CHROME_VERSION=75
-      INSTALLED_CHROME_MAJOR_VERSION="$(google-chrome --version | tr ' .' '\t' | cut -f3)"
-      if [[ $INSTALLED_CHROME_MAJOR_VERSION < $MINIMUM_REQUIRED_CHROME_VERSION ]]; then
-        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-        sudo apt-get update
-        sudo apt-get install google-chrome-stable
-        echo -e "\nInstalled $(google-chrome --version)"
-      fi
-
 jobs:
   # Lint all
   lint-js-and-ruby:
     docker:
-      - image: &docker_image circleci/ruby:2.7-node-browsers
+      - image: &docker_image cimg/ruby:2.7.5-browsers
     steps:
       - checkout
       - run: *print-system-info
@@ -252,7 +239,8 @@ jobs:
           key: v4-dummy-app-webpack-bundle-{{ .Revision }}
       - run: *install-dummy-app-ruby-gems
       - run: *install-package-node-modules
-      - run: *install-latest-chrome
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run: *install-dummy-app-node-modules
       - run:
           name: Generate file-system based entrypoints
