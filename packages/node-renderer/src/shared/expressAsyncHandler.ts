@@ -11,7 +11,6 @@ type AsyncHandler<Route extends string = string> = (
 const asyncUtil = <Route extends string = string>(fn: AsyncHandler<Route>): AsyncHandler<Route> =>
   function asyncUtilWrap(req, res, next) {
     const fnReturn = fn(req, res, next);
-    // eslint-disable-next-line @typescript-eslint/use-unknown-in-catch-callback-variable -- unavoidable due to Express types
     return Promise.resolve(fnReturn).catch(next);
   };
 

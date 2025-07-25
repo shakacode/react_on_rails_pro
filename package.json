@@ -61,6 +61,8 @@
     "@types/lockfile": "^1.0.4",
     "@types/supertest": "^6.0.2",
     "@types/touch": "^3.1.5",
+    "@typescript-eslint/parser": "^6.21.0",
+    "@typescript-eslint/eslint-plugin": "^6.21.0",
     "babel-jest": "^29.7.0",
     "concurrently": "^8.2.2",
     "eslint": "^8.57.0",
@@ -86,7 +88,6 @@
     "tape-async": "^2.3.0",
     "touch": "^3.1.0",
     "typescript": "^5.4.3",
-    "typescript-eslint": "^7.4.0",
     "yalc": "^1.0.0-pre.53"
   },
   "peerDependencies": {
