@@ -393,7 +393,7 @@ PLATFORMS
 DEPENDENCIES
   amazing_print
   bootsnap
-  bundler (= 2.3.3)
+  bundler (= 2.4.22)
   capybara
   capybara-screenshot
   coveralls
@@ -446,4 +446,4 @@ RUBY VERSION
    ruby 2.7.5
 
 BUNDLED WITH
-   2.3.3
+   2.4.22
