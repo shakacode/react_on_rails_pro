@@ -304,7 +304,7 @@ jobs:
           working_directory: spec/dummy
           command: |
             circleci tests glob "spec/**/*_spec.rb" |
-            circleci tests run --command="xargs bundle exec rspec \
+            circleci tests run --command="xargs bundle exec rspec" \
                               --profile 10 \
                               --format progress \
                               --format RspecJunitFormatter \
