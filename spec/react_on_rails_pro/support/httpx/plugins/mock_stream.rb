@@ -70,9 +70,9 @@ module HTTPX
           # For streaming responses, handle the chunks properly
           if request.stream
             # Stream the response chunks via the stream callback
-            yielder = lambda { |value| 
+            yielder = lambda { |value|
               # Call the stream's on_chunk method to deliver chunks
-              request.stream.on_chunk(value) 
+              request.stream.on_chunk(value)
             }
             mock_block.call(yielder, request)
           else
