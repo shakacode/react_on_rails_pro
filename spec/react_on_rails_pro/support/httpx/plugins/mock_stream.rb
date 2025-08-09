@@ -33,6 +33,9 @@ module HTTPX
         end
 
         def send(request)
+          # Do not produce a new response if this request already finished.
+          return if request.response&.finished?
+
           request_uri = request.uri.to_s
           mock = find_mock(request_uri)
           validate_mock!(request_uri, request.verb, mock)
