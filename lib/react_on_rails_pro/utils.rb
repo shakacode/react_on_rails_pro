@@ -87,7 +87,7 @@ module ReactOnRailsPro
       if contains_hash?(server_bundle_basename)
         server_bundle_basename
       else
-        Digest::MD5.file(server_bundle_js_file_path)
+        "#{Digest::MD5.file(server_bundle_js_file_path)}-#{Rails.env}"
       end
     end
 
@@ -101,17 +101,15 @@ module ReactOnRailsPro
     end
 
     def self.with_trace(message = nil)
-      return yield unless ReactOnRailsPro.configuration.tracing
+      return yield unless ReactOnRailsPro.configuration.tracing && Rails.logger.info?
 
       start = Time.current
       result = yield
       finish = Time.current
 
-      caller_method = caller(1..1).first
-      Rails.logger.info do
-        timing = "#{((finish - start) * 1_000).round(1)}ms"
-        "[ReactOnRailsPro] PID:#{Process.pid} #{caller_method[/`.*'/][1..-2]}: #{[message, timing].compact.join(', ')}"
-      end
+      caller_method = caller(1..1).first[/[`'][^']*'/][1..-2]
+      timing = "#{((finish - start) * 1_000).round(1)}ms"
+      Rails.logger.info "[ReactOnRailsPro] PID:#{Process.pid} #{caller_method}: #{[message, timing].compact.join(', ')}"
 
       result
     end

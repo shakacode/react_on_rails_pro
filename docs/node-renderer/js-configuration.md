@@ -16,8 +16,8 @@ Here are the options available for the JavaScript renderer configuration object,
 1. **password** (default: `env.RENDERER_PASSWORD`) - Password expected to receive form **Rails client** to authenticate rendering requests. If no password set, no authentication will be required.
 1. **allWorkersRestartInterval** (default: `env.RENDERER_ALL_WORKERS_RESTART_INTERVAL`) - Interval in minutes between scheduled restarts of all cluster of workers. By default restarts are not enabled. If restarts are enabled, `delayBetweenIndividualWorkerRestarts` should also be set.
 1. **delayBetweenIndividualWorkerRestarts** (default: `env.RENDERER_DELAY_BETWEEN_INDIVIDUAL_WORKER_RESTARTS`) - Interval in minutes between individual worker restarts (when cluster restart is triggered). By default restarts are not enabled. If restarts are enabled, `allWorkersRestartInterval` should also be set.
-1. **supportModules** - (default: `env.RENDERER_SUPPORT_MODULES || null`) - If set to true, `supportModules` enables the server-bundle code to call a default set of NodeJS modules that get added to the VM context: { Buffer, process, setTimeout, setInterval, clearTimeout, clearInterval }.
-This option is required to equal `true` if you want to use loadable components
+1. **supportModules** - (default: `env.RENDERER_SUPPORT_MODULES || null`) - If set to true, `supportModules` enables the server-bundle code to call a default set of NodeJS global objects and functions that get added to the VM context:
+   `{ Buffer, process, setTimeout, setInterval, setImmediate, clearTimeout, clearInterval, clearImmediate, queueMicrotask }`.
 Setting this value to false causes the NodeRenderer to behave like ExecJS
 1. **additionalContext** - (default: `null`) - additionalContext enables you to specify additional NodeJS modules to add to the VM context in addition to our supportModules defaults. Object shorthand notation may be used, but is not required.
 Example: { URL, URLSearchParams, Crypto }

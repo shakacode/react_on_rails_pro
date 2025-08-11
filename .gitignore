@@ -1,6 +1,5 @@
 /.bundle/
 /.yardoc
-/Gemfile.lock
 /_yardoc/
 /coverage/
 /doc/
@@ -18,12 +17,29 @@ tmp
 /spec/dummy/public/assets
 /spec/dummy/public/stylesheets
 
+# IDEs
+.idea/
+.vscode/
+.pryrc
+
 # RVM
 .ruby-version
 .ruby-gemset
 
 # NVM
 .nvmrc
+# nodenv
+.node-version
+
+# Direnv
+.envrc
+
+# TypeScript
+dist/
+*.tsbuildinfo
+
+# Jest
+junit.xml
 
 node_modules
 
@@ -44,7 +60,7 @@ spec/dummy/client/npm-debug.log*
 yalc.lock
 
 **/.node-renderer-bundles/**
-**/db/*.sqlite3
+**/db/*.sqlite3*
 **/log/*.log
 **/public/webpack/**
 

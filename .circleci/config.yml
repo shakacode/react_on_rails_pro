@@ -1,4 +1,7 @@
-version: 2
+version: 2.1
+
+orbs:
+  browser-tools: circleci/browser-tools@2.2.0
 
 aliases:
   # Print critical data and executables versions.
@@ -24,37 +27,43 @@ aliases:
     name: Check formatting
     command: yarn start format.listDifferent
 
+  - &typescript-check
+    name: Check TypeScript
+    command: yarn run nps check-typescript
+
   # Install/update Node modules for renderer package unless existing set of modules is satisfying Yarn.
   - &install-package-node-modules
     name: Install Node modules with Yarn for renderer package
     command: |
       sudo yarn global add yalc
-      yarn install --no-progress --no-emoji
+      yarn install --frozen-lockfile --no-progress --no-emoji
 
   # Install/update Node modules for dummy app unless existing set of modules is satisfying Yarn.
   - &install-dummy-app-node-modules
     name: Install Node modules with Yarn for dummy app
-    command: cd spec/dummy && yarn install --no-progress --no-emoji
+    command: cd spec/dummy && yarn install --frozen-lockfile --no-progress --no-emoji
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-dummy-app-ruby-gems
     name: Install Ruby Gems for dummy app
     command: |
-      gem install bundler -v "2.3.3"
+      gem update --system 3.4.22
+      gem install bundler -v 2.4.22
       echo "Bundler version: "; bundle --version
       bundle config set --local path 'vendor/bundle'
       bundle config set --local disable_checksum_validation true
-      cd spec/dummy && bundle lock --add-platform 'x86_64-linux' && bundle _2.3.3_ check || bundle _2.3.3_ install --jobs=4 --retry=3
+      cd spec/dummy && bundle lock --add-platform 'x86_64-linux' && bundle _2.4.22_ check || bundle _2.4.22_ install --jobs=4 --retry=3
 
   # Install ruby gems unless existing set of gems is satisfying bundler.
   - &install-package-ruby-gems
     name: Install Ruby Gems for package
     command: |
-      gem install bundler -v "2.3.3"
+      gem update --system 3.4.22
+      gem install bundler -v 2.4.22
       echo "Bundler version: "; bundle --version
       bundle config set --local path 'vendor/bundle'
       bundle config set --local disable_checksum_validation true
-      bundle _2.3.3_ check || bundle _2.3.3_ install --jobs=4 --retry=3
+      bundle _2.4.22_ check || bundle _2.4.22_ install --jobs=4 --retry=3
 
   # Restore node_modules dir from cache using yarn.lock checksum as a key.
   - &restore-package-node-modules-cache
@@ -80,38 +89,24 @@ aliases:
     keys:
       - v4-package-app-gem-cache-{{ checksum "react_on_rails_pro.gemspec" }}
 
-    # NOTE: Sometimes CI generated docker images are not updated in time to keep up with the minimum required
-    # by chromedriver versions of Chrome. Just bump here Chrome version if chromedriver raises errors
-  - &install-latest-chrome
-    name: Ensure minimum required Chrome version
-    command: |
-      echo -e "Installed $(google-chrome --version)\n"
-      MINIMUM_REQUIRED_CHROME_VERSION=75
-      INSTALLED_CHROME_MAJOR_VERSION="$(google-chrome --version | tr ' .' '\t' | cut -f3)"
-      if [[ $INSTALLED_CHROME_MAJOR_VERSION < $MINIMUM_REQUIRED_CHROME_VERSION ]]; then
-        wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | sudo apt-key add -
-        sudo sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list'
-        sudo apt-get update
-        sudo apt-get install google-chrome-stable
-        echo -e "\nInstalled $(google-chrome --version)"
-      fi
-
 jobs:
   # Lint all
   lint-js-and-ruby:
     docker:
-      - image: &docker_image circleci/ruby:2.7-node-browsers
+      - image: &docker_image cimg/ruby:2.7.5-browsers
     steps:
       - checkout
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - restore_cache: *restore-package-gem-cache
+      - restore_cache: *restore-dummy-app-node-modules-cache
       - run: *install-package-ruby-gems
       - run: *lint-ruby
       - run: *lint-js
       - run: *format
+      - run: *typescript-check
 
-  # Install Node modules for Renderer package with Yarn and save them to chache.
+  # Install Node modules for Renderer package with Yarn and save them to cache.
   install-package-node-packages:
     docker:
       - image: *docker_image
@@ -208,9 +203,15 @@ jobs:
       - run: *print-system-info
       - restore_cache: *restore-package-node-modules-cache
       - run: *install-package-node-modules
+      # https://circleci.com/docs/collect-test-data/#jest
       - run:
           name: Run JS unit tests for Renderer package
-          command: yarn test
+          command: yarn run nps test.ci
+          environment:
+            JEST_JUNIT_OUTPUT_DIR: ./jest
+            JEST_JUNIT_ADD_FILE_ATTRIBUTE: "true"
+      - store_test_results:
+          path: ./jest
 
   rspec-package-specs:
     docker:
@@ -250,7 +251,8 @@ jobs:
           key: v4-dummy-app-webpack-bundle-{{ .Revision }}
       - run: *install-dummy-app-ruby-gems
       - run: *install-package-node-modules
-      - run: *install-latest-chrome
+      - browser-tools/install_chrome
+      - browser-tools/install_chromedriver
       - run: *install-dummy-app-node-modules
       - run:
           name: Generate file-system based entrypoints
@@ -287,6 +289,7 @@ workflows:
           requires:
             - install-package-node-packages
             - install-package-ruby-gems
+            - install-dummy-app-node-packages
       - build-dummy-app-webpack-test-bundles:
           requires:
             - install-package-node-packages
