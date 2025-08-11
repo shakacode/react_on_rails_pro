@@ -14,6 +14,8 @@ You can find the **package** version numbers from this repo's tags and below in 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+## [3.3.1] - 2025-08-11
+
 ### Changed
 - Converted JS code to TS [PR 386](https://github.com/shakacode/react_on_rails_pro/pull/386) and [PR 389](https://github.com/shakacode/react_on_rails_pro/pull/389) by [alexeyr-ci](https://github.com/alexeyr-ci).
 
@@ -301,7 +303,8 @@ Above changes in [PR 52](https://github.com/shakacode/react_on_rails_pro/pull/52
 - support for javascript evaluation caching
 - advanced error handling
 
-[Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/3.2.1...HEAD
+[Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/3.3.1...HEAD
+[3.3.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.2.1...3.3.1
 [3.2.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.2...3.2.1
 [3.1.2]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.1...3.1.2
 [3.1.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.0...3.1.1
