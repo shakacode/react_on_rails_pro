@@ -75,7 +75,7 @@ task :release, %i[gem_version dry_run tools_install] do |_t, args|
   bundle_install_in(dummy_app_dir, frozen: false)
 
   # Will bump the yarn version, commit, tag the commit, push to repo, and release on yarn
-  release_it_command = +"$(yarn bin)/release-it"
+  release_it_command = +"yarn run release-it"
   release_it_command << " #{npm_version}" unless npm_version.strip.empty?
   release_it_command << " --ci --verbose"
   release_it_command << " --dry-run" if is_dry_run
