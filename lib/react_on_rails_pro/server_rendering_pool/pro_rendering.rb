@@ -22,16 +22,31 @@ module ReactOnRailsPro
             # the digest is on the render options.
             # TODO: the request digest should be removed unless prerender caching is used
             set_request_digest_on_render_options(js_code, render_options)
-            # TODO: support caching for streams
+            # Cache non-streaming immediately. For streaming, optionally cache via write-through.
             if ReactOnRailsPro.configuration.prerender_caching &&
                render_options.internal_option(:skip_prerender_cache).nil? &&
-               !render_options.streaming?
+               (!render_options.streaming? || ReactOnRailsPro.configuration.stream_prerender_caching)
               prerender_cache_key = cache_key(js_code, render_options)
               prerender_cache_hit = true
-              result = Rails.cache.fetch(prerender_cache_key) do
-                prerender_cache_hit = false
-                render_on_pool(js_code, render_options)
-              end
+              result = if render_options.streaming?
+                         # Streaming path: try to serve from cache; otherwise wrap upstream stream
+                         cached_stream = ReactOnRailsPro::StreamCache.fetch_stream(prerender_cache_key)
+                         if cached_stream
+                           cached_stream
+                         else
+                           upstream = render_on_pool(js_code, render_options)
+                           ReactOnRailsPro::StreamCache.wrap_and_cache(
+                             prerender_cache_key,
+                             upstream,
+                             cache_options: render_options.internal_option(:cache_options)
+                           )
+                         end
+                       else
+                         Rails.cache.fetch(prerender_cache_key) do
+                           prerender_cache_hit = false
+                           render_on_pool(js_code, render_options)
+                         end
+                       end
               # Pass back the cache key in the results only if the result is a Hash
               if result.is_a?(Hash)
                 result[:RORP_CACHE_KEY] = prerender_cache_key
