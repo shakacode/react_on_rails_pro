@@ -9,6 +9,7 @@ module ReactOnRailsPro
   def self.configuration
     @configuration ||= Configuration.new(
       prerender_caching: Configuration::DEFAULT_PRERENDER_CACHING,
+      stream_prerender_caching: Configuration::DEFAULT_STREAM_PRERENDER_CACHING,
       server_renderer: Configuration::DEFAULT_RENDERER_METHOD,
       renderer_url: Configuration::DEFAULT_RENDERER_URL,
       renderer_use_fallback_exec_js: Configuration::DEFAULT_RENDERER_FALLBACK_EXEC_JS,
@@ -42,6 +43,7 @@ module ReactOnRailsPro
     DEFAULT_RENDERER_HTTP_POOL_WARN_TIMEOUT = 0.25
     DEFAULT_SSR_TIMEOUT = 5
     DEFAULT_PRERENDER_CACHING = false
+    DEFAULT_STREAM_PRERENDER_CACHING = false
     DEFAULT_TRACING = false
     DEFAULT_DEPENDENCY_GLOBS = [].freeze
     DEFAULT_EXCLUDED_DEPENDENCY_GLOBS = [].freeze
@@ -55,7 +57,7 @@ module ReactOnRailsPro
     DEFAULT_RSC_PAYLOAD_GENERATION_URL_PATH = "rsc_payload/"
 
     attr_accessor :renderer_url, :renderer_password, :tracing,
-                  :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
+                  :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching, :stream_prerender_caching,
                   :renderer_http_pool_size, :renderer_http_pool_timeout, :renderer_http_pool_warn_timeout,
                   :dependency_globs, :excluded_dependency_globs, :rendering_returns_promises,
                   :remote_bundle_cache_adapter, :ssr_pre_hook_js, :assets_to_copy,
@@ -64,7 +66,7 @@ module ReactOnRailsPro
                   :rsc_payload_generation_url_path
 
     def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil, # rubocop:disable Metrics/AbcSize
-                   renderer_use_fallback_exec_js: nil, prerender_caching: nil,
+                   renderer_use_fallback_exec_js: nil, prerender_caching: nil, stream_prerender_caching: nil,
                    renderer_http_pool_size: nil, renderer_http_pool_timeout: nil,
                    renderer_http_pool_warn_timeout: nil, tracing: nil,
                    dependency_globs: nil, excluded_dependency_globs: nil, rendering_returns_promises: nil,
@@ -77,6 +79,7 @@ module ReactOnRailsPro
       self.server_renderer = server_renderer
       self.renderer_use_fallback_exec_js = renderer_use_fallback_exec_js
       self.prerender_caching = prerender_caching
+      self.stream_prerender_caching = stream_prerender_caching
       self.renderer_http_pool_size = renderer_http_pool_size
       self.renderer_http_pool_timeout = renderer_http_pool_timeout
       self.renderer_http_pool_warn_timeout = renderer_http_pool_warn_timeout
