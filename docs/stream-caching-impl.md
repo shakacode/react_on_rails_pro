@@ -14,6 +14,13 @@
     - Try `StreamCache.fetch_stream(key)`; on HIT, return cached stream (no Node call).
     - On MISS, call `render_on_pool` to get the upstream stream and return `StreamCache.wrap_and_cache(key, upstream, cache_options: ...)`.
 
+### Original streaming path (exec_server_render_js):
+`lib/react_on_rails_pro/server_rendering_pool/pro_rendering.rb#render_on_pool` → calls `pool.exec_server_render_js`
+
+**With Node renderer on:** `lib/react_on_rails_pro/server_rendering_pool/node_rendering_pool.rb#exec_server_render_js` → delegates into the `react_on_rails` gem's `RubyEmbeddedJavaScript.exec_server_render_js`, passing itself as the evaluator.
+
+**For streaming,** that evaluator is called at `lib/react_on_rails_pro/server_rendering_pool/node_rendering_pool.rb#eval_streaming_js` → `lib/react_on_rails_pro/request.rb#render_code_as_stream` → `lib/react_on_rails_pro/stream_request.rb#StreamRequest.create`, which returns a `StreamDecorator` wrapping a component that responds to `each_chunk` (`StreamRequest`).
+
 ### Code snippets
 
 lib/react_on_rails_pro/configuration.rb
