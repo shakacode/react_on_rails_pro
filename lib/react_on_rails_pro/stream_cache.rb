@@ -35,7 +35,8 @@ module ReactOnRailsPro
 
       def each_chunk(&block)
         return enum_for(:each_chunk) unless block
-        @chunks.each { |chunk| block.call(chunk) }
+
+        @chunks.each(&block)
       end
     end
 
@@ -48,15 +49,14 @@ module ReactOnRailsPro
 
       def each_chunk(&block)
         return enum_for(:each_chunk) unless block
+
         buffered_chunks = []
         @upstream_stream.each_chunk do |chunk|
           buffered_chunks << chunk
-          block.call(chunk)
+          yield(chunk)
         end
         Rails.cache.write(@cache_key, buffered_chunks, @cache_options || {})
       end
     end
   end
 end
-
-
