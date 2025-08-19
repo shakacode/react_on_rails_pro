@@ -9,8 +9,7 @@ module ReactOnRailsPro
         cached_chunks = Rails.cache.read(cache_key)
         return nil unless cached_chunks.is_a?(Array)
 
-        component = CachedChunksComponent.new(cached_chunks)
-        ReactOnRailsPro::StreamDecorator.new(component)
+        build_stream_from_chunks(cached_chunks)
       end
 
       # Wraps an upstream stream (responds to `each_chunk`), yields chunks downstream while
