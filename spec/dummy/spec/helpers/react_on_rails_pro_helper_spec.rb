@@ -564,7 +564,8 @@ describe ReactOnRailsProHelper, type: :helper do
         chunks_read.clear
         # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
         clear_stream_mocks
-        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200) do |yielder|
+        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}},
+                                200) do |yielder|
           chunks.each do |chunk|
             chunks_read << chunk
             yielder.call("#{chunk.to_json}\n")
@@ -575,7 +576,8 @@ describe ReactOnRailsProHelper, type: :helper do
         chunks_read.clear
         # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
         clear_stream_mocks
-        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200) do |yielder|
+        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}},
+                                200) do |yielder|
           chunks.each do |chunk|
             chunks_read << chunk
             yielder.call("#{chunk.to_json}\n")
@@ -597,7 +599,8 @@ describe ReactOnRailsProHelper, type: :helper do
         chunks_read.clear
         # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
         clear_stream_mocks
-        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200) do |yielder|
+        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}},
+                                200) do |yielder|
           chunks.each do |chunk|
             chunks_read << chunk
             yielder.call("#{chunk.to_json}\n")
