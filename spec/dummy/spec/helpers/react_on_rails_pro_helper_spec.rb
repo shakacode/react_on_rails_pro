@@ -481,5 +481,149 @@ describe ReactOnRailsProHelper, type: :helper do
         end
       end
     end
+
+    describe "stream_prerender_caching", :caching do # rubocop:disable RSpec/MultipleMemoizedHelpers
+      let(:mocked_stream) { instance_double(ActionController::Live::Buffer) }
+      let(:written_chunks) { [] }
+
+      around do |example|
+        original_stream_prerender_caching = ReactOnRailsPro.configuration.stream_prerender_caching
+        ReactOnRailsPro.configuration.stream_prerender_caching = true
+        Rails.cache.clear
+        example.run
+      ensure
+        ReactOnRailsPro.configuration.stream_prerender_caching = original_stream_prerender_caching
+        Rails.cache.clear
+      end
+
+      before do
+        written_chunks.clear
+        allow(mocked_stream).to receive(:write) { |chunk| written_chunks << chunk }
+        allow(mocked_stream).to receive(:close)
+        mocked_response = instance_double(ActionDispatch::Response)
+        allow(mocked_response).to receive(:stream).and_return(mocked_stream)
+        allow(self).to receive(:response).and_return(mocked_response)
+      end
+
+      def render_with_cached_stream(extra_options = {})
+        allow(self).to receive(:render_to_string) do
+          render_result = cached_stream_react_component(
+            component_name,
+            props: props,
+            id: "#{component_name}-react-component-0",
+            trace: true,
+            cache_options: { expires_in: 60 },
+            **extra_options
+          )
+          <<-HTML
+            <div>
+              <h1>Header Rendered In View</h1>
+              #{render_result}
+            </div>
+          HTML
+        end
+      end
+
+      it "serves MISS then HIT with identical chunks and no second Node call" do
+        mock_request_and_response
+        render_with_cached_stream
+
+        expect(Rails.cache)
+          .to receive(:write).with(anything, kind_of(Array), hash_including(expires_in: 60)).and_call_original
+
+        # First render (MISS → write-through)
+        stream_view_containing_react_components(template: "path/to/your/template")
+        first_run_chunks = written_chunks.dup
+        expect(chunks_read.count).to eq(chunks.count)
+        expect(first_run_chunks.first).to include("<h1>Header Rendered In View</h1>")
+
+        # Second render (HIT → served from cache, no Node call; no new HTTPX chunks)
+        written_chunks.clear
+        chunks_read.clear
+        # Reset rails context flag to simulate a fresh request lifecycle
+        @rendered_rails_context = nil
+        stream_view_containing_react_components(template: "path/to/your/template")
+        second_run_chunks = written_chunks.dup
+        expect(chunks_read.count).to eq(0)
+        expect(second_run_chunks).to eq(first_run_chunks)
+      end
+
+      it "respects skip_prerender_cache and does not write or hit cache" do
+        mock_request_and_response
+        render_with_cached_stream(skip_prerender_cache: true)
+
+        expect(Rails.cache).not_to receive(:write)
+
+        # First render
+        stream_view_containing_react_components(template: "path/to/your/template")
+        first_call_count = chunks_read.count
+        expect(first_call_count).to eq(chunks.count)
+
+        # Second render (still goes to Node)
+        written_chunks.clear
+        chunks_read.clear
+        # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
+        clear_stream_mocks
+        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200) do |yielder|
+          chunks.each do |chunk|
+            chunks_read << chunk
+            yielder.call("#{chunk.to_json}\n")
+          end
+        end
+        stream_view_containing_react_components(template: "path/to/your/template")
+        written_chunks.clear
+        chunks_read.clear
+        # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
+        clear_stream_mocks
+        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200) do |yielder|
+          chunks.each do |chunk|
+            chunks_read << chunk
+            yielder.call("#{chunk.to_json}\n")
+          end
+        end
+        stream_view_containing_react_components(template: "path/to/your/template")
+        expect(chunks_read.count).to eq(chunks.count)
+      end
+
+      it "invalidates cache when props change" do
+        # First run with base props
+        mock_request_and_response
+        render_with_cached_stream
+        stream_view_containing_react_components(template: "path/to/your/template")
+        first_run_chunks = written_chunks.dup
+
+        # Second run with different props triggers MISS
+        written_chunks.clear
+        chunks_read.clear
+        # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
+        clear_stream_mocks
+        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200) do |yielder|
+          chunks.each do |chunk|
+            chunks_read << chunk
+            yielder.call("#{chunk.to_json}\n")
+          end
+        end
+        allow(self).to receive(:render_to_string) do
+          render_result = cached_stream_react_component(
+            component_name,
+            props: props.merge(extra: "changed"),
+            id: "#{component_name}-react-component-0",
+            trace: true,
+            cache_options: { expires_in: 60 }
+          )
+          <<-HTML
+            <div>
+              <h1>Header Rendered In View</h1>
+              #{render_result}
+            </div>
+          HTML
+        end
+
+        stream_view_containing_react_components(template: "path/to/your/template")
+        second_run_chunks = written_chunks.dup
+
+        expect(second_run_chunks).not_to eq(first_run_chunks)
+      end
+    end
   end
 end
