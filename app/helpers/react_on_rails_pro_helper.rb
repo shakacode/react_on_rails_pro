@@ -91,10 +91,26 @@ module ReactOnRailsProHelper
     end
   end
 
+  # Streaming variant that enables prerender stream caching at the renderer layer.
+  # Does not use fragment caching and does not require props via block.
+  # Passes cache_options through so the prerender stream cache can honor TTL/compression.
+  def cached_stream_react_component(component_name, props: {}, cache_options: nil, **raw_options)
+    ReactOnRailsPro::Utils.with_trace(component_name) do
+      options = raw_options
+      options[:prerender] = true unless options.key?(:prerender)
+      options[:cache_options] = cache_options if cache_options
+      options[:auto_load_bundle] =
+        ReactOnRails.configuration.auto_load_bundle || raw_options[:auto_load_bundle]
+
+      stream_react_component(component_name, props: props, **options)
+    end
+  end
+
   if defined?(ScoutApm)
     include ScoutApm::Tracer
     instrument_method :cached_react_component, type: "ReactOnRails", name: "cached_react_component"
     instrument_method :cached_react_component_hash, type: "ReactOnRails", name: "cached_react_component_hash"
+    instrument_method :cached_stream_react_component, type: "ReactOnRails", name: "cached_stream_react_component"
   end
 
   private
