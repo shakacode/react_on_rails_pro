@@ -16,6 +16,12 @@ You can find the **package** version numbers from this repo's tags and below in 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+### Changed (Breaking)
+- Unified prerender caching behavior: when `config.prerender_caching` is true, both streaming and non‑streaming SSR are cached. Use `internal_option(:skip_prerender_cache)` on a render call to bypass caching per request.
+
+### Added
+- Introduced `ReactOnRailsPro::StreamCache` to support write‑through caching for streaming SSR. If a cached stream exists for a prerender cache key, it will be served; otherwise, the stream is wrapped, chunks are emitted downstream, and the collected chunks are written to `Rails.cache` on completion.
+
 ## [4.0.0-rc.15] - 2025-08-11
 
 ### Fixed
