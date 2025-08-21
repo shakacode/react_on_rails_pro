@@ -54,8 +54,7 @@ module ReactOnRailsPro
 
         def cache_enabled_for?(render_options)
           ReactOnRailsPro.configuration.prerender_caching &&
-            render_options.internal_option(:skip_prerender_cache).nil? &&
-            (!render_options.streaming? || ReactOnRailsPro.configuration.stream_prerender_caching)
+            render_options.internal_option(:skip_prerender_cache).nil?
         end
 
         def render_with_cache(js_code, render_options)
