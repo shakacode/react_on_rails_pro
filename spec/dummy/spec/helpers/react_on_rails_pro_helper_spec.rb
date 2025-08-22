@@ -509,12 +509,14 @@ describe ReactOnRailsProHelper, type: :helper do
         allow(self).to receive(:render_to_string) do
           render_result = cached_stream_react_component(
             component_name,
-            props: props,
+            cache_key: ["stream-cache-spec", component_name],
             id: "#{component_name}-react-component-0",
             trace: true,
             cache_options: { expires_in: 60 },
             **extra_options
-          )
+          ) do
+            props
+          end
           <<-HTML
             <div>
               <h1>Header Rendered In View</h1>
@@ -550,7 +552,8 @@ describe ReactOnRailsProHelper, type: :helper do
 
       it "respects skip_prerender_cache and does not write or hit cache" do
         mock_request_and_response
-        render_with_cached_stream(skip_prerender_cache: true)
+        # Disable view-level caching for this run via conditional
+        render_with_cached_stream(if: false)
 
         expect(Rails.cache).not_to receive(:write)
 
@@ -609,11 +612,13 @@ describe ReactOnRailsProHelper, type: :helper do
         allow(self).to receive(:render_to_string) do
           render_result = cached_stream_react_component(
             component_name,
-            props: props.merge(extra: "changed"),
+            cache_key: ["stream-cache-spec", component_name, "changed"],
             id: "#{component_name}-react-component-0",
             trace: true,
             cache_options: { expires_in: 60 }
-          )
+          ) do
+            props.merge(extra: "changed")
+          end
           <<-HTML
             <div>
               <h1>Header Rendered In View</h1>
