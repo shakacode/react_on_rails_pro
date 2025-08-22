@@ -487,12 +487,12 @@ describe ReactOnRailsProHelper, type: :helper do
       let(:written_chunks) { [] }
 
       around do |example|
-        original_stream_prerender_caching = ReactOnRailsPro.configuration.stream_prerender_caching
-        ReactOnRailsPro.configuration.stream_prerender_caching = true
+        original_prerender_caching = ReactOnRailsPro.configuration.prerender_caching
+        ReactOnRailsPro.configuration.prerender_caching = true
         Rails.cache.clear
         example.run
       ensure
-        ReactOnRailsPro.configuration.stream_prerender_caching = original_stream_prerender_caching
+        ReactOnRailsPro.configuration.prerender_caching = original_prerender_caching
         Rails.cache.clear
       end
 
