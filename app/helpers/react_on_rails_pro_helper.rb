@@ -123,14 +123,7 @@ module ReactOnRailsProHelper
     auto_load_bundle = ReactOnRails.configuration.auto_load_bundle || raw_options[:auto_load_bundle]
 
     unless ReactOnRailsPro::Cache.use_cache?(raw_options)
-      props = yield
-      options = raw_options.merge(
-        props: props,
-        prerender: true,
-        skip_prerender_cache: true,
-        auto_load_bundle: auto_load_bundle
-      )
-      return stream_react_component(component_name, options)
+      return render_stream_component_with_props(component_name, raw_options, auto_load_bundle, &block)
     end
 
     # Compose a cache key consistent with non-stream helper semantics.
@@ -162,17 +155,9 @@ module ReactOnRailsProHelper
     initial_result
   end
 
-  def handle_stream_cache_miss(component_name, raw_options, auto_load_bundle, view_cache_key)
-    props = yield
-    miss_options = raw_options.merge(
-      props: props,
-      prerender: true,
-      skip_prerender_cache: true,
-      auto_load_bundle: auto_load_bundle
-    )
-
+  def handle_stream_cache_miss(component_name, raw_options, auto_load_bundle, view_cache_key, &block)
     # Kick off the normal streaming helper to get the initial result and the original fiber
-    initial_result = stream_react_component(component_name, miss_options)
+    initial_result = render_stream_component_with_props(component_name, raw_options, auto_load_bundle, &block)
     original_fiber = @rorp_rendering_fibers.pop
 
     buffered_chunks = [initial_result]
@@ -186,6 +171,17 @@ module ReactOnRailsProHelper
     end
     @rorp_rendering_fibers << wrapper_fiber
     initial_result
+  end
+
+  def render_stream_component_with_props(component_name, raw_options, auto_load_bundle)
+    props = yield
+    options = raw_options.merge(
+      props: props,
+      prerender: true,
+      skip_prerender_cache: true,
+      auto_load_bundle: auto_load_bundle
+    )
+    stream_react_component(component_name, options)
   end
 
   def check_caching_options!(raw_options, block)
