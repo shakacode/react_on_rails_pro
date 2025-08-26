@@ -72,7 +72,8 @@ module ReactOnRailsPro
                    remote_bundle_cache_adapter: nil, ssr_pre_hook_js: nil, assets_to_copy: nil,
                    renderer_request_retry_limit: nil, throw_js_errors: nil, ssr_timeout: nil,
                    profile_server_rendering_js_code: nil, raise_non_shell_server_rendering_errors: nil,
-                   enable_rsc_support: nil, rsc_payload_generation_url_path: nil, concurrent_stream_drain: DEFAULT_CONCURRENT_STREAM_DRAIN)
+                   enable_rsc_support: nil, rsc_payload_generation_url_path: nil,
+                   concurrent_stream_drain: DEFAULT_CONCURRENT_STREAM_DRAIN)
       self.renderer_url = renderer_url
       self.renderer_password = renderer_password
       self.server_renderer = server_renderer
