@@ -39,6 +39,4 @@ ReactOnRails.configure do |config|
 
   config.auto_load_bundle = true
   config.components_subdirectory = "ror-auto-load-components"
-  # this can be removed if upgraded to shakapacker >= 8.2.0 since it is the default
-  config.generated_component_packs_loading_strategy = :async
 end
