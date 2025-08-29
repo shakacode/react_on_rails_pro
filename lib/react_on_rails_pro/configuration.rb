@@ -54,6 +54,7 @@ module ReactOnRailsPro
     DEFAULT_ENABLE_RSC_SUPPORT = false
     DEFAULT_RSC_PAYLOAD_GENERATION_URL_PATH = "rsc_payload/"
     DEFAULT_CONCURRENT_STREAM_DRAIN = false
+    DEFAULT_CONCURRENT_STREAM_QUEUE_CAPACITY = 64
 
     attr_accessor :renderer_url, :renderer_password, :tracing,
                   :server_renderer, :renderer_use_fallback_exec_js, :prerender_caching,
@@ -62,7 +63,7 @@ module ReactOnRailsPro
                   :remote_bundle_cache_adapter, :ssr_pre_hook_js, :assets_to_copy,
                   :renderer_request_retry_limit, :throw_js_errors, :ssr_timeout,
                   :profile_server_rendering_js_code, :raise_non_shell_server_rendering_errors, :enable_rsc_support,
-                  :rsc_payload_generation_url_path, :concurrent_stream_drain
+                  :rsc_payload_generation_url_path, :concurrent_stream_drain, :concurrent_stream_queue_capacity
 
     def initialize(renderer_url: nil, renderer_password: nil, server_renderer: nil, # rubocop:disable Metrics/AbcSize
                    renderer_use_fallback_exec_js: nil, prerender_caching: nil,
@@ -73,7 +74,8 @@ module ReactOnRailsPro
                    renderer_request_retry_limit: nil, throw_js_errors: nil, ssr_timeout: nil,
                    profile_server_rendering_js_code: nil, raise_non_shell_server_rendering_errors: nil,
                    enable_rsc_support: nil, rsc_payload_generation_url_path: nil,
-                   concurrent_stream_drain: DEFAULT_CONCURRENT_STREAM_DRAIN)
+                   concurrent_stream_drain: DEFAULT_CONCURRENT_STREAM_DRAIN,
+                   concurrent_stream_queue_capacity: DEFAULT_CONCURRENT_STREAM_QUEUE_CAPACITY)
       self.renderer_url = renderer_url
       self.renderer_password = renderer_password
       self.server_renderer = server_renderer
@@ -97,6 +99,7 @@ module ReactOnRailsPro
       self.enable_rsc_support = enable_rsc_support
       self.rsc_payload_generation_url_path = rsc_payload_generation_url_path
       self.concurrent_stream_drain = concurrent_stream_drain
+      self.concurrent_stream_queue_capacity = concurrent_stream_queue_capacity
     end
 
     def setup_config_values
