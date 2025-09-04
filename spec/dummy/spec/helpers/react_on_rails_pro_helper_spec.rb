@@ -326,7 +326,7 @@ describe ReactOnRailsProHelper, type: :helper do
       HTML
     end
 
-    def mock_request_and_response(mock_chunks = chunks)
+    def mock_request_and_response(mock_chunks = chunks, count: 1)
       # Reset connection instance variables to ensure clean state for tests
       ReactOnRailsPro::Request.instance_variable_set(:@connection, nil)
       original_httpx_plugin = HTTPX.method(:plugin)
@@ -336,7 +336,7 @@ describe ReactOnRailsProHelper, type: :helper do
       clear_stream_mocks
 
       chunks_read.clear
-      mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200) do |yielder|
+      mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200, count: count) do |yielder|
         mock_chunks.each do |chunk|
           chunks_read << chunk
           yielder.call("#{chunk.to_json}\n")
@@ -551,7 +551,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "respects skip_prerender_cache and does not write or hit cache" do
-        mock_request_and_response
+        mock_request_and_response(count: 3)
         # Disable view-level caching for this run via conditional
         render_with_cached_stream(if: false)
 
@@ -565,34 +565,16 @@ describe ReactOnRailsProHelper, type: :helper do
         # Second render (still goes to Node)
         written_chunks.clear
         chunks_read.clear
-        # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
-        clear_stream_mocks
-        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}},
-                                200) do |yielder|
-          chunks.each do |chunk|
-            chunks_read << chunk
-            yielder.call("#{chunk.to_json}\n")
-          end
-        end
         stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         written_chunks.clear
         chunks_read.clear
-        # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
-        clear_stream_mocks
-        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}},
-                                200) do |yielder|
-          chunks.each do |chunk|
-            chunks_read << chunk
-            yielder.call("#{chunk.to_json}\n")
-          end
-        end
         stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         expect(chunks_read.count).to eq(chunks.count)
       end
 
       it "invalidates cache when props change" do
         # First run with base props
-        mock_request_and_response
+        mock_request_and_response(count: 2)
         render_with_cached_stream
         stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         first_run_chunks = written_chunks.dup
@@ -600,15 +582,6 @@ describe ReactOnRailsProHelper, type: :helper do
         # Second run with different props triggers MISS
         written_chunks.clear
         chunks_read.clear
-        # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
-        clear_stream_mocks
-        mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}},
-                                200) do |yielder|
-          chunks.each do |chunk|
-            chunks_read << chunk
-            yielder.call("#{chunk.to_json}\n")
-          end
-        end
         allow(self).to receive(:render_to_string) do
           render_result = cached_stream_react_component(
             component_name,
