@@ -289,6 +289,7 @@ describe ReactOnRailsProHelper, type: :helper do
     let(:component_name) { "TestingStreamableComponent" }
     let(:props) { { helloWorldData: { name: "Mr. Server Side Rendering" } } }
     let(:component_options) { { prerender: true, trace: true, id: "#{component_name}-react-component-0" } }
+    let(:template_path) { "fake/path/because/render_to_string&response/are/mocked" }
     let(:chunks) do
       [
         { html: "<div>Chunk 1: Stream React Server Components</div>",
@@ -437,8 +438,8 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "writes the chunk to stream as soon as it is received" do
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
-        expect(self).to have_received(:render_to_string).once.with(template: "fake/path/because/render_to_string&response/are/mocked")
+        stream_view_containing_react_components(template: template_path)
+        expect(self).to have_received(:render_to_string).once.with(template: template_path)
         expect(chunks_read.count).to eq(chunks.count)
         expect(written_chunks.count).to eq(chunks.count)
         expect(mocked_stream).to have_received(:write).exactly(chunks.count).times
@@ -446,7 +447,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "prepends the rails context to the first chunk only" do
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
+        stream_view_containing_react_components(template: template_path)
         initial_result = written_chunks.first
         expect(initial_result).to script_tag_be_included(rails_context_tag)
 
@@ -462,7 +463,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "prepends the component specification tag to the first chunk only" do
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
+        stream_view_containing_react_components(template: template_path)
         initial_result = written_chunks.first
         expect(initial_result).to script_tag_be_included(react_component_specification_tag)
 
@@ -473,7 +474,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "renders the rails view content in the first chunk" do
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
+        stream_view_containing_react_components(template: template_path)
         initial_result = written_chunks.first
         expect(initial_result).to include("<h1>Header Rendered In View</h1>")
         written_chunks[1..].each do |chunk|
@@ -505,15 +506,31 @@ describe ReactOnRailsProHelper, type: :helper do
         allow(self).to receive(:response).and_return(mocked_response)
       end
 
-      def render_with_cached_stream(extra_options = {})
+      def render_with_cached_stream(**opts)
+        stub_render_with_cached_stream(
+          cache_key: ["stream-cache-spec", component_name],
+          props: props,
+          **opts
+        )
+      end
+
+      def render_with_cached_stream_changed_props(**opts)
+        stub_render_with_cached_stream(
+          cache_key: ["stream-cache-spec", component_name, "changed"],
+          props: props.merge(extra: "changed"),
+          **opts
+        )
+      end
+
+      def stub_render_with_cached_stream(cache_key:, props:, **opts)
         allow(self).to receive(:render_to_string) do
           render_result = cached_stream_react_component(
             component_name,
-            cache_key: ["stream-cache-spec", component_name],
+            cache_key: cache_key,
             id: "#{component_name}-react-component-0",
             trace: true,
             cache_options: { expires_in: 60 },
-            **extra_options
+            **opts
           ) do
             props
           end
@@ -526,6 +543,16 @@ describe ReactOnRailsProHelper, type: :helper do
         end
       end
 
+      def reset_stream_buffers
+        written_chunks.clear
+        chunks_read.clear
+      end
+
+      def run_stream
+        stream_view_containing_react_components(template: template_path)
+        written_chunks.dup
+      end
+
       it "serves MISS then HIT with identical chunks and no second Node call" do
         mock_request_and_response
         render_with_cached_stream
@@ -534,18 +561,15 @@ describe ReactOnRailsProHelper, type: :helper do
           .to receive(:write).with(anything, kind_of(Array), hash_including(expires_in: 60)).and_call_original
 
         # First render (MISS → write-through)
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
-        first_run_chunks = written_chunks.dup
+        first_run_chunks = run_stream
         expect(chunks_read.count).to eq(chunks.count)
         expect(first_run_chunks.first).to include("<h1>Header Rendered In View</h1>")
 
         # Second render (HIT → served from cache, no Node call; no new HTTPX chunks)
-        written_chunks.clear
-        chunks_read.clear
+        reset_stream_buffers
         # Reset rails context flag to simulate a fresh request lifecycle
         @rendered_rails_context = nil
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
-        second_run_chunks = written_chunks.dup
+        second_run_chunks = run_stream
         expect(chunks_read.count).to eq(0)
         expect(second_run_chunks).to eq(first_run_chunks)
       end
@@ -558,17 +582,15 @@ describe ReactOnRailsProHelper, type: :helper do
         expect(Rails.cache).not_to receive(:write)
 
         # First render
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
+        run_stream
         first_call_count = chunks_read.count
         expect(first_call_count).to eq(chunks.count)
 
         # Second render (still goes to Node)
-        written_chunks.clear
-        chunks_read.clear
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
-        written_chunks.clear
-        chunks_read.clear
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
+        reset_stream_buffers
+        run_stream
+        reset_stream_buffers
+        run_stream
         expect(chunks_read.count).to eq(chunks.count)
       end
 
@@ -576,32 +598,12 @@ describe ReactOnRailsProHelper, type: :helper do
         # First run with base props
         mock_request_and_response(count: 2)
         render_with_cached_stream
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
-        first_run_chunks = written_chunks.dup
+        first_run_chunks = run_stream
 
         # Second run with different props triggers MISS
-        written_chunks.clear
-        chunks_read.clear
-        allow(self).to receive(:render_to_string) do
-          render_result = cached_stream_react_component(
-            component_name,
-            cache_key: ["stream-cache-spec", component_name, "changed"],
-            id: "#{component_name}-react-component-0",
-            trace: true,
-            cache_options: { expires_in: 60 }
-          ) do
-            props.merge(extra: "changed")
-          end
-          <<-HTML
-            <div>
-              <h1>Header Rendered In View</h1>
-              #{render_result}
-            </div>
-          HTML
-        end
-
-        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
-        second_run_chunks = written_chunks.dup
+        reset_stream_buffers
+        render_with_cached_stream_changed_props
+        second_run_chunks = run_stream
 
         expect(second_run_chunks).not_to eq(first_run_chunks)
       end
