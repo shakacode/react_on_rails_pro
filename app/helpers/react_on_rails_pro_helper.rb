@@ -92,7 +92,7 @@ module ReactOnRailsProHelper
   end
 
   # Provide caching support for stream_react_component in a manner akin to Rails fragment caching.
-  # All the same options as cached_react_component apply with the following differences:
+  # All the same options as stream_react_component apply with the following differences:
   #
   # 1. You must pass the props as a block. This is so that the evaluation of the props is not done
   #    if the cache can be used.
