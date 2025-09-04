@@ -534,7 +534,7 @@ describe ReactOnRailsProHelper, type: :helper do
           .to receive(:write).with(anything, kind_of(Array), hash_including(expires_in: 60)).and_call_original
 
         # First render (MISS → write-through)
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         first_run_chunks = written_chunks.dup
         expect(chunks_read.count).to eq(chunks.count)
         expect(first_run_chunks.first).to include("<h1>Header Rendered In View</h1>")
@@ -544,7 +544,7 @@ describe ReactOnRailsProHelper, type: :helper do
         chunks_read.clear
         # Reset rails context flag to simulate a fresh request lifecycle
         @rendered_rails_context = nil
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         second_run_chunks = written_chunks.dup
         expect(chunks_read.count).to eq(0)
         expect(second_run_chunks).to eq(first_run_chunks)
@@ -558,7 +558,7 @@ describe ReactOnRailsProHelper, type: :helper do
         expect(Rails.cache).not_to receive(:write)
 
         # First render
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         first_call_count = chunks_read.count
         expect(first_call_count).to eq(chunks.count)
 
@@ -574,7 +574,7 @@ describe ReactOnRailsProHelper, type: :helper do
             yielder.call("#{chunk.to_json}\n")
           end
         end
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         written_chunks.clear
         chunks_read.clear
         # Re-register mock for the next HTTPX request without re-stubbing HTTPX.plugin
@@ -586,7 +586,7 @@ describe ReactOnRailsProHelper, type: :helper do
             yielder.call("#{chunk.to_json}\n")
           end
         end
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         expect(chunks_read.count).to eq(chunks.count)
       end
 
@@ -594,7 +594,7 @@ describe ReactOnRailsProHelper, type: :helper do
         # First run with base props
         mock_request_and_response
         render_with_cached_stream
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         first_run_chunks = written_chunks.dup
 
         # Second run with different props triggers MISS
@@ -627,7 +627,7 @@ describe ReactOnRailsProHelper, type: :helper do
           HTML
         end
 
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         second_run_chunks = written_chunks.dup
 
         expect(second_run_chunks).not_to eq(first_run_chunks)
