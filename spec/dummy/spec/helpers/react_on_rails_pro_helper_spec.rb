@@ -437,8 +437,8 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "writes the chunk to stream as soon as it is received" do
-        stream_view_containing_react_components(template: "path/to/your/template")
-        expect(self).to have_received(:render_to_string).once.with(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
+        expect(self).to have_received(:render_to_string).once.with(template: "fake/path/because/render_to_string&response/are/mocked")
         expect(chunks_read.count).to eq(chunks.count)
         expect(written_chunks.count).to eq(chunks.count)
         expect(mocked_stream).to have_received(:write).exactly(chunks.count).times
@@ -446,7 +446,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "prepends the rails context to the first chunk only" do
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         initial_result = written_chunks.first
         expect(initial_result).to script_tag_be_included(rails_context_tag)
 
@@ -462,7 +462,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "prepends the component specification tag to the first chunk only" do
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         initial_result = written_chunks.first
         expect(initial_result).to script_tag_be_included(react_component_specification_tag)
 
@@ -473,7 +473,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
 
       it "renders the rails view content in the first chunk" do
-        stream_view_containing_react_components(template: "path/to/your/template")
+        stream_view_containing_react_components(template: "fake/path/because/render_to_string&response/are/mocked")
         initial_result = written_chunks.first
         expect(initial_result).to include("<h1>Header Rendered In View</h1>")
         written_chunks[1..].each do |chunk|
