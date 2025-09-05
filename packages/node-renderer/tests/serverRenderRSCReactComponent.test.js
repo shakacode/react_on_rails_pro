@@ -33,8 +33,7 @@ describe('serverRenderRSCReactComponent', () => {
   const getReactOnRailsRSCObject = async () => {
     const testBundlesDirectory = path.join(__dirname, '../../../spec/dummy/public/webpack/test');
     const rscBundlePath = path.join(testBundlesDirectory, 'rsc-bundle.js');
-    await buildVM(rscBundlePath);
-    const vmContext = getVMContext(rscBundlePath);
+    const vmContext = await buildVM(rscBundlePath);
     const { ReactOnRails, React } = vmContext.context;
 
     function SuspensedComponentWithAsyncError() {
