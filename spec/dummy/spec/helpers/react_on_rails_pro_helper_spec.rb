@@ -608,5 +608,53 @@ describe ReactOnRailsProHelper, type: :helper do
         expect(second_run_chunks).not_to eq(first_run_chunks)
       end
     end
+
+    describe "cached_stream_react_component integration with RandomValue", :caching do
+      around do |example|
+        original_prerender_caching = ReactOnRailsPro.configuration.prerender_caching
+        ReactOnRailsPro.configuration.prerender_caching = true
+        Rails.cache.clear
+        example.run
+      ensure
+        ReactOnRailsPro.configuration.prerender_caching = original_prerender_caching
+        Rails.cache.clear
+      end
+
+      # we need this setup because we can't use the helper outside of stream_view_containing_react_components
+      def render_cached_random_value(cache_key)
+        # Streaming helpers require this context normally provided by stream_view_containing_react_components
+        @rorp_rendering_fibers = []
+        
+        result = cached_stream_react_component("RandomValue", cache_key: cache_key, id: "RandomValue-react-component-0") do
+          { a: 1, b: 2 }
+        end
+        
+        # Complete the streaming lifecycle to trigger cache writes
+        @rorp_rendering_fibers.each { |fiber| fiber.resume while fiber.alive? }
+        
+        result
+      end
+
+      it "serves same RandomValue on cache HIT with identical cache key" do
+        first_result = render_cached_random_value("stable_key")
+        first_random_value = first_result[/RandomValue:\s*<!--\s*-->([\d.]+)/, 1]
+        expect(first_random_value).to be_present
+
+        second_result = render_cached_random_value("stable_key")
+        second_random_value = second_result[/RandomValue:\s*<!--\s*-->([\d.]+)/, 1]
+        
+        expect(second_random_value).to eq(first_random_value)
+      end
+
+      it "serves different values on cache MISS with different cache keys" do
+        first_result = render_cached_random_value("key_one")
+        first_random_value = first_result[/RandomValue:\s*<!--\s*-->([\d.]+)/, 1]
+
+        second_result = render_cached_random_value("key_two")
+        second_random_value = second_result[/RandomValue:\s*<!--\s*-->([\d.]+)/, 1]
+
+        expect(second_random_value).not_to eq(first_random_value)
+      end
+    end
   end
 end
