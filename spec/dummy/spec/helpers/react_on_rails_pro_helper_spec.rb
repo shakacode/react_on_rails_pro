@@ -337,7 +337,8 @@ describe ReactOnRailsProHelper, type: :helper do
       clear_stream_mocks
 
       chunks_read.clear
-      mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200, count: count) do |yielder|
+      mock_streaming_response(%r{http://localhost:3800/bundles/[a-f0-9]{32}-test/render/[a-f0-9]{32}}, 200,
+                              count: count) do |yielder|
         mock_chunks.each do |chunk|
           chunks_read << chunk
           yielder.call("#{chunk.to_json}\n")
@@ -660,14 +661,15 @@ describe ReactOnRailsProHelper, type: :helper do
       def render_cached_random_value(cache_key)
         # Streaming helpers require this context normally provided by stream_view_containing_react_components
         @rorp_rendering_fibers = []
-        
-        result = cached_stream_react_component("RandomValue", cache_key: cache_key, id: "RandomValue-react-component-0") do
+
+        result = cached_stream_react_component("RandomValue", cache_key: cache_key,
+                                                              id: "RandomValue-react-component-0") do
           { a: 1, b: 2 }
         end
-        
+
         # Complete the streaming lifecycle to trigger cache writes
-        @rorp_rendering_fibers.each { |fiber| fiber.resume while fiber.alive? }
-        
+        @rorp_rendering_fibers.each { |fiber| fiber.resume while fiber.alive? } # rubocop:disable RSpec/InstanceVariable
+
         result
       end
 
@@ -678,7 +680,7 @@ describe ReactOnRailsProHelper, type: :helper do
 
         second_result = render_cached_random_value("stable_key")
         second_random_value = second_result[/RandomValue:\s*<!--\s*-->([\d.]+)/, 1]
-        
+
         expect(second_random_value).to eq(first_random_value)
       end
 
