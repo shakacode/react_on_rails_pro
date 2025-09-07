@@ -607,6 +607,42 @@ describe ReactOnRailsProHelper, type: :helper do
 
         expect(second_run_chunks).not_to eq(first_run_chunks)
       end
+
+      it "doesn't call the props block on cache HIT" do
+        mock_request_and_response
+        render_with_cached_stream
+
+        # Prime the cache
+        run_stream
+        reset_stream_buffers
+
+        # Second call should not yield the block
+        expect do |props_block|
+          stub_render_with_cached_stream(
+            cache_key: ["stream-cache-spec", component_name],
+            props: props,
+            &props_block
+          )
+          run_stream
+        end.not_to yield_control
+      end
+
+      it "respects conditional caching with :if option" do
+        mock_request_and_response(count: 2)
+
+        # With if: false, caching should be disabled - both calls hit Node renderer
+        render_with_cached_stream(if: false)
+        first_run_chunks = run_stream
+        expect(chunks_read.count).to eq(chunks.count)
+
+        reset_stream_buffers
+        @rendered_rails_context = nil
+        render_with_cached_stream(if: false)
+        second_run_chunks = run_stream
+        expect(chunks_read.count).to eq(chunks.count) # Both calls went to Node
+
+        expect(second_run_chunks).to eq(first_run_chunks) # Same template/props, same result
+      end
     end
 
     describe "cached_stream_react_component integration with RandomValue", :caching do
