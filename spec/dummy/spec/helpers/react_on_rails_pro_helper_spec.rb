@@ -483,7 +483,7 @@ describe ReactOnRailsProHelper, type: :helper do
       end
     end
 
-    describe "stream_prerender_caching", :caching do # rubocop:disable RSpec/MultipleMemoizedHelpers
+    describe "#cached_stream_react_component", :caching do # rubocop:disable RSpec/MultipleMemoizedHelpers
       let(:mocked_stream) { instance_double(ActionController::Live::Buffer) }
       let(:written_chunks) { [] }
 
