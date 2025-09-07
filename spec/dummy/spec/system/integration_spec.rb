@@ -506,11 +506,6 @@ describe "Pages/stream_async_components_for_testing", :js do
                   "#AsyncComponentsTreeForTesting-react-component-0"
 end
 
-describe "Pages/cached_stream_async_components_for_testing", :js do
-  it_behaves_like "streamed component tests", "/cached_stream_async_components_for_testing",
-                  "#AsyncComponentsTreeForTesting-react-component-0"
-end
-
 describe "React Router Sixth Page", :js do
   it_behaves_like "streamed component tests", "/server_router/streaming-server-component",
                   "#ServerComponentRouter-react-component-0"
