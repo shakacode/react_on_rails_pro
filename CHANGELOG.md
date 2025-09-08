@@ -16,11 +16,18 @@ You can find the **package** version numbers from this repo's tags and below in 
 ## [Unreleased]
 *Add changes in master not yet tagged.*
 
+### Improved
+- Significantly improved streaming performance by processing React components concurrently instead of sequentially. This reduces latency and improves responsiveness when using `stream_view_containing_react_components`.
+
+### Added
+- Added `config.concurrent_component_streaming_buffer_size` configuration option to control the memory buffer size for concurrent component streaming (defaults to 64). This allows fine-tuning of memory usage vs. performance for streaming applications.
+
 ### Added
 - Added `cached_stream_react_component` helper method, similar to `cached_react_component` but for streamed components.
 
 ### Changed (Breaking)
 - `config.prerender_caching`, which controls caching for non-streaming components, now also controls caching for streamed components. To disable caching for an individual render, pass `internal_option(:skip_prerender_cache)`.
+- Added `async` gem dependency (>= 2.6) to support concurrent streaming functionality.
 
 ## [4.0.0-rc.15] - 2025-08-11
 
