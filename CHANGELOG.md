@@ -17,7 +17,7 @@ You can find the **package** version numbers from this repo's tags and below in 
 *Add changes in master not yet tagged.*
 
 ### Added
-- Added `cached_stream_react_component` helper method that provides caching support for `stream_react_component`.
+- Added `cached_stream_react_component` helper method, similar to `cached_react_component` but for streamed components.
 
 ### Changed (Breaking)
 - `config.prerender_caching`, which controls caching for non-streaming components, now also controls caching for streamed components. To disable caching for an individual render, pass `internal_option(:skip_prerender_cache)`.
