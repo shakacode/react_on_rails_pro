@@ -5353,10 +5353,9 @@ react-on-rails-rsc@^19.0.2:
     neo-async "^2.6.1"
     webpack-sources "^3.2.0"
 
-react-on-rails@15.0.0:
-  version "15.0.0"
-  resolved "https://registry.yarnpkg.com/react-on-rails/-/react-on-rails-15.0.0.tgz#8edc78670129394cd92293842ae88c62d4cb030b"
-  integrity sha512-Uht8HWm8ZVN8OeDz03b3YLtprzHXhFTw7hb0jl8IpOjbig91DBuurBVxr4tfuymuemGwdjhQpscho33Cnw9Atg==
+"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/restrict-usage-of-pro-features-to-rorp-licence":
+  version "16.0.0"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#46b4226618394073f2e7368fc9ddf687e93d69ea"
 
 react-proptypes@^1.0.0:
   version "1.0.0"
@@ -5859,10 +5858,10 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
-shakapacker@8.0.0:
-  version "8.0.0"
-  resolved "https://registry.yarnpkg.com/shakapacker/-/shakapacker-8.0.0.tgz#f29537c19078af7318758c92e7a1bca4cee96bdd"
-  integrity sha512-HCdpITzIKXzGEyUWQhKzPbpwwOsgTamaPH+0kXdhM59VQxZ3NWnT5cL3DlJdAT3sGsWCJskEl3eMkQlnh9DjhA==
+shakapacker@8.4.0:
+  version "8.4.0"
+  resolved "https://registry.yarnpkg.com/shakapacker/-/shakapacker-8.4.0.tgz#be37a2adba5a090f581811b8c0c1a00f2e227580"
+  integrity sha512-ZfuxfHxy5tdjv7tCdRZHJKJQLDFwvFXOVBVUj150zgNuRKUlOAyXzOBp9/G5hUhu4MLzuPAif/fuKOdjnZeVtw==
   dependencies:
     js-yaml "^4.1.0"
     path-complete-extname "^1.0.0"
