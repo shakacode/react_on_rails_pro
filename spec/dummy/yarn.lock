@@ -5355,7 +5355,7 @@ react-on-rails-rsc@^19.0.2:
 
 "react-on-rails@git+https://github.com/shakacode/react_on_rails.git#abanoubghadban/restrict-usage-of-pro-features-to-rorp-licence":
   version "16.0.0"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#46b4226618394073f2e7368fc9ddf687e93d69ea"
+  resolved "git+https://github.com/shakacode/react_on_rails.git#6256ff160f90cde189c641a0061751e3537140ae"
 
 react-proptypes@^1.0.0:
   version "1.0.0"

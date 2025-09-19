@@ -8,7 +8,7 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 46b4226618394073f2e7368fc9ddf687e93d69ea
+  revision: 6256ff160f90cde189c641a0061751e3537140ae
   branch: abanoubghadban/restrict-usage-of-pro-features-to-rorp-licence
   specs:
     react_on_rails (16.0.0)
@@ -28,7 +28,7 @@ PATH
       execjs (~> 2.9)
       httpx (~> 1.5)
       rainbow
-      react_on_rails (>= 15.0.0)
+      react_on_rails (>= 16.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -482,6 +482,7 @@ PLATFORMS
   arm-linux-musl
   arm64-darwin
   x86_64-darwin
+  x86_64-linux
   x86_64-linux-gnu
   x86_64-linux-musl
 
