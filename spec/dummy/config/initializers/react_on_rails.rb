@@ -39,4 +39,6 @@ ReactOnRails.configure do |config|
 
   config.auto_load_bundle = true
   config.components_subdirectory = "ror-auto-load-components"
+
+  config.enforce_private_server_bundles = true
 end
