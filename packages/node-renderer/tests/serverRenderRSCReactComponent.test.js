@@ -31,7 +31,7 @@ describe('serverRenderRSCReactComponent', () => {
   // The serverRenderRSCReactComponent function should only be called when the bundle is compiled with the `react-server` condition.
   // Therefore, we cannot call it directly in the test files. Instead, we run the RSC bundle through the VM and call the method from there.
   const getReactOnRailsRSCObject = async () => {
-    const testBundlesDirectory = path.join(__dirname, '../../../spec/dummy/public/webpack/test');
+    const testBundlesDirectory = path.join(__dirname, '../../../spec/dummy/public/ssr-generated');
     const rscBundlePath = path.join(testBundlesDirectory, 'rsc-bundle.js');
     await buildVM(rscBundlePath);
     const vmContext = getVMContext(rscBundlePath);

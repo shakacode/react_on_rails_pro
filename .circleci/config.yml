@@ -224,6 +224,7 @@ jobs:
           key: v4-dummy-app-webpack-bundle-{{ .Revision }}
           paths:
             - spec/dummy/public/webpack/test
+            - spec/dummy/ssr-generated
 
   # Run JS unit tests for Renderer package.
   package-js-tests:

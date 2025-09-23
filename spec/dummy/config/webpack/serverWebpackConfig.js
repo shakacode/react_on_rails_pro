@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-const { config } = require('shakapacker');
 const { RSCWebpackPlugin } = require('react-on-rails-rsc/WebpackPlugin');
 const webpack = require('webpack');
 const path = require('path');
