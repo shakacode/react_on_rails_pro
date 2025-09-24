@@ -8,8 +8,8 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: 9b7c076beb081e503db7b08a0063662d06f32d5f
-  branch: abanoubghadban/fix-react-server-client-manifest-path
+  revision: 199071c23af522050779bada7c0997b10492fa6d
+  branch: master
   specs:
     react_on_rails (16.1.0)
       addressable
