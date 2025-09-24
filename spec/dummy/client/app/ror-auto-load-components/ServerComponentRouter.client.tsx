@@ -2,7 +2,7 @@
 
 import * as React from 'react';
 import { BrowserRouter } from 'react-router-dom';
-// import wrapServerComponentRenderer from 'react-on-rails/wrapServerComponentRenderer/client';
+import wrapServerComponentRenderer from 'react-on-rails/wrapServerComponentRenderer/client';
 import App from '../components/ServerComponentRouter';
 
 function ClientComponentRouter(props: object) {
@@ -13,5 +13,4 @@ function ClientComponentRouter(props: object) {
   );
 }
 
-// export default wrapServerComponentRenderer(ClientComponentRouter);
-export default ClientComponentRouter;
+export default wrapServerComponentRenderer(ClientComponentRouter);
