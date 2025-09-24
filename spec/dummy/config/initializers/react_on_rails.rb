@@ -41,4 +41,5 @@ ReactOnRails.configure do |config|
   config.components_subdirectory = "ror-auto-load-components"
 
   config.enforce_private_server_bundles = true
+  config.server_bundle_output_path = "ssr-generated"
 end
