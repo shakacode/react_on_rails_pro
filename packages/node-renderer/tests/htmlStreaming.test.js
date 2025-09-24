@@ -43,7 +43,7 @@ const createForm = ({ project = 'spec-dummy', commit = '', props = {}, throwJsEr
   }
   form.append('renderingRequest', renderingRequestCode);
 
-  const testBundlesDirectory = path.join(__dirname, '../../../spec/dummy/public/webpack/test');
+  const testBundlesDirectory = path.join(__dirname, '../../../spec/dummy/ssr-generated');
   const bundlePath = path.join(testBundlesDirectory, 'server-bundle.js');
   form.append(`bundle_${SERVER_BUNDLE_TIMESTAMP}`, fs.createReadStream(bundlePath), {
     contentType: 'text/javascript',
