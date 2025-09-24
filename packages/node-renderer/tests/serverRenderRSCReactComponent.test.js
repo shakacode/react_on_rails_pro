@@ -1,6 +1,6 @@
 import path from 'path';
 import { Readable } from 'stream';
-import { buildVM, getVMContext, resetVM } from '../src/worker/vm';
+import { buildExecutionContext, resetVM } from '../src/worker/vm';
 import { getConfig } from '../src/shared/configBuilder';
 
 const SimpleWorkingComponent = () => 'hello';
@@ -33,8 +33,8 @@ describe('serverRenderRSCReactComponent', () => {
   const getReactOnRailsRSCObject = async () => {
     const testBundlesDirectory = path.join(__dirname, '../../../spec/dummy/public/webpack/test');
     const rscBundlePath = path.join(testBundlesDirectory, 'rsc-bundle.js');
-    await buildVM(rscBundlePath);
-    const vmContext = getVMContext(rscBundlePath);
+    const executionContext = await buildExecutionContext([rscBundlePath], /* buildVmsIfNeeded */ true);
+    const vmContext = executionContext.getVMContext(rscBundlePath);
     const { ReactOnRails, React } = vmContext.context;
 
     function SuspensedComponentWithAsyncError() {
