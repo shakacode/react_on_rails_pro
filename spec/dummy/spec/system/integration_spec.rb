@@ -379,7 +379,7 @@ shared_examples "streamed component tests" do |path, selector|
 
   it "renders the page completely on server and displays content on client even without JavaScript" do
     # Don't add client-bundle.js to the page to ensure that the app is not hydrated
-    visit "#{path}?skip_js_packs=true"
+    navigate_with_streaming "#{path}?skip_js_packs=true"
     expect(page.html).not_to include("client-bundle.js")
     # Ensure that the component state is not updated
     change_text_expect_dom_selector(selector, expect_no_change: true)
@@ -464,8 +464,8 @@ shared_examples "streamed component tests" do |path, selector|
   end
 
   it "doesn't hydrate status component if packs are not loaded" do
-    # visit waits for the page to load, so we ensure that the page is loaded before checking the hydration status
-    visit "#{path}?skip_js_packs=true"
+    # navigate_with_streaming waits for all streaming chunks, ensuring the page is fully loaded
+    navigate_with_streaming "#{path}?skip_js_packs=true"
     expect(page).to have_text "HydrationStatus: Streaming server render"
     expect(page).not_to have_text "HydrationStatus: Hydrated"
     expect(page).not_to have_text "HydrationStatus: Page loaded"
