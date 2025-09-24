@@ -5,7 +5,7 @@ git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
 ruby '3.3.7'
 
-gem "react_on_rails", github: "shakacode/react_on_rails", branch: "feature/improve-bundle-path-resolution" # keep in sync with package.json files
+gem "react_on_rails", github: "shakacode/react_on_rails", branch: "abanoubghadban/fix-react-server-client-manifest-path" # keep in sync with package.json files
 
 # For local development
 # Add the following line to the Gemfile.local file

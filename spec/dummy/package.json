@@ -99,11 +99,11 @@
     "link-source": "cd ../.. && yarn && yarn run nps build && yalc publish",
     "postinstall": "test -f post-yarn-install.local && ./post-yarn-install.local || true",
     "build:test": "rm -rf public/webpack/test && rm -rf ssr-generated && RAILS_ENV=test NODE_ENV=test bin/shakapacker",
-    "build:dev": "rm -rf public/webpack/development && RAILS_ENV=development NODE_ENV=development bin/shakapacker",
+    "build:dev": "rm -rf public/webpack/development && rm -rf ssr-generated && RAILS_ENV=development NODE_ENV=development bin/shakapacker",
     "build:dev:watch": "RAILS_ENV=development NODE_ENV=development bin/shakapacker --watch",
     "build:client": "RAILS_ENV=production NODE_ENV=production bin/shakapacker",
     "build:server": "RAILS_ENV=production NODE_ENV=production SERVER=true bin/shakapacker",
-    "build:clean": "rm -rf public/webpack || true",
+    "build:clean": "rm -rf public/webpack && rm -rf ssr-generated || true",
     "node-renderer-debug": "RENDERER_PORT=3800 ndb client/node-renderer.js",
     "node-renderer": "RENDERER_PORT=3800 node client/node-renderer.js"
   },

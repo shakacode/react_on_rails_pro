@@ -8,10 +8,10 @@ GIT
 
 GIT
   remote: https://github.com/shakacode/react_on_rails.git
-  revision: b36413dddd385dc843c755bf84036792d26eb412
-  branch: feature/improve-bundle-path-resolution
+  revision: 9b7c076beb081e503db7b08a0063662d06f32d5f
+  branch: abanoubghadban/fix-react-server-client-manifest-path
   specs:
-    react_on_rails (16.0.1.rc.2)
+    react_on_rails (16.1.0)
       addressable
       connection_pool
       execjs (~> 2.5)
