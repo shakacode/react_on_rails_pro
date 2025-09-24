@@ -6843,9 +6843,10 @@ react-is@^18.0.0:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-18.3.1.tgz#e83557dc12eae63a99e003a46388b1dcbb44db7e"
   integrity sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==
 
-"react-on-rails@git+https://github.com/shakacode/react_on_rails.git#feature/improve-bundle-path-resolution":
-  version "16.0.1-rc.2"
-  resolved "git+https://github.com/shakacode/react_on_rails.git#b36413dddd385dc843c755bf84036792d26eb412"
+react-on-rails@16.0.1-rc.4:
+  version "16.0.1-rc.4"
+  resolved "https://registry.npmjs.org/react-on-rails/-/react-on-rails-16.0.1-rc.4.tgz#c4ed21579dbf8d4602f1fbff26b1ada581f2188c"
+  integrity sha512-V6unOWd/PvcbEcgtsjf/i10wf2BgZ0NBJ9Dq5jWXm9OtlzRGvIqMXsK05YkyJ1auPlaExxxJezNPC+BQKLRhEg==
 
 readable-stream@^2.2.2:
   version "2.3.8"
