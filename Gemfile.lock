@@ -6,19 +6,6 @@ GIT
       byebug (~> 11.0)
       pry (>= 0.13, < 0.15)
 
-GIT
-  remote: https://github.com/shakacode/react_on_rails.git
-  revision: 199071c23af522050779bada7c0997b10492fa6d
-  branch: master
-  specs:
-    react_on_rails (16.1.0)
-      addressable
-      connection_pool
-      execjs (~> 2.5)
-      rails (>= 5.2)
-      rainbow (~> 3.0)
-      shakapacker (>= 6.0)
-
 PATH
   remote: .
   specs:
@@ -301,6 +288,13 @@ GEM
       ffi (~> 1.0)
     rdoc (6.12.0)
       psych (>= 4.0.0)
+    react_on_rails (16.1.1)
+      addressable
+      connection_pool
+      execjs (~> 2.5)
+      rails (>= 5.2)
+      rainbow (~> 3.0)
+      shakapacker (>= 6.0)
     regexp_parser (2.9.2)
     reline (0.6.0)
       io-console (~> 0.5)
@@ -475,7 +469,7 @@ DEPENDENCIES
   pry-theme
   puma (~> 6)
   rails (~> 7.1)
-  react_on_rails!
+  react_on_rails (= 16.1.1)
   react_on_rails_pro!
   rspec-rails
   rspec-retry
