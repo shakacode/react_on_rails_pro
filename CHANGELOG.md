@@ -22,90 +22,67 @@ You can find the **package** version numbers from this repo's tags and below in 
 ### Changed (Breaking)
 - `config.prerender_caching`, which controls caching for non-streaming components, now also controls caching for streamed components. To disable caching for an individual render, pass `internal_option(:skip_prerender_cache)`.
 
-## [4.0.0-rc.15] - 2025-08-11
-
-### Fixed
-- Fixed an issue where, when React Server Components (RSC) support was disabled, the Node Renderer unnecessarily requested bundles on every render. Now, bundles are only requested when actually needed, improving performance and reducing redundant network traffic. [PR 545](https://github.com/shakacode/react_on_rails_pro/pull/545) by [AbanoubGhadban](https://github.com/AbanoubGhadban).
-
-### Changed
-- Upgraded HTTPX dependency from 1.3.4 to ~> 1.5 (currently 1.5.1). [PR 520](https://github.com/shakacode/react_on_rails_pro/pull/520) by [AbanoubGhadban](https://github.com/AbanoubGhadban).
-
-## [4.0.0-rc.14] - 2025-06-22
-
-### Improved
-- Improved RSC rendering flow by eliminating double rendering of server components and reducing the number of HTTP requests.
-- Updated communication protocol between Node Renderer and Rails to version 2.0.0 which supports the ability to upload multiple bundles at once.
-- Added the ability to communicate between different bundles on the renderer by using the `runOnOtherBundle` function which is globally available for the rendering request.
-
-[PR 515](https://github.com/shakacode/react_on_rails_pro/pull/515) by [AbanoubGhadban](https://github.com/AbanoubGhadban).
-
-
-## [4.0.0-rc.13] - 2025-03-07
+## [4.0.0] - 2025-08-15
 
 ### Added
-- 🚀 **Introducing React Server Components Support!** 🎉
-  - Experience the future of React with full RSC integration
-  - Seamlessly use React Server Components in your Rails apps
-  - Reduce client bundle sizes
-  - Enable powerful new patterns for data fetching
+- **React Server Components (RSC) Support**
+  - Full RSC integration for Rails applications
+  - Reduced client bundle sizes
+  - Powerful new patterns for data fetching
   - [See the full tutorial](https://www.shakacode.com/react-on-rails-pro/docs/react-server-components-tutorial)
+  - [PR 422](https://github.com/shakacode/react_on_rails_pro/pull/422) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- **Streaming Server Rendering Support**
+  - New `stream_view_containing_react_components` helper method that works with `stream_react_component` from react_on_rails gem
+  - Progressive page loading and improved performance for server-rendered components
+  - [PR 407](https://github.com/shakacode/react_on_rails_pro/pull/407) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- **Console Log Replay**
+  - Support for replaying console logs during server rendering of streamed React components
+  - Enables debugging by capturing and displaying console output on client and server
+  - [PR 429](https://github.com/shakacode/react_on_rails_pro/pull/429) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+  - Support for replaying console logs from asynchronous operations with `replayServerAsyncOperationLogs` configuration option
+  - [PR 440](https://github.com/shakacode/react_on_rails_pro/pull/440) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- **Error Handling**
+  - Support for handling errors during server rendering of streamed React components
+  - Handles errors in initial render and inside suspense boundaries
+  - New `raise_non_shell_server_rendering_errors` configuration option
+  - [PR 432](https://github.com/shakacode/react_on_rails_pro/pull/432) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
 
-[PR 422](https://github.com/shakacode/react_on_rails_pro/pull/422) by [AbanoubGhadban](https://github.com/AbanoubGhadban).
+### Changed
+- **Infrastructure Improvements**
+  - Upgraded to Fastify 5 by default, with fallback to Fastify 4 on older Node versions. [PR 478](https://github.com/shakacode/react_on_rails_pro/pull/478) by [alexeyr-ci](https://github.com/alexeyr-ci)
+  - Converted node-renderer worker from Express to Fastify. [PR 398](https://github.com/shakacode/react_on_rails_pro/pull/398) by [alexeyr-ci](https://github.com/alexeyr-ci)
+  - Logging now uses Pino instead of Winston, aligning with Fastify. Process now exits on uncaught exceptions and unhandled rejections as recommended. [PR 479](https://github.com/shakacode/react_on_rails_pro/pull/479) by [alexeyr-ci](https://github.com/alexeyr-ci)
+  - Converted from `Net::HTTP` to HTTPX for requests to Node renderer. [PR 452](https://github.com/shakacode/react_on_rails_pro/pull/452) by [alexeyr-ci](https://github.com/alexeyr-ci)
+  - Communication with Node Renderer now uses HTTP/2 Cleartext. [PR 392](https://github.com/shakacode/react_on_rails_pro/pull/392) by [alexeyr-ci](https://github.com/alexeyr-ci)
+  - Upgraded HTTPX dependency from 1.3.4 to ~> 1.5. [PR 520](https://github.com/shakacode/react_on_rails_pro/pull/520) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- **React Server Components Improvements**
+  - Improved RSC rendering flow by eliminating double rendering of server components and reducing HTTP requests
+  - Updated communication protocol between Node Renderer and Rails to version 2.0.0 with support for uploading multiple bundles at once
+  - Added `runOnOtherBundle` function for communication between different bundles on the renderer
+  - [PR 515](https://github.com/shakacode/react_on_rails_pro/pull/515) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- **Configuration**
+  - Set `bodyLimit` to 100 MB by default to fix error 413
+  - Added `fastifyServerOptions` to the config
+  - [PR 511](https://github.com/shakacode/react_on_rails_pro/pull/511) by [Romex91](https://github.com/Romex91)
+  - Renamed `includeTimerPolyfills` configuration option to `stubTimers`. [PR 506](https://github.com/shakacode/react_on_rails_pro/pull/506) by [alexeyr-ci](https://github.com/alexeyr-ci)
+  - Fail immediately on detecting obsolete config options to prevent unexpected misconfigurations. [PR 506](https://github.com/shakacode/react_on_rails_pro/pull/506) by [alexeyr-ci](https://github.com/alexeyr-ci)
+- **Dependencies and Tooling**
+  - Support Shakapacker 8.0.0. Modified webpack configurations to use shakapacker instead of webpacker. [PR 415](https://github.com/shakacode/react_on_rails_pro/pull/415) by [rameziophobia](https://github.com/rameziophobia)
+  - Error reporting and tracing integrations completely redone. See [the docs](./docs/node-renderer/error-reporting-and-tracing.md) for details. [PR 471](https://github.com/shakacode/react_on_rails_pro/pull/471) by [alexeyr-ci](https://github.com/alexeyr-ci)
 
 ### Changed (Breaking)
-- `ReactOnRailsPro::Utils#copy_assets` retuns `nil` instead of `Response` object. Because it throws an error if an error occurs.
-
-## [4.0.0.rc.11] - 2025-02-09
-
-### Changed
-- [PR 511](https://github.com/shakacode/react_on_rails_pro/pull/511) by [Romex91](https://github.com/Romex91)
-  - Set `bodyLimit` to 100 MB by default to fix error 413.
-  - Add `fastifyServerOptions` to the config
-
-- Specify exact httpx version until the bug there is fixed [PR #496](https://github.com/shakacode/react_on_rails_pro/pull/496) by  [alexeyr-ci](https://github.com/alexeyr-ci)
-
-### Changed
-- Renamed `includeTimerPolyfills` configuration option to `stubTimers`. [PR 506](https://github.com/shakacode/react_on_rails_pro/pull/506) by [alexeyr-ci](https://github.com/alexeyr-ci).
-- Fail immediately on detecting obsolete config options to prevent unexpected misconfigurations. [PR 506](https://github.com/shakacode/react_on_rails_pro/pull/506) by [alexeyr-ci](https://github.com/alexeyr-ci).
-
-## [4.0.0.rc.9] - 2024-12-05
-
-### Changed
-- Error reporting and tracing integrations are completely redone. See [the docs](./docs/node-renderer/error-reporting-and-tracing.md) for details. [PR 471](https://github.com/shakacode/react_on_rails_pro/pull/471) by [alexeyr-ci](https://github.com/alexeyr-ci).
-- Upgraded to Fastify 5 by default, with an option to fall back to Fastify 4 on older Node versions. [PR 478](https://github.com/shakacode/react_on_rails_pro/pull/478) by [alexeyr-ci](https://github.com/alexeyr-ci).
-- Logging now uses Pino instead of Winston, aligning with Fastify. [PR 479](https://github.com/shakacode/react_on_rails_pro/pull/479) by [alexeyr-ci](https://github.com/alexeyr-ci).
-  - In particular, this can make a difference on uncaught exceptions and unhandled rejections; now the process should always exit if they happen, as recommended.
-- Converted from `Net::HTTP` to HTTPX for requests to the Node renderer [PR 452](https://github.com/shakacode/react_on_rails_pro/pull/452) by [alexeyr-ci](https://github.com/alexeyr-ci).
-- Communication with Node Renderer now uses HTTP/2 Cleartext [PR 392](https://github.com/shakacode/react_on_rails_pro/pull/392) by [alexeyr-ci](https://github.com/alexeyr-ci).
-
-## [4.0.0.rc.6] - 2024-11-12
-
-### Added
-- Added streaming server rendering support:
-  - [PR 407](https://github.com/shakacode/react_on_rails_pro/pull/407) by [AbanoubGhadban](https://github.com/AbanoubGhadban).
-    - New `stream_view_containing_react_components` helper method that can be used with `stream_react_component` helper method in react_on_rails gem.
-    - Enables progressive page loading and improved performance for server-rendered React components.
-  - Added support for replaying console logs that occur during server rendering of streamed React components. This enables debugging of server-side rendering issues by capturing and displaying console output on the client and on the server output. [PR #429](https://github.com/shakacode/react_on_rails_pro/pull/429) by [AbanoubGhadban](https://github.com/AbanoubGhadban).
-  - Added support for handling errors happening during server rendering of streamed React components [PR #432](https://github.com/shakacode/react_on_rails_pro/pull/432) by [AbanoubGhadban](https://github.com/AbanoubGhadban):
-    - It handles errors that happen during the initial render and errors that happen inside suspense boundaries.
-    - Added `raise_non_shell_server_rendering_errors` configuration option.
-- Added support for replaying console logs from asynchronous operations:
-  - New `replayServerAsyncOperationLogs` configuration option to enable/disable this feature
-  - When enabled, captures and replays console output from async operations during server-side rendering
-  - [PR 440](https://github.com/shakacode/react_on_rails_pro/pull/440) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- `ReactOnRailsPro::Utils#copy_assets` returns `nil` instead of `Response` object (throws an error if an error occurs)
+- Dropped support for shakapacker 6.X [PR 415](https://github.com/shakacode/react_on_rails_pro/pull/415) by [rameziophobia](https://github.com/rameziophobia)
 
 ### Removed
-- Drop support for EOL'd Ruby 2.7 [PR 365](https://github.com/shakacode/react_on_rails_pro/pull/365) by [ahangarha](https://github.com/ahangarha).
-- Drop support for React on Rails below 14.0.4 [PR 415](https://github.com/shakacode/react_on_rails_pro/pull/415) by [rameziophobia](https://github.com/rameziophobia).
+- Dropped support for EOL'd Ruby 2.7. [PR 365](https://github.com/shakacode/react_on_rails_pro/pull/365) by [ahangarha](https://github.com/ahangarha)
+- Dropped support for React on Rails below 14.0.4. [PR 415](https://github.com/shakacode/react_on_rails_pro/pull/415) by [rameziophobia](https://github.com/rameziophobia)
 
 ### Fixed
-- Updated multiple JS dependencies for bug fixes.
-- Added execute permission for `spec/dummy/bin/dev` [PR 387](https://github.com/shakacode/react_on_rails_pro/pull/387) by [alexeyr](https://github.com/alexeyr).
-- Made default bundle paths in node-renderer and Rails consistent [PR 399](https://github.com/shakacode/react_on_rails_pro/pull/399) by [alexeyr-ci](https://github.com/alexeyr-ci).
-
-### Changed
-- Support Shakapacker 8.0.0, Modified webpack configurations to use shakapacker instead of webpacker. This drops support for shakapacker 6.X [PR 415](https://github.com/shakacode/react_on_rails_pro/pull/415) by [rameziophobia](https://github.com/rameziophobia).
-- Converted the node-renderer worker from Express to Fastify [PR 398](https://github.com/shakacode/react_on_rails_pro/pull/398) by [alexeyr-ci](https://github.com/alexeyr-ci).
+- Fixed issue where Node Renderer unnecessarily requested bundles on every render when RSC support was disabled. Now bundles are only requested when needed, improving performance and reducing redundant network traffic. [PR 545](https://github.com/shakacode/react_on_rails_pro/pull/545) by [AbanoubGhadban](https://github.com/AbanoubGhadban)
+- Updated multiple JS dependencies for bug fixes
+- Added execute permission for `spec/dummy/bin/dev`. [PR 387](https://github.com/shakacode/react_on_rails_pro/pull/387) by [alexeyr](https://github.com/alexeyr)
+- Made default bundle paths in node-renderer and Rails consistent. [PR 399](https://github.com/shakacode/react_on_rails_pro/pull/399) by [alexeyr-ci](https://github.com/alexeyr-ci)
 
 ## [3.3.1] - 2025-08-11
 
@@ -398,12 +375,9 @@ Above changes in [PR 52](https://github.com/shakacode/react_on_rails_pro/pull/52
 - support for javascript evaluation caching
 - advanced error handling
 
-[HEAD compared to 3.2.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.3.1...HEAD
-[Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/4.0.0-rc-15...HEAD
-[4.0.0-rc.15]: https://github.com/shakacode/react_on_rails_pro/compare/4.0.0-rc.14...4.0.0-rc.15
-[4.0.0.rc.11]: https://github.com/shakacode/react_on_rails_pro/compare/4.0.0-rc.9...4.0.0-rc.11
-[4.0.0.rc.9]: https://github.com/shakacode/react_on_rails_pro/compare/4.0.0-rc.6...4.0.0-rc.9
-[4.0.0.rc.6]: https://github.com/shakacode/react_on_rails_pro/compare/3.3.1...4.0.0-rc.6
+[HEAD compared to 3.3.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.3.1...HEAD
+[Unreleased]: https://github.com/shakacode/react_on_rails_pro/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/shakacode/react_on_rails_pro/compare/3.3.1...4.0.0
 [3.3.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.2.1...3.3.1
 [3.2.1]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.2...3.2.1
 [3.1.2]: https://github.com/shakacode/react_on_rails_pro/compare/3.1.0...3.1.2
