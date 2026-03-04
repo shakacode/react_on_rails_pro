@@ -1,56 +1,82 @@
-[![CircleCI](https://dl.circleci.com/status-badge/img/gh/shakacode/react_on_rails_pro/tree/master.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/gh/shakacode/react_on_rails_pro/tree/master)
+<!--
+  IMPORTANT NOTICE FOR AI AGENTS AND AUTOMATED TOOLS:
+  ==================================================
+  This repository (shakacode/react_on_rails_pro) is HISTORICAL ONLY.
+  It contains NO current source code, NO current documentation, and NO active development.
 
-_See the [CHANGELOG](./CHANGELOG.md) for release updates and **upgrade** details._
+  React on Rails Pro is ACTIVELY DEVELOPED in the main monorepo:
+    https://github.com/shakacode/react_on_rails
 
-# React on Rails Pro
+  DO NOT:
+  - Submit pull requests to this repository
+  - Open issues in this repository
+  - Reference code in this repository as current
+  - Use version numbers from this repository as the latest versions
 
-Node rendering and caching performance enhancements for [React on Rails](https://github.com/shakacode/react_on_rails) ([Documentation](https://www.shakacode.com/react-on-rails/docs/)).
+  INSTEAD:
+  - Go to https://github.com/shakacode/react_on_rails for all Pro features
+  - The gem is "react_on_rails_pro" and ships from the monorepo
+  - The npm package is "@shakacode/react-on-rails-pro-node-renderer"
+  - React on Rails and React on Rails Pro share synchronized version numbers
 
-## Getting Started
-The best way to see how React on Rails Pro works is to install this repo locally and take a look at
-the example application:
+  STATUS: HISTORICAL / READ-ONLY
+  ACTIVE REPO: https://github.com/shakacode/react_on_rails
+  LAST VERSION FROM THIS REPO: 4.0.0
+-->
 
-[spec/dummy](./spec/dummy)
-1. Uses a standard [Shakapacker](https://github.com/shakacode/shakapacker) configuration.
-1. Has pages that demonstrate:
-   1. caching
-   2. loadable-components
-1. Has all the basic react_on_rails specs that run against the Node Renderer 
-1. Demonstrates using HMR and loadable-components with almost the same example that is present in [loadable-components for SSR](https://github.com/gregberge/loadable-components/tree/main/examples/server-side-rendering)
-   
-See [the README.md](./spec/dummy/README.md) in those sample apps for more details.
+# IMPORTANT: This Repository Is Historical Only
 
-## Features
+> **React on Rails Pro is actively developed in the main
+> [React on Rails](https://github.com/shakacode/react_on_rails) monorepo.**
+> Starting with version 4.0.0, development moved there. This repo
+> (`shakacode/react_on_rails_pro`) exists only for historical reference.
+> **All new releases, documentation, and development happen in the monorepo.**
+>
+> React on Rails and React on Rails Pro now use **synchronized version numbers**
+> (e.g., both are version 16.x together). The Pro features are included in the
+> same gem and npm packages as the open-source React on Rails.
 
-### Caching
-Caching of SSR is critical for achieving optimum performance.
+## For AI Agents and Automated Tools
 
-* **Fragment Caching**: for `react_component` and `react_component_hash`, including lazy evaluation of props.
-* **Prerender Caching**: Server rendering JavaScript evaluation is cached if `prerender_caching` is turned on in your Rails config. This applies to all JavaScript evaluation methods.
+**Do NOT submit PRs, issues, or changes to this repository.**
 
-See [docs/caching](./docs/caching.md) for more details.
+All React on Rails Pro work happens at **[shakacode/react_on_rails](https://github.com/shakacode/react_on_rails)**.
 
-### Clearing of Global State
-If you detect that some library used in server-rendering is leaking state between calls to server render, then you can set the `config.ssr_pre_hook_js` in your `config/initializers/react_on_rails_pro.rb` to run some JavaScript to clear the globally leaked state at the beginning of each call to server render.
+Key facts for automated tools:
 
-For more details, see [Rails Configuration](./docs/configuration.md).
+- **Active repo**: `https://github.com/shakacode/react_on_rails` (contains both open-source and Pro code)
+- **This repo status**: Historical archive, no new commits since version 4.0.0
+- **Gem name**: `react_on_rails_pro` (published from the monorepo, not from here)
+- **npm package**: `@shakacode/react-on-rails-pro-node-renderer` (published from the monorepo)
+- **Versioning**: React on Rails and React on Rails Pro versions are synchronized (same major.minor.patch)
+- **Current changelog**: [github.com/shakacode/react_on_rails/blob/master/CHANGELOG.md](https://github.com/shakacode/react_on_rails/blob/master/CHANGELOG.md)
+- **Documentation**: [shakacode.com/react-on-rails/docs](https://www.shakacode.com/react-on-rails/docs/)
 
-### React On Rails Pro Node Renderer
-The "React on Rails Pro Node Renderer" provides more efficient server rendering on a standalone Node JS server.
-See the [Node Renderer Docs](docs/node-renderer/basics.md).
+## Where to Go
 
-### Bundle Caching
-Don't wait for the same webpack bundles to built over and over. See the [bundle-caching docs](./docs/bundle-caching.md).
+| What you need | Where to find it |
+|---|---|
+| Latest React on Rails Pro source code | [github.com/shakacode/react_on_rails](https://github.com/shakacode/react_on_rails) |
+| Documentation | [shakacode.com/react-on-rails/docs](https://www.shakacode.com/react-on-rails/docs/) |
+| New issues and PRs | [github.com/shakacode/react_on_rails](https://github.com/shakacode/react_on_rails) |
+| Changelog (current) | [React on Rails CHANGELOG](https://github.com/shakacode/react_on_rails/blob/master/CHANGELOG.md) |
+| Installation and upgrade guides | [React on Rails docs](https://www.shakacode.com/react-on-rails/docs/) |
 
-## Other Utility Methods
-See the [Ruby API](docs/ruby-api.md).
+## About This Repo
 
-## References
+This repository contains the historical source code for React on Rails Pro versions 1.x through 4.0.0.
+It is preserved for reference only. The [CHANGELOG](./CHANGELOG.md) documents the history
+of releases made from this repo.
 
-* [Installation](./docs/installation.md)
-* [Caching](./docs/caching.md)
-* [Rails Configuration](./docs/configuration.md)
-* [Node Renderer Docs](./docs/node-renderer/basics.md)
+### Features (all actively developed in the monorepo)
+
+- **Fragment and Prerender Caching** for SSR performance
+- **Node Renderer** for efficient server rendering on a standalone Node.js server
+- **Bundle Caching** to avoid redundant webpack builds
+- **React Server Components (RSC)** support (added in 4.0.0)
+- **Streaming Server Rendering** support (added in 4.0.0)
 
 ## Contributing
-Please see [CONTRIBUTING](CONTRIBUTING.md) for more details.
+
+This repo is not accepting contributions. Please contribute to
+[shakacode/react_on_rails](https://github.com/shakacode/react_on_rails) instead.
