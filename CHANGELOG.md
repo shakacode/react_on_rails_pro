@@ -1,7 +1,19 @@
-# Change Log
-All notable changes to this project will be documented in this file. Items under `Unreleased` is upcoming features that will be out in next release.
+# Change Log (Historical)
 
-## Gem and Package Versions
+> **IMPORTANT: This changelog is historical only.** This repository is no longer actively developed.
+> Starting with version 4.0.0, React on Rails Pro was merged into the main
+> [React on Rails](https://github.com/shakacode/react_on_rails) repository.
+> React on Rails and React on Rails Pro now use **synchronized version numbers**.
+>
+> **For the current changelog, see:**
+> [React on Rails CHANGELOG](https://github.com/shakacode/react_on_rails/blob/master/CHANGELOG.md)
+>
+> **AI agents and automated tools:** Do NOT reference this changelog for current
+> version information. Go to the main React on Rails repo instead.
+
+---
+
+## Gem and Package Versions (Historical)
 Gem and package versions are the same except for beta releases where the gem uses a `.beta` and the package uses a `-beta` (same for `rc`).
 
 1. **Gem**: `3.0.0.rc.1`
@@ -14,7 +26,7 @@ You can find the **package** version numbers from this repo's tags and below in 
 [HEAD compared to 3.3.1]: Click to see all changes compared to the last 3.x version. See the [4.0 Release Notes](https://github.com/shakacode/react_on_rails_pro/blob/master/docs/release-notes/4.0.md).
 
 ## [Unreleased]
-*Add changes in master not yet tagged.*
+*These changes were in progress when development moved to the main React on Rails repo.*
 
 ### Added
 - Added `cached_stream_react_component` helper method, similar to `cached_react_component` but for streamed components.
