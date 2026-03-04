@@ -1,9 +1,10 @@
 # IMPORTANT: This Repository Is Historical Only
 
-> **This repo (`shakacode/react_on_rails_pro`) is no longer actively developed.**
-> Starting with version 4.0.0, React on Rails Pro has been merged into the main
-> [React on Rails](https://github.com/shakacode/react_on_rails) repository.
-> **All new releases, documentation, and development happen there.**
+> **React on Rails Pro is actively developed in the main
+> [React on Rails](https://github.com/shakacode/react_on_rails) monorepo.**
+> Starting with version 4.0.0, development moved there. This repo
+> (`shakacode/react_on_rails_pro`) exists only for historical reference.
+> **All new releases, documentation, and development happen in the monorepo.**
 >
 > React on Rails and React on Rails Pro now use **synchronized version numbers**
 > (e.g., both are version 16.x together). The Pro features are included in the

@@ -1,8 +1,8 @@
 # Change Log (Historical)
 
-> **IMPORTANT: This changelog is historical only.** This repository is no longer actively developed.
-> Starting with version 4.0.0, React on Rails Pro was merged into the main
-> [React on Rails](https://github.com/shakacode/react_on_rails) repository.
+> **IMPORTANT: This changelog is historical only.** React on Rails Pro is actively developed
+> in the main [React on Rails](https://github.com/shakacode/react_on_rails) monorepo.
+> Starting with version 4.0.0, development moved there. This repo exists only for historical reference.
 > React on Rails and React on Rails Pro now use **synchronized version numbers**.
 >
 > **For the current changelog, see:**
