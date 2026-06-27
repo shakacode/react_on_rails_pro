@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🚫 This repository is historical — do not open issues here
+    url: https://github.com/shakacode/react_on_rails/issues/new/choose
+    about: react_on_rails_pro is read-only (historical, versions 1.x–4.0.0). React on Rails Pro is now developed in the shakacode/react_on_rails monorepo. Please open all issues there.
+  - name: 📦 React on Rails monorepo (active development)
+    url: https://github.com/shakacode/react_on_rails
+    about: All current code, docs, releases, and issues for React on Rails and React on Rails Pro live here.
