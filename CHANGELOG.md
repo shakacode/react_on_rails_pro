@@ -34,6 +34,9 @@ You can find the **package** version numbers from this repo's tags and below in 
 ### Changed (Breaking)
 - `config.prerender_caching`, which controls caching for non-streaming components, now also controls caching for streamed components. To disable caching for an individual render, pass `internal_option(:skip_prerender_cache)`.
 
+### Fixed
+- **Fixed ScoutApm instrumentation depending on Gemfile ordering**. ScoutApm instrumentation for `exec_server_render_js` was previously installed at class load time using a `defined?(ScoutApm)` guard, which meant it was silently skipped if `scout_apm` appeared after `react_on_rails_pro` in the Gemfile. Moved instrumentation into an Engine initializer that runs after `scout_apm.start`, ensuring it works regardless of gem ordering and only after ScoutApm is fully configured. [PR 585](https://github.com/shakacode/react_on_rails_pro/pull/585) by [tonyta](https://github.com/tonyta).
+
 ## [4.0.0] - 2025-08-15
 
 ### Added
